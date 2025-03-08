@@ -1,1 +1,1 @@
-Abilita Edge
+School Management Project
