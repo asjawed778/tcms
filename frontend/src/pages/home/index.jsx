@@ -5,7 +5,7 @@ const HomePage = () => {
   const navigate = useNavigate();
 
   return (
-    <div className="flex flex-col justify-center items-center h-screen text-gray-700 bg-gray-100">
+    <div className="ml-60 flex flex-col justify-center items-center h-screen text-gray-700">
       <h1 className="text-4xl font-bold text-orange-500">Welcome to Our Website</h1>
       <p className="text-gray-600 mt-2">Explore our content and enjoy the experience.</p>
       <button 

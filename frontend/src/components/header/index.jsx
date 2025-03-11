@@ -1,28 +1,28 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-
+import logo from "../../assets/logo.png"
+import { useSelector } from "react-redux";
 const Header = () => {
   const navigate = useNavigate();
+  const user = useSelector((state) => state.auth.user);
 
   return (
-    <div className="flex justify-between items-center p-4 bg-white shadow-md">
-      <h1 className="text-2xl font-bold text-orange-500">My App</h1>
-      <div>
-        <button 
-          className="px-4 py-2 mr-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-          onClick={() => navigate("/signup")}
-        >
-          Sign Up
-        </button>
-        <button 
-          className="px-4 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition"
+    <div className="fixed top-0 left-0 w-full  flex  px-6 h-16 justify-between items-center bg-white shadow-md z-50">
+      <div className="flex items-center space-x-3 text-primary">
+        <img src={logo} alt="Logo"  className="h-10 w-auto"/>
+        <h1 className=" text-4xl font-bold cursor-pointer" onClick={() => navigate("/")}>TCMS</h1>
+      </div>
+      <div className="flex space-x-2">
+        {user ? (
+          <div className="text-secondary">{user.username || "Guest"}</div>
+        ) : (<button 
+          className="btn-primary cursor-pointer"
           onClick={() => navigate("/login")}
         >
           Login
-        </button>
+        </button>)}
       </div>
     </div>
   );
 };
-
 export default Header;

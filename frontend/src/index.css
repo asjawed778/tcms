@@ -3,22 +3,63 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #ED1C25;
-  --color-primary-hover: #F0484E;
-  --color-primary-active: #F4767B;
-  --color-secondary: #0b7077;
-  --color-secondary-hover: #0d858d;
-  --color-secondary-active: #095a5f;
+  --color-primary: #006e2e;
+  --color-primary-hover: #3CB371;
+  --color-primary-active: #1e7e34;
+
+  --color-secondary: #fd7e14;
+  --color-secondary-hover: #e67300;
+  --color-secondary-active: #cc6600;
+  
   --color-sidebar-background: #261E67;
   --color-hover-sidebar-background: #261E7E;
   
-  --primary-color: #ED1C25;
-  --secondary-color: #F0484E;
-  --alt-secondary-color: #F4767B;
+  --primary-color: #218838;
+  --secondary-color: #28a745;
+  --alt-secondary-color: #1e7e34;
   --primary-heading-color: #ED1C25;
   --secondary-heading-color: #000000;
   --alt-secondary-text-color: #595959;
   --optional-color: #01198D;
+}
+
+/* Primary Green Button */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--color-primary-hover);
+}
+
+/* Secondary Orange Button */
+.btn-secondary {
+  background-color: var(--color-secondary);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-secondary-hover);
+}
+/* tis is not working */
+.btn-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+
+.text-primary{
+  color:#3CB371
 }
 
 * {
