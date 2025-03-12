@@ -31,6 +31,48 @@ const classSchema = new mongoose.Schema<IClass>({
     classTeacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Teacher'
+    },
+    feeStructure: {
+        monthly: {
+            amount: {
+                type: Number,
+                required: true
+            },
+            total: {
+                type: Number,
+                required: true
+            }
+        },
+        quarterly: {
+            amount: {
+                type: Number,
+                required: true
+            },
+            total: {
+                type: Number,
+                required: true
+            }
+        },
+        halfYearly: {
+            amount: {
+                type: Number,
+                required: true
+            },
+            total: {
+                type: Number,
+                required: true
+            }
+        },
+        yearly: {
+            amount: {
+                type: Number,
+                required: true
+            },
+            total: {
+                type: Number,
+                required: true
+            }
+        }
     }
 });
 
