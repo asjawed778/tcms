@@ -1,7 +1,7 @@
-import { Gender } from "../class/class.constants";
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from "mongoose";
 import { Designation, Status } from "./faculty.constant";
+import { Gender } from "../common/constant/constant";
 
 export interface JobLeft {
     reason: string;

@@ -24,8 +24,4 @@ export enum SubjectCategory {
     VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
 };
 
-export enum Gender {
-    Male = "Male",
-    Female = "Female",
-    Other = "Other"
-};
+
