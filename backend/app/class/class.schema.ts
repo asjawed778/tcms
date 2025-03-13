@@ -73,6 +73,11 @@ const classSchema = new mongoose.Schema<IClass>({
                 required: true
             }
         }
+    },
+    deleted: {
+        type: Boolean,
+        required: true,
+        default: false
     }
 });
 

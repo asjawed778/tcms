@@ -18,6 +18,7 @@ export interface IClass extends BaseSchema {
     courseStream?: CourseStream;
     classTeacher?: Types.ObjectId;
     feeStructure: FeeStructure;
+    deleted: boolean;
 }
 
 export interface ISubject extends BaseSchema {
