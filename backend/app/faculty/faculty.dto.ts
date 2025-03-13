@@ -2,6 +2,7 @@ import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from "mongoose";
 import { Designation, Status } from "./faculty.constant";
 import { Gender } from "../common/constant/constant";
+import { Document } from "../common/dto/common.dto";
 
 export interface JobLeft {
     reason: string;
@@ -15,10 +16,6 @@ export interface WorkExperience {
     designation: string;
 };
 
-export interface Doucment {
-    name: string;
-    url: string;
-};
 
 export interface Faculty extends BaseSchema {
     employeeId: string;
@@ -49,5 +46,5 @@ export interface Faculty extends BaseSchema {
     status: Status;
 
     // Documents
-    documents: Doucment[];
+    documents: Document[];
 };

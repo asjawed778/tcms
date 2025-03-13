@@ -1,7 +1,8 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from 'mongoose';
-import { ActionTaken, ActivityType, ParticipationLevel, RemarkType } from "./student.constant";
+import { ActionTaken, ActivityType, ParticipationLevel, ParticipationType, RemarkType, StudentStatus } from "./student.constant";
 import { Gender, Religion } from "../common/constant/constant";
+import { Document } from '../common/dto/common.dto';
 
 export interface Remark extends BaseSchema {
     studentId: Types.ObjectId; 
@@ -14,8 +15,7 @@ export interface Remark extends BaseSchema {
         name: string; 
         url: string;
     }[];
-}
-
+};
 
 export interface ExtracurricularActivity extends BaseSchema {
     studentId: Types.ObjectId;
@@ -23,11 +23,13 @@ export interface ExtracurricularActivity extends BaseSchema {
     type: ActivityType;
     participationLevel: ParticipationLevel;
     achievement?: string;
-    organizedBy?: Types.ObjectId;
+    organizedBy?: string;
     date: Date;
     duration?: string;
-    certificateUrl?: string;
-}
+    participationType: ParticipationType;
+    certificate?: Document;
+    positionHeld?: string;
+};
 
 export interface ParentDetails {
     name: string;
@@ -36,8 +38,12 @@ export interface ParentDetails {
     businessOrEmployerName?: string;
     officeAddress?: string;
     officeNumber?: string;
+    email?: string;
+    contactNumber?: string;
 };
 
+
+// todo : we need to add some proper doc - signature(student , parent), image, adhar card -> do not use doucemnt make proper 
 export interface IStudent extends BaseSchema {
     enrollmentNumber: string;
 
@@ -49,15 +55,41 @@ export interface IStudent extends BaseSchema {
     religion: Religion;
     motherTongue: string;
     image: string;
-    adharNumber: number;
+    adharNumber: string;
+    contactNumber?: string;
+    email?: string;
+    bloodGroup?: string;
 
     // parents details
     father: ParentDetails;
     mother: ParentDetails;
-    localGuardian: ParentDetails;
+    localGuardian?: ParentDetails;
 
     // address details
     address: Types.ObjectId;
 
+    // documents 
+    documents: Document[];
 
-}
+    // acedemic tracking
+    admissionYear: number;
+    status: StudentStatus; 
+};
+
+
+export interface AcademicRecord {
+    session: string;
+    classId: Types.ObjectId;
+    section?: string;
+    rollNumber: number;
+    subjects: Types.ObjectId[];
+    totalMarksObtained?: number;
+    totalPercentage?: number;
+    grade?: string;
+    // promotionStatus: PromotionStatus;
+};
+
+export interface IAcademicDetails extends BaseSchema {
+    studentId: Types.ObjectId; // Reference to Student
+    records: AcademicRecord[]; // List of all academic years
+};
