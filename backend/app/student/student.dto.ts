@@ -90,6 +90,7 @@ export interface AcademicRecord {
 };
 
 export interface IAcademicDetails extends BaseSchema {
-    studentId: Types.ObjectId; // Reference to Student
-    records: AcademicRecord[]; // List of all academic years
+    studentId: Types.ObjectId;
+    registrationNumber: string;
+    records: AcademicRecord[];
 };
