@@ -28,4 +28,5 @@ export interface ISubject extends BaseSchema {
     ISBN?: string;
     subjectType: SubjectType;
     subjectCategory: SubjectCategory;
+    isDeleted: boolean;
 }

@@ -29,6 +29,10 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         enum: Object.values(SubjectCategory),
         required: true
     },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
 });
 
 export default mongoose.model<ISubject>('Subject', subjectSchema);
