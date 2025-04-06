@@ -10,7 +10,7 @@ export enum Designation {
     LAB_ASSISTANT = "Lab Assistant",
 };
 
-export enum Status {
+export enum FacultyStatus {
     ACTIVE = "Active",
     INACTIVE = "Inactive"
 }

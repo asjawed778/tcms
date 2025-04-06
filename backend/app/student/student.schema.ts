@@ -9,7 +9,7 @@
 //     enrollmentNumber: { type: String, unique: true }, 
 // });
 
-// Pre-save middleware to generate `enrollmentNumber`
+// // Pre-save middleware to generate `enrollmentNumber`
 // StudentSchema.pre("save", async function (next) {
 //     if (!this.enrollmentNumber) {
 //         const admissionYear = this.admissionYear.slice(-2); // Get last 2 digits of year (e.g., "24" for 2024)

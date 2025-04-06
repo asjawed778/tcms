@@ -1,14 +1,9 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from "mongoose";
-import { Designation, Status } from "./faculty.constant";
+import * as FacultyEnum from "./faculty.constant";
 import { Gender } from "../common/constant/constant";
 import { Document } from "../common/dto/common.dto";
 
-export interface JobLeft {
-    reason: string;
-    date: Date;
-    resignationLetterUrl?: string;
-};
 
 export interface WorkExperience {
     organisationName: string;
@@ -17,8 +12,9 @@ export interface WorkExperience {
 };
 
 
-export interface Faculty extends BaseSchema {
+export interface IFaculty extends BaseSchema {
     employeeId: string;
+    userId: Types.ObjectId;
 
     //personal details
     name: string;
@@ -33,17 +29,15 @@ export interface Faculty extends BaseSchema {
     aadhaarNumber: number;
 
     // Professional Details
-    designation: Designation;
+    designation: FacultyEnum.Designation;
     joiningDate: Date;
     experience?: WorkExperience[];
     expertiseSubjects: string[];
     qualification: string;
-    previousSchool?: string;
     certification?: string;
 
     // Job Details
-    jobLeft?: JobLeft;
-    status: Status;
+    status: FacultyEnum.FacultyStatus;
 
     // Documents
     documents: Document[];

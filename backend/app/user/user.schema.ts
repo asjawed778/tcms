@@ -3,6 +3,11 @@ import { type IUser } from "./user.dto";
 
 export enum UserRole {
   SUPER_ADMIN = "SUPER_ADMIN",
+  PRINCIPAL = "PRINCIPAL",
+  FACULTY = "FACULTY",
+  STUDENT = "STUDENT",
+  ADMINISTRATOR = "ADMINISTRATOR",
+  STAFF = "STAFF",
   USER = "USER"
 }
 
