@@ -5,11 +5,11 @@ import { Gender } from "../common/constant/constant";
 import { Document } from "../common/dto/common.dto";
 
 
-export interface WorkExperience {
-    organisationName: string;
-    years: number;
-    designation: string;
-};
+// export interface WorkExperience {
+//     organisationName: string;
+//     years: number;
+//     designation: string;
+// };
 
 
 export interface IFaculty extends BaseSchema {
@@ -24,14 +24,14 @@ export interface IFaculty extends BaseSchema {
     phoneNumber: string;
     gender: Gender;
     dob: Date;
-    address: Types.ObjectId; 
+    // address: Types.ObjectId; 
     photoUrl?: string;
     aadhaarNumber: number;
 
     // Professional Details
     designation: FacultyEnum.Designation;
     joiningDate: Date;
-    experience?: WorkExperience[];
+    // experience?: WorkExperience[];
     expertiseSubjects: string[];
     qualification: string;
     certification?: string;

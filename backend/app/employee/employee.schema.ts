@@ -1,46 +1,83 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose from 'mongoose';
+import { IEmployee } from './employee.dto';
 
-export interface IEmployee extends Document {
-    employeeId: string; // Unique identifier for the employee
-    name: string;
-    role: 'teacher' | 'staff';
-    email: string;
-    phone: string;
-    address: string;
-    dateOfJoining: Date;
-    dateOfLeaving?: Date; // Optional field for when the employee leaves
-    isActive: boolean;
-    salary: number; // Salary of the employee
-    paymentHistory: {
-        date: Date;
-        amount: number;
-        method: string; // e.g., 'bank transfer', 'cash'
-    }[];
-}
-
-const EmployeeSchema: Schema = new Schema(
-    {
-        employeeId: { type: String, required: true, unique: true }, // Unique ID
-        name: { type: String, required: true },
-        role: { type: String, enum: ['teacher', 'staff'], required: true },
-        email: { type: String, required: true, unique: true },
-        phone: { type: String, required: true },
-        address: { type: String, required: true },
-        dateOfJoining: { type: Date, required: true },
-        dateOfLeaving: { type: Date }, // Optional field
-        isActive: { type: Boolean, default: true },
-        salary: { type: Number, required: true }, // Salary field
-        paymentHistory: [
-            {
-                date: { type: Date, required: true },
-                amount: { type: Number, required: true },
-                method: { type: String, required: true },
-            },
-        ],
+const employeeSchema = new mongoose.Schema<IEmployee>({
+    employeeId: {
+        type: String,
+        unique: true
     },
-    {
-        timestamps: true,
-    }
-);
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+        required: false
+    },
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        unique: true
+    },
+    phone: {
+        type: String,
+        required: true
+    },
+    address: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
+        required: true,
+    },
+    dateOfJoining: {
+        type: Date,
+        required: true
+    },
+    experience: [{
+        organisationName: {
+            type: String,
+            required: true,
+        },
+        years: {
+            type: Number,
+            required: true,
+        },
+        designation: {
+            type: String,
+            required: true,
+        },
+    }],
+    dateOfLeaving: {
+        type: Date
+    },
+    isActive: {
+        type: Boolean,
+        default: true
+    },
+    salary: {
+        type: Number,
+        required: true
+    },
+}, { timestamps: true, });
 
-export default mongoose.model<IEmployee>('Employee', EmployeeSchema);
+employeeSchema.pre("save", async function (next) {
+    const doc = this as mongoose.Document & {
+        isNew: boolean;
+        employeeId: string;
+    };
+
+    if (doc.isNew && !doc.employeeId) {
+        let unique = false;
+        while (!unique) {
+            const randomId = "TCMS" + Math.floor(10000000 + Math.random() * 90000000);
+            const existing = await mongoose.models.Faculty.findOne({ employeeId: randomId });
+            if (!existing) {
+                doc.employeeId = randomId;
+                unique = true;
+            }
+        }
+    }
+
+    next();
+});
+
+export default mongoose.model<IEmployee>('Employee', employeeSchema);

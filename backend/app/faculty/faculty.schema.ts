@@ -49,11 +49,11 @@ const facultySchema = new mongoose.Schema<IFaculty>({
         type: Date,
         required: true,
     },
-    address: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Address",
-        required: true,
-    },
+    // address: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Address",
+    //     required: true,
+    // },
     photoUrl: {
         type: String,
         required: false,
@@ -71,20 +71,20 @@ const facultySchema = new mongoose.Schema<IFaculty>({
         type: Date,
         required: true,
     },
-    experience: [{
-        organisationName: {
-            type: String,
-            required: true,
-        },
-        years: {
-            type: Number,
-            required: true,
-        },
-        designation: {
-            type: String,
-            required: true,
-        },
-    }],
+    // experience: [{
+    //     organisationName: {
+    //         type: String,
+    //         required: true,
+    //     },
+    //     years: {
+    //         type: Number,
+    //         required: true,
+    //     },
+    //     designation: {
+    //         type: String,
+    //         required: true,
+    //     },
+    // }],
     expertiseSubjects: {
         type: [String],
         required: true,
@@ -117,28 +117,6 @@ const facultySchema = new mongoose.Schema<IFaculty>({
         },
     }],
 }, { timestamps: true });
-
-
-facultySchema.pre("save", async function (next) {
-    const doc = this as mongoose.Document & {
-        isNew: boolean;
-        employeeId: string;
-    };
-
-    if (doc.isNew && !doc.employeeId) {
-        let unique = false;
-        while (!unique) {
-            const randomId = "TCMS" + Math.floor(10000000 + Math.random() * 90000000);
-            const existing = await mongoose.models.Faculty.findOne({ employeeId: randomId });
-            if (!existing) {
-                doc.employeeId = randomId;
-                unique = true;
-            }
-        }
-    }
-
-    next();
-});
 
 
 export default mongoose.model<IFaculty>("Faculty", facultySchema);

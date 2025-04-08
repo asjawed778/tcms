@@ -104,4 +104,7 @@ export const createFaculty = [
         .isString()
         .withMessage("Document number must be a string"),
 
+    body("salary")
+        .notEmpty().withMessage("Salary is required")
+        .isNumeric().withMessage("Salary must be a number"),
 ];
