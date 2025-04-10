@@ -6,15 +6,20 @@ import createHttpError from "http-errors";
 import TempUserSchema from "./tempUser.schema";
 import { omit } from "lodash";
 import { loadConfig } from "../common/helper/config.hepler";
+import { ClientSession } from "mongoose";
 
 loadConfig();
 
-export const createUserByAdmin = async (data: {name: string, email: string, role: UserRole}): Promise<Omit<ITempUser, "password">> => {
+export const createUserByAdmin = async (data: {name: string, email: string, role: UserRole}, session?: ClientSession): Promise<Omit<ITempUser, "password">> => {
+    const isUserExists = await UserSchema.findOne({ email: data.email });
+    if (isUserExists) {
+        throw createHttpError(409, "User already exists");
+    }
     const password = `${data.name}@12345`;
     const hashedPass = await hashPassword(password);
     const profilePic = `${process.env.PROFILE_URL}${data.name}`;
-    const result = await UserSchema.create({ ...data, password: hashedPass, profilePic });
-    return omit(result.toObject() as IUser, ["password"]);
+    const [user] = await UserSchema.create([{ ...data, password: hashedPass, profilePic }], {session});
+    return omit(user.toObject() as IUser, ["password"]);
 };
 
 const hashPassword = async (password: string) => {
@@ -120,4 +125,3 @@ export const resetPassword = async(userId: string, token: string, newPassword: s
 
     return newUser;
 };
-

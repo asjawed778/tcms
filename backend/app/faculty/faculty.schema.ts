@@ -1,7 +1,6 @@
 import mongoose from "mongoose";
 import { IFaculty } from "./faculty.dto";
 import * as FacultyEnum from "./faculty.constant";
-import { Gender } from "../common/constant/constant";
 
 
 const facultySchema = new mongoose.Schema<IFaculty>({
@@ -40,51 +39,11 @@ const facultySchema = new mongoose.Schema<IFaculty>({
         required: true,
         trim: true,
     },
-    gender: {
-        type: String,
-        enum: Object.values(Gender),
-        required: true,
-    },
-    dob: {
-        type: Date,
-        required: true,
-    },
-    // address: {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Address",
-    //     required: true,
-    // },
-    photoUrl: {
-        type: String,
-        required: false,
-    },
-    aadhaarNumber: {
-        type: Number,
-        required: true,
-    },
     designation: {
         type: String,
         enum: Object.values(FacultyEnum.Designation),
         required: true,
     },
-    joiningDate: {
-        type: Date,
-        required: true,
-    },
-    // experience: [{
-    //     organisationName: {
-    //         type: String,
-    //         required: true,
-    //     },
-    //     years: {
-    //         type: Number,
-    //         required: true,
-    //     },
-    //     designation: {
-    //         type: String,
-    //         required: true,
-    //     },
-    // }],
     expertiseSubjects: {
         type: [String],
         required: true,
@@ -101,21 +60,7 @@ const facultySchema = new mongoose.Schema<IFaculty>({
         type: String,
         enum: Object.values(FacultyEnum.FacultyStatus),
         default: FacultyEnum.FacultyStatus.ACTIVE,
-    },
-    documents: [{
-        name: {
-            type: String,
-            required: true,
-        },
-        documentNumber: {
-            type: String,
-            required: false,
-        },
-        url: {
-            type: String,
-            required: true,
-        },
-    }],
+    }
 }, { timestamps: true });
 
 

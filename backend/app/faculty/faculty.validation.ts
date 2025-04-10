@@ -40,7 +40,7 @@ export const createFaculty = [
         .notEmpty().withMessage("Pincode is required in address")
         .isPostalCode("IN").withMessage("Enter a valid Indian pincode"),
 
-    body("photoUrl")
+    body("photo")
         .optional().isURL().withMessage("Photo URL must be valid"),
 
 
@@ -53,7 +53,7 @@ export const createFaculty = [
         .notEmpty().withMessage("Designation is required")
         .isIn(Object.values(FacultyEnum.Designation)).withMessage(`Designation must be one of: ${Object.values(FacultyEnum.Designation).join(", ")}`),
 
-    body("joiningDate")
+    body("dateOfJoining")
         .notEmpty().withMessage("Joining date is required")
         .isISO8601().withMessage("Joining date must be a valid date"),
 

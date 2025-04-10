@@ -1,5 +1,5 @@
 
-export interface Document {
+export interface IDocument {
     name: string;
     documentNumber?: string;
     url: string;

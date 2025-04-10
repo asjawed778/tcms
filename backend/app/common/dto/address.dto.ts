@@ -8,3 +8,5 @@ export interface IAddress extends BaseSchema {
     country: string;
     pincode: number;
 }
+
+export interface ICreateAddress extends Omit<IAddress, "createdAt" | "updatedAt" | "_id"> {} 

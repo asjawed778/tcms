@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { IEmployee } from './employee.dto';
+import { Gender } from '../common/constant/constant';
 
 const employeeSchema = new mongoose.Schema<IEmployee>({
     employeeId: {
@@ -19,7 +20,7 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
         type: String,
         unique: true
     },
-    phone: {
+    phoneNumber: {
         type: String,
         required: true
     },
@@ -57,6 +58,36 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
         type: Number,
         required: true
     },
+    gender: {
+        type: String,
+        enum: Object.values(Gender)
+    },
+    dob: {
+        type: Date,
+        required: true
+    },
+    photo: {
+        type: String,
+        required: false
+    },
+    aadhaarNumber: {
+        type: Number,
+        required: true
+    },
+    documents: [{
+        name: {
+            type: String,
+            required: true,
+        },
+        documentNumber: {
+            type: String,
+            required: false,
+        },
+        url: {
+            type: String,
+            required: true,
+        },
+    }],
 }, { timestamps: true, });
 
 employeeSchema.pre("save", async function (next) {
