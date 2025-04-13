@@ -10,7 +10,7 @@ import { ClientSession } from "mongoose";
 
 loadConfig();
 
-export const createUserByAdmin = async (data: {name: string, email: string, role: UserRole}, session?: ClientSession): Promise<Omit<ITempUser, "password">> => {
+export const createUserByAdmin = async (data: {name: string, email: string, role: UserRole, profilePic?: string}, session?: ClientSession): Promise<Omit<ITempUser, "password">> => {
     const isUserExists = await UserSchema.findOne({ email: data.email });
     if (isUserExists) {
         throw createHttpError(409, "User already exists");

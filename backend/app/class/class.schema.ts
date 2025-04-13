@@ -8,16 +8,13 @@ const classSchema = new mongoose.Schema<IClass>({
         required: true
     },
     session: {
-        type: String,
-        required: true
-    },
-    totalSection: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Session",
         required: true
     },
     sections : [{
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Section"
     }],
     subjects: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -27,10 +24,6 @@ const classSchema = new mongoose.Schema<IClass>({
         type: String,
         enum: Object.values(CourseStream),
         required: false
-    },
-    classTeacher: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher'
     },
     feeStructure: {
         monthly: {

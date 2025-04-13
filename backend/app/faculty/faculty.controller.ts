@@ -16,7 +16,7 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
     try {
         const data = req.body;
 
-        const user = await UserService.createUserByAdmin({ name: data.name, email: data.email, role: UserRole.FACULTY }, session);
+        const user = await UserService.createUserByAdmin({ name: data.name, email: data.email, role: UserRole.FACULTY, profilePic: data.photo }, session);
         if (!user) {
             throw createHttpError(400, "User not created");
         }
