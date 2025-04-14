@@ -4,6 +4,10 @@ import classSchema from "./class.schema";
 import createHttpError from "http-errors";
 import sectionSchema from "./section.schema";
 
+export const isClassAlreadyExists = async (name: string, session: string) => {
+    const existingClass = await classSchema.findOne({ name, session, deleted: false });
+    return !!existingClass;
+};
 
 export const createClass = async (data: ICreateClass) => {
     const { subjects: subjectInputs = [], sections: sectionInputs = [], ...classData } = data;

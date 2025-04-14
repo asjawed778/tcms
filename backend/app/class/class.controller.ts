@@ -2,10 +2,15 @@ import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import * as ClassService from "./class.service";
 import { createResponse } from "../common/helper/response.hepler";
+import createHttpError from "http-errors";
+
 
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
-
+    const isClassAlreadyExists = await ClassService.isClassAlreadyExists(data.name, data.session);
+    if (isClassAlreadyExists) {
+        throw createHttpError(400, "Class already exists for this session");
+    }
     const result = await ClassService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));
 });

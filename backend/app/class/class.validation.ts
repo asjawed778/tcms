@@ -4,7 +4,7 @@ import * as ClassEnum from './class.constants';
 export const createClass = [
     body("name")
         .notEmpty().withMessage("Name is required")
-        .isString().withMessage("Name must be a string"),
+        .isIn(Object.values(ClassEnum.ClassName)).withMessage(`Course stream must be one of: ${Object.values(ClassEnum.ClassName).join(", ")}`),
 
     body("session")
         .notEmpty().withMessage("Session is required")

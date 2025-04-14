@@ -16,7 +16,7 @@ router
         FaculytyController.createFaculty
     )
     .get(
-        "/",
+        "/all",
         authMiddleware.auth,
         authMiddleware.isSuperAdmin,
         catchError,
