@@ -9,17 +9,25 @@ export interface FeeStructure {
     yearly: { amount: number; total: number };
 }
 
+export interface ISection extends BaseSchema {
+    name: string;
+    classTeacher?: Types.ObjectId;
+    capacity?: number;
+    students?: Types.ObjectId[];
+    deleted: boolean;
+}
+export interface ICreateSection extends Omit<ISection, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
+
 export interface IClass extends BaseSchema {
     name: string;
-    session: string;
-    totalSection: number;
-    sections: string[];
+    session: Types.ObjectId;
+    sections: Types.ObjectId[];
     subjects: Types.ObjectId[];
     courseStream?: CourseStream;
-    classTeacher?: Types.ObjectId;
     feeStructure: FeeStructure;
     deleted: boolean;
 }
+
 
 export interface ISubject extends BaseSchema {
     name: string;
@@ -28,5 +36,12 @@ export interface ISubject extends BaseSchema {
     ISBN?: string;
     subjectType: SubjectType;
     subjectCategory: SubjectCategory;
-    isDeleted: boolean;
+    deleted: boolean;
+}
+
+export interface ICreateSubject extends Omit<ISubject, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
+
+export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "deleted" | "_id" | "createdAt" | "updatedAt"> {
+    subjects?: ICreateSubject[];
+    sections?: ICreateSection[];
 }
