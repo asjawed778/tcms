@@ -1,23 +1,21 @@
 import mongoose from "mongoose";
 import { IClass } from "./class.dto";
-import { CourseStream } from "./class.constants";
+import * as ClassEnum from "./class.constants";
 
 const classSchema = new mongoose.Schema<IClass>({
     name: {
         type: String,
+        enum: Object.values(ClassEnum.ClassName),
         required: true
     },
     session: {
-        type: String,
-        required: true
-    },
-    totalSection: {
-        type: Number,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Session",
         required: true
     },
     sections : [{
-        type: String,
-        required: true
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Section"
     }],
     subjects: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -25,12 +23,8 @@ const classSchema = new mongoose.Schema<IClass>({
     }],
     courseStream: {
         type: String,
-        enum: Object.values(CourseStream),
+        enum: Object.values(ClassEnum.CourseStream),
         required: false
-    },
-    classTeacher: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Teacher'
     },
     feeStructure: {
         monthly: {

@@ -1,92 +1,98 @@
-import { body } from 'express-validator';
+import { body, param } from 'express-validator';
 import * as ClassEnum from './class.constants';
 
 export const createClass = [
-    body('name')
-        .isString()
-        .notEmpty()
-        .withMessage('Class name is required and must be a string.'),
+    body("name")
+        .notEmpty().withMessage("Name is required")
+        .isIn(Object.values(ClassEnum.ClassName)).withMessage(`Course stream must be one of: ${Object.values(ClassEnum.ClassName).join(", ")}`),
 
-    body('session')
-        .isString()
-        .notEmpty()
-        .withMessage('Session is required and must be a string.'),
+    body("session")
+        .notEmpty().withMessage("Session is required")
+        .isMongoId().withMessage("Session must be a valid Mongo ID"),
 
-    body('totalSection')
-        .isInt({ min: 1 })
-        .withMessage('Total sections must be a number greater than 0.'),
-
-    body('courseStream')
+    body("subjects")
         .optional()
-        .isIn(Object.values(ClassEnum.CourseStream))
-        .withMessage(`Course stream must be one of: ${Object.values(ClassEnum.CourseStream).join(', ')}`),
+        .isArray().withMessage("Subjects must be an array")
+        .custom((subjects) => {
+            return subjects.every((subject: any) => {
+                return (
+                    typeof subject.name === "string" &&
+                    subject.name.trim() !== "" &&
+                    (!subject.publication || typeof subject.publication === "string") &&
+                    (!subject.writer || typeof subject.writer === "string") &&
+                    (!subject.ISBN || typeof subject.ISBN === "string") &&
+                    Object.values(ClassEnum.SubjectType).includes(subject.subjectType) &&
+                    Object.values(ClassEnum.SubjectCategory).includes(subject.subjectCategory)
+                );
+            });
+        })
+        .withMessage("Each subject must be a valid subject object with required fields"),
 
-    body('classTeacher')
+    body("courseStream")
         .optional()
-        .isMongoId()
-        .withMessage('Class teacher must be a valid Mongo ID.'),
+        .isIn(Object.values(ClassEnum.CourseStream)).withMessage(`Course stream must be one of: ${Object.values(ClassEnum.CourseStream).join(", ")}`),
 
-    body('feeStructure')
-        .isObject().withMessage('Fee structure must be provided as an object.'),
+    body("sections")
+        .notEmpty().withMessage("At lease one section is required")
+        .isArray().withMessage("Section must be an array"),
 
-    body('feeStructure.monthly.amount')
-        .isNumeric()
-        .withMessage('Monthly fee amount must be a number.'),
-    body('feeStructure.monthly.total')
-        .isNumeric()
-        .withMessage('Monthly fee total must be a number.'),
+    body("sections.*.name")
+        .notEmpty().withMessage("Section name is requred")
+        .isString().withMessage("Section name must be string"),
 
-    body('feeStructure.quarterly.amount')
-        .isNumeric()
-        .withMessage('Quarterly fee amount must be a number.'),
-    body('feeStructure.quarterly.total')
-        .isNumeric()
-        .withMessage('Quarterly fee total must be a number.'),
-
-    body('feeStructure.halfYearly.amount')
-        .isNumeric()
-        .withMessage('Half-yearly fee amount must be a number.'),
-    body('feeStructure.halfYearly.total')
-        .isNumeric()
-        .withMessage('Half-yearly fee total must be a number.'),
-
-    body('feeStructure.yearly.amount')
-        .isNumeric()
-        .withMessage('Yearly fee amount must be a number.'),
-    body('feeStructure.yearly.total')
-        .isNumeric()
-        .withMessage('Yearly fee total must be a number.'),
-
-    // Subjects Validation
-    body('subjects')
-        .isArray({ min: 1 })
-        .withMessage('Subjects must be a non-empty array.'),
-
-    body('subjects.*.name')
-        .isString()
-        .notEmpty()
-        .withMessage('Each subject must have a name.'),
-
-    body('subjects.*.publication')
+    body("sections.*.classTeacher")
         .optional()
-        .isString()
-        .withMessage('Publication must be a string.'),
+        .isMongoId().withMessage("Class Teacher must be a valid mongo id"),
 
-    body('subjects.*.writer')
+    body("sections.*.capacity")
         .optional()
-        .isString()
-        .withMessage('Writer must be a string.'),
+        .isNumeric().withMessage("Section Capacity must be a Number"),
 
-    body('subjects.*.ISBN')
-        .optional()
-        .isString()
-        .withMessage('ISBN must be a string.'),
+    body("feeStructure")
+        .notEmpty().withMessage("Fee structure is required"),
 
-    body('subjects.*.subjectType')
-        .isIn(Object.values(ClassEnum.SubjectType))
-        .withMessage(`Subject type must be one of: ${Object.values(ClassEnum.SubjectType).join(', ')}`),
+    body("feeStructure.monthly.amount")
+        .notEmpty().withMessage("Monthly amount is required")
+        .isNumeric().withMessage("Monthly amount must be a number"),
 
-    body('subjects.*.subjectCategory')
-        .isIn(Object.values(ClassEnum.SubjectCategory))
-        .withMessage(`Subject category must be one of: ${Object.values(ClassEnum.SubjectCategory).join(', ')}`)
+    body("feeStructure.monthly.total")
+        .notEmpty().withMessage("Monthly total is required")
+        .isNumeric().withMessage("Monthly total must be a number"),
+
+    body("feeStructure.quarterly.amount")
+        .notEmpty().withMessage("Quarterly amount is required")
+        .isNumeric().withMessage("Quarterly amount must be a number"),
+
+    body("feeStructure.quarterly.total")
+        .notEmpty().withMessage("Quarterly total is required")
+        .isNumeric().withMessage("Quarterly total must be a number"),
+
+    body("feeStructure.halfYearly.amount")
+        .notEmpty().withMessage("Half-yearly amount is required")
+        .isNumeric().withMessage("Half-yearly amount must be a number"),
+
+    body("feeStructure.halfYearly.total")
+        .notEmpty().withMessage("Half-yearly total is required")
+        .isNumeric().withMessage("Half-yearly total must be a number"),
+
+    body("feeStructure.yearly.amount")
+        .notEmpty().withMessage("Yearly amount is required")
+        .isNumeric().withMessage("Yearly amount must be a number"),
+
+    body("feeStructure.yearly.total")
+        .notEmpty().withMessage("Yearly total is required")
+        .isNumeric().withMessage("Yearly total must be a number"),
 ];
+
+export const getAllClass = [
+    param("sessionId")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
+];
+
+export const getClassById = [
+    param("classId")
+        .notEmpty().withMessage("Class ID is required")
+        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
+];
+

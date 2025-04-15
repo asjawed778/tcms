@@ -29,7 +29,7 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         enum: Object.values(SubjectCategory),
         required: true
     },
-    isDeleted: {
+    deleted: {
         type: Boolean,
         default: false
     },
