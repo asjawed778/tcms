@@ -3,27 +3,27 @@ import fileUpload from "express-fileupload";
 import createHttpError from "http-errors";
 
 
-export const thumbnailUpload = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.files || !req.files.thumbnail) {
-        throw createHttpError(400, "Thumbnail is required");
+export const imageUpload = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files || !req.files.image) {
+        throw createHttpError(400, "Image is required");
     }
 
-    const file = req.files.thumbnail as fileUpload.UploadedFile;
+    const file = req.files.image as fileUpload.UploadedFile;
     const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
     const maxSize = 5 * 1024 * 1024;
 
     if (!allowedTypes.includes(file.mimetype)) {
-        throw createHttpError(400, "Thumbnail must be an image (jpg, jpeg, png)");
+        throw createHttpError(400, "must be an image (jpg, jpeg, png)");
     }
 
     if (file.size > maxSize) {
-        throw createHttpError(400, "Thumbnail must be less than 5MB");
+        throw createHttpError(400, "Image must be less than 5MB");
     }
 
     next();
 };
 
-export const brouchureUpload = (req: Request, res: Response, next: NextFunction) => {
+export const pdfUpload = (req: Request, res: Response, next: NextFunction) => {
     if (!req.files || !req.files.brouchure) {
         throw createHttpError(400, "Brochure is required");
     }
