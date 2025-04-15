@@ -28,12 +28,6 @@ export const sendSignupOTP = asyncHandler(async (req: Request, res: Response) =>
     throw createHttpError(409, "User already Exits");
   }
 
-  if ("role" in data) {
-    if (![UserRole.USER, UserRole.INSTRUCTOR].includes(data.role)) {
-        throw createHttpError(400, "Invalid role. Role must be either USER or INSTRUCTOR.");
-    }
-  }
-
   await userService.clearTempUser(data.email);
   const result: Omit<ITempUser, "password"> = await userService.createTempUser(data);
 
