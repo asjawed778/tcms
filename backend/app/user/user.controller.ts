@@ -2,17 +2,12 @@ import * as userService from "./user.service";
 import { createResponse } from "../common/helper/response.hepler";
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
-import { ITempUser, IUser } from "./user.dto";
 import createHttpError from "http-errors";
-import { Payload } from "./user.dto";
-import bcrypt from "bcrypt";
+import { IUser, Payload } from "./user.dto";
 import { sendEmail } from "../common/services/email.service";
 import { resetPasswordEmailTemplate } from "../common/template/mail.template";
 import * as jwthelper from "../common/helper/jwt.helper";
 import { loadConfig } from "../common/helper/config.hepler";
-import jwt from "jsonwebtoken";
-import { UserRole } from "./user.schema";
-import * as OTPSrvice from '../common/services/OTP.service';
 
 loadConfig();
 
@@ -20,69 +15,6 @@ const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET as string;
 const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET as string;
 const BASE_URL: string = process.env.BASE_URL as string;
 
-export const sendSignupOTP = asyncHandler(async (req: Request, res: Response) => {
-  const data: IUser = req.body;
-
-  const existingUser = await userService.getUserByEmail(data.email);
-  if (existingUser) {
-    throw createHttpError(409, "User already Exits");
-  }
-
-  await userService.clearTempUser(data.email);
-  const result: Omit<ITempUser, "password"> = await userService.createTempUser(data);
-
-  await OTPSrvice.sendOTP(result.email, "OTP for Registration");
-
-  res.send(createResponse({}, "OTP sent successfully"));
-});
-
-export const verifySingupOTP = asyncHandler(async (req: Request, res: Response) => {
-  const data = req.body;
-
-  const otpValid = await OTPSrvice.verifyOTP(data.email, data.otp);
-  if (!otpValid) {
-    throw createHttpError(401, "Invalid OTP or expired");
-  }
-
-  const tempUser = await userService.getTempUserByEmail(data.email);
-  if (!tempUser) {
-    throw createHttpError(404, "User not found, please register again");
-  }
-
-  const result: Omit<IUser, "password" | "refreshToken" | "resetPasswordToken"> = await userService.createUser(tempUser);
-  await userService.clearTempUser(data.email);
-
-  const payload: Payload = {
-    _id: result._id,
-    name: result.name,
-    email: result.email,
-    role: result.role,
-  };
-  const { refreshToken, accessToken } = jwthelper.generateTokens(payload);
-
-  const user: Omit<IUser, "password" | "refreshToken" | "resetPasswordToken"> | null = await userService.updateRefreshToken(
-    result._id,
-    refreshToken
-  );
-  if (!user) {
-    throw createHttpError(
-      500,
-      "Failed to update refresh token, Login to continue"
-    );
-  }
-  res.cookie("accessToken", accessToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: false,
-  });
-  res.cookie("refreshToken", refreshToken, {
-    httpOnly: true,
-    secure: false,
-    sameSite: false,
-  });
-
-  res.send(createResponse({ user, refreshToken, accessToken }, "User created successfully"));
-});
 
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
   const data = req.body;
@@ -131,7 +63,6 @@ export const logout = asyncHandler(async (req: Request, res: Response) => {
   res.send(createResponse({}, "User logged out successfully"));
 });
 
-
 export const updateAccessToken = asyncHandler(async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken || req.headers.authorization?.split(" ")[1];
     if (!refreshToken) {
@@ -175,7 +106,6 @@ export const updateAccessToken = asyncHandler(async (req: Request, res: Response
   }
 );
 
-
 export const updatePassword = asyncHandler(async (req: Request, res: Response) => {
     const user = req.user;
     if (!user) {
@@ -193,8 +123,6 @@ export const updatePassword = asyncHandler(async (req: Request, res: Response) =
     res.send(createResponse({}, "Password updated successfully"));
   }
 );
-
-
 
 export const forgotPasswordSendToken = asyncHandler(async (req: Request, res: Response) => {
     const { email } = req.body;
@@ -224,16 +152,6 @@ export const forgotPasswordSendToken = asyncHandler(async (req: Request, res: Re
   }
 );
 
-
-/**
- * Verifies the password reset token and updates the user's password.
- * 
- * @async
- * @param {Request} req - The request object containing the reset token in the parameters and the new password in the body.
- * @param {Response} res - The response object to send a success message after the password reset.
- * @throws {HttpError} - Throws a 401 error if the token is invalid or expired.
- * @returns {Promise<void>} - Resolves when the password is reset successfully.
- */
 export const resetPassword = asyncHandler(
   async (req: Request, res: Response) => {
     const { token } = req.params;

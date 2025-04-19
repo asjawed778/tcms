@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { IEmployee } from './employee.dto';
-import { Gender } from '../common/constant/constant';
+import { Gender } from '../common/constant/enum';
 
 const employeeSchema = new mongoose.Schema<IEmployee>({
     employeeId: {

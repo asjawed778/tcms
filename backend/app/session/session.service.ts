@@ -1,12 +1,12 @@
 import createHttpError from "http-errors";
 import { ISession, ISessionCreate } from "./session.dto";
-import sessionSchema, { SessionStatus } from "./session.schema";
-
+import sessionSchema from "./session.schema";
+import * as Enum from "../common/constant/enum";
 
 export const updateOtherCurrentSessionsToPast = async () => {
     await sessionSchema.updateMany(
-        { sessionStatus: SessionStatus.CURRENT },
-        { sessionStatus: SessionStatus.PAST }
+        { sessionStatus: Enum.SessionStatus.CURRENT },
+        { sessionStatus: Enum.SessionStatus.PAST }
     );
 };
 
@@ -95,7 +95,7 @@ export const deleteSession = async (id: string) => {
         throw createHttpError(404, "Session not found");
     }
     return result;
-}
+};
 
 
 
