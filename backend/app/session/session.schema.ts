@@ -1,11 +1,7 @@
 import mongoose from "mongoose";
 import { ISession } from "./session.dto";
+import * as Enum from "../common/constant/enum";
 
-export enum SessionStatus {
-    CURRENT = 'Current',
-    PAST = 'Past',
-    UPCOMING = 'Upcoming'
-}
 
 const sessionSchema = new mongoose.Schema<ISession>({
     session: {
@@ -23,8 +19,8 @@ const sessionSchema = new mongoose.Schema<ISession>({
     },
     sessionStatus: {
         type: String,
-        default: SessionStatus.UPCOMING,
-        enum: Object.values(SessionStatus),
+        default: Enum.SessionStatus.UPCOMING,
+        enum: Object.values(Enum.SessionStatus),
     },
     deleted: {
         type: Boolean,

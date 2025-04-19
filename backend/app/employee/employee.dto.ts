@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import { BaseSchema } from "../common/dto/base.dto";
 import { IDocument } from "../common/dto/common.dto";
-import { Gender } from "../common/constant/constant";
+import { Gender } from "../common/constant/enum";
 
 export interface WorkExperience {
     organisationName: string;
