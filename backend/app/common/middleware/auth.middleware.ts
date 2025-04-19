@@ -3,8 +3,9 @@ import { type NextFunction, type Request, type Response } from "express";
 import asyncHandler from "express-async-handler";
 import createHttpError from "http-errors";
 import { Payload, type IUser } from "../../user/user.dto";
-import UserSchema, { UserRole } from "../../user/user.schema";
+import UserSchema from "../../user/user.schema";
 import { decodeAccessToken } from "../helper/jwt.helper";
+import * as Enum from "../constant/enum";
 
 loadConfig();
 const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET as string;
@@ -34,7 +35,7 @@ export const auth = asyncHandler(async (req: Request, res: Response, next: NextF
 
 export const isUser = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user;
-  if (!user || user.role !== UserRole.USER) {
+  if (!user || user.role !== Enum.UserRole.USER) {
     next(createHttpError(401, "Only User can access this route"));
   }
   next();
@@ -42,7 +43,7 @@ export const isUser = async (req: Request, res: Response, next: NextFunction) =>
 
 export const isSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
   const user = req.user;
-  if (!user || user.role !== UserRole.SUPER_ADMIN) {
+  if (!user || user.role !== Enum.UserRole.SUPER_ADMIN) {
     next(createHttpError(401, "only Super Admin can access this route"));
   }
   next();

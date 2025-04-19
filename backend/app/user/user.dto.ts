@@ -1,27 +1,24 @@
-
 import { type BaseSchema } from "../common/dto/base.dto";
-import { UserRole } from "./user.schema";
+import * as Enum from "../common/constant/enum";
 
 export interface IUser extends BaseSchema {
         name: string;
         email: string;
-        role: UserRole;
+        role: Enum.UserRole;
         password: string;
-        profilePic: string;
         refreshToken: string;
         resetPasswordToken: string;
 }
-
-export interface ITempUser extends BaseSchema {
+export interface IUserCreate {
         name: string;
         email: string;
-        role: UserRole;
         password: string;
+        role?: Enum.UserRole;
 }
 
 export interface Payload {
         _id: string;
         name: string;
         email: string;
-        role: UserRole;
+        role: Enum.UserRole;
 }

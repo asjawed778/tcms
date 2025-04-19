@@ -6,7 +6,7 @@ import cookieParser from "cookie-parser";
 import cors from 'cors';
 import path from "path";
 import fileUpload from "express-fileupload";
-
+import 'module-alias/register';
 import { initDB } from "./app/common/services/database.service";
 import { initPassport } from "./app/common/services/passport-jwt.service";
 import { loadConfig } from "./app/common/helper/config.hepler";

@@ -22,5 +22,14 @@ router
         catchError,
         FaculytyController.getAllFaculty
     )
+    .get(
+        "/:facultyId",
+        authMiddleware.auth,
+        authMiddleware.isSuperAdmin,
+        FacultyValidation.getFacultyById,
+        catchError,
+        FaculytyController.getFacultyById
+    )
+
 
 export default router;

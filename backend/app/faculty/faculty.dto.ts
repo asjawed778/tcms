@@ -1,6 +1,6 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from "mongoose";
-import * as FacultyEnum from "./faculty.constant";
+import * as Enum from "../common/constant/enum";
 
 
 export interface IFaculty extends BaseSchema {
@@ -16,13 +16,13 @@ export interface IFaculty extends BaseSchema {
 
 
     // Professional Details
-    designation: FacultyEnum.Designation;
+    designation: Enum.FacultyDesignation;
     expertiseSubjects: string[];
     qualification: string;
     certification?: string;
 
     // Job Details
-    status: FacultyEnum.FacultyStatus;
+    status: Enum.FacultyStatus;
 };
 
 export interface ICreateFaculty extends Omit<IFaculty, "createdAt" | "updatedAt" | "_id"> {};

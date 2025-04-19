@@ -1,15 +1,7 @@
 import mongoose from "mongoose";
 import { type IUser } from "./user.dto";
+import * as Enum from "../common/constant/enum";
 
-export enum UserRole {
-  SUPER_ADMIN = "SUPER_ADMIN",
-  PRINCIPAL = "PRINCIPAL",
-  FACULTY = "FACULTY",
-  STUDENT = "STUDENT",
-  ADMINISTRATOR = "ADMINISTRATOR",
-  STAFF = "STAFF",
-  USER = "USER"
-}
 
 const userSchema = new mongoose.Schema<IUser>(
   {
@@ -30,13 +22,9 @@ const userSchema = new mongoose.Schema<IUser>(
     },
     role: {
       type: String, 
-      enum: Object.values(UserRole),
-      default: UserRole.USER,
+      enum: Object.values(Enum.UserRole),
+      default: Enum.UserRole.USER,
       required: true,
-    },
-    profilePic: {
-      type: String,
-      required: false
     },
     refreshToken: {
       type: String,
