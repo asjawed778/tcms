@@ -33,6 +33,14 @@ export const getAllFaculty = async (
         limit,
         totalDocuments,
         showing: faculty.length,
-        data: faculty,
+        faculty,
     };
 };
+
+export const getFacultyById = async (facultyId: string) => {
+    const faculty = await facultySchema.findById(facultyId).lean();
+    if (!faculty) {
+        return null;
+    }
+    return faculty;
+}

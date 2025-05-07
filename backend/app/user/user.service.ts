@@ -1,24 +1,22 @@
-import { ITempUser, type IUser } from "./user.dto";
-import UserSchema, { UserRole } from "./user.schema";
+import { type IUser } from "./user.dto";
+import UserSchema from "./user.schema";
 import bcrypt from 'bcrypt';
-import * as jwthelper from '../common/helper/jwt.helper';
 import createHttpError from "http-errors";
-import TempUserSchema from "./tempUser.schema";
 import { omit } from "lodash";
 import { loadConfig } from "../common/helper/config.hepler";
 import { ClientSession } from "mongoose";
+import * as Enum from "../common/constant/enum";
 
 loadConfig();
 
-export const createUserByAdmin = async (data: {name: string, email: string, role: UserRole, profilePic?: string}, session?: ClientSession): Promise<Omit<ITempUser, "password">> => {
+export const createUserByAdmin = async (data: {name: string, email: string, role: Enum.UserRole}, session?: ClientSession): Promise<Omit<IUser, "password">> => {
     const isUserExists = await UserSchema.findOne({ email: data.email });
     if (isUserExists) {
         throw createHttpError(409, "User already exists");
     }
     const password = `${data.name}@12345`;
     const hashedPass = await hashPassword(password);
-    const profilePic = `${process.env.PROFILE_URL}${data.name}`;
-    const [user] = await UserSchema.create([{ ...data, password: hashedPass, profilePic }], {session});
+    const [user] = await UserSchema.create([{ ...data, password: hashedPass }], {session});
     return omit(user.toObject() as IUser, ["password"]);
 };
 
@@ -28,28 +26,6 @@ const hashPassword = async (password: string) => {
 
 const comparePassword = async (password: string, hash: string) => {
     return await bcrypt.compare(password, hash);
-};
-
-export const clearTempUser = async (email: string) => {
-    await TempUserSchema.deleteMany({ email });
-};
-
-export const createTempUser = async (data: ITempUser): Promise<Omit<ITempUser, "password">> => {
-    const hashedPass = await hashPassword(data.password);
-    const result = await TempUserSchema.create({ ...data, password: hashedPass });
-
-    return omit(result.toObject() as ITempUser, ["password"]);
-};
-
-export const getTempUserByEmail = async (email: string): Promise<ITempUser> => {
-    const result = await TempUserSchema.findOne({ email }).lean();
-    return result as ITempUser;
-};
-
-export const createUser = async (tempUser: ITempUser): Promise<Omit<IUser, "password" | "refreshToken" | "resetPasswordToken">> => {
-    const profilePic = `${process.env.PROFILE_URL}${tempUser.name}`;
-    const result = await UserSchema.create({ ...tempUser, profilePic });
-    return omit(result.toObject() as IUser, ["password", "refreshToken", "resetPasswordToken"]);
 };
 
 export const authenticateUserByEmail = async (email: string, password: string): Promise<Omit<IUser, "password" | "refreshToken" | "resetPasswordToken">> => {

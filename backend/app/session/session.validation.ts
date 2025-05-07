@@ -1,5 +1,5 @@
 import { body, param } from 'express-validator';
-import { SessionStatus } from './session.schema';
+import * as Enum from "../common/constant/enum";
 
 export const createSession = [
     body('startDate')
@@ -18,7 +18,7 @@ export const createSession = [
 
     body('sessionStatus')
         .optional()
-        .isIn(Object.values(SessionStatus)).withMessage(`Session status must be one of: ${Object.values(SessionStatus).join(', ')}`),
+        .isIn(Object.values(Enum.SessionStatus)).withMessage(`Session status must be one of: ${Object.values(Enum.SessionStatus).join(', ')}`),
 ];
 
 export const updateSession = [
