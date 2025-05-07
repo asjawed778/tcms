@@ -2,64 +2,44 @@ import { type Request, type Response, type NextFunction } from "express";
 import fileUpload from "express-fileupload";
 import createHttpError from "http-errors";
 
+const allowedTypes = [
+    "image/jpeg", "image/png", "image/jpg", "image/gif", "image/webp", "image/svg+xml", "image/bmp", "image/tiff",
 
-export const imageUpload = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.files || !req.files.image) {
-        throw createHttpError(400, "Image is required");
+    "video/mp4", "video/webm", "video/ogg", "video/x-msvideo", "video/quicktime", "video/mpeg",
+
+    // Documents
+    "application/pdf",                          
+    "application/msword",                             
+    "application/vnd.openxmlformats-officedocument.wordprocessingml.document", 
+    "application/vnd.ms-excel",                    
+    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", 
+    "application/vnd.ms-powerpoint",              
+    "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    "text/plain"                               
+];
+
+
+export const handleFileUpload = (req: Request, res: Response, next: NextFunction) => {
+    if (!req.files || !req.files.file) {
+        throw createHttpError(400, "file is required");
     }
 
-    const file = req.files.image as fileUpload.UploadedFile;
-    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    let file: fileUpload.UploadedFile;
+
+    if (Array.isArray(req.files.file)) {
+        file = req.files.file[0];
+    } else {
+        file = req.files.file as fileUpload.UploadedFile;
+    }
     const maxSize = 5 * 1024 * 1024;
+    console.log("file", file);
 
     if (!allowedTypes.includes(file.mimetype)) {
-        throw createHttpError(400, "must be an image (jpg, jpeg, png)");
+        throw createHttpError(400, "file must be an image, video or document");
     }
 
     if (file.size > maxSize) {
-        throw createHttpError(400, "Image must be less than 5MB");
-    }
-
-    next();
-};
-
-export const pdfUpload = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.files || !req.files.brouchure) {
-        throw createHttpError(400, "Brochure is required");
-    }
-
-    const file = req.files.brouchure as fileUpload.UploadedFile;
-    const maxSize = 5 * 1024 * 1024;
-
-    if (file.mimetype !== "application/pdf") {
-        throw createHttpError(400, "Brochure must be a PDF file");
-    }
-
-    if (file.size > maxSize) {
-        throw createHttpError(400, "Brochure must be less than 5MB");
-    }
-
-    next();
-};
-
-export const videoUpload = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.files || !req.files.video) {
-        throw createHttpError(400, "Video file is required.");
-    }
-
-    const file = req.files.video as fileUpload.UploadedFile;
-    const allowedTypes = [
-        "video/mp4", "video/mov", "video/avi", 
-        "video/mkv", "video/webm", "video/flv", "video/wmv"
-    ];
-    const maxSize = 10 * 1024 * 1024;
-
-    if (!allowedTypes.includes(file.mimetype)) {
-        throw createHttpError(400, "Invalid video format. Allowed formats: mp4, mov, avi, mkv, webm, flv, wmv.");
-    }
-
-    if (file.size > maxSize) {
-        throw createHttpError(400, "Video file size must not exceed 10MB.");
+        throw createHttpError(400, "file must be less than 5MB");
     }
 
     next();
