@@ -18,7 +18,7 @@ const CustomRadioGroup = ({ name, label = "Select", options }: ToggleGroupFieldP
   const { control, formState: { errors } } = useFormContext();
 
   return (
-    <Box mt={3} mx={2} textAlign="left">
+    <Box mx={2} textAlign="left">
       <Typography fontWeight={600} mb={1}>
         {label}<span style={{ color: 'red',
 
@@ -31,6 +31,7 @@ const CustomRadioGroup = ({ name, label = "Select", options }: ToggleGroupFieldP
           <ToggleButtonGroup
             exclusive
             value={field.value}
+            size="small"
             onChange={(_, newValue) => {
               if (newValue !== null) field.onChange(newValue);
             }}

@@ -66,7 +66,7 @@ import {
         try {
           const refreshResult = await refreshTokenBaseQuery(
             {
-              url: "/users/update-access-token",
+              url: "/user/update-access-token",
               method: "POST",
             },
             api,

@@ -31,41 +31,53 @@ export const menuItems: MenuItem[] = [
     path: '/dashboard/faculty'
   },
   {
-    id: 'users',
-    title: 'Users',
+    id: 'student',
+    title: 'Student',
     icon: PeopleIcon,
-    children: [
-      {
-        id: 'users-list',
-        title: 'List Users',
-        icon: ListIcon,
-        path: '/users/list',
-      },
-      {
-        id: 'users-add',
-        title: 'Add User',
-        icon: PersonAddIcon,
-        path: '/users/add',
-      },
-    ],
+    path: '/dashboard/student'
   },
   {
-    id: 'settings',
-    title: 'Settings',
-    icon: SettingsIcon,
-    children: [
-      {
-        id: 'settings-profile',
-        title: 'Profile',
-        icon: AccountCircleIcon,
-        path: '/settings/profile',
-      },
-      {
-        id: 'settings-preferences',
-        title: 'Preferences',
-        icon: TuneIcon,
-        path: '/settings/preferences',
-      },
-    ],
+    id: 'class',
+    title: 'Class',
+    icon: PeopleIcon,
+    path: '/dashboard/class'
   },
+  // {
+  //   id: 'users',
+  //   title: 'Users',
+  //   icon: PeopleIcon,
+  //   children: [
+  //     {
+  //       id: 'users-list',
+  //       title: 'List Users',
+  //       icon: ListIcon,
+  //       path: '/users/list',
+  //     },
+  //     {
+  //       id: 'users-add',
+  //       title: 'Add User',
+  //       icon: PersonAddIcon,
+  //       path: '/users/add',
+  //     },
+  //   ],
+  // },
+  // {
+  //   id: 'settings',
+  //   title: 'Settings',
+  //   icon: SettingsIcon,
+  //   children: [
+  //     {
+  //       id: 'settings-profile',
+  //       title: 'Profile',
+  //       icon: AccountCircleIcon,
+  //       path: '/settings/profile',
+  //     },
+  //     {
+  //       id: 'settings-preferences',
+  //       title: 'Preferences',
+  //       icon: TuneIcon,
+  //       path: '/settings/preferences',
+  //     },
+  //   ],
+  // },
 ];

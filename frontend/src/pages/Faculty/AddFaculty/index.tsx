@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useForm, FormProvider, SubmitHandler } from "react-hook-form";
+import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
   personalInfoSchema,
@@ -21,7 +21,6 @@ import {
 import PersonalInfo from "./PersonalInfo";
 import ProfessionalInfo from "./ProfessionalInfo";
 import DocumentUpload from "./DocumentUpload";
-import Preview from "./Preview";
 import * as yup from "yup";
 import { useAddFacultyMutation } from "@/services/facultyApi";
 import toast from "react-hot-toast";

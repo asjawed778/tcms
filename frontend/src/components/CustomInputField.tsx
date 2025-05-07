@@ -30,7 +30,7 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
   label,
   placeholder,
   type = "text",
-  size="medium",
+  size="small",
   startIcon,
   endIcon,
   control,

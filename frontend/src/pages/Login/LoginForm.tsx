@@ -23,6 +23,8 @@ const LoginForm: React.FC = () => {
   const onSubmit = async (data: LoginFormValues) => {    
     try {
       const response = await loginUser(data).unwrap();
+      console.log("Login response: ", response);
+      
       const {user, accessToken, refreshToken} = response.data;
       if(response.success){
         dispatch(login({

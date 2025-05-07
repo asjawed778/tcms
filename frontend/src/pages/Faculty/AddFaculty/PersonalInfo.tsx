@@ -1,10 +1,9 @@
 import CustomInputField from "@/components/CustomInputField";
 import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
-import CustomFileUploader from "@/components/CustomFileUploader";
 import CustomRadioGroup from "@/components/CustomRadioGroup";
 import { Gender } from "@/utils/enum";
-
+import ImageUploader from "@/components/ImageUploader";
 const PersonalInfo: React.FC = () => {
   return (
     <Grid container spacing={3} >
@@ -23,16 +22,11 @@ const PersonalInfo: React.FC = () => {
       </Grid>
 
       <Grid size={{xs: 12, md: 6}} sx={{ display: 'flex', justifyContent: "center" }}>
-      <CustomFileUploader
-        name="photo"
-        label="Upload Photo"
-        accept="image/*"
-        maxSizeInMB={2}  
-        maxWidth={2000}  
-        maxHeight={2000}
-      />
+      <ImageUploader
+      name="photo"
+      onImageSelect={(file) => console.log(file)}
+    />
       </Grid>
-
       <Grid size={{xs: 12, md: 6}}>
         <CustomInputField name="phoneNumber" label="Phone Number" placeholder="Enter Phone Number" />
       </Grid>
