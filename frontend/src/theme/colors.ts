@@ -52,6 +52,7 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     primary: "#0173f5",        
     secondary: "#d624ca",      
     background: "#ffffff",    
+    // background: "#f5f7fb",    
     text: "#1e2329",          
     icon: "#687076",
     tint: tintColorLight,

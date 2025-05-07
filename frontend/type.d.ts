@@ -85,12 +85,16 @@ interface FacultyFormData {
   documents: Document[];
 }
 
-interface FacultyApiResponse {
+interface FacultyTableData {
   currentPage: number,
   limit: number,
   totalDocuments: number,
   showing: number,
-  data: FacultyFormData[];
+  faculty: FacultyFormData[];
+}
+
+interface FacultyApiResponse {
+  data: FacultyTableData;
   success: boolean;
   message: string;
 }

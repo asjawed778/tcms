@@ -7,11 +7,17 @@ export const facultyApi = createApi({
   baseQuery: baseQueryWithReauth, 
   endpoints: (builder) => ({
 
-    getAllFaculty: builder.query<FacultyApiResponse, { page?: number, limit?: number }>({
-      query: ({ page =1, limit = 10 }) => ({
-        url: `/faculty/all?page=${page}&limit=${limit}`,
-        method: "GET",
-      }),
+    getAllFaculty: builder.query< FacultyApiResponse , { page?: number, limit?: number, query?: string }>({
+      query: ({ page = 1, limit = 10, query = "" } = {}) => {
+              let url = `/faculty/all?pageNo=${page}&limit=${limit}`;
+              if (query.trim() !== '') {
+                url += `&search=${encodeURIComponent(query.trim())}`;
+              }
+              // if (typeof active === 'boolean') {
+              //   url += `&active=${active}`;
+              // }
+              return { url };
+            },
     }),
     // getAllFaculty: builder.query<FacultyApiResponse, void>({
     //   query: () => ({

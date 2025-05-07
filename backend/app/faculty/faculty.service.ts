@@ -33,7 +33,7 @@ export const getAllFaculty = async (
         limit,
         totalDocuments,
         showing: faculty.length,
-        data: faculty,
+        faculty,
     };
 };
 
