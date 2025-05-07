@@ -2,9 +2,8 @@ import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import * as SessionService from "./session.service";
 import createHttpError from "http-errors";
-import { SessionStatus } from "./session.schema";
 import { createResponse } from "../common/helper/response.hepler";
-
+import * as Enum from "../common/constant/enum";
 
 export const createSession = asyncHandler(async (req: Request, res: Response) => {
     const { startDate, endDate, sessionStatus } = req.body;
@@ -12,7 +11,7 @@ export const createSession = asyncHandler(async (req: Request, res: Response) =>
     if (isSessionOverlapping) {
         throw createHttpError(400, "Session dates overlap with an existing session.");
     }
-    if (sessionStatus === SessionStatus.CURRENT) {
+    if (sessionStatus === Enum.SessionStatus.CURRENT) {
         await SessionService.updateOtherCurrentSessionsToPast();
     }
     const sessionName = SessionService.generateSessionName(startDate, endDate);
@@ -35,7 +34,7 @@ export const updatedSession = asyncHandler(async (req: Request, res: Response) =
         throw createHttpError(400, "Session dates overlap with an existing session.");
     }
     const sessionName = SessionService.generateSessionName(startDate, endDate);
-    if (sessionStatus === SessionStatus.CURRENT) {
+    if (sessionStatus === Enum.SessionStatus.CURRENT) {
         await SessionService.updateOtherCurrentSessionsToPast();
     }
     const sessionData = {

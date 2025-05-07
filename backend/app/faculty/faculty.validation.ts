@@ -1,6 +1,5 @@
-import { body } from "express-validator";
-import { Gender } from "../common/constant/constant";
-import * as FacultyEnum from "./faculty.constant";
+import { body, param } from "express-validator";
+import * as Enum from "../common/constant/enum";
 
 export const createFaculty = [
     body("name")
@@ -22,7 +21,7 @@ export const createFaculty = [
 
     body("gender")
         .notEmpty().withMessage("Gender is required")
-        .isIn(Object.values(Gender)).withMessage(`Gender must be one of: ${Object.values(Gender).join(", ")}`),
+        .isIn(Object.values(Enum.Gender)).withMessage(`Gender must be one of: ${Object.values(Enum.Gender).join(", ")}`),
 
     body("dob")
         .notEmpty().withMessage("Date of birth is required")
@@ -51,7 +50,7 @@ export const createFaculty = [
 
     body("designation")
         .notEmpty().withMessage("Designation is required")
-        .isIn(Object.values(FacultyEnum.Designation)).withMessage(`Designation must be one of: ${Object.values(FacultyEnum.Designation).join(", ")}`),
+        .isIn(Object.values(Enum.FacultyDesignation)).withMessage(`Designation must be one of: ${Object.values(Enum.FacultyDesignation).join(", ")}`),
 
     body("dateOfJoining")
         .notEmpty().withMessage("Joining date is required")
@@ -107,4 +106,10 @@ export const createFaculty = [
     body("salary")
         .notEmpty().withMessage("Salary is required")
         .isNumeric().withMessage("Salary must be a number"),
+];
+
+export const getFacultyById = [
+    param("facultyId")
+        .notEmpty().withMessage("Faculty ID is required")
+        .isMongoId().withMessage("Faculty ID must be a valid MongoDB ObjectId"),
 ];

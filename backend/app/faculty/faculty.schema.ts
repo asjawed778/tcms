@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IFaculty } from "./faculty.dto";
-import * as FacultyEnum from "./faculty.constant";
+import * as Enum from "../common/constant/enum";
 
 
 const facultySchema = new mongoose.Schema<IFaculty>({
@@ -41,7 +41,7 @@ const facultySchema = new mongoose.Schema<IFaculty>({
     },
     designation: {
         type: String,
-        enum: Object.values(FacultyEnum.Designation),
+        enum: Object.values(Enum.FacultyDesignation),
         required: true,
     },
     expertiseSubjects: {
@@ -58,8 +58,8 @@ const facultySchema = new mongoose.Schema<IFaculty>({
     },
     status: {
         type: String,
-        enum: Object.values(FacultyEnum.FacultyStatus),
-        default: FacultyEnum.FacultyStatus.ACTIVE,
+        enum: Object.values(Enum.FacultyStatus),
+        default: Enum.FacultyStatus.ACTIVE,
     }
 }, { timestamps: true });
 

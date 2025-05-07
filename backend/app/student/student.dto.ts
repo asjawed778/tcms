@@ -1,7 +1,7 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from 'mongoose';
 import { ActionTaken, ActivityType, ParticipationLevel, ParticipationType, RemarkType, StudentStatus } from "./student.constant";
-import { Gender, Religion } from "../common/constant/constant";
+import { Gender, Religion } from "../common/constant/enum";
 import { Document } from '../common/dto/common.dto';
 
 export interface Remark extends BaseSchema {
