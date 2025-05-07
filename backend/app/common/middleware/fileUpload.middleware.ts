@@ -24,11 +24,18 @@ export const handleFileUpload = (req: Request, res: Response, next: NextFunction
         throw createHttpError(400, "file is required");
     }
 
-    const file = req.files.file as fileUpload.UploadedFile;
+    let file: fileUpload.UploadedFile;
+
+    if (Array.isArray(req.files.file)) {
+        file = req.files.file[0];
+    } else {
+        file = req.files.file as fileUpload.UploadedFile;
+    }
     const maxSize = 5 * 1024 * 1024;
+    console.log("file", file);
 
     if (!allowedTypes.includes(file.mimetype)) {
-        throw createHttpError(400, "file must be an image or video file");
+        throw createHttpError(400, "file must be an image, video or document");
     }
 
     if (file.size > maxSize) {

@@ -1,6 +1,6 @@
 import asyncHandler from 'express-async-handler';
 import { type Request, type Response } from 'express';
-import { UploadedFile } from "express-fileupload";
+import fileUpload, { UploadedFile } from "express-fileupload";
 import createHttpError from 'http-errors';
 import { createResponse } from '../helper/response.hepler';
 import * as AWSService from '../services/AWS.service';
@@ -13,15 +13,14 @@ export const uploadPublicFile = asyncHandler(async (req: Request, res: Response)
         throw createHttpError(400, "No files were selected.");
     }
 
-    let fileKey = req.files?.file;
-    if (Array.isArray(fileKey)) {
-        fileKey = fileKey[0];
-    }
-    if (!fileKey) {
-        throw createHttpError(400, "Please select a valid file to upload");
-    }
+    let file: fileUpload.UploadedFile;
 
-    const file = req.files.file as UploadedFile;
+    if (Array.isArray(req.files.file)) {
+        file = req.files.file[0];
+    } else {
+        file = req.files.file as fileUpload.UploadedFile;
+    }
+    const fileKey = `${Date.now()}-${file.name}`;
 
     const uploadPath = `public/TCMS/${fileKey}`;
 
