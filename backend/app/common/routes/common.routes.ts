@@ -7,7 +7,7 @@ import * as fileUploader from "../controllers/common.fileupload"
 const router = Router();
 
 router
-    .post("/image", authMiddlerware.auth, authMiddlerware.isSuperAdmin, fileUploadMiddleware.imageUpload, catchError, fileUploader.uploadPublicFile)
+    .post("/upload", authMiddlerware.auth, authMiddlerware.isSuperAdmin, fileUploadMiddleware.handleFileUpload, catchError, fileUploader.uploadPublicFile)
 
 
 export default router;

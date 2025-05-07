@@ -8,21 +8,20 @@ import * as AWSService from '../services/AWS.service';
 
 
 export const uploadPublicFile = asyncHandler(async (req: Request, res: Response) => {
-    const allowedFields = ["image", "pdf", "video"];
 
-    // Ensure req.files is not null or undefined
     if (!req.files) {
         throw createHttpError(400, "No files were selected.");
     }
 
-    // Find which file is being uploaded
-    let fileKey = allowedFields.find(field => req.files?.[field]);
-
+    let fileKey = req.files?.file;
+    if (Array.isArray(fileKey)) {
+        fileKey = fileKey[0];
+    }
     if (!fileKey) {
         throw createHttpError(400, "Please select a valid file to upload");
     }
 
-    const file = req.files[fileKey] as UploadedFile;
+    const file = req.files.file as UploadedFile;
 
     const uploadPath = `public/TCMS/${fileKey}`;
 
