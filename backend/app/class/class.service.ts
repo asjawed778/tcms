@@ -59,10 +59,13 @@ export const getAllClass = async (sessionId: string) => {
         })
         .lean();
 
-    if (!classes || classes.length === 0) {
-        throw createHttpError(404, "No classes found for this session");
+    if (!classes) {
+        throw createHttpError(404, "No classes found for this session invalid sessionId");
     }
 
+    if (classes.length === 0) {
+        return [];
+    }
     const simplifiedClasses = classes.map(cls => ({
         _id: cls._id,
         name: cls.name,
