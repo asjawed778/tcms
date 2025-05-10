@@ -6,6 +6,8 @@ const NotFound = lazy(() => import('./pages/NotFound'));
 const Dashboard = lazy(() => import('./pages/Dashboard'));
 const Faculty = lazy(() => import("./pages/Faculty"))
 const AddFaculty = lazy(() => import("./pages/Faculty/AddFaculty"))
+const Class = lazy(() => import("./pages/Class"))
+const CreateClass = lazy(() => import("./pages/Class/CreateClass"))
 
 import AuthLayout from "./layouts/AuthLayout";
 import PrivateRoute from "./components/Auth/PrivateRoute";
@@ -27,6 +29,8 @@ function App() {
         <Route index element={<Dashboard />} />
         <Route path="faculty" element={<Faculty />} />
         <Route path="addFaculty" element={<AddFaculty />} />
+        <Route path="class" element={<Class />} />
+        <Route path="createClass" element={<CreateClass />} />
       </Route>
     </Route>
       <Route path="*" element={<NotFound />} />

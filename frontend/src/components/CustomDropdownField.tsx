@@ -1,290 +1,142 @@
-
-// import {
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   MenuItem,
-//   TextField,
-//   Typography,
-// } from "@mui/material";
-// import debounce from "lodash.debounce";
-// import React, { useEffect, useRef, useState } from "react";
-
-// interface Props {
-//   label: string;
-//   value: any;
-//   onChange: (val: any) => void;
-//   options: (string | Record<string, any>)[];
-//   valueKey?: string;
-//   labelKey?: string;
-//   size?: "small" | "medium";
-//   fullWidth?: boolean;
-//   required?: boolean;
-//   sx?: SxProps<Theme>;
-// }
-
-// const CustomDropdownField: React.FC<Props> = ({
-//   label,
-//   value,
-//   onChange,
-//   options,
-//   size = "small",
-//   fullWidth = true,
-//   required = true,
-//   sx = {},
-//   valueKey = "value",
-//   labelKey = "label",
-// }) => {
-//   const [open, setOpen] = useState(false);
-//   const [searchText, setSearchText] = useState("");
-//   const [filtered, setFiltered] = useState(options);
-
-//   const debouncedSearch = useRef(
-//     debounce((val: string) => setSearchText(val), 300)
-//   ).current;
-
-//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     debouncedSearch(e.target.value);
-//   };
-
-//   useEffect(() => {
-//     if (!searchText.trim()) {
-//       setFiltered(options);
-//     } else {
-//       const lower = searchText.toLowerCase();
-//       const result = options.filter((opt) => {
-//         const label =
-//           typeof opt === "string" ? opt : opt[labelKey]?.toString() || "";
-//         return label.toLowerCase().includes(lower);
-//       });
-//       setFiltered(result);
-//     }
-//   }, [searchText, options]);
-
-//   return (
-//     <FormControl
-//       fullWidth={fullWidth}
-//       size={size}
-//       sx={{
-//         minWidth: 150,
-//         textAlign: "left",
-//         ...sx,
-//       }}
-//     >
-//       <InputLabel required={required}>{label}</InputLabel>
-//       <Select
-//         open={open}
-//         onOpen={() => setOpen(true)}
-//         onClose={() => setOpen(false)}
-//         label={label}
-//         value={value}
-//         size="small"
-//         onChange={(e) => onChange(e.target.value)}
-//         renderValue={(val) => {
-//           const item = options.find((opt) =>
-//             typeof opt === "string" ? opt === val : opt[valueKey] === val
-//           );
-//           return typeof item === "string" ? item : item?.[labelKey];
-//         }}
-//       >
-//         <MenuItem disabled>
-//           <TextField
-//             placeholder="Search..."
-//             fullWidth
-//             size="small"
-//             onChange={handleSearchChange}
-//           />
-//         </MenuItem>
-
-//         {filtered?.length === 0 && (
-//           <MenuItem disabled>No results found</MenuItem>
-//         )}
-
-//         {filtered?.map((item) => {
-//           const val = typeof item === "string" ? item : item[valueKey];
-//           const label = typeof item === "string" ? item : item[labelKey];
-//           return (
-//             <MenuItem key={val} value={val}>
-//               {label}
-//             </MenuItem>
-//           );
-//         })}
-//       </Select>
-//     </FormControl>
-//   );
-// };
-
-// export default CustomDropdownField;
-
-
-
-
+import React, { useState } from "react";
 import {
   FormControl,
   InputLabel,
-  Select,
   MenuItem,
-  TextField,
-  Typography,
+  Select,
   SelectChangeEvent,
+  FormHelperText,
+  SxProps,
+  Theme,
 } from "@mui/material";
-import debounce from "lodash.debounce";
-import React, { useEffect, useRef, useState } from "react";
-import { Controller, useFormContext, Control } from "react-hook-form";
-import type { SxProps, Theme } from "@mui/material";
+import {
+  Controller,
+  useFormContext,
+  Control,
+  FieldError,
+} from "react-hook-form";
+import { colors } from "material-ui/styles";
+import { useAppTheme } from "@/context/ThemeContext";
 
-interface BaseProps {
+interface OptionType {
   label: string;
-  options: (string | Record<string, any>)[];
-  valueKey?: string;
-  labelKey?: string;
+  value: string | number;
+}
+
+interface CustomDropdownFieldProps {
+  name: string;
+  label: string;
+  options: OptionType[];
+  control?: Control<any>;
+  value?: string | number;
+  onChange?: (val: string | number) => void;
   size?: "small" | "medium";
+  disabled?: boolean;
   fullWidth?: boolean;
   required?: boolean;
   sx?: SxProps<Theme>;
 }
 
-type HookFormMode = {
-  name: string;
-  control?: Control<any>; // Optional external control
-  value?: never;
-  onChange?: never;
-};
-
-type ControlledMode = {
-  name?: never;
-  control?: never;
-  value: any;
-  onChange: (val: any) => void;
-};
-
-type Props = BaseProps & (HookFormMode | ControlledMode);
-
-const CustomDropdownField: React.FC<Props> = ({
+const CustomDropdownField: React.FC<CustomDropdownFieldProps> = ({
   name,
   label,
   options,
-  valueKey = "value",
-  labelKey = "label",
+  control,
+  value,
+  onChange,
   size = "small",
+  disabled = false,
   fullWidth = true,
   required = true,
   sx = {},
-  value,
-  onChange,
-  control: externalControl,
 }) => {
-  const formContext = useFormContext();
-  const control = externalControl || formContext?.control;
-
-  const [open, setOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [filtered, setFiltered] = useState(options);
-
-  const debouncedSearch = useRef(
-    debounce((val: string) => setSearchText(val), 300)
-  ).current;
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debouncedSearch(e.target.value);
-  };
-
-  useEffect(() => {
-    if (!searchText.trim()) {
-      setFiltered(options);
-    } else {
-      const lower = searchText.toLowerCase();
-      const result = options.filter((opt) => {
-        const label =
-          typeof opt === "string" ? opt : opt[labelKey]?.toString() || "";
-        return label.toLowerCase().includes(lower);
-      });
-      setFiltered(result);
-    }
-  }, [searchText, options]);
+  const methods = useFormContext();
+  const contextControl = methods?.control;
+  const activeControl = control || contextControl;
+  const [uncontrolledValue, setUncontrolledValue] = useState<string | number>(
+    ""
+  );
+  const { colors } = useAppTheme();
 
   const renderSelect = (
-    selectedValue: any,
-    onValueChange: (val: any) => void,
-    errorText?: string
+    fieldValue: string | number,
+    handleChange: (val: string | number) => void,
+    error?: FieldError | null
   ) => (
     <FormControl
       fullWidth={fullWidth}
       size={size}
-      error={!!errorText}
+      disabled={disabled}
       sx={{
         minWidth: 150,
         textAlign: "left",
+        borderRadius: "8px",
+        "& .MuiOutlinedInput-notchedOutline": {
+          borderRadius: "8px",
+        },
         ...sx,
       }}
+      error={!!error}
     >
-      <InputLabel required={required}>{label}</InputLabel>
-      <Select
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
-        label={label}
-        value={selectedValue ?? ""}
-        size={size}
-        onChange={(e: SelectChangeEvent<any>) => onValueChange(e.target.value)}
-        renderValue={(val) => {
-          const item = options.find((opt) =>
-            typeof opt === "string" ? opt === val : opt[valueKey] === val
-          );
-          return typeof item === "string" ? item : item?.[labelKey];
+      <InputLabel
+        required={required}
+        sx={{
+          color: colors.inputLabel,
+          "&.Mui-focused": {
+            color: colors.primary,
+          },
+          "& .MuiFormLabel-asterisk": {
+            color: colors.error,
+          },
         }}
       >
-        <MenuItem disabled>
-          <TextField
-            placeholder="Search..."
-            fullWidth
-            size="small"
-            onChange={handleSearchChange}
-          />
-        </MenuItem>
+        {label}
+      </InputLabel>
 
-        {filtered?.length === 0 ? (
-          <MenuItem disabled>No results found</MenuItem>
-        ) : (
-          filtered?.map((item) => {
-            const val = typeof item === "string" ? item : item[valueKey];
-            const label = typeof item === "string" ? item : item[labelKey];
-            return (
-              <MenuItem key={val} value={val}>
-                {label}
-              </MenuItem>
-            );
-          })
-        )}
+      <Select
+        label={label}
+        value={fieldValue}
+        onChange={(e: SelectChangeEvent<string | number>) =>
+          handleChange(e.target.value as string | number)
+        }
+        MenuProps={{
+          PaperProps: {
+            style: {
+              maxHeight: 250,
+              overflowY: "auto",
+              borderRadius: 8,
+            },
+          },
+        }}
+      >
+        {options.map((option) => (
+          <MenuItem key={option.value} value={option.value}>
+            {option.label}
+          </MenuItem>
+        ))}
       </Select>
-      {errorText && (
-        <Typography color="error" variant="caption">
-          {errorText}
-        </Typography>
-      )}
+      {error && <FormHelperText>{error.message}</FormHelperText>}
     </FormControl>
   );
 
-  if (name && control) {
-    return (
-      <Controller
-        name={name}
-        control={control}
-        render={({ field, fieldState }) =>
-          renderSelect(field.value, field.onChange, fieldState.error?.message)
-        }
-      />
-    );
-  }
-
-  if (value !== undefined && typeof onChange === "function") {
-    return renderSelect(value, onChange);
-  }
-
-  console.error(
-    "CustomDropdownField must be used with either: 1) name + control/useFormContext OR 2) value + onChange"
+  return activeControl && name ? (
+    <Controller
+      name={name}
+      control={activeControl}
+      render={({ field, fieldState: { error } }) =>
+        renderSelect(field.value ?? "", field.onChange, error)
+      }
+    />
+  ) : (
+    renderSelect(
+      value ?? uncontrolledValue,
+      (val) => {
+        onChange?.(val);
+        setUncontrolledValue(val);
+      },
+      null
+    )
   );
-  return null;
 };
 
 export default CustomDropdownField;

@@ -1,6 +1,5 @@
 import { Drawer, Toolbar, useMediaQuery, useTheme } from '@mui/material';
 import MenuItems from './MenuItems';
-import { useDispatch, useSelector } from 'react-redux';
 import { RootState, useAppDispatch, useAppSelector } from '../../store/store';
 import { closeMobile } from '../../store/reducers/sidebarReducer';
 

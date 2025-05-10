@@ -1,4 +1,5 @@
 import * as Enum from "@/utils/enum";
+import { EasingModifier } from "framer-motion";
 
 interface Session {
   _id: string;
@@ -43,7 +44,12 @@ interface AuthResponse {
   success: boolean;
 }
 
-// Teacher....................
+interface ApiResponse{
+  data: Object;
+  message: string;
+  success: boolean;
+}
+// Faculty....................
 interface Address {
     city: string;
     state: string;
@@ -97,4 +103,41 @@ interface FacultyApiResponse {
   data: FacultyTableData;
   success: boolean;
   message: string;
+}
+
+// Class..............
+interface ClassApiResponse {
+  data: ClassFormData;
+  success: boolean;
+  message: string;
+}
+interface Subjects{
+  name: string;
+  subjectType: Enum.SubjectType;
+  subjectCategory: Enum.SubjectCategory;
+  publication: string;
+  writer: string;
+  ISBN: string;
+}
+interface Sections{
+  name: string;
+  capacity: number;
+}
+interface FeeDeclaration{
+  amount: number;
+  total: number;
+}
+interface FeeStructure{
+  monthly: FeeDeclaration;
+  quarterly: FeeDeclaration;
+  halfYearly: FeeDeclaration;
+  yearly: FeeDeclaration;
+}
+interface ClassFormData{
+  name: Enum.ClassName;
+  courseStream: Enum.CourseStream;
+  subjects: Subjects[];
+  sections: Sections[];
+  feeStructure: FeeStructure;
+
 }

@@ -4,29 +4,45 @@ import {
   ToggleButtonGroup,
   ToggleButton,
   useTheme,
-} from '@mui/material';
-import { Controller, useFormContext } from 'react-hook-form';
+} from "@mui/material";
+import {
+  Controller,
+  Control,
+  FieldValues,
+  useFormContext,
+} from "react-hook-form";
 
 interface ToggleGroupFieldProps {
   name: string;
   label?: string;
   options: string[];
+  control?: Control<FieldValues, any>;
+  errors?: Record<string, any>;
 }
 
-const CustomRadioGroup = ({ name, label = "Select", options }: ToggleGroupFieldProps) => {
+const CustomRadioGroup = ({
+  name,
+  label = "Select",
+  options,
+  control,
+  errors,
+}: ToggleGroupFieldProps) => {
   const theme = useTheme();
-  const { control, formState: { errors } } = useFormContext();
+
+  const formContext = useFormContext();
+  const activeControl = control || formContext.control;
+  const actualErrors = errors || formContext.formState.errors;
 
   return (
     <Box mx={2} textAlign="left">
       <Typography fontWeight={600} mb={1}>
-        {label}<span style={{ color: 'red',
-
-         }}>{" *"}</span>
+        {label}
+        <span style={{ color: "red" }}>{" *"}</span>
       </Typography>
+
       <Controller
         name={name}
-        control={control}
+        control={activeControl}
         render={({ field }) => (
           <ToggleButtonGroup
             exclusive
@@ -43,12 +59,12 @@ const CustomRadioGroup = ({ name, label = "Select", options }: ToggleGroupFieldP
                 value={option}
                 sx={{
                   flex: 1,
-                  textTransform: 'capitalize',
+                  textTransform: "capitalize",
                   border: `1px solid ${theme.palette.divider}`,
-                  '&.Mui-selected': {
+                  "&.Mui-selected": {
                     backgroundColor: theme.palette.primary.main,
                     color: theme.palette.primary.contrastText,
-                    '&:hover': {
+                    "&:hover": {
                       backgroundColor: theme.palette.primary.dark,
                     },
                   },
@@ -60,9 +76,10 @@ const CustomRadioGroup = ({ name, label = "Select", options }: ToggleGroupFieldP
           </ToggleButtonGroup>
         )}
       />
-       {errors[name] && (
+
+      {actualErrors?.[name] && (
         <Typography color="error" variant="body2">
-           {String(errors[name]?.message)}
+          {String(actualErrors[name]?.message)}
         </Typography>
       )}
     </Box>

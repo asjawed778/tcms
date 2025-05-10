@@ -22,6 +22,7 @@ import { logout } from '@/store/reducers/authReducer';
 import toast from 'react-hot-toast';
 import { useLogoutUserMutation } from '@/services/userApi';
 import CustomButton from '../CustomButton';
+import { resetSession } from '@/store/reducers/sessionSlice';
 
 const menuItems = [
   { icon: <Person />, label: 'Profile' },
@@ -30,7 +31,7 @@ const menuItems = [
   { icon: <Settings />, label: 'Settings' },
 ];
 
-const  ProfileDropdown: React.FC = () => {
+const  Profile: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -53,6 +54,7 @@ const  ProfileDropdown: React.FC = () => {
       console.log("Logout response: ", response);
       handleClose();
       dispatch(logout());
+      dispatch(resetSession());
       toast.success("Logged out successfully");
       navigate("/login");
     } catch (error) {
@@ -126,4 +128,4 @@ const  ProfileDropdown: React.FC = () => {
     </>
   );
 };
-export default ProfileDropdown;
+export default Profile;

@@ -11,16 +11,15 @@ import {
   useTheme,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useDispatch } from "react-redux";
 import { toggleCollapsed, toggleMobile } from "../../store/reducers/sidebarReducer";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { useAppTheme } from "@/context/ThemeContext";
-import ProfileDropdown from "../ProfileDropdown";
 import SessionDropdown from "../Sessions";
 import ToggleThemeSwitch from "./ToggleThemeSwitch";
 import { Close } from "@mui/icons-material";
+import Profile from "./Profile";
 
 const Header: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -84,7 +83,7 @@ const Header: React.FC = () => {
           <SessionDropdown />
           <ToggleThemeSwitch />
           {user.isAuthenticated ? (
-            <ProfileDropdown />
+            <Profile />
           ) : (
             <Button
               variant="outlined"

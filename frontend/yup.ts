@@ -1,4 +1,3 @@
-// import { Address, Document, Experience, LoginFormValues, SessionFormValues } from '@/type';
 import * as yup from "yup";
 import * as Enum from "@/utils/enum";
 
@@ -46,9 +45,10 @@ export const sessionSchema = yup.object().shape({
     )
     .required("Session status is required"),
 });
+
 // Faculty Schema...............
 export const personalInfoSchema = yup.object({
-  name: yup.string().required("Name is required"),
+  // name: yup.string().required("Name is required"),
   photo: yup.string().required("Photo is required"),
   fatherName: yup.string().required("Father name is required"),
   motherName: yup.string().required("Mother name is required"),
@@ -97,19 +97,59 @@ export const professionalInfoSchema = yup.object({
     .of(
       yup.object().shape({
         subject: yup.string().required("Subject is required"),
-        // level: yup.string().required("Level is required"),
       })
     )
     .min(1, "At least one subject is required in Expertise Subjects")
     .required("Expertise subjects are required"),
 
   qualification: yup.string().required("Qualification is required"),
-  // organizationName: yup.string().required('Qualification is required'),
   designation: yup.string().required("Designation is required"),
   dateOfJoining: yup
     .string()
     .matches(/^(\d{4})-(\d{2})-(\d{2})$/, "Joining date must be a valid date")
     .required("Joining date is required"),
+
+  experience: yup
+    .array()
+    .of(
+      yup.object().shape({
+        organisationName: yup
+          .string()
+          .test("org-required", "Organisation is required", function (value) {
+            const { designation, years } = this.parent;
+            return !!value?.trim() || (!designation?.trim() && !years);
+          }),
+
+        designation: yup
+          .string()
+          .test(
+            "designation-required",
+            "Designation is required",
+            function (value) {
+              const { organisationName, years } = this.parent;
+              return !!value?.trim() || (!organisationName?.trim() && !years);
+            }
+          ),
+
+        years: yup
+          .number()
+          .transform((v, o) => (o === "" ? undefined : v))
+          .nullable()
+          .test(
+            "years-required",
+            "Experience years is required",
+            function (value) {
+              const { organisationName, designation } = this.parent;
+              return (
+                (value !== undefined && value !== null) ||
+                (!organisationName?.trim() && !designation?.trim())
+              );
+            }
+          )
+          .typeError("Years must be a number"),
+      })
+    )
+    .min(1, "At least one experience entry is required"),
 });
 
 export const documentUploadSchema = yup.object({
@@ -118,7 +158,7 @@ export const documentUploadSchema = yup.object({
     .of(
       yup.object().shape({
         name: yup.string().required("Document name is required"),
-        // url: yup.string().required("Document file is required"),
+        url: yup.string().required("Document file is required"),
         documentNumber: yup
           .mixed()
           .test(
@@ -133,4 +173,92 @@ export const documentUploadSchema = yup.object({
     .string()
     .required("Salary is required")
     .matches(/^\d+$/, "Salary must be a number"),
+});
+
+// ClassSchema.............................
+export const basicDetailsSchema = yup.object({
+  name: yup.string().required("Class name is required"),
+  courseStream: yup.string().optional(),
+  sections: yup
+    .array()
+    .min(1, "At least one section is required")
+    .of(
+      yup.object().shape({
+        name: yup.string().required("Section name is requied"),
+        capacity: yup
+          .number()
+          .transform((value, originalValue) =>
+            originalValue === "" ? undefined : value
+          )
+          .required("Capacity is required")
+          .typeError("Capacity must be a number")
+          .positive("Capacity must be positive")
+          .integer("Capacity must be an integer"),
+        })
+        
+    )
+});
+export const feeStructureSchema = yup.object({
+  feeStructure: yup.object().shape({
+    monthly: yup.object().shape({
+      amount: yup
+        .number()
+        .typeError("Amount must be a number")
+        .required("Monthly amount is required")
+        .positive("Amount must be positive")
+        .integer("Amount must be an integer"),
+
+      total: yup
+        .number()
+        .typeError("Amount must be a number")
+        .required("Monthly amount is required")
+        .positive("Amount must be positive")
+        .integer("Amount must be an integer"),
+    }),
+    quarterly: yup.object().shape({
+      amount: yup
+        .number()
+        .required("Monthly amount is required")
+        .typeError("Amount must be a number")
+        .positive("Amount must be positive")
+        .integer("Amount must be an integer"),
+
+      total: yup
+        .number()
+        .typeError("Total amount must be a number")
+        .required("Total amount is required")
+        .positive("Total amount must be positive")
+        .integer("Total amount must be an integer"),
+    }),
+    halfYearly: yup.object().shape({
+      amount: yup
+        .number()
+        .required("Monthly amount is required")
+        .typeError("Amount must be a number")
+        .positive("Amount must be positive")
+        .integer("Amount must be an integer"),
+
+      total: yup
+        .number()
+        .typeError("Total amount must be a number")
+        .required("Total amount is required")
+        .positive("Total amount must be positive")
+        .integer("Total amount must be an integer"),
+    }),
+    yearly: yup.object().shape({
+      amount: yup
+        .number()
+        .typeError("Amount must be a number")
+        .required("Monthly amount is required")
+        .positive("Amount must be positive")
+        .integer("Amount must be an integer"),
+
+      total: yup
+        .number()
+        .typeError("Total amount must be a number")
+        .required("Total amount is required")
+        .positive("Total amount must be positive")
+        .integer("Total amount must be an integer"),
+    }),
+  }),
 });

@@ -16,7 +16,7 @@ const CustomSearchField: React.FC<DebouncedSearchProps> = ({
   onSearch,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
-  
+
   useEffect(() => {
     const handler = setTimeout(() => {
       onSearch(searchTerm.trim());

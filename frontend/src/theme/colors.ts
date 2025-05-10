@@ -82,7 +82,7 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     inputText: "#6a6c6e",
     inputBorder: "#e6e9ed",
     inputFocusBorder: "#0173f5",
-    inputLabel: "0173f5", 
+    inputLabel: "#0173f5", 
     inputPlaceholder: "#898d8f",
     inputHover: "#1976d2",
     inputFocus: "#1976d2",
@@ -90,7 +90,7 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     // Alerts & Feedback
     success: "#28A745",        
     warning: "#FFC107",         
-    error: "#DC3545",           
+    error: "#FF0000",           
 
     tabIconDefault: "#687076", 
     tabIconSelected: "#0a7ea4", 
@@ -143,7 +143,7 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     // Alerts & Feedback
     success: "#1DB954",        
     warning: "#FFB400",        
-    error: "#E63946",       
+    error: "#FF0000",       
     
     // active inactive status
     activeStatusColor: 'green',

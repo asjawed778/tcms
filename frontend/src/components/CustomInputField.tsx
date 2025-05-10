@@ -4,6 +4,7 @@ import {
   InputAdornment,
   IconButton,
   TextFieldProps,
+  Typography,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Controller, useFormContext, Control } from "react-hook-form";
@@ -11,18 +12,21 @@ import type { TextFieldPropsSizeOverrides } from "@mui/material/TextField";
 import type { OverridableStringUnion } from "@mui/types";
 import { useAppTheme } from "@/context/ThemeContext";
 
-interface CustomInputFieldProps extends Omit<TextFieldProps, 'name'> {
+interface CustomInputFieldProps extends Omit<TextFieldProps, "name"> {
   name: string;
   label: string;
   placeholder?: string;
   type?: string;
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
-  control?: Control<any>; 
+  control?: Control<any>;
   minDate?: string;
   maxDate?: string;
   required?: boolean;
-  size?: OverridableStringUnion<"small" | "medium", TextFieldPropsSizeOverrides>;
+  size?: OverridableStringUnion<
+    "small" | "medium",
+    TextFieldPropsSizeOverrides
+  >;
 }
 
 const CustomInputField: React.FC<CustomInputFieldProps> = ({
@@ -30,7 +34,7 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
   label,
   placeholder,
   type = "text",
-  size="small",
+  size = "small",
   startIcon,
   endIcon,
   control,
@@ -43,7 +47,7 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
   ...rest
 }) => {
   const { control: contextControl } = useFormContext() || {};
-  const activeControl = control ?? contextControl;
+  const activeControl = control || contextControl;
 
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
@@ -51,26 +55,17 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
   const [uncontrolledValue, setUncontrolledValue] = useState("");
   const { colors } = useAppTheme();
 
-
   const renderTextField = (field: any, error?: any) => (
     <TextField
       {...field}
-      label={
-        <span>
-          {label} {required && <span style={{ color: 'red' }}>*</span>}
-        </span>
-      }
+      label={label}
       disabled={disabled}
       value={field?.value ?? ""}
       placeholder={isDate ? undefined : placeholder}
       size={size}
-      type={
-
-        isDate ? "date" :
-        isPassword && !showPassword ? "password" :
-        type
-      }
+      type={isDate ? "date" : isPassword && !showPassword ? "password" : type}
       fullWidth={fullWidth}
+      required={required}
       variant="outlined"
       error={!!error}
       helperText={error?.message}
@@ -81,6 +76,17 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
           "&:hover": { borderColor: colors.inputHover },
           "&.Mui-focused": { borderColor: colors.inputFocus },
         },
+        "& input[type=number]": {
+          MozAppearance: "textfield",
+        },
+        "& input[type=number]::-webkit-outer-spin-button": {
+          WebkitAppearance: "none",
+          margin: 0,
+        },
+        "& input[type=number]::-webkit-inner-spin-button": {
+          WebkitAppearance: "none",
+          margin: 0,
+        },
         ...sx,
       }}
       InputProps={{
@@ -89,7 +95,10 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
         ),
         endAdornment: isPassword ? (
           <InputAdornment position="end">
-            <IconButton onClick={() => setShowPassword(!showPassword)} edge="end">
+            <IconButton
+              onClick={() => setShowPassword(!showPassword)}
+              edge="end"
+            >
               {showPassword ? <VisibilityOff /> : <Visibility />}
             </IconButton>
           </InputAdornment>
@@ -97,9 +106,19 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
           <InputAdornment position="end">{endIcon}</InputAdornment>
         ) : undefined,
       }}
-      InputLabelProps={isDate ? { shrink: true } : undefined}
+      InputLabelProps={{
+        sx: {
+          color: colors.inputLabel,
+          "&.Mui-focused": {
+            color: colors.primary,
+          },
+          "& .MuiFormLabel-asterisk": {
+            color: colors.error,
+          },
+        },
+        ...(isDate && { shrink: true }), // keep shrink if date
+      }}
       inputProps={isDate ? { max: maxDate, min: minDate } : undefined}
-      
       {...rest}
     />
   );
@@ -108,10 +127,11 @@ const CustomInputField: React.FC<CustomInputFieldProps> = ({
     <Controller
       name={name}
       control={activeControl}
-      render={({ field, fieldState: { error } }) => renderTextField(field, error)}
+      render={({ field, fieldState: { error } }) =>
+        renderTextField(field, error)
+      }
     />
   ) : (
-    // renderTextField({}, null)
     renderTextField(
       {
         value: uncontrolledValue,
