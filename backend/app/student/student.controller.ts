@@ -22,13 +22,16 @@ export const addStudent = asyncHandler(async (req: Request, res: Response) => {
             throw createHttpError(400, "Invalid session");
         }
         const isClassValid = await classService.isClassAndSectionValid(sessionId, classId, sectionId);
-        console.log(isClassValid);
         if (!isClassValid) {
             throw createHttpError(400, "Invalid class or section");
         }
         const addressData = await addressService.createAddress(address, session);
         const student = await StudentService.addStudent({ ...studentData, address: new mongoose.Types.ObjectId(addressData._id) }, session);
         const admission = await StudentService.admissionStudentToClass(student._id, sessionId, classId, sectionId, session);
+
+        await session.commitTransaction();
+        await session.endSession();
+        
         res.send(createResponse({ student, admission }, "Student added successfully"));
     } catch (error) {
         await session.abortTransaction();
@@ -46,4 +49,5 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
     const section = req.query.section as string || "";
 
     const result = await StudentService.getStudents(session, page, limit, search, standard, section);
+    res.send(createResponse(result, "Students fetched successfully"));
 });

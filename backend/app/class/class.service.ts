@@ -16,7 +16,6 @@ export const isClassAndSectionValid = async (sessionId: string, classId: string,
     }
     if (sectionId) {
         const section = result.sections.find((sec) => {
-            console.log("sec: ", sec.toString(), "sectionId: ", sectionId);
             return sec.toString() === sectionId
         });
         return !!section;

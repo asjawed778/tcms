@@ -10,10 +10,10 @@ export interface Remark extends BaseSchema {
     class: Types.ObjectId;
     date: Date;
     remarkType: Enum.RemarkType;
-    description: string; 
+    description: string;
     actionTaken?: Enum.ActionTaken;
     supportingDocuments?: {
-        name: string; 
+        name: string;
         url: string;
     }[];
     deleted: boolean;
@@ -86,20 +86,18 @@ export interface IStudent extends BaseSchema {
 
     // acedemic tracking
     admissionYear: number;
-    status: Enum.StudentStatus; 
+    status: Enum.StudentStatus;
 };
 
-export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt" | "enrollmentNumber" | "status"> {};
+export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt" | "enrollmentNumber" | "status"> { };
 export interface IGetStudentResponse<T> {
-  data: T[];
-  pagination: {
+    students: T[];
     totalDocs: number;
     totalPages: number;
     currentPage: number;
     hasNext: boolean;
     hasPrevious: boolean;
-    limit: number;
-  };
+    pageLimit: number;
 }
 
 export interface IAdmission extends BaseSchema {
@@ -112,7 +110,7 @@ export interface IAdmission extends BaseSchema {
     deleted: boolean;
 };
 
-export interface IAdmissionCreate extends Omit<IAdmission, "_id" | "createdAt" | "updatedAt" | "admissionStatus" | "deleted" | "rollNumber" | "student"> {};
+export interface IAdmissionCreate extends Omit<IAdmission, "_id" | "createdAt" | "updatedAt" | "admissionStatus" | "deleted" | "rollNumber" | "student"> { };
 
 export interface AcademicRecord {
     session: string;

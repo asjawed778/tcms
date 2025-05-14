@@ -1,4 +1,4 @@
-import { body } from "express-validator";
+import { body, param } from "express-validator";
 import * as Enum from "../common/constant/enum";
 
 export const addStudent = [
@@ -171,4 +171,31 @@ export const addStudent = [
     body("admissionYear")
         .notEmpty().withMessage("Admission year is required")
         .isInt({ min: 2000, max: 2100 }).withMessage("Admission year must be between 2000 and 2100"),
+];
+
+export const getStudents = [
+    param("session")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Invalid Session ID"),
+
+    // Query parameters
+    body("page")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Page must be a positive integer"),
+
+    body("limit")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
+
+    body("search")
+        .optional()
+        .isString().withMessage("Search must be a string"),
+
+    body("standard")
+        .optional()
+        .isMongoId().withMessage("Invalid Standard ID"),
+
+    body("section")
+        .optional()
+        .isMongoId().withMessage("Invalid Section ID"),
 ];

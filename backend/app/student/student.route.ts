@@ -9,6 +9,6 @@ const router = Router();
 
 router
     .post("/add", authMiddleware.auth, authMiddleware.isSuperAdmin, StudentValidation.addStudent, catchError, StudentController.addStudent)
-
+    .get("/all/:session", authMiddleware.auth, authMiddleware.isSuperAdmin, StudentValidation.getStudents, catchError, StudentController.getStudents)
 
 export default router;

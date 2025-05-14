@@ -16,10 +16,10 @@ const sectionSchema = new mongoose.Schema<ISection>({
         type: Number,
         required: false
     },
-    students: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Student"
-    }],
+    // students: [{
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Student"
+    // }],
     deleted: {
         type: Boolean,
         default: false

@@ -4,6 +4,7 @@ import * as Enum from "../common/constant/enum";
 
 // Parent details sub-schema
 const ParentDetails = {
+    _id: false,
     name: { type: String, required: true },
     qualification: { type: String, required: true },
     occupation: { type: String, required: true },
@@ -16,6 +17,7 @@ const ParentDetails = {
 
 // Document sub-schema
 const Document = {
+    _id: false,
     name: { type: String, required: true },
     documentNumber: { type: String },
     url: { type: String, required: true },
@@ -23,6 +25,7 @@ const Document = {
 
 // Previous school sub-schema
 const PreviousSchool = {
+    _id: false,
     name: { type: String, required: true },
     address: { type: String, required: true },
     reasonForLeaving: { type: String, required: true },
@@ -35,8 +38,7 @@ const PreviousSchool = {
 const studentSchema = new mongoose.Schema<IStudent>({
     enrollmentNumber: {
         type: String,
-        required: true,
-        // unique: true,
+        unique: true,
     },
     name: { type: String, required: true },
     dob: { type: Date, required: true },
