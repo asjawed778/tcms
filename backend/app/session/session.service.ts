@@ -97,5 +97,10 @@ export const deleteSession = async (id: string) => {
     return result;
 };
 
+export const isSessionValid = async (sessionId: string) => {
+    const isExists = await sessionSchema.exists({ _id: sessionId, deleted: false });
+    return isExists;
+}
+
 
 

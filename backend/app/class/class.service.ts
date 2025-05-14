@@ -9,6 +9,21 @@ export const isClassAlreadyExists = async (name: string, session: string) => {
     return !!existingClass;
 };
 
+export const isClassAndSectionValid = async (sessionId: string, classId: string, sectionId?: string) => {
+    const result = await classSchema.findOne({ _id: classId, session: sessionId, deleted: false });
+    if(!result) {
+        return false;
+    }
+    if (sectionId) {
+        const section = result.sections.find((sec) => {
+            console.log("sec: ", sec.toString(), "sectionId: ", sectionId);
+            return sec.toString() === sectionId
+        });
+        return !!section;
+    }
+    return true;
+}
+
 export const createClass = async (data: ICreateClass) => {
     const { subjects: subjectInputs = [], sections: sectionInputs = [], ...classData } = data;
 
