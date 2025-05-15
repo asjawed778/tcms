@@ -72,6 +72,7 @@ interface Document {
 }
 
 interface FacultyFormData {
+  _id?: string;
   name: string;
   fatherName: string;
   motherName: string;
@@ -107,7 +108,7 @@ interface FacultyApiResponse {
 
 // Class..............
 interface ClassApiResponse {
-  data: ClassFormData;
+  data: ClassFormData[];
   success: boolean;
   message: string;
 }
@@ -134,10 +135,58 @@ interface FeeStructure{
   yearly: FeeDeclaration;
 }
 interface ClassFormData{
+  _id?: string;
   name: Enum.ClassName;
   courseStream: Enum.CourseStream;
   subjects: Subjects[];
   sections: Sections[];
   feeStructure: FeeStructure;
+}
 
+// Student Admission.........
+interface Parent{
+  name: string;
+  email: string;
+  contactNumber: number;
+  qualification: string;
+  occupation: string;
+  bussinessOrEmployerName: string;
+  officeAddress: string;
+  officeNumber:  number;
+
+};
+interface PreviousSchool{
+  name: string;
+  address: string;
+  reasonForLeaving: string;
+  dateOfLeaving: string;
+  schoolLeavingCertificate: Document;
+  transferCertificate: Document;
+
+};
+interface AdmissionClass{
+  name: Enum.ClassName;
+  section: string;
+  admissionDate: string;
+}
+interface StudentFormData{
+  _id?: string;
+  name: string;
+  dob: string;
+  gender:string;
+  nationality: string;
+  religion: string;
+  motherTongue: string;
+  image: string;
+  adharNumber: string;
+  contactNumber: number;
+  email: string;
+  bloodGroup: string;
+  address: Address;
+  father: Parent;
+  mother: Parent;
+  localGuardian: Parent;
+  previousSchool: PreviousSchool;
+  admission: AdmissionClass;
+  documents: Document[]
 }

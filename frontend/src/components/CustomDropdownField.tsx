@@ -1,142 +1,337 @@
-import React, { useState } from "react";
+// import React from "react";
+// import {
+//   Autocomplete,
+//   TextField,
+//   CircularProgress,
+//   AutocompleteRenderInputParams,
+// } from "@mui/material";
+// import {
+//   Controller,
+//   useFormContext,
+//   Control,
+//   FieldValues,
+//   useFormState,
+// } from "react-hook-form";
+// import { useAppTheme } from "@/context/ThemeContext";
+
+// export interface DropdownOption {
+//   label: string;
+//   value: string;
+// }
+
+// interface SharedProps {
+//   label: string;
+//   options: DropdownOption[];
+//   placeholder?: string;
+//   multiple?: boolean;
+//   disabled?: boolean;
+//   required?: boolean;
+//   fullWidth?: boolean;
+//   loading?: boolean;
+// }
+
+// interface WithHookFormProps extends SharedProps {
+//   name: string;
+//   control?: Control<any>;
+// }
+
+// interface WithoutHookFormProps extends SharedProps {
+//   value: string | string[] | null;
+//   onChange: (value: string | string[] | null) => void;
+// }
+
+// type DropdownFieldProps = WithHookFormProps | WithoutHookFormProps;
+
+// const CustomDropdownField: React.FC<DropdownFieldProps> = (props) => {
+//   const {
+//     label,
+//     options,
+//     placeholder,
+//     multiple = false,
+//     disabled = false,
+//     required,
+//     fullWidth = true,
+//     loading = false,
+//     control: incomingControl,
+//     name,
+//   } = props as Partial<WithHookFormProps>;
+
+//   const formContext = useFormContext<FieldValues>();
+//   const control = incomingControl ?? formContext?.control;
+//   const isUsingHookForm = !!name && !!control;
+
+//   const { colors } = useAppTheme();
+
+//   const renderAutocomplete = (
+//     value: any,
+//     onChange: (value: any) => void,
+//     errorMsg?: string
+//   ) => {
+//     const displayValue = React.useMemo(() => {
+//       if (multiple) {
+//         return options?.filter((opt) =>
+//           Array.isArray(value) ? value.includes(opt.value) : false
+//         );
+//       }
+//       return options?.find((opt) => opt.value === value) || null;
+//     }, [value, options, multiple]);
+
+//     return (
+//       <Autocomplete
+//         multiple={multiple}
+//         options={options ?? []}
+//         value={displayValue}
+//         onChange={(_, newValue) => {
+//           const selected = multiple
+//             ? (newValue as DropdownOption[]).map((opt) => opt?.value)
+//             : (newValue as DropdownOption | null)?.value;
+//           onChange(selected);
+//         }}
+//         getOptionLabel={(option) => (option as DropdownOption)?.label || ""}
+//         isOptionEqualToValue={(a, b) =>
+//           (a as DropdownOption).value === (b as DropdownOption).value
+//         }
+//         disabled={disabled}
+//         fullWidth={fullWidth}
+//         loading={loading}
+//         loadingText={
+//           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+//             <CircularProgress size={20} />
+//             Loading...
+//           </div>
+//         }
+//         renderInput={(params: AutocompleteRenderInputParams) => (
+//           <TextField
+//             {...params}
+//             label={label}
+//             placeholder={placeholder}
+//             required={required}
+//             error={!!errorMsg}
+//             size="small"
+//             helperText={errorMsg}
+//             InputLabelProps={{
+//               sx: {
+//                 color: colors.inputLabel,
+//                 "&.Mui-focused": {
+//                   color: colors.inputLabel,
+//                 },
+//                 "& .MuiFormLabel-asterisk": {
+//                   color: colors.error, 
+//                 },
+//               },
+//             }}
+//             sx={{
+//               minWidth: 200,
+//               "& .MuiOutlinedInput-root": {
+//                 borderRadius: "8px",
+//               },
+//             }}
+//           />
+//         )}
+//         renderOption={(props, option) => (
+//           <li {...props} key={(option as DropdownOption)?.value}>
+//             {(option as DropdownOption)?.label}
+//           </li>
+//         )}
+//       />
+//     );
+//   };
+
+//   if (isUsingHookForm) {
+//     const { errors } = useFormState({ control });
+//     const errorMsg = errors?.[name!]?.message as string | undefined;
+
+//     return (
+//       <Controller
+//         name={name!}
+//         control={control}
+//         render={({ field }) =>
+//           renderAutocomplete(field.value, field.onChange, errorMsg)
+//         }
+//       />
+//     );
+//   }
+
+//   const { value, onChange } = props as WithoutHookFormProps;
+//   return renderAutocomplete(value, onChange);
+// };
+
+// export default CustomDropdownField;
+
+
+
+
+import React from "react";
 import {
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
-  SelectChangeEvent,
-  FormHelperText,
-  SxProps,
-  Theme,
+  Autocomplete,
+  TextField,
+  CircularProgress,
+  AutocompleteRenderInputParams,
 } from "@mui/material";
 import {
   Controller,
   useFormContext,
   Control,
-  FieldError,
+  FieldValues,
+  useFormState,
 } from "react-hook-form";
-import { colors } from "material-ui/styles";
 import { useAppTheme } from "@/context/ThemeContext";
 
-interface OptionType {
+export interface DropdownOption {
   label: string;
-  value: string | number;
+  value: string;
 }
 
-interface CustomDropdownFieldProps {
-  name: string;
+interface SharedProps {
   label: string;
-  options: OptionType[];
-  control?: Control<any>;
-  value?: string | number;
-  onChange?: (val: string | number) => void;
-  size?: "small" | "medium";
+  options: DropdownOption[];
+  placeholder?: string;
+  multiple?: boolean;
   disabled?: boolean;
-  fullWidth?: boolean;
   required?: boolean;
-  sx?: SxProps<Theme>;
+  fullWidth?: boolean;
+  loading?: boolean;
 }
 
-const CustomDropdownField: React.FC<CustomDropdownFieldProps> = ({
-  name,
-  label,
-  options,
-  control,
-  value,
-  onChange,
-  size = "small",
-  disabled = false,
-  fullWidth = true,
-  required = true,
-  sx = {},
-}) => {
-  const methods = useFormContext();
-  const contextControl = methods?.control;
-  const activeControl = control || contextControl;
-  const [uncontrolledValue, setUncontrolledValue] = useState<string | number>(
-    ""
-  );
+interface WithHookFormProps extends SharedProps {
+  name: string;
+  control?: Control<any>;
+}
+
+interface WithoutHookFormProps extends SharedProps {
+  value: string | string[] | null;
+  onChange: (value: string | string[] | null) => void;
+}
+
+type DropdownFieldProps = WithHookFormProps | WithoutHookFormProps;
+
+const getErrorMessage = (errors: any, name: string) => {
+  const keys = name.split("."); // Split nested field names like 'address.city'
+  let error = errors;
+  for (let key of keys) {
+    if (error && error[key]) {
+      error = error[key];
+    } else {
+      return undefined; 
+    }
+  }
+  return error?.message;
+};
+
+const CustomDropdownField: React.FC<DropdownFieldProps> = (props) => {
+  const {
+    label,
+    options,
+    placeholder,
+    multiple = false,
+    disabled = false,
+    required = true,
+    fullWidth = true,
+    loading = false,
+    control: incomingControl,
+    name,
+  } = props as Partial<WithHookFormProps>;
+
+  const formContext = useFormContext<FieldValues>();
+  const control = incomingControl ?? formContext?.control;
+  const isUsingHookForm = !!name && !!control;
+
   const { colors } = useAppTheme();
 
-  const renderSelect = (
-    fieldValue: string | number,
-    handleChange: (val: string | number) => void,
-    error?: FieldError | null
-  ) => (
-    <FormControl
-      fullWidth={fullWidth}
-      size={size}
-      disabled={disabled}
-      sx={{
-        minWidth: 150,
-        textAlign: "left",
-        borderRadius: "8px",
-        "& .MuiOutlinedInput-notchedOutline": {
-          borderRadius: "8px",
-        },
-        ...sx,
-      }}
-      error={!!error}
-    >
-      <InputLabel
-        required={required}
-        sx={{
-          color: colors.inputLabel,
-          "&.Mui-focused": {
-            color: colors.primary,
-          },
-          "& .MuiFormLabel-asterisk": {
-            color: colors.error,
-          },
-        }}
-      >
-        {label}
-      </InputLabel>
-
-      <Select
-        label={label}
-        value={fieldValue}
-        onChange={(e: SelectChangeEvent<string | number>) =>
-          handleChange(e.target.value as string | number)
-        }
-        MenuProps={{
-          PaperProps: {
-            style: {
-              maxHeight: 250,
-              overflowY: "auto",
-              borderRadius: 8,
-            },
-          },
-        }}
-      >
-        {options.map((option) => (
-          <MenuItem key={option.value} value={option.value}>
-            {option.label}
-          </MenuItem>
-        ))}
-      </Select>
-      {error && <FormHelperText>{error.message}</FormHelperText>}
-    </FormControl>
-  );
-
-  return activeControl && name ? (
-    <Controller
-      name={name}
-      control={activeControl}
-      render={({ field, fieldState: { error } }) =>
-        renderSelect(field.value ?? "", field.onChange, error)
+  const renderAutocomplete = (
+    value: any,
+    onChange: (value: any) => void,
+    errorMsg?: string
+  ) => {
+    const displayValue = React.useMemo(() => {
+      if (multiple) {
+        return options?.filter((opt) =>
+          Array.isArray(value) ? value.includes(opt.value) : false
+        );
       }
-    />
-  ) : (
-    renderSelect(
-      value ?? uncontrolledValue,
-      (val) => {
-        onChange?.(val);
-        setUncontrolledValue(val);
-      },
-      null
-    )
-  );
+      return options?.find((opt) => opt.value === value) || null;
+    }, [value, options, multiple]);
+
+    return (
+      <Autocomplete
+        multiple={multiple}
+        options={options ?? []}
+        value={displayValue}
+        onChange={(_, newValue) => {
+          const selected = multiple
+            ? (newValue as DropdownOption[]).map((opt) => opt?.value)
+            : (newValue as DropdownOption | null)?.value;
+          onChange(selected);
+        }}
+        getOptionLabel={(option) => (option as DropdownOption)?.label || ""}
+        isOptionEqualToValue={(a, b) =>
+          (a as DropdownOption).value === (b as DropdownOption).value
+        }
+        disabled={disabled}
+        fullWidth={fullWidth}
+        loading={loading}
+        loadingText={
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <CircularProgress size={20} />
+            Loading...
+          </div>
+        }
+        renderInput={(params: AutocompleteRenderInputParams) => (
+          <TextField
+            {...params}
+            label={label}
+            placeholder={placeholder}
+            required={required}
+            error={!!errorMsg}
+            size="small"
+            helperText={errorMsg}
+            InputLabelProps={{
+              sx: {
+                color: colors.inputLabel,
+                "&.Mui-focused": {
+                  color: colors.inputLabel,
+                },
+                "& .MuiFormLabel-asterisk": {
+                  color: required ? colors.error : "transparent",
+                },
+              },
+            }}
+            sx={{
+              minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+            }}
+          />
+        )}
+        renderOption={(props, option) => (
+          <li {...props} key={(option as DropdownOption)?.value}>
+            {(option as DropdownOption)?.label}
+          </li>
+        )}
+      />
+    );
+  };
+
+  if (isUsingHookForm) {
+    const { errors } = useFormState({ control });
+    const errorMsg = getErrorMessage(errors, name!); // Get error message for nested fields
+
+    return (
+      <Controller
+        name={name!}
+        control={control}
+        render={({ field }) =>
+          renderAutocomplete(field.value, field.onChange, errorMsg)
+        }
+      />
+    );
+  }
+
+  const { value, onChange } = props as WithoutHookFormProps;
+  return renderAutocomplete(value, onChange);
 };
 
 export default CustomDropdownField;
+
+

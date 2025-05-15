@@ -1,10 +1,21 @@
+import CustomDropdownField, { DropdownOption } from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
+import { useGetAllFacultyQuery } from "@/services/facultyApi";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 const SectionDetails: React.FC = () => {
+  const {data: facultyData, isLoading} = useGetAllFacultyQuery({
+    page: 1,
+    limit: 10
+  });
+  const facultyName: DropdownOption[] = facultyData?.data.faculty.map(items => ({
+    label: items.name,
+    value: items._id as string,
+  })) || [];  
+
   const {
     control,
   } = useFormContext();
@@ -33,7 +44,6 @@ const SectionDetails: React.FC = () => {
       initialized.current = true;
     }
   }, [fields, append]);
-
   return (
     <Grid container spacing={2}>
       {fields.map((field, index) => (
@@ -75,6 +85,15 @@ const SectionDetails: React.FC = () => {
                 name={`sections.${index}.capacity`}
                 label="Total Capacity"
                 placeholder="Enter total capacity of a sections"
+                required={false}
+              />
+            </Grid>
+            <Grid size={{xs: 12, md: 6}}>
+              <CustomDropdownField 
+                name="facultyName"
+                label="Select Class Teacher"
+                options={facultyName}
+                loading={isLoading}
               />
             </Grid>
           </Grid>

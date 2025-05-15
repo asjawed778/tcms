@@ -1,12 +1,20 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
+import { useGetAllClassQuery } from "@/services/classApi";
+import { useAppSelector } from "@/store/store";
 import { SubjectCategory, SubjectType } from "@/utils/enum";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
+import { ClassFormData } from "../../../../../type";
 
-const SubjectDetails: React.FC = () => {
+interface ClassList{
+  _id: string;
+  name: string;
+}
+
+const SubjectDetails: React.FC = () => {  
    const subjectTypeOptions = Object.entries(SubjectType).map(
     ([_, value]) => ({
       label: value,
@@ -19,6 +27,7 @@ const SubjectDetails: React.FC = () => {
       value: value,
     })
   ); 
+  
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -86,6 +95,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.name`}
                 label="Subject Name"
                 placeholder="Enter Subject Name"
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -93,6 +103,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.subjectType`}
                 label="Subject Type"
                 options={subjectTypeOptions}
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -100,6 +111,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.subjectCategory`}
                 label="Subject Category"
                 options={subjectCategoryOption}
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -107,6 +119,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.publication`}
                 label="Publication Name"
                 placeholder="Enter Publication Name"
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -114,6 +127,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.writer`}
                 label="Writer Name"
                 placeholder="Enter Writer Name"
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }}>
@@ -121,6 +135,7 @@ const SubjectDetails: React.FC = () => {
                 name={`subjects.${index}.ISBN`}
                 label="ISBN Number"
                 placeholder="Enter ISBN Number"
+                required={false}
               />
             </Grid>
           </Grid>

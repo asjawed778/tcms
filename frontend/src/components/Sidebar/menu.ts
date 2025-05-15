@@ -1,7 +1,7 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import { ElementType } from 'react';
-import { AddBox } from '@mui/icons-material';
+import { AddBox, School } from '@mui/icons-material';
 
 export interface MenuItem {
   id: string;
@@ -29,7 +29,7 @@ export const menuItems: MenuItem[] = [
   {
     id: 'student',
     title: 'Student',
-    icon: PeopleIcon,
+    icon: School,
     path: '/dashboard/student'
   },
   {

@@ -10,6 +10,7 @@ import { dropdownApi } from "@/services/dropdownApi";
 import { commonApi } from "@/services/commonApi";
 import sessionReducer from "./reducers/sessionSlice"
 import { classApi } from "@/services/classApi";
+import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({
   reducer: {
@@ -23,6 +24,7 @@ export const store = configureStore({
     [dropdownApi.reducerPath]: dropdownApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
     [classApi.reducerPath]: classApi.reducer,
+    [studentApi.reducerPath]: studentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -33,6 +35,7 @@ export const store = configureStore({
       dropdownApi.middleware, 
       commonApi.middleware,
       classApi.middleware,
+      studentApi.middleware,
     ),
 });
 

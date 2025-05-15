@@ -37,7 +37,7 @@ const Class = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("All");
+  const [status, setStatus] = useState("All");
   const navigate = useNavigate();
     const selectedSession = useAppSelector(state => state.session.selectedSession);
     console.log("selected session: ", selectedSession._id);
@@ -47,15 +47,15 @@ const Class = () => {
     // page: page + 1,
     // limit: rowsPerPage,
     // query,
-    // active: statusFilter
+    // active: status
   });
   // const faculty = data?.data || [];
   console.log("class data: ", classData);
-  useEffect(() => {
-  if (selectedSession?._id) {
-    refetch();
-  }
-}, [selectedSession?._id, refetch]);
+//   useEffect(() => {
+//   if (selectedSession?._id) {
+//     refetch();
+//   }
+// }, [selectedSession?._id, refetch]);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -85,6 +85,9 @@ const Class = () => {
     navigate("/dashboard/createClass");
   };
 
+  const handleChange = (val: any) => {
+    setStatus(val)
+  }
   return (
     <Box sx={{width: "100%"}}>
       {/* <Box
@@ -159,11 +162,8 @@ const Class = () => {
             name="status"
             label="Status"
             required={false}
-            value={statusFilter}
-            onChange={(val) => {
-              setStatusFilter(String(val));
-              setPage(0);
-            }}
+            value={status}
+            onChange={handleChange}
             options={[
               { label: "All", value: "All" },
               { label: "Active", value: "true" },

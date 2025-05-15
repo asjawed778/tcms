@@ -34,7 +34,7 @@ const CustomRadioGroup = ({
   const actualErrors = errors || formContext.formState.errors;
 
   return (
-    <Box mx={2} textAlign="left">
+    <Box textAlign="left" width="100%">
       <Typography fontWeight={600} mb={1}>
         {label}
         <span style={{ color: "red" }}>{" *"}</span>

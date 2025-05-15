@@ -2,9 +2,10 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  personalInfoSchema,
-  professionalInfoSchema,
-  documentUploadSchema,
+  documentDetailsSchema,
+  parentDetailsSchema,
+  personalDetailsSchema,
+  previousSchoolSchema,
 } from "../../../../yup";
 import {
   Stepper,
@@ -16,38 +17,46 @@ import {
   CardContent,
   Divider,
   Paper,
+  CircularProgress,
 } from "@mui/material";
-import PersonalInfo from "./PersonalInfo";
-import ProfessionalInfo from "./ProfessionalInfo";
-import DocumentUpload from "./DocumentUpload";
 import * as yup from "yup";
-import { useAddFacultyMutation } from "@/services/facultyApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "@/store/store";
+import ParentDetails from "./ParentDetails";
+import PreviousSchoolDetails from "./PreviousSchoolDetails";
+import DocumentDetails from "./DocumentDetails";
+import PersonalDetails from "./PersonalDetails";
+import { useAddStudentMutation } from "@/services/studentApi";
 
 const steps = [
   {
-    label: "Personal Information",
-    component: PersonalInfo,
-    schema: personalInfoSchema,
+    label: "Personal Details",
+    component: PersonalDetails,
+    schema: personalDetailsSchema,
   },
   {
-    label: "Professional Information",
-    component: ProfessionalInfo,
-    schema: professionalInfoSchema,
+    label: "Parent Details",
+    component: ParentDetails,
+    schema: parentDetailsSchema,
   },
   {
-    label: "Document Upload",
-    component: DocumentUpload,
-    schema: documentUploadSchema,
+    label: "Previous School Details (if applicable)",
+    component: PreviousSchoolDetails,
+    schema: previousSchoolSchema,
   },
-  // { label: "Preview & Submit", component: Preview, schema: yup.object() }
+  {
+    label: "Document Details",
+    component: DocumentDetails,
+    schema: documentDetailsSchema,
+  },
 ];
 
-const AddFaculty = () => {
+const AddStudent = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [faculty, { isLoading }] = useAddFacultyMutation();
+  const [addStudent, { isLoading }] = useAddStudentMutation();
   const navigate = useNavigate();
+  const selectedSession = useAppSelector(state => state.session.selectedSession)
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
@@ -68,32 +77,18 @@ const AddFaculty = () => {
       toast.success("Step completed! Moving to next step.");
     } else {
       try {
-        const payload = {
+        const payload={
           ...data,
-          expertiseSubjects:
-            data?.expertiseSubjects?.map((s: any) => s.subject) || [],
-        };
-        const hasValidExperience = data?.experience?.some((item: any) => {
-          return (
-            item.organisationName?.trim() !== "" ||
-            item.years > 0 ||
-            item.designation?.trim() !== ""
-          );
-        });
-
-        if (!hasValidExperience) {
-          delete payload.experience;
+          session: selectedSession?._id,
         }
-        console.log("Faculty Data: ", payload);
+        console.log("Student data: ",payload);
         
-        const response = await faculty(payload).unwrap();
-        console.log("Faculty response: ",response);
-        
+        const response = await addStudent(payload).unwrap();
         if (response.success) {
           toast.success(
-            response.message || "Faculty data submitted successfully!"
+            response.message || "Class Created successfully!"
           );
-          navigate("/dashboard/faculty");
+          navigate("/dashboard/student");
         } else {
           toast.error(response.message || "Something went wrong.");
         }
@@ -161,4 +156,4 @@ const AddFaculty = () => {
   );
 };
 
-export default AddFaculty;
+export default AddStudent;

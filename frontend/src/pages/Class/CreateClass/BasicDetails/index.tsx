@@ -10,6 +10,7 @@ const BasicDetails: React.FC = () => {
     label: value,
     value: value,
   }));
+  
   const courseStreamOptions = Object.entries(CourseStream).map(
     ([_, value]) => ({
       label: value,
