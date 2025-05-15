@@ -190,3 +190,17 @@ interface StudentFormData{
   admission: AdmissionClass;
   documents: Document[]
 }
+interface studentTableData{
+  students: StudentFormData[];
+  currentPage: number;
+  totalPages: number;
+  totalDocs: number;
+  pageLimit: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+}
+interface StudentApiResponse{
+  data: studentTableData;
+  success: boolean;
+  message: string;
+}

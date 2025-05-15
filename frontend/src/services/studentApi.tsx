@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { ApiResponse, FacultyApiResponse, FacultyFormData, StudentFormData } from "../../type";
+import { ApiResponse, StudentApiResponse, StudentFormData } from "../../type";
 import { baseQueryWithReauth } from "./api";
 
 export const studentApi = createApi({
@@ -7,11 +7,11 @@ export const studentApi = createApi({
   baseQuery: baseQueryWithReauth, 
   endpoints: (builder) => ({
 
-    getAllStudent: builder.query< FacultyApiResponse , { page?: number, limit?: number, query?: string, active?: string }>({
-      query: ({ page = 1, limit = 10, query = "", active} = {}) => {
-              let url = `/student/all?pageNo=${page}&limit=${limit}`;
-              if (query.trim() !== '') {
-                url += `&search=${encodeURIComponent(query.trim())}`;
+    getAllStudent: builder.query< StudentApiResponse , { page?: number, limit?: number, searchQuery?: string, active?: string, sessionId: string }>({
+      query: ({ page = 1, limit = 10, searchQuery = "", active, sessionId} ) => {
+              let url = `/student/all/${sessionId}?page=${page}&limit=${limit}`;
+              if (searchQuery.trim() !== '') {
+                url += `&search=${encodeURIComponent(searchQuery.trim())}`;
               }
               if (typeof active === 'boolean') {
                 url += `&active=${active}`; 

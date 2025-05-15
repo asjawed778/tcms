@@ -40,7 +40,6 @@ const Class = () => {
   const [status, setStatus] = useState("All");
   const navigate = useNavigate();
     const selectedSession = useAppSelector(state => state.session.selectedSession);
-    console.log("selected session: ", selectedSession._id);
     
   const { data: classData, isLoading, refetch } = useGetAllClassQuery({
     sessionId: selectedSession?._id,
@@ -50,13 +49,14 @@ const Class = () => {
     // active: status
   });
   // const faculty = data?.data || [];
-  console.log("class data: ", classData);
+  // console.log("class data: ", classData);
 //   useEffect(() => {
 //   if (selectedSession?._id) {
 //     refetch();
 //   }
 // }, [selectedSession?._id, refetch]);
-
+  console.log("Class Data: ", classData);
+  
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };

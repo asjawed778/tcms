@@ -10,7 +10,6 @@ export const classApi = createApi({
     getAllClass: builder.query< ClassApiResponse , { page?: number, limit?: number, query?: string, active?: string, sessionId: string }>({
       query: ({  sessionId}) => {
               // let url = `/class/all/${sessionId}?pageNo=${page}&limit=${limit}`;
-              console.log("send session: ", sessionId);
               let url = `/class/all/${sessionId}`;
               // if (query.trim() !== '') {
               //   url += `&search=${encodeURIComponent(query.trim())}`;
