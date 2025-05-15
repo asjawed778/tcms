@@ -58,17 +58,21 @@ export const getAllClass = async (sessionId: string) => {
     const classes = await classSchema.find({ session: sessionId })
         .populate({
             path: "session",
-            select: "_id session",
+            select: "-__v -deleted",
             match: { deleted: false }
         })
         .populate({
             path: "subjects",
-            select: "_id",
+            select: "-__v -deleted",
             match: { deleted: false }
         })
         .populate({
             path: "sections",
-            select: "_id name",
+            select: "-__v -deleted",
+            populate: {
+                path: "classTeacher",
+                select: "_id employeeId name designation status",
+            },
             match: { deleted: false },
         })
         .lean();
@@ -80,17 +84,9 @@ export const getAllClass = async (sessionId: string) => {
     if (classes.length === 0) {
         return [];
     }
-    const simplifiedClasses = classes.map(cls => ({
-        _id: cls._id,
-        name: cls.name,
-        session: cls.session,
-        courseStream: cls.courseStream,
-        feeStructure: cls.feeStructure,
-        subjectsCount: cls.subjects?.length || 0,
-        sectionsCount: cls.sections?.length || 0
-    }));
+   
 
-    return simplifiedClasses;
+    return {classes};
 };
 
 export const getClassById = async (classId: string) => {
