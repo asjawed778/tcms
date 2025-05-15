@@ -209,3 +209,13 @@ export const getStudents = async (
         pageLimit: limit,
     };
 };
+
+export const getStudentById = async (studentId: string) => {
+    const student = await studentSchema.findById(studentId)
+        .populate({
+            path: 'address',
+            select: 'addressLine1 addressLine2 city state country pincode'
+        })
+
+    return student;
+};

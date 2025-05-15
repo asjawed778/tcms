@@ -51,3 +51,12 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
     const result = await StudentService.getStudents(session, page, limit, search, standard, section);
     res.send(createResponse(result, "Students fetched successfully"));
 });
+
+export const getStudentById = asyncHandler(async (req: Request, res: Response) => {
+    const studentId = req.params.studentId;
+    const student = await StudentService.getStudentById(studentId);
+    if (!student) {
+        throw createHttpError(404, "Student not found");
+    }
+    res.send(createResponse(student, "Student fetched successfully"));
+});

@@ -4,10 +4,11 @@ import * as Enum from "../common/constant/enum";
 import { Gender, Religion } from "../common/constant/enum";
 import { IDocument } from '../common/dto/common.dto';
 
-export interface Remark extends BaseSchema {
+export interface IRemark extends BaseSchema {
     student: Types.ObjectId;
     givenBy: Types.ObjectId;
     class: Types.ObjectId;
+    section: Types.ObjectId;
     date: Date;
     remarkType: Enum.RemarkType;
     description: string;
