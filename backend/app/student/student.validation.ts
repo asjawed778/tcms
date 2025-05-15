@@ -199,3 +199,9 @@ export const getStudents = [
         .optional()
         .isMongoId().withMessage("Invalid Section ID"),
 ];
+
+export const getStudentById = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+]
