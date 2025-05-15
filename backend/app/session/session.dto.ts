@@ -1,5 +1,5 @@
+import { SessionStatus } from "../common/constant/enum";
 import { BaseSchema } from "../common/dto/base.dto";
-import { SessionStatus } from "./session.schema";
 
 
 export interface ISession extends BaseSchema {
