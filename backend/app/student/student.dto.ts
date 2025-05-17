@@ -19,6 +19,8 @@ export interface IRemark extends BaseSchema {
     }[];
     deleted: boolean;
 };
+export interface IRemarkCreate extends Omit<IRemark, "_id" | "createdAt" | "updatedAt" | "deleted"> { };
+export interface IRemarkUpdate extends Partial<Omit<IRemark, "_id" | "createdAt" | "updatedAt" | "deleted">> { };
 
 export interface ExtracurricularActivity extends BaseSchema {
     student: Types.ObjectId;

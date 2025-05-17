@@ -21,7 +21,7 @@ export const isClassAndSectionValid = async (sessionId: string, classId: string,
         return !!section;
     }
     return true;
-}
+};
 
 export const createClass = async (data: ICreateClass) => {
     const { subjects: subjectInputs = [], sections: sectionInputs = [], ...classData } = data;
@@ -122,3 +122,4 @@ export const getClassById = async (classId: string) => {
     
     return result;
 };
+
