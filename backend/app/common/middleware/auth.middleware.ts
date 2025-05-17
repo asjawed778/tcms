@@ -12,15 +12,12 @@ const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET as string;
 const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET as string;
 
 
-// Middleware for role-based authentication
 export const auth = asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
-
   const token = req.cookies.accessToken || req.headers.authorization?.replace("Bearer ", "");
 
   if (!token || token === "null" || token === "undefined" || token.trim() === "") {
     throw createHttpError(401, "Token is required for authentication");
   }
-
   const user = await decodeAccessToken(token);
 
   if (!user) {
@@ -28,23 +25,21 @@ export const auth = asyncHandler(async (req: Request, res: Response, next: NextF
       message: "Invalid or expired token",
     });
   }
-
   req.user = user as any;
   next();
 });
 
-export const isUser = async (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user;
-  if (!user || user.role !== Enum.UserRole.USER) {
-    next(createHttpError(401, "Only User can access this route"));
-  }
-  next();
-};
 
-export const isSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
-  const user = req.user;
-  if (!user || user.role !== Enum.UserRole.SUPER_ADMIN) {
-    next(createHttpError(401, "only Super Admin can access this route"));
-  }
-  next();
+export const roleAuth = (allowedRoles: Enum.UserRole[]) => {
+  return asyncHandler(async (req: Request, res: Response, next: NextFunction) => {
+    const user = req.user;
+    
+    if (!user || !user.role) {
+      throw createHttpError(401, "Unauthorized - User not authenticated");
+    }
+    if (!allowedRoles.includes(user.role)) {
+      throw createHttpError(403, `Forbidden - Requires one of these roles: ${allowedRoles.join(', ')}`);
+    }
+    next();
+  });
 };

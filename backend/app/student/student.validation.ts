@@ -174,7 +174,7 @@ export const addStudent = [
 ];
 
 export const getStudents = [
-    param("session")
+    param("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Invalid Session ID"),
 
@@ -205,3 +205,45 @@ export const getStudentById = [
         .notEmpty().withMessage("Student ID is required")
         .isMongoId().withMessage("Invalid Student ID"),
 ]
+
+export const addRemark = [
+    param("sessionId")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Invalid Session ID"),
+
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+
+    body("remarkType")
+        .notEmpty().withMessage("Remark Type is required")
+        .isIn(Object.values(Enum.RemarkType)).withMessage("Invalid Remark Type"),
+
+    body("description")
+        .notEmpty().withMessage("Description is required")
+        .isString().withMessage("Description must be a string")
+        .trim()
+        .isLength({ min: 5 }).withMessage("Description must be at least 5 characters long"),
+
+    body("actionTaken")
+        .optional()
+        .isIn(Object.values(Enum.ActionTaken)).withMessage("Invalid Action Taken"),
+
+    body("supportingDocuments")
+        .optional()
+        .isArray().withMessage("Supporting documents must be an array")
+        .custom((docs) => {
+            if (docs) {
+                for (const doc of docs) {
+                    if (!doc.name || !doc.url) {
+                        throw new Error("Each document must have 'name' and 'url'");
+                    }
+                    if (typeof doc.name !== 'string' || typeof doc.url !== 'string') {
+                        throw new Error("Document 'name' and 'url' must be strings");
+                    }
+                }
+            }
+            return true;
+        }),
+];
+
