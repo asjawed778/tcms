@@ -85,6 +85,7 @@ const SectionDetails: React.FC = () => {
                 name={`sections.${index}.capacity`}
                 label="Total Capacity"
                 placeholder="Enter total capacity of a sections"
+                type="number"
                 required={false}
               />
             </Grid>
@@ -94,6 +95,7 @@ const SectionDetails: React.FC = () => {
                 label="Select Class Teacher"
                 options={facultyName}
                 loading={isLoading}
+                required={false}
               />
             </Grid>
           </Grid>

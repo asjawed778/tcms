@@ -196,6 +196,7 @@ export const basicDetailsSchema = yup.object({
           .optional(),
       })
     ),
+
 });
 export const feeStructureSchema = yup.object({
   feeStructure: yup.object().shape({
@@ -305,9 +306,9 @@ export const personalDetailsSchema = yup.object({
   }),
 });
 export const parentDetailsSchema = yup.object({
-    father: yup.object({
-      name: yup.string().required("Name is required"),
-      email: yup
+  father: yup.object({
+    name: yup.string().required("Name is required"),
+    email: yup
       .string()
       .email("Invalid email format")
       .matches(
@@ -319,40 +320,51 @@ export const parentDetailsSchema = yup.object({
       .string()
       .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
       .required("Phone number is required"),
-      qualification: yup.string().required("Qualification is required"),
-      occupation: yup.string().required("Occupation is required"),
-      bussinessOrEmployerName: yup.string().optional(),
-      officeAddress: yup.string().optional(),
-      officeNumber: yup.string().optional(),
-    }),
-    mother: yup.object({
-    name: yup.string().required("Name is required"),
-    email: yup
-    .string()
-    .email("Invalid email format")
-    .matches(
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      "Email must include domain (e.g. gmail.com)"
-    )
-    .required("Email is required"),
-  contactNumber: yup
-    .string()
-    .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
-    .required("Phone number is required"),
     qualification: yup.string().required("Qualification is required"),
     occupation: yup.string().required("Occupation is required"),
     bussinessOrEmployerName: yup.string().optional(),
     officeAddress: yup.string().optional(),
     officeNumber: yup.string().optional(),
-  }), 
+  }),
+  mother: yup.object({
+    name: yup.string().required("Name is required"),
+    email: yup
+      .string()
+      .email("Invalid email format")
+      .matches(
+        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+        "Email must include domain (e.g. gmail.com)"
+      )
+      .required("Email is required"),
+    contactNumber: yup
+      .string()
+      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
+      .required("Phone number is required"),
+    qualification: yup.string().required("Qualification is required"),
+    occupation: yup.string().required("Occupation is required"),
+    bussinessOrEmployerName: yup.string().optional(),
+    officeAddress: yup.string().optional(),
+    officeNumber: yup.string().optional(),
+  }),
 });
 export const previousSchoolSchema = yup.object({
-    class: yup.string().required("Class Name is required"),
-    section: yup.string().required("Section is required"),
-    admissionDate: yup.string().required("Admission date is required")
+  class: yup.string().required("Class Name is required"),
+
+  section: yup.string().when("class", (classValue, schema) => {
+    if (!classValue) {
+      return schema.test(
+        "section-blocked",
+        "Please select class first",
+        () => false
+      );
+    }
+    return schema.required("Section is required");
+  }),
+
+  admissionDate: yup.string().required("Admission date is required"),
 });
 export const documentDetailsSchema = yup.object({
- documents: yup
+  documents: yup
     .array()
     .of(
       yup.object().shape({
@@ -367,5 +379,5 @@ export const documentDetailsSchema = yup.object({
           ),
       })
     )
-    .required( "At least one document is required"),
+    .required("At least one document is required"),
 });

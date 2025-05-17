@@ -36,11 +36,12 @@
   ];
   const Faculty: React.FC = () => {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(10);
+    const [rowsPerPage, setRowsPerPage] = useState(5);
     const [query, setQuery] = useState("");
     // const [statusFilter, setStatusFilter] = useState({label: "All", value: "All"});
     const [statusFilter, setStatusFilter] = useState("All");
     const navigate = useNavigate();
+    console.log("Page: ", page);
     
     const {
       data: facultyData,
@@ -57,6 +58,8 @@
         refetchOnMountOrArgChange: true,
       }
     );
+    console.log("Faculty Data: ", facultyData);
+    
     const handlePageChange = (newPage: number) => {
       setPage(newPage);
     };

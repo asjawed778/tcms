@@ -6,7 +6,7 @@ import { useGetAllStudentQuery } from "@/services/studentApi";
 import { useAppSelector } from "@/store/store";
 import { PersonAdd } from "@mui/icons-material";
 import { Avatar, Box, Grid, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, {  useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentTable from "./StudentTable";
 import ModalWrapper from "@/components/ModalWrapper";
@@ -19,7 +19,7 @@ const actionsList = [
 ];
 const Student: React.FC = () => {
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(3);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState("All");
   const [openModal, setOpenModal] = useState(false);
@@ -34,10 +34,9 @@ const Student: React.FC = () => {
     data: studentData,
     isLoading,
     isError,
-    refetch,
   } = useGetAllStudentQuery({
-    sessionId: selectedSession._id,
-    page: page,
+    sessionId: selectedSession?._id as string,
+    page: page + 1,
     limit: rowsPerPage,
     searchQuery,
   });
@@ -132,7 +131,7 @@ const Student: React.FC = () => {
       </Box>
 
       <StudentTable
-        students={studentData?.data.students ?? []}
+        students={studentData?.data.students || []}
         totalCount={studentData?.data?.totalDocs ?? 0}
         page={page}
         rowsPerPage={rowsPerPage}
@@ -168,16 +167,7 @@ const Student: React.FC = () => {
                     bgcolor: "pink", // fallback background color
       fontSize: 32,
                   }}
-                >
-                  {
-                    // Show initials if image fails to load
-                    selectedStudent.student?.name
-                      ?.split(" ")
-                      .map((word) => word[0])
-                      .join("")
-                      .toUpperCase() || "S"
-                  }
-                </Avatar>
+                />
               </Grid>
 
               {/* One per row on mobile, two per row on md+ */}

@@ -107,8 +107,11 @@ interface FacultyApiResponse {
 }
 
 // Class..............
+interface ClassTableData{
+  classes: ClassFormData[];
+}
 interface ClassApiResponse {
-  data: ClassFormData[];
+  data: ClassTableData;
   success: boolean;
   message: string;
 }
@@ -121,6 +124,7 @@ interface Subjects{
   ISBN: string;
 }
 interface Sections{
+  _id?: string;
   name: string;
   capacity: number;
 }
@@ -168,7 +172,7 @@ interface AdmissionClass{
   name: Enum.ClassName;
   section: string;
   admissionDate: string;
-}
+};
 interface StudentFormData{
   _id?: string;
   name: string;
@@ -189,16 +193,31 @@ interface StudentFormData{
   previousSchool: PreviousSchool;
   admission: AdmissionClass;
   documents: Document[]
+};
+interface Admission{
+  admissionStatus: string;
+  rollNumber: number;
+  _id: string;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  class: object;
+  section: object;
+  session: object;
+}
+interface Students{
+  student: StudentFormData;
+  admission: Admission;
 }
 interface studentTableData{
-  students: StudentFormData[];
+  students: Students[];
   currentPage: number;
   totalPages: number;
   totalDocs: number;
   pageLimit: number;
   hasPrevious: boolean;
   hasNext: boolean;
-}
+};
 interface StudentApiResponse{
   data: studentTableData;
   success: boolean;

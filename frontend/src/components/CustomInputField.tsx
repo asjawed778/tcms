@@ -4,7 +4,6 @@ import {
   InputAdornment,
   IconButton,
   TextFieldProps,
-  Typography,
 } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { Controller, useFormContext, Control } from "react-hook-form";

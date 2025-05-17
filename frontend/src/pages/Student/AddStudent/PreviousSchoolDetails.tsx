@@ -4,23 +4,35 @@ import FileUploader from "@/components/FileUploader";
 import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
 import { Divider, Grid, Typography } from "@mui/material";
-import React, { useEffect } from "react";
-import { useFormContext } from "react-hook-form";
+import React, { useEffect, useMemo } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
 
 const PreviousSchoolDetails: React.FC = () => {
   const selectedSession = useAppSelector(state => state.session.selectedSession);
-  const {data: classData, isLoading} = useGetAllClassQuery({
-    sessionId: selectedSession._id
-  });
-  const className = classData?.data.map(items => ({
-    label: items.name,
-    value: items._id!,
-  })) || [];
-  const sections = [];
-  console.log("classData: ", className);
-  
-  const { setValue } = useFormContext();
+    const { setValue, control  } = useFormContext();
 
+  const {data: classData, isLoading} = useGetAllClassQuery({
+    sessionId: selectedSession?._id as string
+  });
+  const className = classData?.data.classes.map(items => ({
+    label: items.name,
+    value: items._id as string,
+  })) || [];
+  const selectedClassId: string = useWatch({
+    control,
+    name: "class",
+  });
+  const sectionOptions = useMemo(() => {
+    const foundClass = classData?.data.classes.find((cls) => cls._id === selectedClassId);
+    return (
+      foundClass?.sections.map((section) => ({
+        label: section.name,
+        value: section._id as string,
+      })) || []
+    );
+  }, [selectedClassId, classData]);
+  console.log("classData: ", classData);
+  
   useEffect(() => {
     setValue("previousSchool.transferCertificate.name", "Transfer Certificate");
     setValue(
@@ -151,7 +163,8 @@ const PreviousSchoolDetails: React.FC = () => {
         <CustomDropdownField 
           name="section"
           label="Select section"
-          options={sections}
+          options={sectionOptions}
+          disabled={!selectedClassId}
         />
       </Grid>
       <Grid size={{xs: 12, md: 6}}>

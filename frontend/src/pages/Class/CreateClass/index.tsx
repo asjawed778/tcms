@@ -62,12 +62,12 @@ const CreateClass = () => {
       toast.success("Step completed! Moving to next step.");
     } else {
       try {
-        console.log("Class Data: ",data);
+        
         const payload={
           ...data,
           session: selectedSession?._id,
         }
-        
+        console.log("Class Form: ",data);
         const response = await createClass(payload).unwrap();
         if (response.success) {
           toast.success(

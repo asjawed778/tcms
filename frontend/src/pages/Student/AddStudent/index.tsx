@@ -59,11 +59,11 @@ const AddStudent = () => {
   const selectedSession = useAppSelector(state => state.session.selectedSession)
 
   const currentSchema = steps[activeStep].schema;
-  const methods = useForm({
-    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
-    mode: "onChange",
-  });
-  // const methods = useForm();
+  // const methods = useForm({
+  //   resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+  //   mode: "onChange",
+  // });
+  const methods = useForm();
   const onSubmit = async (data: any) => {
     const isValid = await methods.trigger();
 
@@ -86,7 +86,7 @@ const AddStudent = () => {
         const response = await addStudent(payload).unwrap();
         if (response.success) {
           toast.success(
-            response.message || "Class Created successfully!"
+            response.message || "Student Added successfully!"
           );
           navigate("/dashboard/student");
         } else {
