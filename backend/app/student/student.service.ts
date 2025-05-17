@@ -4,6 +4,7 @@ import * as StudentDto from "./student.dto";
 import studentSchema from "./student.schema";
 import admissionSchema from "./admission.schema";
 import mongoose, { Types } from "mongoose";
+import remarksSchema from "./remarks.schema";
 
 export const addStudent = async (studentData: StudentDto.IStudentCreate, session: mongoose.ClientSession) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
@@ -23,6 +24,14 @@ export const admissionStudentToClass = async (studentId: string, sessionId: stri
         session: sessionId,
     }], { session });
     return admission[0];
+};
+
+export const getAdmissionByStudentId = async (studentId: string, sessionId: string) => {
+    const admission = await admissionSchema.findOne({ student: studentId, session: sessionId });
+    if (!admission) {
+        throw createHttpError(404, "Admission not found");
+    }
+    return admission;
 };
 
 export const getStudents = async (
@@ -218,4 +227,10 @@ export const getStudentById = async (studentId: string) => {
         })
 
     return student;
+};
+
+export const addRemark = async (remarkData: StudentDto.IRemarkCreate) => {
+    const remark = new remarksSchema(remarkData);
+    const result = await remark.save();
+    return result;
 };

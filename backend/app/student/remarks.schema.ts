@@ -10,7 +10,7 @@ const RemarkSchema = new mongoose.Schema<IRemark>({
     },
     givenBy: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Faculty',
+        ref: 'User',
         required: true
     },
     class: {
@@ -48,7 +48,7 @@ const RemarkSchema = new mongoose.Schema<IRemark>({
             url: { type: String, required: true },
         }
     ],
-    deleted: { type: Boolean, required: true }
+    deleted: { type: Boolean, required: true, default: false}
 }, {
     timestamps: true
 });
