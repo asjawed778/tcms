@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ISubject } from "./class.dto";
-import { SubjectCategory, SubjectType } from "./class.constants";
+import * as Enum from "../common/constant/enum";
 
 const subjectSchema = new mongoose.Schema<ISubject>({
     name: {
@@ -21,12 +21,12 @@ const subjectSchema = new mongoose.Schema<ISubject>({
     },
     subjectType: {
         type: String,
-        enum: Object.values(SubjectType),
+        enum: Object.values(Enum.SubjectType),
         required: true
     },
     subjectCategory: {
         type: String,
-        enum: Object.values(SubjectCategory),
+        enum: Object.values(Enum.SubjectCategory),
         required: true
     },
     deleted: {
