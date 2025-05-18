@@ -1,8 +1,11 @@
 import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
 import * as ClassService from "./class.service";
+import * as SessionService from "../session/session.service";
 import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
+import { ICreateTimeTable } from "./class.dto";
+import mongoose from "mongoose";
 
 
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
@@ -25,4 +28,61 @@ export const getClassById = asyncHandler(async (req: Request, res: Response) => 
     const { classId } = req.params;
     const result = await ClassService.getClassById(classId);
     res.send(createResponse(result, "Class fetched successfully"));
+});
+
+export const assignFaculty = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const { classId, sectionId, facultyId } = req.body;
+    const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId, classId, sectionId);
+    if (!isClassAndSectionValid) {
+        throw createHttpError(400, "Invalid class or section");
+    }
+    const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
+    if (!isSessionCurrentOrUpcoming) {
+        throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const result = await ClassService.assignFaculty(sectionId, facultyId);
+    res.send(createResponse({}, "Faculty assigned successfully"));
+});
+
+export const removeAssignedTeacher = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const { classId, sectionId } = req.body;
+
+    const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId, classId, sectionId);
+    if (!isClassAndSectionValid) {
+        throw createHttpError(400, "Invalid class or section");
+    }
+
+    const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
+    if (!isSessionCurrentOrUpcoming) {
+        throw createHttpError(400, "Session is not current or upcoming");
+    }
+
+    const result = await ClassService.removeAssignedTeacher(sectionId);
+    res.send(createResponse({}, "Teacher removed successfully"));
+});
+
+export const createTimeTable = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId, classId, sectionId } = req.params;
+    const { weeklySchedule } = req.body;
+
+    const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId, classId, sectionId);
+    if (!isClassAndSectionValid) {
+        throw createHttpError(400, "Invalid class or section");
+    }
+
+    const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
+    if (!isSessionCurrentOrUpcoming) {
+        throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const timeTablePayload: ICreateTimeTable = {
+        session: new mongoose.Types.ObjectId(sessionId),
+        class: new mongoose.Types.ObjectId(classId),
+        section: new mongoose.Types.ObjectId(sectionId),
+        weeklySchedule: weeklySchedule
+    }
+
+    const result = await ClassService.createTimeTable(timeTablePayload);
+    res.send(createResponse(timeTablePayload, "Time table created successfully"));
 });

@@ -1,11 +1,11 @@
 import mongoose from "mongoose";
 import { IClass } from "./class.dto";
-import * as ClassEnum from "./class.constants";
+import * as Enum from "../common/constant/enum";
 
 const classSchema = new mongoose.Schema<IClass>({
     name: {
         type: String,
-        enum: Object.values(ClassEnum.ClassName),
+        enum: Object.values(Enum.ClassName),
         required: true
     },
     session: {
@@ -23,7 +23,7 @@ const classSchema = new mongoose.Schema<IClass>({
     }],
     courseStream: {
         type: String,
-        enum: Object.values(ClassEnum.CourseStream),
+        enum: Object.values(Enum.CourseStream),
         required: false
     },
     feeStructure: {
