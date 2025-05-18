@@ -1,4 +1,4 @@
-import CustomDropdownField, { DropdownOption } from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
 import { useGetAllClassQuery } from "@/services/classApi";
@@ -11,7 +11,7 @@ const PreviousSchoolDetails: React.FC = () => {
   const selectedSession = useAppSelector(state => state.session.selectedSession);
     const { setValue, control  } = useFormContext();
 
-  const {data: classData, isLoading} = useGetAllClassQuery({
+  const {data: classData} = useGetAllClassQuery({
     sessionId: selectedSession?._id as string
   });
   const className = classData?.data.classes.map(items => ({
@@ -22,6 +22,8 @@ const PreviousSchoolDetails: React.FC = () => {
     control,
     name: "class",
   });
+  console.log("class Data: ", classData);
+  
   const sectionOptions = useMemo(() => {
     const foundClass = classData?.data.classes.find((cls) => cls._id === selectedClassId);
     return (
@@ -31,7 +33,6 @@ const PreviousSchoolDetails: React.FC = () => {
       })) || []
     );
   }, [selectedClassId, classData]);
-  console.log("classData: ", classData);
   
   useEffect(() => {
     setValue("previousSchool.transferCertificate.name", "Transfer Certificate");
@@ -169,10 +170,10 @@ const PreviousSchoolDetails: React.FC = () => {
       </Grid>
       <Grid size={{xs: 12, md: 6}}>
         <CustomInputField 
-          name="admissionDate"
-          label="Admission Date"
-          type="date"
-          minDate={new Date().toISOString().split("T")[0]}
+          name="admissionYear"
+          label="Admission Year"
+          type="number"
+          placeholder="Enter admission year"
         />
       </Grid>
     </Grid>

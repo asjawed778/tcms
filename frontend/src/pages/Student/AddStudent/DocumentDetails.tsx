@@ -1,7 +1,7 @@
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
 import { AddCircleOutline, Close } from "@mui/icons-material";
-import { Box, Button, FormHelperText, Grid, IconButton } from "@mui/material";
+import { Box, Button, Grid, IconButton } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -62,6 +62,7 @@ const DocumentDetails: React.FC = () => {
                   placeholder="Enter Document Number"
                   control={control}
                   margin="normal"
+                  required={false}
                 />
               </Grid>
               <Grid size={{ xs: 12, md: 6 }} sx={{ mt: 2 }}>

@@ -11,9 +11,6 @@ import {
 } from '@mui/material';
 import {
   Person,
-  Message,
-  Notifications,
-  Settings,
   Logout,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -26,9 +23,9 @@ import { resetSession } from '@/store/reducers/sessionSlice';
 
 const menuItems = [
   { icon: <Person />, label: 'Profile' },
-  { icon: <Message />, label: 'Message' },
-  { icon: <Notifications />, label: 'Notification' },
-  { icon: <Settings />, label: 'Settings' },
+  // { icon: <Message />, label: 'Message' },
+  // { icon: <Notifications />, label: 'Notification' },
+  // { icon: <Settings />, label: 'Settings' },
 ];
 
 const  Profile: React.FC = () => {

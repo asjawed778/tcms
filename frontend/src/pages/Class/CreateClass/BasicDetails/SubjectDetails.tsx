@@ -1,33 +1,23 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
-import { useGetAllClassQuery } from "@/services/classApi";
-import { useAppSelector } from "@/store/store";
 import { SubjectCategory, SubjectType } from "@/utils/enum";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { ClassFormData } from "../../../../../type";
 
-interface ClassList{
-  _id: string;
-  name: string;
-}
-
-const SubjectDetails: React.FC = () => {  
-   const subjectTypeOptions = Object.entries(SubjectType).map(
-    ([_, value]) => ({
-      label: value,
-      value: value,
-    })
-  );
+const SubjectDetails: React.FC = () => {
+  const subjectTypeOptions = Object.entries(SubjectType).map(([_, value]) => ({
+    label: value,
+    value: value,
+  }));
   const subjectCategoryOption = Object.entries(SubjectCategory).map(
     ([_, value]) => ({
       label: value,
       value: value,
     })
-  ); 
-  
+  );
+
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,

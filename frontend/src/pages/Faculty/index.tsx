@@ -3,15 +3,11 @@
   import CustomSearchField from "@/components/CustomSearchField";
   import TableWrapper from "@/components/TableWrapper";
   import { useGetAllFacultyQuery } from "@/services/facultyApi";
-  import { PersonAdd, PersonAddAlt1 } from "@mui/icons-material";
+  import { PersonAdd } from "@mui/icons-material";
   import { Box, Typography } from "@mui/material";
   import React, { useState } from "react";
   import { useNavigate } from "react-router-dom";
 
-  interface Option{
-    label: string;
-    value: string;
-  }
   const facultyColumns = [
     { key: "sno.", label: "S.No." },
     { key: "name", label: "Name" },
@@ -36,7 +32,7 @@
   ];
   const Faculty: React.FC = () => {
     const [page, setPage] = useState(0);
-    const [rowsPerPage, setRowsPerPage] = useState(5);
+    const [rowsPerPage, setRowsPerPage] = useState(10);
     const [query, setQuery] = useState("");
     // const [statusFilter, setStatusFilter] = useState({label: "All", value: "All"});
     const [statusFilter, setStatusFilter] = useState("All");
@@ -79,12 +75,6 @@
     const handleAddFaculty = () => {
       navigate("/dashboard/addFaculty");
     };
-
-    // const handleChange = (val: string) => {
-    //   console.log("value: ", val);
-    //   setStatusFilter(val);  
-    //   setPage(0);
-    // };
     
     const handleChange = (val: any) => {
       console.log("status: ", val);

@@ -1,5 +1,5 @@
-import React, { useCallback, useState } from 'react';
-import { useDropzone } from 'react-dropzone';
+import React, { useCallback, useState } from "react";
+import { useDropzone } from "react-dropzone";
 import {
   Box,
   Typography,
@@ -8,12 +8,12 @@ import {
   Paper,
   CircularProgress,
   Button,
-} from '@mui/material';
-import PictureAsPdfIcon from '@mui/icons-material/PictureAsPdf';
-import DeleteIcon from '@mui/icons-material/Delete';
-import { Controller, useFormContext, Control } from 'react-hook-form';
-import { useUploadFileMutation } from '@/services/commonApi';
-import { useAppTheme } from '@/context/ThemeContext';
+} from "@mui/material";
+import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
+import DeleteIcon from "@mui/icons-material/Delete";
+import { Controller, useFormContext, Control } from "react-hook-form";
+import { useUploadFileMutation } from "@/services/commonApi";
+import { useAppTheme } from "@/context/ThemeContext";
 
 type FileUploaderProps = {
   name: string;
@@ -24,7 +24,7 @@ type FileUploaderProps = {
 
 const FileUploader: React.FC<FileUploaderProps> = ({
   name,
-  label = 'Drag & drop PDF here, or click to select',
+  label = "Drag & drop PDF here, or click to select",
   maxSizeMB = 5,
   control,
 }) => {
@@ -33,7 +33,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
   const maxSizeBytes = maxSizeMB * 1024 * 1024;
 
   const [uploadFile, { isLoading }] = useUploadFileMutation();
-  const [localError, setLocalError] = useState('');
+  const [localError, setLocalError] = useState("");
 
   const { colors } = useAppTheme();
 
@@ -45,13 +45,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({
       render={({ field: { onChange, value }, fieldState: { error } }) => {
         const onDrop = useCallback(
           async (acceptedFiles: File[], fileRejections: any[]) => {
-            setLocalError('');
+            setLocalError("");
 
             if (fileRejections.length > 0) {
               const err = fileRejections[0].errors[0];
-              if (err.code === 'file-invalid-type') {
-                setLocalError('Only PDF files are allowed.');
-              } else if (err.code === 'file-too-large') {
+              if (err.code === "file-invalid-type") {
+                setLocalError("Only PDF files are allowed.");
+              } else if (err.code === "file-too-large") {
                 setLocalError(`File size exceeds ${maxSizeMB}MB.`);
               }
               return;
@@ -62,17 +62,17 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
             try {
               const formData = new FormData();
-              formData.append('file', file);
+              formData.append("file", file);
 
               const response = await uploadFile(formData).unwrap();
               console.log("file response: ", response);
-              
+
               const uploadedUrl = response?.data?.url;
               if (uploadedUrl) {
                 onChange(uploadedUrl);
               }
             } catch (e) {
-              setLocalError('Upload failed. Please try again.');
+              setLocalError("Upload failed. Please try again.");
             }
           },
           [uploadFile, onChange]
@@ -84,7 +84,7 @@ const FileUploader: React.FC<FileUploaderProps> = ({
 
         const { getRootProps, getInputProps, isDragActive } = useDropzone({
           onDrop,
-          accept: { 'application/pdf': ['.pdf'] },
+          accept: { "application/pdf": [".pdf"] },
           multiple: false,
           maxSize: maxSizeBytes,
         });
@@ -96,16 +96,16 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                 {...getRootProps()}
                 sx={{
                   border: `2px dashed ${colors.primary}`,
-                  borderRadius: '8px',
+                  borderRadius: "8px",
                   padding: 1,
-                  textAlign: 'center',
-                  cursor: 'pointer',
-                  bgcolor: isDragActive ? colors.primary : 'transparent',
-                  transition: '0.3s',
-                  position: 'relative',
+                  textAlign: "center",
+                  cursor: "pointer",
+                  bgcolor: isDragActive ? colors.primary : "transparent",
+                  transition: "0.3s",
+                  position: "relative",
                   "&:hover": {
-                backgroundColor: colors.uploadFileHover
-              },
+                    backgroundColor: colors.uploadFileHover,
+                  },
                 }}
               >
                 <input {...getInputProps()} />
@@ -113,7 +113,10 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                   <CircularProgress />
                 ) : (
                   <>
-                    <PictureAsPdfIcon fontSize="large" sx={{color: colors.error}} />
+                    <PictureAsPdfIcon
+                      fontSize="large"
+                      sx={{ color: colors.error }}
+                    />
                     <Typography variant="body1" mt={1}>
                       {label}
                     </Typography>
@@ -128,29 +131,42 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                 elevation={2}
                 sx={{
                   p: 2,
-                  display: 'flex',
-                  alignItems: 'center',
+                  display: "flex",
+                  alignItems: "center",
                   gap: 2,
-                  flexWrap: 'wrap',
-                  justifyContent: 'space-between',
+                  flexWrap: "wrap",
+                  justifyContent: "space-between",
                 }}
               >
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                  <PictureAsPdfIcon sx={{color: colors.error}} />
-                  <Typography>
-                    {typeof value === 'string' ? value.split('/').pop() : 'Uploaded PDF'}
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1, width:"100%" }}>
+                  <PictureAsPdfIcon sx={{ color: colors.error }} />
+                  <Typography
+                    sx={{
+                      maxWidth: "100%",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {typeof value === "string"
+                      ? value.split("/").pop()
+                      : "Uploaded PDF"}
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: 'flex', gap: 1 }}>
+                <Box sx={{ display: "flex", gap: 1 }}>
                   <Button
                     variant="outlined"
                     size="small"
-                    onClick={() => window.open(value, '_blank')}
+                    onClick={() => window.open(value, "_blank")}
                   >
                     Preview PDF
                   </Button>
-                  <IconButton onClick={handleRemove} aria-label="Remove PDF" sx={{ color: colors.error }}>
+                  <IconButton
+                    onClick={handleRemove}
+                    aria-label="Remove PDF"
+                    sx={{ color: colors.error }}
+                  >
                     <DeleteIcon />
                   </IconButton>
                 </Box>

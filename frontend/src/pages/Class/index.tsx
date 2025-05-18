@@ -1,6 +1,5 @@
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
 import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
@@ -25,7 +24,7 @@ const actionsList = [
 const Class = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [query, setQuery] = useState("");
+  // const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
   const navigate = useNavigate();
   const selectedSession = useAppSelector(
@@ -36,6 +35,7 @@ const Class = () => {
     data: classData,
     isLoading,
     isError,
+    refetch
   } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
     // page: page + 1,
@@ -60,6 +60,7 @@ const Class = () => {
   };
 
   const handleAddFaculty = () => {
+    refetch();
     navigate("/dashboard/createClass");
   };
 
@@ -83,7 +84,7 @@ const Class = () => {
           mb: 2,
         }}
       >
-        <CustomSearchField onSearch={setQuery} />
+        {/* <CustomSearchField onSearch={setQuery} /> */}
         <Box
           sx={{
             display: "flex",

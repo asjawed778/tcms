@@ -34,16 +34,6 @@ const SectionDetails: React.FC = () => {
       initialized.current = true;
     }
   }, [fields, append]);
-
-  useEffect(() => {
-    if (!initialized.current && fields.length === 0) {
-      append({
-        name: "",
-        capacity: "",
-      });
-      initialized.current = true;
-    }
-  }, [fields, append]);
   return (
     <Grid container spacing={2}>
       {fields.map((field, index) => (

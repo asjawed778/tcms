@@ -97,9 +97,9 @@ const AddFaculty = () => {
         } else {
           toast.error(response.message || "Something went wrong.");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Submission failed:", error);
-        toast.error("Submission failed. Please try again!");
+        toast.error(error?.data?.message || "Submission failed. Please try again!");
       }
     }
   };

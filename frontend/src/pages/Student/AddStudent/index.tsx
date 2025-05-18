@@ -17,7 +17,6 @@ import {
   CardContent,
   Divider,
   Paper,
-  CircularProgress,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -28,6 +27,7 @@ import PreviousSchoolDetails from "./PreviousSchoolDetails";
 import DocumentDetails from "./DocumentDetails";
 import PersonalDetails from "./PersonalDetails";
 import { useAddStudentMutation } from "@/services/studentApi";
+import { cleanData } from "@/utils/helper";
 
 const steps = [
   {
@@ -56,17 +56,18 @@ const AddStudent = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [addStudent, { isLoading }] = useAddStudentMutation();
   const navigate = useNavigate();
-  const selectedSession = useAppSelector(state => state.session.selectedSession)
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession
+  );
 
   const currentSchema = steps[activeStep].schema;
-  // const methods = useForm({
-  //   resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
-  //   mode: "onChange",
-  // });
-  const methods = useForm();
+  const methods = useForm({
+    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    mode: "onChange",
+  });
+  // const methods = useForm();
   const onSubmit = async (data: any) => {
-    const isValid = await methods.trigger();
-
+    const isValid = await methods.trigger();    
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
       return;
@@ -77,24 +78,30 @@ const AddStudent = () => {
       toast.success("Step completed! Moving to next step.");
     } else {
       try {
-        const payload={
+        const payload = {
           ...data,
           session: selectedSession?._id,
+        };
+        const freshData = cleanData(payload);
+        if (!freshData?.previousSchool?.transferCertificate?.url) {
+          delete freshData.previousSchool.transferCertificate;
         }
-        console.log("Student data: ",payload);
-        
-        const response = await addStudent(payload).unwrap();
+        if (!freshData?.previousSchool?.schoolLeavingCertificate?.url) {
+          delete freshData.previousSchool.schoolLeavingCertificate;
+        }
+        if(!freshData?.previousSchool?.name){
+          delete freshData.previousSchool;
+        }
+        const response = await addStudent(freshData).unwrap();
         if (response.success) {
-          toast.success(
-            response.message || "Student Added successfully!"
-          );
+          toast.success(response.message || "Student Added successfully!");
           navigate("/dashboard/student");
         } else {
           toast.error(response.message || "Something went wrong.");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Submission failed:", error);
-        toast.error("Submission failed. Please try again!");
+        toast.error(error?.data?.message || "Submission failed. Please try again!");
       }
     }
   };

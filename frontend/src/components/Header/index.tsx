@@ -30,7 +30,7 @@ const Header: React.FC = () => {
 
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
+    // const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   
 
   const handleMenuBtn = () => {

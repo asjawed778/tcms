@@ -147,16 +147,16 @@ interface ClassFormData{
   feeStructure: FeeStructure;
 }
 
-// Student Admission.........
+// Student Admission Data..................................
 interface Parent{
   name: string;
-  email: string;
-  contactNumber: number;
+  email?: string;
+  contactNumber?: number;
   qualification: string;
   occupation: string;
-  bussinessOrEmployerName: string;
-  officeAddress: string;
-  officeNumber:  number;
+  bussinessOrEmployerName?: string;
+  officeAddress?: string;
+  officeNumber?:  number;
 
 };
 interface PreviousSchool{
@@ -175,6 +175,7 @@ interface AdmissionClass{
 };
 interface StudentFormData{
   _id?: string;
+  enrollmentNumber?: string;
   name: string;
   dob: string;
   gender:string;
@@ -183,16 +184,16 @@ interface StudentFormData{
   motherTongue: string;
   image: string;
   adharNumber: string;
-  contactNumber: number;
-  email: string;
-  bloodGroup: string;
+  contactNumber?: number;
+  email?: string;
+  bloodGroup?: Enum.BloodGroup;
   address: Address;
   father: Parent;
   mother: Parent;
-  localGuardian: Parent;
-  previousSchool: PreviousSchool;
+  localGuardian?: Parent;
+  previousSchool?: PreviousSchool;
   admission: AdmissionClass;
-  documents: Document[]
+  documents: Document[];
 };
 interface Admission{
   admissionStatus: string;
@@ -201,9 +202,9 @@ interface Admission{
   deleted: boolean;
   createdAt: string;
   updatedAt: string;
-  class: object;
-  section: object;
-  session: object;
+  class: ClassFormData;
+  section: Sections;
+  session: Session;
 }
 interface Students{
   student: StudentFormData;
@@ -222,4 +223,14 @@ interface StudentApiResponse{
   data: studentTableData;
   success: boolean;
   message: string;
+}
+
+// Add Reamarks Data.........................................
+interface AddRemarkFormData{
+  sessionId: string;
+  studentId: string;
+  remarkType: Enum.RemarkType;
+  description: string;
+  actionTaken?: Enum.ActionTaken;
+  supportingDocuments?: Document[];
 }

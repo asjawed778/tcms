@@ -18,12 +18,7 @@ import {
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAppTheme } from "@/context/ThemeContext";
-import { StudentFormData } from "../../../../type";
-
-interface Column {
-  key: string;
-  label: string;
-}
+import { Students } from "../../../../type";
 
 interface Row {
   key?: string | number;
@@ -36,7 +31,7 @@ interface ActionsList {
 }
 
 interface CustomTableProps {
-  students: StudentFormData[];
+  students: Students[];
   totalCount: number;
   page: number;
   rowsPerPage: number;
@@ -49,8 +44,6 @@ interface CustomTableProps {
 }
 
 const StudentTable: React.FC<CustomTableProps> = ({
-  // columns,
-  // rows,
   students,
   totalCount,
   page,

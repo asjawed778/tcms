@@ -20,20 +20,6 @@ const ParentDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
-          name="father.contactNumber"
-          label="Mobile Number"
-          placeholder="Enter father's mobile number"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="father.email"
-          label="Email"
-          placeholder="Enter father's email"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
           name="father.qualification"
           label="Qualification"
           placeholder="Enter father's qualification"
@@ -44,6 +30,22 @@ const ParentDetails: React.FC = () => {
           name="father.occupation"
           label="Occupation"
           placeholder="Enter father's occupation"
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="father.contactNumber"
+          label="Mobile Number"
+          placeholder="Enter father's mobile number"
+          required={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="father.email"
+          label="Email"
+          placeholder="Enter father's email"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -86,20 +88,6 @@ const ParentDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
-          name="mother.contactNumber"
-          label="Mobile Number"
-          placeholder="Enter mother's mobile number"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="mother.email"
-          label="Email"
-          placeholder="Enter mother's email"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
           name="mother.qualification"
           label="Qualification"
           placeholder="Enter mother's qualification"
@@ -110,6 +98,22 @@ const ParentDetails: React.FC = () => {
           name="mother.occupation"
           label="Occupation"
           placeholder="Enter mother's occupation"
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="mother.contactNumber"
+          label="Mobile Number"
+          placeholder="Enter mother's mobile number"
+          required={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="mother.email"
+          label="Email"
+          placeholder="Enter mother's email"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>

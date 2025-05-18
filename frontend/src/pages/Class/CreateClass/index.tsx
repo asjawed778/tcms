@@ -23,6 +23,7 @@ import FeeStructure from "./FeeStructure";
 import { useCreateClassMutation } from "@/services/classApi";
 import BasicDetails from "./BasicDetails";
 import { useAppSelector } from "@/store/store";
+import { cleanData } from "@/utils/helper";
 
 const steps = [
   {
@@ -68,7 +69,9 @@ const CreateClass = () => {
           session: selectedSession?._id,
         }
         console.log("Class Form: ",data);
-        const response = await createClass(payload).unwrap();
+        const freshData = cleanData(payload);
+        console.log("Fresh Data: ", freshData);
+        const response = await createClass(freshData).unwrap();
         if (response.success) {
           toast.success(
             response.message || "Class Created successfully!"
@@ -77,9 +80,9 @@ const CreateClass = () => {
         } else {
           toast.error(response.message || "Something went wrong.");
         }
-      } catch (error) {
+      } catch (error: any) {
         console.error("Submission failed:", error);
-        toast.error("Submission failed. Please try again!");
+        toast.error(error?.data?.message || 'Submission failed. Please try again!');
       }
     }
   };

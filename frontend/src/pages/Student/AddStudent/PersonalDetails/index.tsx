@@ -2,7 +2,7 @@ import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import CustomRadioGroup from "@/components/CustomRadioGroup";
 import ImageUploader from "@/components/ImageUploader";
-import { Gender, Religion } from "@/utils/enum";
+import { BloodGroup, Gender, Religion } from "@/utils/enum";
 import { Grid } from "@mui/material";
 import React from "react";
 import AddressDetails from "./AddressDetails";
@@ -12,6 +12,11 @@ const PersonalDetails: React.FC = () => {
     label: value,
     value: value,
   }));
+  const bloodGroupOptions = Object.entries(BloodGroup).map(([_, value]) => ({
+  label: value,
+  value: value,
+}));
+
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -59,6 +64,7 @@ const PersonalDetails: React.FC = () => {
           name="email"
           label="Email"
           placeholder="Enter email"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -92,10 +98,12 @@ const PersonalDetails: React.FC = () => {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
+        <CustomDropdownField
           name="bloodGroup"
           label="Blood Group"
-          placeholder="Enter your blood group"
+          // placeholder="Enter your blood group"
+          options={bloodGroupOptions}
+          required={false}
         />
       </Grid>
         <AddressDetails />

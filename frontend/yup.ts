@@ -1,8 +1,9 @@
 import * as yup from "yup";
 import * as Enum from "@/utils/enum";
-
 import { LoginFormValues } from "./type";
+import { validateGroupFields } from "@/utils/helper";
 
+// Login Schema.................................................
 export const loginSchema: yup.ObjectSchema<LoginFormValues> = yup.object({
   email: yup
     .string()
@@ -46,7 +47,7 @@ export const sessionSchema = yup.object().shape({
     .required("Session status is required"),
 });
 
-// Faculty Schema...............
+// Faculty Schema................................................
 export const personalInfoSchema = yup.object({
   // name: yup.string().required("Name is required"),
   photo: yup.string().required("Photo is required"),
@@ -173,7 +174,7 @@ export const documentUploadSchema = yup.object({
     .matches(/^\d+$/, "Salary must be a number"),
 });
 
-// ClassSchema.............................
+// ClassSchema.........................................................
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
 
@@ -186,17 +187,15 @@ export const basicDetailsSchema = yup.object({
         name: yup.string().required("Section name is requied"),
         capacity: yup
           .number()
-          .transform((value, originalValue) =>
+          .transform((value, originalValue) => 
             originalValue === "" ? undefined : value
-          )
-          .required("Capacity is required")
-          .typeError("Capacity must be a number")
+           )
+          .optional()
+          // .typeError("Capacity must be a number")
           .positive("Capacity must be positive")
-          .integer("Capacity must be an integer")
-          .optional(),
+          .integer("Capacity must be an integer"),
       })
     ),
-
 });
 export const feeStructureSchema = yup.object({
   feeStructure: yup.object().shape({
@@ -263,7 +262,7 @@ export const feeStructureSchema = yup.object({
   }),
 });
 
-// Addmission Schema.............................
+// Addmission Schema.....................................................
 export const personalDetailsSchema = yup.object({
   name: yup.string().required("Name is required"),
   dob: yup
@@ -272,22 +271,22 @@ export const personalDetailsSchema = yup.object({
     .required("Date of birth is required"),
   email: yup
     .string()
+    .optional()
     .email("Invalid email format")
     .matches(
       /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
       "Email must include domain (e.g. gmail.com)"
-    )
-    .required("Email is required"),
+    ),
   contactNumber: yup
     .string()
-    .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
-    .required("Phone number is required"),
+    .optional()
+    .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
   image: yup.string().required("Image is required"),
   gender: yup.string().required("Gender is required"),
   nationality: yup.string().required("Nationality is required"),
   religion: yup.string().required("Religion is required"),
   motherTongue: yup.string().required("Mother tongue is required"),
-  bloodGroup: yup.string().required("Blood group is required"),
+  bloodGroup: yup.string().optional(),
   adharNumber: yup
     .string()
     .length(12, "Aadhaar number must be 12 digits")
@@ -301,8 +300,8 @@ export const personalDetailsSchema = yup.object({
     country: yup.string().required("State is required "),
     pincode: yup
       .string()
-      .matches(/^\d{6}$/, "Enter a valid Indian pincode")
-      .required("Pincode is required in address"),
+      .required("Pincode is required")
+      .matches(/^[1-9][0-9]{5}$/, "Pincode must be a valid Indian postal code"),
   }),
 });
 export const parentDetailsSchema = yup.object({
@@ -310,16 +309,16 @@ export const parentDetailsSchema = yup.object({
     name: yup.string().required("Name is required"),
     email: yup
       .string()
+      .optional()
       .email("Invalid email format")
       .matches(
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         "Email must include domain (e.g. gmail.com)"
-      )
-      .required("Email is required"),
+      ),
     contactNumber: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
-      .required("Phone number is required"),
+      .optional()
+      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
     qualification: yup.string().required("Qualification is required"),
     occupation: yup.string().required("Occupation is required"),
     bussinessOrEmployerName: yup.string().optional(),
@@ -330,26 +329,63 @@ export const parentDetailsSchema = yup.object({
     name: yup.string().required("Name is required"),
     email: yup
       .string()
+      .optional()
       .email("Invalid email format")
       .matches(
         /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
         "Email must include domain (e.g. gmail.com)"
-      )
-      .required("Email is required"),
+      ),
     contactNumber: yup
       .string()
-      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)")
-      .required("Phone number is required"),
+      .optional()
+      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
     qualification: yup.string().required("Qualification is required"),
     occupation: yup.string().required("Occupation is required"),
     bussinessOrEmployerName: yup.string().optional(),
     officeAddress: yup.string().optional(),
     officeNumber: yup.string().optional(),
   }),
+  // localGuardian: yup.object({
+  //   name: yup.string().optional(),
+  //   email: yup
+  //     .string()
+  //     .optional()
+  //     .email("Invalid email format")
+  //     .matches(
+  //       /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+  //       "Email must include domain (e.g. gmail.com)"
+  //     ),
+  //   contactNumber: yup
+  //     .string()
+  //     .optional()
+  //     .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
+  //   qualification: yup.string().optional(),
+  //   occupation: yup.string().optional(),
+  //   bussinessOrEmployerName: yup.string().optional(),
+  //   officeAddress: yup.string().optional(),
+  //   officeNumber: yup.string().optional(),
+  // }),
 });
-export const previousSchoolSchema = yup.object({
-  class: yup.string().required("Class Name is required"),
 
+const groupedFields = [
+  "name",
+  "address",
+  "reasonForLeaving",
+  "dateOfLeaving",
+  // "url", 
+];
+
+export const previousSchoolSchema = yup.object({
+  previousSchool: yup.object({
+    name: validateGroupFields("name-required", "Name is required", groupedFields),
+    address: validateGroupFields("address-required", "Address is required", groupedFields),
+    reasonForLeaving: validateGroupFields("reason-required", "Reason is required", groupedFields),
+    dateOfLeaving: validateGroupFields("date-required", "Date is required", groupedFields),
+    // schoolLeavingCertificate: yup.object({
+    //   url: validateGroupFields("url-required", "Certificate is required", groupedFields),
+    // }),
+  }),
+  class: yup.string().required("Class Name is required"),
   section: yup.string().when("class", (classValue, schema) => {
     if (!classValue) {
       return schema.test(
@@ -360,9 +396,15 @@ export const previousSchoolSchema = yup.object({
     }
     return schema.required("Section is required");
   }),
-
-  admissionDate: yup.string().required("Admission date is required"),
+  admissionYear: yup
+    .number()
+    .typeError("Admission year must be a number")
+    .required("Admission year is required")
+    .integer("Admission year must be an integer")
+    .min(2000, "Admission year must be between 2000 and 2100")
+    .max(2100, "Admission year must be between 2000 and 2100"),
 });
+
 export const documentDetailsSchema = yup.object({
   documents: yup
     .array()
@@ -371,13 +413,42 @@ export const documentDetailsSchema = yup.object({
         name: yup.string().required("Document name is required"),
         url: yup.string().required("Document file is required"),
         documentNumber: yup
-          .mixed()
-          .test(
-            "required",
-            "Document Number is required",
-            (value) => value !== null && value !== undefined && value !== ""
-          ),
+          .string().optional()
       })
     )
     .required("At least one document is required"),
 });
+
+// Add Remark Schema...........................................
+const remarkGroupFields = ["name", "url"];
+export const addRemarkSchema = yup.object({
+  remarkType: yup.string()
+    .required("Remark Type is required")
+    .oneOf(Object.values(Enum.RemarkType), "Invalid Remark Type"),
+
+  description: yup.string()
+    .required("Description is required")
+    .min(5, "Description must be at least 5 characters long"),
+
+  actionTaken: yup.string()
+    .optional()
+    .oneOf(Object.values(Enum.ActionTaken), "Invalid Action Taken"),
+
+  supportingDocuments: yup.array()
+    .of(
+      yup.object().shape({
+        name: validateGroupFields(
+          "name",
+          "Document name is required",
+          remarkGroupFields
+        ),
+        documentNumber: yup.string().optional(),
+        url: validateGroupFields(
+          "url",
+          "Document is Required",
+          remarkGroupFields
+        )
+      })
+    )
+
+})
