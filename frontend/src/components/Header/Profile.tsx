@@ -2,15 +2,12 @@ import React, { useState } from 'react';
 import {
   Avatar,
   Menu,
-  MenuItem,
   IconButton,
   Typography,
   Divider,
   Box,
-  ListItemIcon,
 } from '@mui/material';
 import {
-  Person,
   Logout,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -21,12 +18,12 @@ import { useLogoutUserMutation } from '@/services/userApi';
 import CustomButton from '../CustomButton';
 import { resetSession } from '@/store/reducers/sessionSlice';
 
-const menuItems = [
-  { icon: <Person />, label: 'Profile' },
+// const menuItems = [
+  // { icon: <Person />, label: 'Profile' },
   // { icon: <Message />, label: 'Message' },
   // { icon: <Notifications />, label: 'Notification' },
   // { icon: <Settings />, label: 'Settings' },
-];
+// ];
 
 const  Profile: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -55,8 +52,9 @@ const  Profile: React.FC = () => {
       toast.success("Logged out successfully");
       navigate("/login");
     } catch (error) {
-      console.error("Logout failed:", error);
-      toast.error("Failed to log out. Please try again.");
+      dispatch(logout());
+      dispatch(resetSession());
+      toast.success("Logged out successfully");
     }
   };
   
@@ -110,12 +108,12 @@ const  Profile: React.FC = () => {
 
         <Divider sx={{ my: 1 }} />
 
-        {menuItems.map(({ icon, label }) => (
+        {/* {menuItems.map(({ icon, label }) => (
           <MenuItem key={label} onClick={handleClose}>
             <ListItemIcon>{icon}</ListItemIcon>
             {label}
           </MenuItem>
-        ))}
+        ))} */}
 
         <Divider sx={{ my: 1 }} />
            <CustomButton type='button' variant='outlined' color='secondary'   startIcon={<Logout fontSize="small" />} loading={isLoading} fullWidth onClick={handleLogout} >

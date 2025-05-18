@@ -18,7 +18,7 @@ const facultyColumns = [
 const actionsList = [
   {
     action: "update",
-    label: "Update Class",
+    label: "",
   },
 ];
 const Class = () => {
@@ -55,7 +55,7 @@ const Class = () => {
     console.log("Action:", action, "on ID:", row);
     switch (action) {
       case "update":
-        alert(`Faculty ${row?.name} updated`);
+        // alert(`Faculty ${row?.name} updated`);
     }
   };
 
@@ -67,7 +67,7 @@ const Class = () => {
   const handleChange = (val: any) => {
     setStatus(val);
   };
-  const updatedClasses = classData?.data.classes.map((cls) => ({
+  const updatedClasses = classData?.data.classes?.map((cls) => ({
     ...cls,
     totalSections: cls.sections?.length || 0,
     totalSubjects: cls.subjects?.length || 0,
@@ -104,8 +104,8 @@ const Class = () => {
             onChange={handleChange}
             options={[
               { label: "All", value: "All" },
-              { label: "Active", value: "true" },
-              { label: "Inactive", value: "false" },
+              // { label: "Active", value: "true" },
+              // { label: "Inactive", value: "false" },
             ]}
           />
 

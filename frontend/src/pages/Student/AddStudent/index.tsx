@@ -26,8 +26,8 @@ import ParentDetails from "./ParentDetails";
 import PreviousSchoolDetails from "./PreviousSchoolDetails";
 import DocumentDetails from "./DocumentDetails";
 import PersonalDetails from "./PersonalDetails";
-import { useAddStudentMutation } from "@/services/studentApi";
 import { cleanData } from "@/utils/helper";
+import { useAddStudentMutation } from "@/services/studentApi";
 
 const steps = [
   {

@@ -1,11 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Typography, useTheme, useMediaQuery, Paper } from '@mui/material';
 import LoginForm from './LoginForm';
 import LoginVisuals from './LoginVisuals';
+import ForgotPassword from './ForgotPassword';
 
 const Login: React.FC = () => {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
 
   return (
     <Box
@@ -29,10 +31,15 @@ const Login: React.FC = () => {
               Welcome back!
             </Typography>
             <Typography variant="subtitle1" fontWeight={500} color="text.secondary" mb={4} >
-              Central Modern School Teams
+              The Central Modern School Teams
             </Typography>
           </Box>
-          <LoginForm />
+          {isForgotPassword ? (
+            <ForgotPassword onBackToLogin={() => setIsForgotPassword(false)} />
+          ) : (
+            <LoginForm onForgotPassword={() => setIsForgotPassword(true)} />
+          )}
+          {/* <LoginForm /> */}
         </Box>
       </Box>
 

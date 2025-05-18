@@ -1,14 +1,13 @@
 import React from "react";
-import { Outlet, useLocation } from "react-router-dom";
+import { Outlet } from "react-router-dom";
 import { Box, Toolbar } from "@mui/material";
 import Header from "../../components/Header";
 import Sidebar from "../../components/Sidebar";
 import { useAppTheme } from "@/context/ThemeContext"; 
-import CustomAnimatedDiv from "@/components/CustomAnimatedDiv";
 
 const DashboardLayout: React.FC = () => {
   const { colors } = useAppTheme(); 
-  const location = useLocation();
+  // const location = useLocation();
   return (
     <Box display="flex" minHeight="100vh">
       <Sidebar />
@@ -23,9 +22,9 @@ const DashboardLayout: React.FC = () => {
           bgcolor={colors.background } 
           color={colors.text}      
         >
-          <CustomAnimatedDiv key={location.pathname} animationType="zoom">
+          {/* <CustomAnimatedDiv key={location.pathname} animationType="zoom"> */}
             <Outlet />
-          </CustomAnimatedDiv>
+          {/* </CustomAnimatedDiv> */}
         </Box>
       </Box>
     </Box>
