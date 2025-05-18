@@ -1,6 +1,14 @@
 import * as Enum from "@/utils/enum";
 import { EasingModifier } from "framer-motion";
 
+interface ForgotPasswordFormValues {
+  email: string;
+};
+interface ResetPasswordFormValues {
+  newPassword: string;
+  confirmPassword: string;
+};
+
 interface Session {
   _id: string;
   session: string;

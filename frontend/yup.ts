@@ -21,6 +21,30 @@ export const loginSchema: yup.ObjectSchema<LoginFormValues> = yup.object({
     .matches(/[0-9]/, "One number required")
     .matches(/[!@#$%^&*]/, "One special character required"),
 });
+export const forgotPasswordSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Invalid email format")
+    .matches(
+      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+      "Email must include domain (e.g. gmail.com)"
+    )
+    .required("Email is required"),
+});
+
+export const resetPasswordSchema = yup.object().shape({
+  newPassword: yup
+    .string()
+    .required("New Password is required")
+    .min(8, "At least 8 characters")
+    .matches(/[A-Z]/, "One uppercase letter required")
+    .matches(/[0-9]/, "One number required")
+    .matches(/[!@#$%^&*]/, "One special character required"),
+  confirmPassword: yup
+    .string()
+    .oneOf([yup.ref("newPassword")], "Passwords not match")
+    .required("Confirm password required"),
+});
 
 export const sessionSchema = yup.object().shape({
   startDate: yup.string().required("Start date is required"),
