@@ -24,12 +24,12 @@ const Document = {
 };
 
 // Previous school sub-schema
-const PreviousSchool = {
+  const PreviousSchool = {
     _id: false,
-    name: { type: String, required: true },
-    address: { type: String, required: true },
-    reasonForLeaving: { type: String, required: true },
-    dateOfLeaving: { type: Date, reqired: true },
+    name: { type: String, required: false },       
+    address: { type: String, required: false },
+    reasonForLeaving: { type: String, required: false },
+    dateOfLeaving: { type: Date, required: false }, 
     schoolLeavingCertificate: { type: Document },
     transferCertificate: { type: Document },
 };
@@ -65,7 +65,8 @@ const studentSchema = new mongoose.Schema<IStudent>({
 
     father: { type: ParentDetails, required: true },
     mother: { type: ParentDetails, required: true },
-    localGuardian: ParentDetails,
+    // localGuardian: ParentDetails,
+    localGuardian: {type: ParentDetails, required: false},
 
     previousSchool: PreviousSchool,
 

@@ -1,25 +1,21 @@
-import React from 'react';
-import { Button, CircularProgress, ButtonProps } from '@mui/material';
+import React from "react";
+import { Button, CircularProgress, ButtonProps } from "@mui/material";
 
 export interface LoadingButtonProps extends ButtonProps {
-  isLoading?: boolean;                
-  type?: 'button' | 'submit' | 'reset'; 
+  isLoading?: boolean;
+  type?: "button" | "submit" | "reset";
   children: React.ReactNode;
 }
 
 const CustomButton: React.FC<LoadingButtonProps> = ({
   isLoading,
-  type = 'button',
+  type = "button",
   children,
   disabled,
   ...rest
 }) => {
   return (
-    <Button
-      type={type}
-      disabled={isLoading || disabled}
-      {...rest}
-    >
+    <Button type={type} disabled={isLoading || disabled} {...rest}>
       {isLoading ? <CircularProgress size={24} color="inherit" /> : children}
     </Button>
   );

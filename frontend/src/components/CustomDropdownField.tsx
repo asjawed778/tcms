@@ -1,290 +1,174 @@
-
-// import {
-//   FormControl,
-//   InputLabel,
-//   Select,
-//   MenuItem,
-//   TextField,
-//   Typography,
-// } from "@mui/material";
-// import debounce from "lodash.debounce";
-// import React, { useEffect, useRef, useState } from "react";
-
-// interface Props {
-//   label: string;
-//   value: any;
-//   onChange: (val: any) => void;
-//   options: (string | Record<string, any>)[];
-//   valueKey?: string;
-//   labelKey?: string;
-//   size?: "small" | "medium";
-//   fullWidth?: boolean;
-//   required?: boolean;
-//   sx?: SxProps<Theme>;
-// }
-
-// const CustomDropdownField: React.FC<Props> = ({
-//   label,
-//   value,
-//   onChange,
-//   options,
-//   size = "small",
-//   fullWidth = true,
-//   required = true,
-//   sx = {},
-//   valueKey = "value",
-//   labelKey = "label",
-// }) => {
-//   const [open, setOpen] = useState(false);
-//   const [searchText, setSearchText] = useState("");
-//   const [filtered, setFiltered] = useState(options);
-
-//   const debouncedSearch = useRef(
-//     debounce((val: string) => setSearchText(val), 300)
-//   ).current;
-
-//   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-//     debouncedSearch(e.target.value);
-//   };
-
-//   useEffect(() => {
-//     if (!searchText.trim()) {
-//       setFiltered(options);
-//     } else {
-//       const lower = searchText.toLowerCase();
-//       const result = options.filter((opt) => {
-//         const label =
-//           typeof opt === "string" ? opt : opt[labelKey]?.toString() || "";
-//         return label.toLowerCase().includes(lower);
-//       });
-//       setFiltered(result);
-//     }
-//   }, [searchText, options]);
-
-//   return (
-//     <FormControl
-//       fullWidth={fullWidth}
-//       size={size}
-//       sx={{
-//         minWidth: 150,
-//         textAlign: "left",
-//         ...sx,
-//       }}
-//     >
-//       <InputLabel required={required}>{label}</InputLabel>
-//       <Select
-//         open={open}
-//         onOpen={() => setOpen(true)}
-//         onClose={() => setOpen(false)}
-//         label={label}
-//         value={value}
-//         size="small"
-//         onChange={(e) => onChange(e.target.value)}
-//         renderValue={(val) => {
-//           const item = options.find((opt) =>
-//             typeof opt === "string" ? opt === val : opt[valueKey] === val
-//           );
-//           return typeof item === "string" ? item : item?.[labelKey];
-//         }}
-//       >
-//         <MenuItem disabled>
-//           <TextField
-//             placeholder="Search..."
-//             fullWidth
-//             size="small"
-//             onChange={handleSearchChange}
-//           />
-//         </MenuItem>
-
-//         {filtered?.length === 0 && (
-//           <MenuItem disabled>No results found</MenuItem>
-//         )}
-
-//         {filtered?.map((item) => {
-//           const val = typeof item === "string" ? item : item[valueKey];
-//           const label = typeof item === "string" ? item : item[labelKey];
-//           return (
-//             <MenuItem key={val} value={val}>
-//               {label}
-//             </MenuItem>
-//           );
-//         })}
-//       </Select>
-//     </FormControl>
-//   );
-// };
-
-// export default CustomDropdownField;
-
-
-
-
+import React from "react";
 import {
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
+  Autocomplete,
   TextField,
-  Typography,
-  SelectChangeEvent,
+  CircularProgress,
+  AutocompleteRenderInputParams,
 } from "@mui/material";
-import debounce from "lodash.debounce";
-import React, { useEffect, useRef, useState } from "react";
-import { Controller, useFormContext, Control } from "react-hook-form";
-import type { SxProps, Theme } from "@mui/material";
+import {
+  Controller,
+  useFormContext,
+  Control,
+  FieldValues,
+  useFormState,
+} from "react-hook-form";
+import { useAppTheme } from "@/context/ThemeContext";
 
-interface BaseProps {
+export interface DropdownOption {
   label: string;
-  options: (string | Record<string, any>)[];
-  valueKey?: string;
-  labelKey?: string;
-  size?: "small" | "medium";
-  fullWidth?: boolean;
-  required?: boolean;
-  sx?: SxProps<Theme>;
+  value: string;
 }
 
-type HookFormMode = {
+interface SharedProps {
+  label: string;
+  options: DropdownOption[];
+  placeholder?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  fullWidth?: boolean;
+  loading?: boolean;
+}
+
+interface WithHookFormProps extends SharedProps {
   name: string;
-  control?: Control<any>; // Optional external control
-  value?: never;
-  onChange?: never;
+  control?: Control<any>;
+}
+
+interface WithoutHookFormProps extends SharedProps {
+  value: string | string[] | null;
+  onChange: (value: string | string[] | null) => void;
+}
+
+type DropdownFieldProps = WithHookFormProps | WithoutHookFormProps;
+
+const getErrorMessage = (errors: any, name: string) => {
+  const keys = name.split("."); // Split nested field names like 'address.city'
+  let error = errors;
+  for (let key of keys) {
+    if (error && error[key]) {
+      error = error[key];
+    } else {
+      return undefined; 
+    }
+  }
+  return error?.message;
 };
 
-type ControlledMode = {
-  name?: never;
-  control?: never;
-  value: any;
-  onChange: (val: any) => void;
-};
+const CustomDropdownField: React.FC<DropdownFieldProps> = (props) => {
+  const {
+    label,
+    options,
+    placeholder,
+    multiple = false,
+    disabled = false,
+    required = true,
+    fullWidth = true,
+    loading = false,
+    control: incomingControl,
+    name,
+  } = props as Partial<WithHookFormProps>;
 
-type Props = BaseProps & (HookFormMode | ControlledMode);
+  const formContext = useFormContext<FieldValues>();
+  const control = incomingControl ?? formContext?.control;
+  const isUsingHookForm = !!name && !!control;
 
-const CustomDropdownField: React.FC<Props> = ({
-  name,
-  label,
-  options,
-  valueKey = "value",
-  labelKey = "label",
-  size = "small",
-  fullWidth = true,
-  required = true,
-  sx = {},
-  value,
-  onChange,
-  control: externalControl,
-}) => {
-  const formContext = useFormContext();
-  const control = externalControl || formContext?.control;
+  const { colors } = useAppTheme();
 
-  const [open, setOpen] = useState(false);
-  const [searchText, setSearchText] = useState("");
-  const [filtered, setFiltered] = useState(options);
+  const renderAutocomplete = (
+    value: any,
+    onChange: (value: any) => void,
+    errorMsg?: string
+  ) => {
+    const displayValue = React.useMemo(() => {
+      if (multiple) {
+        return options?.filter((opt) =>
+          Array.isArray(value) ? value.includes(opt.value) : false
+        );
+      }
+      return options?.find((opt) => opt.value === value) || null;
+    }, [value, options, multiple]);
 
-  const debouncedSearch = useRef(
-    debounce((val: string) => setSearchText(val), 300)
-  ).current;
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    debouncedSearch(e.target.value);
+    return (
+      <Autocomplete
+        multiple={multiple}
+        options={options ?? []}
+        value={displayValue}
+        onChange={(_, newValue) => {
+          const selected = multiple
+            ? (newValue as DropdownOption[]).map((opt) => opt?.value)
+            : (newValue as DropdownOption | null)?.value;
+          onChange(selected);
+        }}
+        getOptionLabel={(option) => (option as DropdownOption)?.label || ""}
+        isOptionEqualToValue={(a, b) =>
+          (a as DropdownOption).value === (b as DropdownOption).value
+        }
+        disabled={disabled}
+        fullWidth={fullWidth}
+        loading={loading}
+        loadingText={
+          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+            <CircularProgress size={20} />
+            Loading...
+          </div>
+        }
+        renderInput={(params: AutocompleteRenderInputParams) => (
+          <TextField
+            {...params}
+            label={label}
+            placeholder={placeholder}
+            required={required}
+            error={!!errorMsg}
+            size="small"
+            helperText={errorMsg}
+            InputLabelProps={{
+              sx: {
+                color: colors.inputLabel,
+                "&.Mui-focused": {
+                  color: colors.inputLabel,
+                },
+                "& .MuiFormLabel-asterisk": {
+                  color: required ? colors.error : "transparent",
+                },
+              },
+            }}
+            sx={{
+              minWidth: 200,
+              "& .MuiOutlinedInput-root": {
+                borderRadius: "8px",
+              },
+            }}
+          />
+        )}
+        renderOption={(props, option) => (
+          <li {...props} key={(option as DropdownOption)?.value}>
+            {(option as DropdownOption)?.label}
+          </li>
+        )}
+      />
+    );
   };
 
-  useEffect(() => {
-    if (!searchText.trim()) {
-      setFiltered(options);
-    } else {
-      const lower = searchText.toLowerCase();
-      const result = options.filter((opt) => {
-        const label =
-          typeof opt === "string" ? opt : opt[labelKey]?.toString() || "";
-        return label.toLowerCase().includes(lower);
-      });
-      setFiltered(result);
-    }
-  }, [searchText, options]);
+  if (isUsingHookForm) {
+    const { errors } = useFormState({ control });
+    const errorMsg = getErrorMessage(errors, name!); // Get error message for nested fields
 
-  const renderSelect = (
-    selectedValue: any,
-    onValueChange: (val: any) => void,
-    errorText?: string
-  ) => (
-    <FormControl
-      fullWidth={fullWidth}
-      size={size}
-      error={!!errorText}
-      sx={{
-        minWidth: 150,
-        textAlign: "left",
-        ...sx,
-      }}
-    >
-      <InputLabel required={required}>{label}</InputLabel>
-      <Select
-        open={open}
-        onOpen={() => setOpen(true)}
-        onClose={() => setOpen(false)}
-        label={label}
-        value={selectedValue ?? ""}
-        size={size}
-        onChange={(e: SelectChangeEvent<any>) => onValueChange(e.target.value)}
-        renderValue={(val) => {
-          const item = options.find((opt) =>
-            typeof opt === "string" ? opt === val : opt[valueKey] === val
-          );
-          return typeof item === "string" ? item : item?.[labelKey];
-        }}
-      >
-        <MenuItem disabled>
-          <TextField
-            placeholder="Search..."
-            fullWidth
-            size="small"
-            onChange={handleSearchChange}
-          />
-        </MenuItem>
-
-        {filtered?.length === 0 ? (
-          <MenuItem disabled>No results found</MenuItem>
-        ) : (
-          filtered?.map((item) => {
-            const val = typeof item === "string" ? item : item[valueKey];
-            const label = typeof item === "string" ? item : item[labelKey];
-            return (
-              <MenuItem key={val} value={val}>
-                {label}
-              </MenuItem>
-            );
-          })
-        )}
-      </Select>
-      {errorText && (
-        <Typography color="error" variant="caption">
-          {errorText}
-        </Typography>
-      )}
-    </FormControl>
-  );
-
-  if (name && control) {
     return (
       <Controller
-        name={name}
+        name={name!}
         control={control}
-        render={({ field, fieldState }) =>
-          renderSelect(field.value, field.onChange, fieldState.error?.message)
+        render={({ field }) =>
+          renderAutocomplete(field.value, field.onChange, errorMsg)
         }
       />
     );
   }
 
-  if (value !== undefined && typeof onChange === "function") {
-    return renderSelect(value, onChange);
-  }
-
-  console.error(
-    "CustomDropdownField must be used with either: 1) name + control/useFormContext OR 2) value + onChange"
-  );
-  return null;
+  const { value, onChange } = props as WithoutHookFormProps;
+  return renderAutocomplete(value, onChange);
 };
 
 export default CustomDropdownField;
+
+

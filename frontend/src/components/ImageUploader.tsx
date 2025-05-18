@@ -1,27 +1,30 @@
 import React, { useRef, useState } from "react";
-import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
+import {
+  Box,
+  Typography,
+  IconButton,
+  CircularProgress,
+} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Controller, useFormContext, Control } from "react-hook-form";
-import { useUploadImageMutation } from "@/services/commonApi";
+import { useUploadFileMutation } from "@/services/commonApi";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CloudUploadOutlined } from "@mui/icons-material";
 
-interface ImageUploaderProps  {
+interface ImageUploaderProps {
   name: string;
   label?: string;
   control?: Control<any>;
-  onImageSelect: (file: File | null) => void;
   maxSizeMB?: number;
   minWidth?: number;
   minHeight?: number;
   acceptedTypes?: string[];
-};
+}
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
   name,
   label = "Upload Photo",
   control,
-  onImageSelect,
   maxSizeMB = 2,
   minWidth = 300,
   minHeight = 300,
@@ -35,7 +38,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [uploadImage, { isLoading: isUploading }] = useUploadImageMutation();
+  const [uploadImage, { isLoading: isUploading }] = useUploadFileMutation();
 
   const handleFileChange = async (
     file: File,
@@ -75,15 +78,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
       }
 
       const formData = new FormData();
-      formData.append("image", file);
+      formData.append("file", file);
 
       try {
-        const res = await uploadImage(formData).unwrap();
-        const uploadedUrl = res?.data?.url;
+        const response = await uploadImage(formData).unwrap();
+        const uploadedUrl = response?.data?.url;
 
         if (uploadedUrl) {
           onChange(uploadedUrl);
-          onImageSelect(file);
           setPreviewUrl(uploadedUrl);
         }
 
@@ -106,7 +108,6 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const handleDelete = (onChange: (value: string) => void) => {
     setPreviewUrl(null);
     onChange("");
-    onImageSelect(null);
     setError(null);
   };
 
@@ -195,14 +196,11 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               {fieldError.message}
             </Typography>
           )}
-
-          {/* Optional: your own error message logic (e.g., dimension, file type errors) */}
           {error && (
             <Typography variant="body2" color="error" textAlign="center">
               {error}
             </Typography>
           )}
-          
         </Box>
       )}
     />

@@ -5,9 +5,9 @@ export const commonApi = createApi({
   reducerPath: 'commonApi',
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    uploadImage: builder.mutation<{ data: {url: string} }, FormData>({
+    uploadFile: builder.mutation<{ data: {url: string} }, FormData>({
       query: (formData) => ({
-        url: '/common/image',
+        url: '/common/upload',
         method: 'POST',
         body: formData,
       }),
@@ -15,4 +15,4 @@ export const commonApi = createApi({
   }),
 });
 
-export const { useUploadImageMutation } =  commonApi;
+export const { useUploadFileMutation } =  commonApi;

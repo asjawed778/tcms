@@ -3,6 +3,7 @@ import { useFieldArray, useFormContext } from "react-hook-form";
 import { Box, Grid, IconButton, Button } from "@mui/material";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import CustomInputField from "@/components/CustomInputField";
+import FileUploader from "@/components/FileUploader";
 
 const DocumentUpload: React.FC = () => {
   const { control } = useFormContext();
@@ -21,6 +22,13 @@ const DocumentUpload: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="salary"
+          label="Salary we offers"
+          placeholder="Enter how much salary you offer."
+        />
+      </Grid>
       {fields.map((field, index) => (
         <Grid
           key={field.id}
@@ -34,7 +42,7 @@ const DocumentUpload: React.FC = () => {
           }}
         >
           {index > 0 && (
-            <Box sx={{ position: "absolute", top: -8, right: -8 }}>
+            <Box sx={{ position: "absolute", top: -10, right: -10, p: 1 }}>
               <IconButton
                 onClick={() => remove(index)}
                 size="small"
@@ -55,33 +63,21 @@ const DocumentUpload: React.FC = () => {
                 margin="normal"
                 {...control.register(`documents.${index}.name` as const)}
               />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
               <CustomInputField
                 label="Document Number"
                 placeholder="Enter Document Number"
                 fullWidth
                 variant="outlined"
                 margin="normal"
-                {...control.register(
-                  `documents.${index}.documentNumber` as const
-                )}
+                name={`documents.${index}.documentNumber`}
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <CustomInputField 
-                name="salary"
-                label="Salary we offers"
-                placeholder="Enter how much salary you offer."
+            <Grid size={{ xs: 12, md: 6 }} sx={{mt: 2}}>
+              <FileUploader 
+                name={`documents.${index}.url`}
+                control={control}
               />
             </Grid>
-
-            {/* <CustomFileUpload 
-          // label="upload file"
-          name="document.urkl"
-          accept="application/pdf"
-          {...control.register(`documents.${index}.url` as const)}
-          /> */}
           </Grid>
         </Grid>
       ))}

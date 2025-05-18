@@ -1,14 +1,11 @@
+import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import { Divider, Grid, Typography } from "@mui/material";
+import { City, Country, State } from "country-state-city";
 import React, { useEffect, useState } from "react";
-import CustomRadioGroup from "@/components/CustomRadioGroup";
-import { Gender } from "@/utils/enum";
-import ImageUploader from "@/components/ImageUploader";
-import CustomDropdownField from "@/components/CustomDropdownField";
 import { useFormContext } from "react-hook-form";
-import { Country, State, City } from "country-state-city";
 
-const PersonalInfo: React.FC = () => {
+const AddressDetails: React.FC = () => {
   const { control, watch, setValue } = useFormContext();
 
   const selectedCountry = watch("address.country");
@@ -60,79 +57,7 @@ const PersonalInfo: React.FC = () => {
   }, [selectedCountry, selectedState]);
   return (
     <Grid container spacing={2}>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <Grid container spacing={3}>
-          <Grid size={{ xs: 12 }}>
-            <CustomInputField
-              name="name"
-              label="Full Name"
-              placeholder="Enter full name"
-            />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <CustomInputField
-              name="fatherName"
-              label="Father's Name"
-              placeholder="Enter Father's Name"
-            />
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <CustomInputField
-              name="motherName"
-              label="Mother's Name"
-              placeholder="Enter Mother's Name"
-            />
-          </Grid>
-        </Grid>
-      </Grid>
-
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <ImageUploader
-          name="photo"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="phoneNumber"
-          label="Phone Number"
-          placeholder="Enter Phone Number"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="email"
-          label="Email"
-          placeholder="Enter email"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="aadhaarNumber"
-          type="number"
-          label="Aadhaar Number"
-          placeholder="Enter Aadhaar Number"
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="dob"
-          type="date"
-          label="Date Of Birth"
-          maxDate={new Date().toISOString().split("T")[0]}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomRadioGroup
-          name="gender"
-          label="Gender"
-          options={Object.values(Gender)}
-        />
-      </Grid>
-
-      <Grid size={{ md: 12 }}>
+      <Grid size={{xs:12}}>
         <Typography variant="h6" gutterBottom fontWeight={500}>
           Address Details
         </Typography>
@@ -189,4 +114,4 @@ const PersonalInfo: React.FC = () => {
     </Grid>
   );
 };
-export default PersonalInfo;
+export default AddressDetails;

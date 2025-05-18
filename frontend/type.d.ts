@@ -1,4 +1,5 @@
 import * as Enum from "@/utils/enum";
+import { EasingModifier } from "framer-motion";
 
 interface Session {
   _id: string;
@@ -43,7 +44,12 @@ interface AuthResponse {
   success: boolean;
 }
 
-// Teacher....................
+interface ApiResponse{
+  data: Object;
+  message: string;
+  success: boolean;
+}
+// Faculty....................
 interface Address {
     city: string;
     state: string;
@@ -66,6 +72,7 @@ interface Document {
 }
 
 interface FacultyFormData {
+  _id?: string;
   name: string;
   fatherName: string;
   motherName: string;
@@ -97,4 +104,133 @@ interface FacultyApiResponse {
   data: FacultyTableData;
   success: boolean;
   message: string;
+}
+
+// Class..............
+interface ClassTableData{
+  classes: ClassFormData[];
+}
+interface ClassApiResponse {
+  data: ClassTableData;
+  success: boolean;
+  message: string;
+}
+interface Subjects{
+  name: string;
+  subjectType: Enum.SubjectType;
+  subjectCategory: Enum.SubjectCategory;
+  publication: string;
+  writer: string;
+  ISBN: string;
+}
+interface Sections{
+  _id?: string;
+  name: string;
+  capacity: number;
+}
+interface FeeDeclaration{
+  amount: number;
+  total: number;
+}
+interface FeeStructure{
+  monthly: FeeDeclaration;
+  quarterly: FeeDeclaration;
+  halfYearly: FeeDeclaration;
+  yearly: FeeDeclaration;
+}
+interface ClassFormData{
+  _id?: string;
+  name: Enum.ClassName;
+  courseStream: Enum.CourseStream;
+  subjects: Subjects[];
+  sections: Sections[];
+  feeStructure: FeeStructure;
+}
+
+// Student Admission Data..................................
+interface Parent{
+  name: string;
+  email?: string;
+  contactNumber?: number;
+  qualification: string;
+  occupation: string;
+  bussinessOrEmployerName?: string;
+  officeAddress?: string;
+  officeNumber?:  number;
+
+};
+interface PreviousSchool{
+  name: string;
+  address: string;
+  reasonForLeaving: string;
+  dateOfLeaving: string;
+  schoolLeavingCertificate: Document;
+  transferCertificate: Document;
+
+};
+interface AdmissionClass{
+  name: Enum.ClassName;
+  section: string;
+  admissionDate: string;
+};
+interface StudentFormData{
+  _id?: string;
+  enrollmentNumber?: string;
+  name: string;
+  dob: string;
+  gender:string;
+  nationality: string;
+  religion: string;
+  motherTongue: string;
+  image: string;
+  adharNumber: string;
+  contactNumber?: number;
+  email?: string;
+  bloodGroup?: Enum.BloodGroup;
+  address: Address;
+  father: Parent;
+  mother: Parent;
+  localGuardian?: Parent;
+  previousSchool?: PreviousSchool;
+  admission: AdmissionClass;
+  documents: Document[];
+};
+interface Admission{
+  admissionStatus: string;
+  rollNumber: number;
+  _id: string;
+  deleted: boolean;
+  createdAt: string;
+  updatedAt: string;
+  class: ClassFormData;
+  section: Sections;
+  session: Session;
+}
+interface Students{
+  student: StudentFormData;
+  admission: Admission;
+}
+interface studentTableData{
+  students: Students[];
+  currentPage: number;
+  totalPages: number;
+  totalDocs: number;
+  pageLimit: number;
+  hasPrevious: boolean;
+  hasNext: boolean;
+};
+interface StudentApiResponse{
+  data: studentTableData;
+  success: boolean;
+  message: string;
+}
+
+// Add Reamarks Data.........................................
+interface AddRemarkFormData{
+  sessionId: string;
+  studentId: string;
+  remarkType: Enum.RemarkType;
+  description: string;
+  actionTaken?: Enum.ActionTaken;
+  supportingDocuments?: Document[];
 }

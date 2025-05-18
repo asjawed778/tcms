@@ -14,14 +14,11 @@ import {
   Box,
   Typography,
   TableContainer,
+  Avatar,
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import { useAppTheme } from "../context/ThemeContext";
-
-interface Column {
-  key: string;
-  label: string;
-}
+import { useAppTheme } from "@/context/ThemeContext";
+import { Students } from "../../../../type";
 
 interface Row {
   key?: string | number;
@@ -34,8 +31,7 @@ interface ActionsList {
 }
 
 interface CustomTableProps {
-  columns: Column[];
-  rows: Row[];
+  students: Students[];
   totalCount: number;
   page: number;
   rowsPerPage: number;
@@ -47,9 +43,8 @@ interface CustomTableProps {
   isError?: boolean;
 }
 
-const TableWrapper: React.FC<CustomTableProps> = ({
-  columns,
-  rows,
+const StudentTable: React.FC<CustomTableProps> = ({
+  students,
   totalCount,
   page,
   rowsPerPage,
@@ -64,7 +59,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
 
-  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {
+  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {    
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
@@ -84,11 +79,21 @@ const TableWrapper: React.FC<CustomTableProps> = ({
       <Table size="small">
         <TableHead>
           <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
-            {columns.map((col) => (
-              <TableCell key={col.key} sx={{ py: 1.5, fontWeight: 600 }}>
-                {col.label}
-              </TableCell>
-            ))}
+            <TableCell>
+              <strong>S. No.</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Full Name</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Enrollment No.</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Gender</strong>
+            </TableCell>
+            <TableCell>
+              <strong>Class and Section</strong>
+            </TableCell>
             <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
           </TableRow>
         </TableHead>
@@ -96,7 +101,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
         <TableBody>
           {isError ? (
             <TableRow>
-              <TableCell colSpan={columns.length + 1}>
+              <TableCell colSpan={6}>
                 <Box display="flex" justifyContent="center" py={4}>
                   <Typography variant="subtitle1" color="error">
                     Something went wrong. Please check your internet connection.
@@ -106,15 +111,15 @@ const TableWrapper: React.FC<CustomTableProps> = ({
             </TableRow>
           ) : isLoading ? (
             <TableRow>
-              <TableCell colSpan={columns.length + 1}>
+              <TableCell colSpan={6}>
                 <Box display="flex" justifyContent="center" py={4}>
                   <CircularProgress />
                 </Box>
               </TableCell>
             </TableRow>
-          ) : rows.length === 0 ? (
+          ) : students.length === 0 ? (
             <TableRow>
-              <TableCell colSpan={columns.length + 1}>
+              <TableCell colSpan={6}>
                 <Box display="flex" justifyContent="center" py={4}>
                   <Typography variant="subtitle1" color="text.secondary">
                     No records found.
@@ -123,9 +128,9 @@ const TableWrapper: React.FC<CustomTableProps> = ({
               </TableCell>
             </TableRow>
           ) : (
-            rows.map((row, index) => (
+            students.map((student, index) => (
               <TableRow
-                key={row.id ?? index}
+                key={index}
                 sx={{
                   "& td": {
                     py: 0,
@@ -133,17 +138,33 @@ const TableWrapper: React.FC<CustomTableProps> = ({
                   },
                 }}
               >
-                {columns.map((col) => (
-                  <TableCell key={col.key}>
-                    {col.key === "sno."
-                      ? index + 1 + page * rowsPerPage
-                      : row[col.key]}
-                  </TableCell>
-                ))}
+                <TableCell>{page * rowsPerPage + index + 1}</TableCell>
+                <TableCell>
+                  <Box display="flex" alignItems="center" gap={1.5}>
+                    <Avatar
+                      alt={student.student.name}
+                      src={student.student.image} // Pass image URL here
+                      sx={{ width: 32, height: 32 }}
+                    />
+                    <Typography variant="body2">
+                      {student.student.name}
+                    </Typography>
+                  </Box>
+                </TableCell>
+
+                <TableCell>{student.student.enrollmentNumber}</TableCell>
+                <TableCell>{student.student.gender}</TableCell>
+                <TableCell>
+                  {student.admission.class.name}
+                  <Box component="span" sx={{ px: 1, fontWeight: "bold" }}>
+                    -
+                  </Box>
+                  {student.admission.section.name}
+                </TableCell>
                 <TableCell>
                   <IconButton
                     aria-label="row actions"
-                    onClick={(e) => handleOpenMenu(e, row)}
+                    onClick={(e) => handleOpenMenu(e, student)}
                     sx={{ color: colors.primary }}
                   >
                     <MoreVertIcon />
@@ -184,4 +205,4 @@ const TableWrapper: React.FC<CustomTableProps> = ({
   );
 };
 
-export default TableWrapper;
+export default StudentTable;

@@ -2,9 +2,8 @@ import { useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  personalInfoSchema,
-  professionalInfoSchema,
-  documentUploadSchema,
+  basicDetailsSchema,
+  feeStructureSchema,
 } from "../../../../yup";
 import {
   Stepper,
@@ -17,37 +16,33 @@ import {
   Divider,
   Paper,
 } from "@mui/material";
-import PersonalInfo from "./PersonalInfo";
-import ProfessionalInfo from "./ProfessionalInfo";
-import DocumentUpload from "./DocumentUpload";
 import * as yup from "yup";
-import { useAddFacultyMutation } from "@/services/facultyApi";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import FeeStructure from "./FeeStructure";
+import { useCreateClassMutation } from "@/services/classApi";
+import BasicDetails from "./BasicDetails";
+import { useAppSelector } from "@/store/store";
+import { cleanData } from "@/utils/helper";
 
 const steps = [
   {
-    label: "Personal Information",
-    component: PersonalInfo,
-    schema: personalInfoSchema,
+    label: "Basic Detals",
+    component: BasicDetails,
+    schema: basicDetailsSchema,
   },
   {
-    label: "Professional Information",
-    component: ProfessionalInfo,
-    schema: professionalInfoSchema,
+    label: "Fee Structure",
+    component: FeeStructure,
+    schema: feeStructureSchema,
   },
-  {
-    label: "Document Upload",
-    component: DocumentUpload,
-    schema: documentUploadSchema,
-  },
-  // { label: "Preview & Submit", component: Preview, schema: yup.object() }
 ];
 
-const AddFaculty = () => {
+const CreateClass = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [faculty, { isLoading }] = useAddFacultyMutation();
+  const [createClass, { isLoading }] = useCreateClassMutation();
   const navigate = useNavigate();
+  const selectedSession = useAppSelector(state => state.session.selectedSession)
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
@@ -68,38 +63,26 @@ const AddFaculty = () => {
       toast.success("Step completed! Moving to next step.");
     } else {
       try {
-        const payload = {
+        
+        const payload={
           ...data,
-          expertiseSubjects:
-            data?.expertiseSubjects?.map((s: any) => s.subject) || [],
-        };
-        const hasValidExperience = data?.experience?.some((item: any) => {
-          return (
-            item.organisationName?.trim() !== "" ||
-            item.years > 0 ||
-            item.designation?.trim() !== ""
-          );
-        });
-
-        if (!hasValidExperience) {
-          delete payload.experience;
+          session: selectedSession?._id,
         }
-        console.log("Faculty Data: ", payload);
-        
-        const response = await faculty(payload).unwrap();
-        console.log("Faculty response: ",response);
-        
+        console.log("Class Form: ",data);
+        const freshData = cleanData(payload);
+        console.log("Fresh Data: ", freshData);
+        const response = await createClass(freshData).unwrap();
         if (response.success) {
           toast.success(
-            response.message || "Faculty data submitted successfully!"
+            response.message || "Class Created successfully!"
           );
-          navigate("/dashboard/faculty");
+          navigate("/dashboard/class");
         } else {
           toast.error(response.message || "Something went wrong.");
         }
       } catch (error: any) {
         console.error("Submission failed:", error);
-        toast.error(error?.data?.message || "Submission failed. Please try again!");
+        toast.error(error?.data?.message || 'Submission failed. Please try again!');
       }
     }
   };
@@ -161,4 +144,4 @@ const AddFaculty = () => {
   );
 };
 
-export default AddFaculty;
+export default CreateClass;
