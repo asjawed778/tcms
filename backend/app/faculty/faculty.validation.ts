@@ -113,3 +113,30 @@ export const getFacultyById = [
         .notEmpty().withMessage("Faculty ID is required")
         .isMongoId().withMessage("Faculty ID must be a valid MongoDB ObjectId"),
 ];
+
+export const getUnassignedFaculty = [
+    param("sessionId")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Session ID must be a valid MongoDB ObjectId"),
+    body("day")
+        .notEmpty().withMessage("Day is required")
+        .isIn(Object.values(Enum.WeekDay)).withMessage(`Day must be one of: ${Object.values(Enum.WeekDay).join(", ")}`),
+    body("startTime")
+        .notEmpty().withMessage("Start time is required")
+        .isObject().withMessage("Start time must be an object")
+        .custom((value) => {
+            if (typeof value.hour !== "number" || typeof value.minute !== "number") {
+                throw new Error("Start time must have hour and minute as numbers");
+            }
+            return true;
+        }),
+    body("endTime")
+        .notEmpty().withMessage("End time is required")
+        .isObject().withMessage("End time must be an object")
+        .custom((value) => {
+            if (typeof value.hour !== "number" || typeof value.minute !== "number") {
+                throw new Error("End time must have hour and minute as numbers");
+            }
+            return true;
+        }),
+];
