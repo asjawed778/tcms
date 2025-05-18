@@ -31,6 +31,14 @@ router
         catchError,
         FaculytyController.getFacultyById
     )
+    .get(
+        "/unassigned/:sessionId",
+        authMiddleware.auth,
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+        FacultyValidation.getUnassignedFaculty,
+        catchError,
+        FaculytyController.getUnassignedFaculty
+    )
 
 
 export default router;
