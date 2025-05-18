@@ -16,7 +16,6 @@ import CreateSession from '@/components/Sessions/CreateSession';
 import { useSession } from '@/hooks/useSession';
 import CustomButton from '../CustomButton';
 import { Replay } from '@mui/icons-material';
-import { colors } from 'material-ui/styles';
 import { useAppTheme } from '@/context/ThemeContext';
 
 const SessionDropdown: React.FC = () => {

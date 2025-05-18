@@ -1,40 +1,45 @@
-import React from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
-import { Box, Link, Stack} from '@mui/material';
-import CustomInputField from '@/components/CustomInputField';
-import { useLoginUserMutation } from '@/services/authApi';
-import toast from 'react-hot-toast';
-import CustomButton from '@/components/CustomButton';
-import { login } from '@/store/reducers/authReducer';
-import { useNavigate } from 'react-router-dom';
-import { LockOutline, MailOutline } from '@mui/icons-material';
-import { useAppDispatch } from '@/store/store';
-import { LoginFormValues } from '../../../type';
-import { loginSchema } from '../../../yup';
+import React from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { Box, Link, Stack } from "@mui/material";
+import CustomInputField from "@/components/CustomInputField";
+import { useLoginUserMutation } from "@/services/authApi";
+import toast from "react-hot-toast";
+import CustomButton from "@/components/CustomButton";
+import { login } from "@/store/reducers/authReducer";
+import { useNavigate } from "react-router-dom";
+import { LockOutline, MailOutline } from "@mui/icons-material";
+import { useAppDispatch } from "@/store/store";
+import { LoginFormValues } from "../../../type";
+import { loginSchema } from "../../../yup";
 
-const LoginForm: React.FC = () => {
+type Props = {
+  onForgotPassword: () => void;
+};
+const LoginForm: React.FC<Props> = ({onForgotPassword }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const [loginUser, { isLoading }] = useLoginUserMutation();  
+  const [loginUser, { isLoading }] = useLoginUserMutation();
   const methods = useForm<LoginFormValues>({
     resolver: yupResolver(loginSchema),
   });
-  const onSubmit = async (data: LoginFormValues) => {    
+  const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await loginUser(data).unwrap();
       console.log("Login response: ", response);
-      
-      const {user, accessToken, refreshToken} = response.data;
-      if(response.success){
-        dispatch(login({
-          user,
-          accessToken,
-          refreshToken
-        }));
-        toast.success("Login successful!");
+
+      const { user, accessToken, refreshToken } = response.data;
+      if (response.success) {
+        dispatch(
+          login({
+            user,
+            accessToken,
+            refreshToken,
+          })
+        );
         navigate("/dashboard");
-      }else{
+        toast.success("Login successful!");
+      } else {
         toast.error(response.message || "Invalid email or Password");
       }
     } catch (err: any) {
@@ -46,39 +51,50 @@ const LoginForm: React.FC = () => {
 
   return (
     <FormProvider {...methods}>
-      <Box maxWidth="sm" mx="auto"  px={{ xs: 2, md: 4 }}>
+      <Box maxWidth="sm" mx="auto" px={{ xs: 2, md: 4 }}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <Stack spacing={4}>
-          <Box >
-            <CustomInputField
-              type="email"
-              name="email"
-              label="Email"
-              placeholder="Enter your username"
-              startIcon={<MailOutline />}
-            />
-          </Box>
-          <Box mb={2}>
-            <CustomInputField
-              type="password"
-              name="password"
-              label="Password"
-              placeholder="Enter your password"
-              startIcon={<LockOutline />}
-            />
-          </Box>
+            <Box>
+              <CustomInputField
+                type="email"
+                name="email"
+                label="Email"
+                placeholder="Enter your username"
+                startIcon={<MailOutline />}
+              />
+            </Box>
+            <Box mb={2}>
+              <CustomInputField
+                type="password"
+                name="password"
+                label="Password"
+                placeholder="Enter your password"
+                startIcon={<LockOutline />}
+              />
+            </Box>
           </Stack>
           <Box textAlign="right" mb={2}>
-            <Link href="/forgot" underline="hover" color="secondary" fontSize={14}>
+            <Link
+              onClick={onForgotPassword}
+              underline="hover"
+              color="secondary"
+              fontSize={14}
+              sx={{ cursor: "pointer" }}
+            >
               Forgot Password?
             </Link>
           </Box>
-          <CustomButton  variant="contained"  type="submit" loading={isLoading} fullWidth>
-          submit
+          <CustomButton
+            variant="contained"
+            type="submit"
+            loading={isLoading}
+            fullWidth
+          >
+            submit
           </CustomButton>
         </form>
       </Box>
     </FormProvider>
   );
-}
+};
 export default LoginForm;

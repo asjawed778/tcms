@@ -1,35 +1,29 @@
-import { useEffect, useState } from "react";
+import { setSession } from "@/store/reducers/sessionSlice";
+import { useEffect } from "react";
 import { Session } from "../../type";
-const SESSION_KEY = "selectedSession";
+import { useAppDispatch, useAppSelector } from "@/store/store";
 
 export const useSession = (sessions: Session[]) => {
-  const [selectedSession, setSelectedSession] = useState<Session>();
+  const dispatch = useAppDispatch();
+  const selectedSession = useAppSelector((state) => state.session.selectedSession);
+
   useEffect(() => {
     if (!sessions || sessions.length === 0) return;
-    const storedId = localStorage.getItem(SESSION_KEY);
-    if (storedId) {
-      const storedSession = sessions.find((s) => s._id === storedId);
-      if (storedSession) {
-        setSelectedSession(storedSession);
-        return;
-      }
-    }
+
     const currentSession = sessions.find((s) => s.sessionStatus === "Current");
-    if (currentSession?._id) {
-      setSelectedSession(currentSession);
-      localStorage.setItem(SESSION_KEY, currentSession._id);
+    const validStoredSession = sessions.find((s) => s._id === selectedSession?._id);
+
+    if (!validStoredSession && currentSession) {
+      dispatch(setSession(currentSession));
     }
-  }, [sessions]);
+  }, [sessions.length, dispatch, selectedSession]);
+
   const handleSessionChange = (sessionId: string) => {
     const session = sessions.find((s) => s._id === sessionId);
-    if(session){
-      setSelectedSession(session);
-      localStorage.setItem(SESSION_KEY, session._id);
+    if (session) {
+      dispatch(setSession(session));
     }
-  }
-  return { selectedSession, handleSessionChange  };
-};
+  };
 
-export const resetToCurrentSession = () => {
-  localStorage.removeItem(SESSION_KEY);
-}
+  return { selectedSession, handleSessionChange };
+};

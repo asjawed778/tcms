@@ -97,5 +97,18 @@ export const deleteSession = async (id: string) => {
     return result;
 };
 
+export const isSessionValid = async (sessionId: string) => {
+    const isExists = await sessionSchema.exists({ _id: sessionId, deleted: false });
+    return isExists;
+}
+
+export const isSessionCurrentOrFuture = async (sessionId: string) => {
+    const session = await sessionSchema.findById(sessionId);
+    if (!session) {
+        throw createHttpError(404, "Session not found");
+    }
+    return session.sessionStatus === Enum.SessionStatus.CURRENT || session.sessionStatus === Enum.SessionStatus.UPCOMING;
+}
+
 
 

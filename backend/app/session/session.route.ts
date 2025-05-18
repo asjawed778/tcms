@@ -2,6 +2,7 @@ import { Router } from "express";
 import * as SessionController from "./session.controller";
 import * as SessionValidation from "./session.validation";
 import * as authMiddleware from "../common/middleware/auth.middleware";
+import * as Enum from "../common/constant/enum";
 import { catchError } from "../common/middleware/cath-error.middleware";
 
 
@@ -11,7 +12,7 @@ router
     .post(
         "/",
         authMiddleware.auth,
-        authMiddleware.isSuperAdmin,
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
         SessionValidation.createSession,
         catchError,
         SessionController.createSession
@@ -19,7 +20,7 @@ router
     .put(
         "/:sessionId",
         authMiddleware.auth,
-        authMiddleware.isSuperAdmin,
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
         SessionValidation.updateSession,
         catchError,
         SessionController.updatedSession
