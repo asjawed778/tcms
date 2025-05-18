@@ -1,7 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
-import { useGetAllStudentQuery } from "@/services/studentApi";
 import { useAppSelector } from "@/store/store";
 import { PersonAdd } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
@@ -10,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import StudentTable from "./StudentTable";
 import ViewDetails from "./ViewDetails";
 import AddRemark from "./AddRemark";
+import { useGetAllStudentQuery } from "@/services/studentApi";
 
 const actionsList = [
   {
@@ -43,7 +43,6 @@ const Student: React.FC = () => {
     limit: rowsPerPage,
     searchQuery,
   });
-  console.log("student data: ", studentData);
   
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -102,8 +101,8 @@ const Student: React.FC = () => {
             onChange={handleChange}
             options={[
               { label: "All", value: "All" },
-              { label: "Active", value: "true" },
-              { label: "Inactive", value: "false" },
+              // { label: "Active", value: "true" },
+              // { label: "Inactive", value: "false" },
             ]}
           />
 

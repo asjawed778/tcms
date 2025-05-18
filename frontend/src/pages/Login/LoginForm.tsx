@@ -13,7 +13,10 @@ import { useAppDispatch } from "@/store/store";
 import { LoginFormValues } from "../../../type";
 import { loginSchema } from "../../../yup";
 
-const LoginForm: React.FC = () => {
+type Props = {
+  onForgotPassword: () => void;
+};
+const LoginForm: React.FC<Props> = ({onForgotPassword }) => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const [loginUser, { isLoading }] = useLoginUserMutation();
@@ -72,10 +75,11 @@ const LoginForm: React.FC = () => {
           </Stack>
           <Box textAlign="right" mb={2}>
             <Link
-              href="/forgot"
+              onClick={onForgotPassword}
               underline="hover"
               color="secondary"
               fontSize={14}
+              sx={{ cursor: "pointer" }}
             >
               Forgot Password?
             </Link>

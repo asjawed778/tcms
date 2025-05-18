@@ -138,6 +138,8 @@ export const forgotPasswordSendToken = asyncHandler(async (req: Request, res: Re
     await userService.updateResetToken(user._id, resetToken);
 
     const resetLink = `${BASE_URL}/reset-password/${resetToken}`;
+    console.log("reset link: ", resetLink);
+    
     const emailContent = resetPasswordEmailTemplate(resetLink);
 
     await sendEmail({

@@ -72,7 +72,8 @@ import {
             api,
             extraOptions
           );
-  
+          console.log("refresh result: ",refreshResult);
+          
           if (refreshResult.data) {
             const { accessToken, refreshToken } = refreshResult.data as RefreshTokenResponse;
   
