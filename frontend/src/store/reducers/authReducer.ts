@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-// Types
 interface User {
   _id: string;
   name: string;
@@ -9,12 +8,10 @@ interface User {
   role: string;
   profilePic: string;
 }
-
 interface AuthTokens {
   accessToken: string;
   refreshToken: string;
 }
-
 interface AuthState {
   user: User | null;
   accessToken: string;
@@ -23,7 +20,6 @@ interface AuthState {
   loading: boolean;
 }
 
-// Initial State
 const initialState: AuthState = {
   user: JSON.parse(localStorage.getItem("user") || "null"),
   accessToken: localStorage.getItem("accessToken") || "",
@@ -31,8 +27,6 @@ const initialState: AuthState = {
   isAuthenticated: localStorage.getItem("isAuthenticated") === "true" || false,
   loading: false,
 };
-
-// Slice
 export const authSlice = createSlice({
   name: "auth",
   initialState,

@@ -1,10 +1,8 @@
-// theme/ThemeContext.tsx
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import createAppTheme from '@/theme/muiTheme';
 import { AppColors, Colors } from '@/theme/colors';
-// import createAppTheme from './muiTheme';
 
 type ThemeMode = 'light' | 'dark';
 
@@ -25,7 +23,6 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const theme = useMemo(() => createAppTheme(mode), [mode]);
   const colors = useMemo(() => Colors[mode], [mode]);
-
 
   return (
     <ThemeContext.Provider value={{ mode, toggleMode, colors }}>

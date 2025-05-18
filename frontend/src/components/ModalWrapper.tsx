@@ -7,19 +7,19 @@ interface WrapperModalProps {
   onClose: () => void;
   title?: string;
   children: React.ReactNode;
-  width?: number | string;
+  width?: number | string | { [key: string]: number | string };
 }
 
 const ModalWrapper: React.FC<WrapperModalProps> = ({ 
-    open, 
-    onClose, 
-    title, 
-    children, 
-    width = 500 
+  open, 
+  onClose, 
+  title, 
+  children, 
+  width = 500 
 }) => {
   return (
     <Modal open={open} onClose={onClose} closeAfterTransition>
-      <Grow in={open} >
+      <Grow in={open}>
         <Box
           sx={{
             display: "flex",
@@ -32,7 +32,7 @@ const ModalWrapper: React.FC<WrapperModalProps> = ({
           <Box
             sx={{
               position: "relative",
-              width: width,
+              width, 
               maxWidth: "90vw",
               maxHeight: "90vh",
               bgcolor: "background.paper",
@@ -40,7 +40,6 @@ const ModalWrapper: React.FC<WrapperModalProps> = ({
               p: 4,
               borderRadius: 2,
               textAlign: "center",
-            //   overflowY: "auto",
             }}
           >
             <IconButton

@@ -1,33 +1,38 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from 'mongoose';
-import { ActionTaken, ActivityType, ParticipationLevel, ParticipationType, RemarkType, StudentStatus } from "./student.constant";
+import * as Enum from "../common/constant/enum";
 import { Gender, Religion } from "../common/constant/enum";
-import { Document } from '../common/dto/common.dto';
+import { IDocument } from '../common/dto/common.dto';
 
-export interface Remark extends BaseSchema {
-    studentId: Types.ObjectId; 
+export interface IRemark extends BaseSchema {
+    student: Types.ObjectId;
     givenBy: Types.ObjectId;
+    class: Types.ObjectId;
+    section: Types.ObjectId;
     date: Date;
-    remarkType: RemarkType;
-    description: string; 
-    actionTaken?: ActionTaken;
+    remarkType: Enum.RemarkType;
+    description: string;
+    actionTaken?: Enum.ActionTaken;
     supportingDocuments?: {
-        name: string; 
+        name: string;
         url: string;
     }[];
+    deleted: boolean;
 };
+export interface IRemarkCreate extends Omit<IRemark, "_id" | "createdAt" | "updatedAt" | "deleted"> { };
+export interface IRemarkUpdate extends Partial<Omit<IRemark, "_id" | "createdAt" | "updatedAt" | "deleted">> { };
 
 export interface ExtracurricularActivity extends BaseSchema {
-    studentId: Types.ObjectId;
+    student: Types.ObjectId;
     activityName: string;
-    type: ActivityType;
-    participationLevel: ParticipationLevel;
+    type: Enum.ActivityType;
+    participationLevel: Enum.ParticipationLevel;
     achievement?: string;
     organizedBy?: string;
     date: Date;
     duration?: string;
-    participationType: ParticipationType;
-    certificate?: Document;
+    participationType: Enum.ParticipationType;
+    certificate?: IDocument;
     positionHeld?: string;
 };
 
@@ -40,6 +45,15 @@ export interface ParentDetails {
     officeNumber?: string;
     email?: string;
     contactNumber?: string;
+};
+
+export interface PreviousSchool {
+    name: string;
+    address: string;
+    reasonForLeaving?: string;
+    dateOfLeaving?: Date;
+    schoolLeavingCertificate?: IDocument;
+    transferCertificate?: IDocument;
 };
 
 
@@ -58,24 +72,48 @@ export interface IStudent extends BaseSchema {
     adharNumber: string;
     contactNumber?: string;
     email?: string;
-    bloodGroup?: string;
+    bloodGroup?: Enum.BloodGroup;
 
-    // parents details
+    // parent details
     father: ParentDetails;
     mother: ParentDetails;
     localGuardian?: ParentDetails;
+
+    previousSchool?: PreviousSchool;
 
     // address details
     address: Types.ObjectId;
 
     // documents 
-    documents: Document[];
+    documents: IDocument[];
 
     // acedemic tracking
     admissionYear: number;
-    status: StudentStatus; 
+    status: Enum.StudentStatus;
 };
 
+export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt" | "enrollmentNumber" | "status"> { };
+export interface IGetStudentResponse<T> {
+    students: T[];
+    totalDocs: number;
+    totalPages: number;
+    currentPage: number;
+    hasNext: boolean;
+    hasPrevious: boolean;
+    pageLimit: number;
+}
+
+export interface IAdmission extends BaseSchema {
+    student: Types.ObjectId;
+    session: Types.ObjectId;
+    class: Types.ObjectId;
+    section: Types.ObjectId;
+    rollNumber: number;
+    admissionStatus: Enum.AdmissionStatus;
+    deleted: boolean;
+};
+
+export interface IAdmissionCreate extends Omit<IAdmission, "_id" | "createdAt" | "updatedAt" | "admissionStatus" | "deleted" | "rollNumber" | "student"> { };
 
 export interface AcademicRecord {
     session: string;
@@ -86,7 +124,7 @@ export interface AcademicRecord {
     totalMarksObtained?: number;
     totalPercentage?: number;
     grade?: string;
-    // promotionStatus: PromotionStatus;
+    // promotionStatus: Enum.PromotionStatus;
 };
 
 export interface IAcademicDetails extends BaseSchema {
