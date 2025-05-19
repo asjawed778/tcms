@@ -1,3 +1,12 @@
+// import React from "react";
+
+// const Standard: React.FC = () => {
+//   return <h1>This is Standard</h1>;
+// };
+// export default Standard;
+
+
+
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
@@ -10,10 +19,10 @@ import { useNavigate } from "react-router-dom";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
-  { key: "name", label: "Class Name" },
-  { key: "courseStream", label: "Stream" },
-  { key: "totalSubjects", label: "Total Subject" },
-  { key: "totalSections", label: "Total Section" },
+  { key: "name", label: "Standard" },
+//   { key: "courseStream", label: "Stream" },
+//   { key: "totalSubjects", label: "Total Subject" },
+//   { key: "totalSections", label: "Total Section" },
 ];
 const actionsList = [
   {
@@ -21,7 +30,7 @@ const actionsList = [
     label: "",
   },
 ];
-const Class = () => {
+const Standard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [query, setQuery] = useState("");
@@ -92,11 +101,11 @@ const Class = () => {
             gap: 1,
           }}
         >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+          {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
             Filter By:
-          </Typography>
+          </Typography> */}
 
-          <CustomDropdownField
+          {/* <CustomDropdownField
             name="status"
             label="Status"
             required={false}
@@ -107,9 +116,9 @@ const Class = () => {
               // { label: "Active", value: "true" },
               // { label: "Inactive", value: "false" },
             ]}
-          />
+          /> */}
 
-          <CustomButton
+          {/* <CustomButton
             variant="outlined"
             fullWidth
             startIcon={<Add />}
@@ -119,7 +128,7 @@ const Class = () => {
             }}
           >
             Create Class
-          </CustomButton>
+          </CustomButton> */}
         </Box>
       </Box>
 
@@ -140,4 +149,4 @@ const Class = () => {
   );
 };
 
-export default Class;
+export default Standard;

@@ -44,7 +44,6 @@ const ProfessionalInfo: React.FC = () => {
             name="dateOfJoining"
             label="Date Of Joining"
             type="date"
-            minDate={new Date().toISOString().split("T")[0]}
           />
         </Grid>
 

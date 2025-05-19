@@ -65,7 +65,6 @@ const AddFaculty = () => {
 
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-      toast.success("Step completed! Moving to next step.");
     } else {
       try {
         const payload = {
@@ -84,18 +83,14 @@ const AddFaculty = () => {
         if (!hasValidExperience) {
           delete payload.experience;
         }
-        console.log("Faculty Data: ", payload);
-        
         const response = await faculty(payload).unwrap();
-        console.log("Faculty response: ",response);
-        
         if (response.success) {
           toast.success(
-            response.message || "Faculty data submitted successfully!"
+             "Faculty added successfully!"
           );
           navigate("/dashboard/faculty");
         } else {
-          toast.error(response.message || "Something went wrong.");
+          toast.error(response.message || "Something went wrong. Please try again!");
         }
       } catch (error: any) {
         console.error("Submission failed:", error);

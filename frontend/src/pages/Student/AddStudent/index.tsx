@@ -75,7 +75,6 @@ const AddStudent = () => {
 
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-      toast.success("Step completed! Moving to next step.");
     } else {
       try {
         const payload = {

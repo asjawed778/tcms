@@ -30,6 +30,7 @@ const SectionDetails: React.FC = () => {
       append({
         name: "",
         capacity: "",
+        facultyName: null,
       });
       initialized.current = true;
     }
@@ -81,7 +82,7 @@ const SectionDetails: React.FC = () => {
             </Grid>
             <Grid size={{xs: 12, md: 6}}>
               <CustomDropdownField 
-                name="facultyName"
+                name={`sections.${index}.facultyName`}
                 label="Select Class Teacher"
                 options={facultyName}
                 loading={isLoading}
@@ -95,7 +96,7 @@ const SectionDetails: React.FC = () => {
         <Button
           variant="outlined"
           startIcon={<AddCircleOutline />}
-          onClick={() => append({ name: "", capacity: "" })}
+          onClick={() => append({ name: "", capacity: "", facultyName: null })}
         >
           Add More Section
         </Button>

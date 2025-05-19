@@ -70,6 +70,7 @@ const DocumentUpload: React.FC = () => {
                 variant="outlined"
                 margin="normal"
                 name={`documents.${index}.documentNumber`}
+                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 6 }} sx={{mt: 2}}>

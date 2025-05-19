@@ -73,7 +73,7 @@ export const sessionSchema = yup.object().shape({
 
 // Faculty Schema................................................
 export const personalInfoSchema = yup.object({
-  // name: yup.string().required("Name is required"),
+  name: yup.string().required("Full name is required"),
   photo: yup.string().required("Photo is required"),
   fatherName: yup.string().required("Father name is required"),
   motherName: yup.string().required("Mother name is required"),
@@ -182,13 +182,7 @@ export const documentUploadSchema = yup.object({
       yup.object().shape({
         name: yup.string().required("Document name is required"),
         url: yup.string().required("Document file is required"),
-        documentNumber: yup
-          .mixed()
-          .test(
-            "required",
-            "Document Number is required",
-            (value) => value !== null && value !== undefined && value !== ""
-          ),
+        documentNumber: yup.string().optional()
       })
     )
     .min(1, "At least one document is required"),

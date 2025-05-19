@@ -9,7 +9,7 @@ export const facultyApi = createApi({
 
     getAllFaculty: builder.query< FacultyApiResponse , { page?: number, limit?: number, query?: string, active?: string }>({
       query: ({ page = 1, limit = 10, query = "", active} = {}) => {
-              let url = `/faculty/all?pageNo=${page}&limit=${limit}`;
+              let url = `/faculty/all?page=${page}&limit=${limit}`;
               if (query.trim() !== '') {
                 url += `&search=${encodeURIComponent(query.trim())}`;
               }
