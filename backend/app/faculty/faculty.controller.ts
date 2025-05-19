@@ -95,3 +95,11 @@ export const getFacultyById = asyncHandler(async (req: Request, res: Response) =
     }
     res.send(createResponse(faculty, "Faculty fetched successfully"));
 });
+
+export const getUnassignedFaculty = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const {day, startTime, endTime} = req.body;
+
+    const unassignedFaculty = await FacultyService.getUnassignedFaculty(new Types.ObjectId(sessionId), day, startTime, endTime);
+    res.send(createResponse(unassignedFaculty, "Unassigned faculty fetched successfully"));
+});

@@ -4,6 +4,8 @@ import classSchema from "./class.schema";
 import createHttpError from "http-errors";
 import sectionSchema from "./section.schema";
 import classTimetableSchema from "./class.timetable.schema";
+import * as Enum from "../common/constant/enum";
+import mongoose from "mongoose";
 
 export const isClassAlreadyExists = async (name: string, session: string) => {
     const existingClass = await classSchema.findOne({ name, session, deleted: false });
@@ -187,3 +189,19 @@ export const createTimeTable = async (timeTableData: ClassDto.ICreateTimeTable) 
     return newTimeTable;
 }
 
+export const getTimeTableByDay = async (sessionId: mongoose.Types.ObjectId, day: Enum.WeekDay) => {
+    const timeTable = await classTimetableSchema.find({
+        session: sessionId,
+        "weeklySchedule.day": day,
+        "weeklySchedule.periods": {
+            $elemMatch: {
+                "timeSlot.start.hour": { $exists: true },
+                "timeSlot.start.minute": { $exists: true },
+                "timeSlot.end.hour": { $exists: true },
+                "timeSlot.end.minute": { $exists: true },
+                faculty: { $ne: null }
+            }
+        }
+    });
+    return timeTable;
+}
