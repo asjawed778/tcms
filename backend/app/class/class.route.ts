@@ -56,6 +56,14 @@ router
         catchError,
         ClassControler.createTimeTable
     )
+    .get(
+        "/timetable/:sessionId/:classId/:sectionId",
+        authMiddleware.auth,
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        ClassValidation.getTimeTableofClass,
+        catchError,
+        ClassControler.getTimeTableofClass
+    )
     
 
 export default router;

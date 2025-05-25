@@ -7,19 +7,19 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
         type: String,
         unique: true
     },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: false
     },
-    name: {
-        type: String,
-        required: true
-    },
-    email: {
-        type: String,
-        unique: true
-    },
+    // name: {
+    //     type: String,
+    //     required: true
+    // },
+    // email: {
+    //     type: String,
+    //     unique: true
+    // },
     phoneNumber: {
         type: String,
         required: true

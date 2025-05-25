@@ -171,10 +171,6 @@ const weeklyScheduleValidator = [
         .notEmpty().withMessage("End minute is required")
         .isInt({ min: 0, max: 59 }).withMessage("End minute must be between 0 and 59"),
 
-    body("weeklySchedule.*.periods.*.timeSlot.durationMinutes")
-        .notEmpty().withMessage("Duration in minutes is required")
-        .isInt({ min: 1 }).withMessage("Duration must be at least 1 minute"),
-
     body("weeklySchedule.*.isHoliday")
         .optional()
         .isBoolean().withMessage("isHoliday must be a boolean"),
@@ -218,5 +214,17 @@ export const editTimeTable = [
         .isMongoId().withMessage("Class Id must be a valid Mongo ID"),
 
     ...weeklyScheduleValidator,
+];
+
+export const getTimeTableofClass = [
+    param("sessionId")
+        .notEmpty().withMessage("Session Id is required")
+        .isMongoId().withMessage("Session Id must be a valid Mongo ID"),
+    param("classId")
+        .notEmpty().withMessage("Class Id is required")
+        .isMongoId().withMessage("Class Id must be a valid Mongo ID"),
+    param("sectionId")
+        .notEmpty().withMessage("Section Id is required")
+        .isMongoId().withMessage("Section Id must be a valid Mongo ID"),
 ];
 

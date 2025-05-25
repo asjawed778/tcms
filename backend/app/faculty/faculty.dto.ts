@@ -4,15 +4,15 @@ import * as Enum from "../common/constant/enum";
 
 
 export interface IFaculty extends BaseSchema {
-    employeeId: string;
-    userId: Types.ObjectId;
+    // employeeId: string;
+    user: Types.ObjectId;
 
     //personal details
-    name: string;
+    // name: string;
     fatherName?: string;
     motherName?: string;
-    email: string;
-    phoneNumber: string;
+    // email: string;
+    // phoneNumber: string;
 
 
     // Professional Details

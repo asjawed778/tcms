@@ -25,6 +25,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             required: true,
         },
         periods: [{
+            _id: false,
             periodType: {
                 type: String,
                 enum: Object.values(Enum.PeriodType),
@@ -57,7 +58,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
                     hour: { type: Number, required: true },
                     minute: { type: Number, required: true }
                 },
-                durationMinutes: { type: Number, required: true }
+                durationMinutes: { type: Number, }
             }
         }],
         isHoliday: {
@@ -66,7 +67,8 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
         },
         holidayReason: {
             type: String,
-            default: "School Holiday",
+            required: false,
+            trim: true,
         },
     }]
 });
@@ -90,7 +92,6 @@ timeTableSchema.pre("save", function (next) {
             });
         }
     });
-
     next();
 });
 
