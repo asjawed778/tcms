@@ -52,19 +52,19 @@ interface AuthResponse {
   success: boolean;
 }
 
-interface ApiResponse{
+interface ApiResponse {
   data: Object;
   message: string;
   success: boolean;
 }
 // Faculty....................
 interface Address {
-    city: string;
-    state: string;
-    country: string;
-    pinCode: number;
-    addressLine1: string;
-    addressLine2?: string;
+  city: string;
+  state: string;
+  country: string;
+  pinCode: number;
+  addressLine1: string;
+  addressLine2?: string;
 };
 
 interface Experience {
@@ -115,7 +115,7 @@ interface FacultyApiResponse {
 }
 
 // Class..............
-interface ClassTableData{
+interface ClassTableData {
   classes: ClassFormData[];
 }
 interface ClassApiResponse {
@@ -123,7 +123,7 @@ interface ClassApiResponse {
   success: boolean;
   message: string;
 }
-interface Subjects{
+interface Subjects {
   name: string;
   subjectType: Enum.SubjectType;
   subjectCategory: Enum.SubjectCategory;
@@ -131,22 +131,22 @@ interface Subjects{
   writer: string;
   ISBN: string;
 }
-interface Sections{
+interface Sections {
   _id?: string;
   name: string;
   capacity: number;
 }
-interface FeeDeclaration{
+interface FeeDeclaration {
   amount: number;
   total: number;
 }
-interface FeeStructure{
+interface FeeStructure {
   monthly: FeeDeclaration;
   quarterly: FeeDeclaration;
   halfYearly: FeeDeclaration;
   yearly: FeeDeclaration;
 }
-interface ClassFormData{
+interface ClassFormData {
   _id?: string;
   name: Enum.ClassName;
   courseStream: Enum.CourseStream;
@@ -156,7 +156,7 @@ interface ClassFormData{
 }
 
 // Student Admission Data..................................
-interface Parent{
+interface Parent {
   name: string;
   email?: string;
   contactNumber?: number;
@@ -164,10 +164,10 @@ interface Parent{
   occupation: string;
   bussinessOrEmployerName?: string;
   officeAddress?: string;
-  officeNumber?:  number;
+  officeNumber?: number;
 
 };
-interface PreviousSchool{
+interface PreviousSchool {
   name: string;
   address: string;
   reasonForLeaving: string;
@@ -176,17 +176,17 @@ interface PreviousSchool{
   transferCertificate: Document;
 
 };
-interface AdmissionClass{
+interface AdmissionClass {
   name: Enum.ClassName;
   section: string;
   admissionDate: string;
 };
-interface StudentFormData{
+interface StudentFormData {
   _id?: string;
   enrollmentNumber?: string;
   name: string;
   dob: string;
-  gender:string;
+  gender: string;
   nationality: string;
   religion: string;
   motherTongue: string;
@@ -203,7 +203,7 @@ interface StudentFormData{
   admission: AdmissionClass;
   documents: Document[];
 };
-interface Admission{
+interface Admission {
   admissionStatus: string;
   rollNumber: number;
   _id: string;
@@ -214,11 +214,11 @@ interface Admission{
   section: Sections;
   session: Session;
 }
-interface Students{
+interface Students {
   student: StudentFormData;
   admission: Admission;
 }
-interface studentTableData{
+interface studentTableData {
   students: Students[];
   currentPage: number;
   totalPages: number;
@@ -227,14 +227,14 @@ interface studentTableData{
   hasPrevious: boolean;
   hasNext: boolean;
 };
-interface StudentApiResponse{
+interface StudentApiResponse {
   data: studentTableData;
   success: boolean;
   message: string;
 }
 
 // Add Reamarks Data.........................................
-interface AddRemarkFormData{
+interface AddRemarkFormData {
   sessionId: string;
   studentId: string;
   remarkType: Enum.RemarkType;

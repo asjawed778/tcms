@@ -11,9 +11,9 @@ export interface WorkExperience {
 
 export interface IEmployee extends BaseSchema {
     employeeId: string;
-    userId?: string;
-    name: string;
-    email: string;
+    user?: string;
+    // name: string;
+    // email: string;
     phoneNumber: string;
     gender: Gender;
     dob: Date;

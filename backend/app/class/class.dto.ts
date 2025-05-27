@@ -49,7 +49,7 @@ export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "de
 export interface ITimeSlot {
     start: { hour: number; minute: number };
     end: { hour: number; minute: number };
-    durationMinutes: number;
+    durationMinutes?: number;
 }
 
 export interface IPeriod {

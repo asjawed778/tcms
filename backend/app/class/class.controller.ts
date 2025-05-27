@@ -86,3 +86,24 @@ export const createTimeTable = asyncHandler(async (req: Request, res: Response) 
     const result = await ClassService.createTimeTable(timeTablePayload);
     res.send(createResponse(timeTablePayload, "Time table created successfully"));
 });
+
+export const getTimeTableofClass = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId, classId, sectionId, timeTableId } = req.params;
+    let result = null;
+    if (timeTableId) {
+        result = await ClassService.getTimeTableofClassById(timeTableId as string);
+    } else {
+        if (!sessionId || !classId || !sectionId) {
+            throw createHttpError(400, "Session ID, Class ID and Section ID are required"); 
+        }
+        const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId.toString(), classId.toString(), sectionId.toString());
+        if (!isClassAndSectionValid) {
+            throw createHttpError(400, "Invalid class or section");
+        }
+        result = await ClassService.getTimeTableBySectionId(sessionId as string, sectionId as string, classId as string);
+    }
+
+
+    res.send(createResponse(result, "Time table fetched successfully"));
+});
+
