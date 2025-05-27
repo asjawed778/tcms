@@ -72,7 +72,8 @@ const Class = () => {
     totalSections: cls.sections?.length || 0,
     totalSubjects: cls.subjects?.length || 0,
   }));
-
+  console.log("Class data: 1", classData);
+  
   return (
     <Box sx={{ width: "100%" }}>
       <Box

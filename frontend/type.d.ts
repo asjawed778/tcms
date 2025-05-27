@@ -137,11 +137,23 @@ interface Subjects {
   publication: string;
   writer: string;
   ISBN: string;
+};
+interface Students{
+
+};
+interface ClassTeacher{
+  name: string;
+  designation: string;
+  status: Enum.FacultyStatus;
+  employeedId: string;
+  _id: string;
 }
 interface Sections {
   _id?: string;
   name: string;
   capacity: number;
+  students?: Students[];
+  classTeacher?: ClassTeacher;
 }
 interface FeeDeclaration {
   amount: number;
@@ -186,6 +198,7 @@ interface WeeklyScheduleItem{
 interface TimeTableFormData {
   classId: string;
   sectionId: string;
+  sessionId: string;
   weeklySchedule: WeeklyScheduleItem[];
 }
 interface UnAssignFacultyFormData {

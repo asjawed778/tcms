@@ -172,7 +172,8 @@ const weeklyScheduleValidator = [
         .isInt({ min: 0, max: 59 }).withMessage("End minute must be between 0 and 59"),
 
     body("weeklySchedule.*.periods.*.timeSlot.durationMinutes")
-        .notEmpty().withMessage("Duration in minutes is required")
+        // .notEmpty().withMessage("Duration in minutes is required")
+        .optional()
         .isInt({ min: 1 }).withMessage("Duration must be at least 1 minute"),
 
     body("weeklySchedule.*.isHoliday")

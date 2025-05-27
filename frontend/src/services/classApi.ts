@@ -21,7 +21,12 @@ export const classApi = createApi({
               return { url };
             },
     }),
-  
+    getClass: builder.query({
+      query:(classId) => ({
+        url: `/class/${classId}`,
+        method: "GET"
+      })
+    }),
     createClass: builder.mutation<ApiResponse, ClassFormData>({
       query: (data) => ({
         url: "/class",
@@ -40,6 +45,9 @@ export const classApi = createApi({
 });
 
 export const {
-  useGetAllClassQuery, useCreateClassMutation, useCreateTimeTableMutation, 
+  useGetAllClassQuery, 
+  useCreateClassMutation, 
+  useCreateTimeTableMutation,
+  useGetClassQuery, 
 } = classApi;
 
