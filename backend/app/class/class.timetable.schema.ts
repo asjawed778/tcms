@@ -25,6 +25,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             required: true,
         },
         periods: [{
+            _id: false,
             periodType: {
                 type: String,
                 enum: Object.values(Enum.PeriodType),
@@ -66,7 +67,8 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
         },
         holidayReason: {
             type: String,
-            default: "School Holiday",
+            required: false,
+            trim: true,
         },
     }]
 });
@@ -90,7 +92,6 @@ timeTableSchema.pre("save", function (next) {
             });
         }
     });
-
     next();
 });
 

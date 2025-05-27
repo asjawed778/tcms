@@ -22,9 +22,9 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
         }
         const address = await AddressService.createAddress(data.address, session)
         const empData = {
-            userId: user._id as string,
-            name: data.name,
-            email: data.email,
+            user: user._id as string,
+            // name: data.name,
+            // email: data.email,
             phoneNumber: data.phoneNumber,
             gender: data.gender,
             dob: data.dob,
@@ -43,13 +43,13 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
         }
 
         const facultyData = {
-            userId: new Types.ObjectId(user._id),
-            employeeId: employee.employeeId,
-            name: data.name,
+            user: new Types.ObjectId(user._id),
+            // employeeId: employee.employeeId,
+            // name: data.name,
             fatherName: data.fatherName,
             motherName: data.motherName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
+            // email: data.email,
+            // phoneNumber: data.phoneNumber,
             designation: data.designation,
             expertiseSubjects: data.expertiseSubjects,
             qualification: data.qualification,
@@ -71,7 +71,7 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
         await session.abortTransaction();
         session.endSession();
 
-        throw createHttpError(500, "Faculty creation failed: " + error.message); // let
+        throw createHttpError(500, "Faculty creation failed: " + error.message);
     }
 
 });

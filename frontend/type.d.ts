@@ -59,6 +59,7 @@ interface AuthResponse {
 }
 
 interface ApiResponse {
+interface ApiResponse {
   data: Object;
   message: string;
   success: boolean;
@@ -129,8 +130,7 @@ interface ClassApiResponse {
   success: boolean;
   message: string;
 }
-interface Subjects {
-  _id: string;
+interface Subjects{
   name: string;
   subjectType: Enum.SubjectType;
   subjectCategory: Enum.SubjectCategory;
@@ -227,22 +227,24 @@ interface Parent {
   occupation: string;
   bussinessOrEmployerName?: string;
   officeAddress?: string;
-  officeNumber?: number;
-}
-interface PreviousSchool {
+  officeNumber?:  number;
+
+};
+interface PreviousSchool{
   name: string;
   address: string;
   reasonForLeaving: string;
   dateOfLeaving: string;
   schoolLeavingCertificate: Document;
   transferCertificate: Document;
-}
-interface AdmissionClass {
+
+};
+interface AdmissionClass{
   name: Enum.ClassName;
   section: string;
   admissionDate: string;
-}
-interface StudentFormData {
+};
+interface StudentFormData{
   _id?: string;
   enrollmentNumber?: string;
   name: string;
@@ -263,8 +265,8 @@ interface StudentFormData {
   previousSchool?: PreviousSchool;
   admission: AdmissionClass;
   documents: Document[];
-}
-interface Admission {
+};
+interface Admission{
   admissionStatus: string;
   rollNumber: number;
   _id: string;
@@ -287,8 +289,8 @@ interface studentTableData {
   pageLimit: number;
   hasPrevious: boolean;
   hasNext: boolean;
-}
-interface StudentApiResponse {
+};
+interface StudentApiResponse{
   data: studentTableData;
   success: boolean;
   message: string;

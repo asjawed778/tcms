@@ -14,39 +14,185 @@ export const getAllFaculty = async (
     limit = 10,
     search?: string
 ) => {
-    const query: any = {};
+    const skip = (page - 1) * limit;
+    const pipeline = [
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "userDetails",
+            },
+        },
+        {
+            $unwind: "$userDetails",
+        },
+        {
+            $lookup: {
+                from: "employees",
+                localField: "user",
+                foreignField: "user",
+                as: "employeeDetails",
+            },
+        },
+        {
+            $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true },
+        },
+        {
+            $lookup: {
+                from: "addresses",
+                localField: "employeeDetails.address",
+                foreignField: "_id",
+                as: "addressDetails",
+            }
+        },
+        {
+            $unwind: { path: "$addressDetails", preserveNullAndEmptyArrays: true },
+        },
+        {
+            $match: search ? {
+                $or: [
+                    { "userDetails.name": { $regex: search, $options: "i" } },
+                    { "employeeDetails.phoneNumber": { $regex: search, $options: "i" } },
+                    { "employeeDetails.employeeId": { $regex: search, $options: "i" } },
+                    { "designation": { $regex: search, $options: "i" } }
+                ]
+            } : {}
+        },
+        {
+            $facet: {
+                metadata: [{ $count: "total" }],
+                data: [
+                    { $skip: skip },
+                    { $limit: limit },
+                    {
+                        $project: {
+                            _id: 1,
+                            name: "$userDetails.name",
+                            fatherName: 1,
+                            motherName: 1,
+                            email: "$userDetails.email",
+                            phoneNumber: "$employeeDetails.phoneNumber",
+                            gender: "$employeeDetails.gender",
+                            dob: "$employeeDetails.dob",
+                            photo: "$employeeDetails.photo",
+                            aadhaarNumber: "$employeeDetails.aadhaarNumber",
+                            address: {
+                                _id: "$addressDetails._id",
+                                city: "$addressDetails.city",
+                                state: "$addressDetails.state",
+                                country: "$addressDetails.country",
+                                pinCode: "$addressDetails.pinCode",
+                                addressLine1: "$addressDetails.addressLine1",
+                                addressLine2: "$addressDetails.addressLine2"
+                            },
+                            designation: 1,
+                            dateOfJoining: "$employeeDetails.dateOfJoining",
+                            expertiseSubjects: 1,
+                            employeeId: "$employeeDetails.employeeId",
+                            qualification: 1,
+                            salery: "$employeeDetails.salary",
+                            certification: 1,
+                            status: 1,
+                            documents: "$employeeDetails.documents",
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            $project: {
+                _id: 0,
+                currentPage: { $literal: page },
+                limit: { $literal: limit },
+                totalDocuments: { $ifNull: [{ $arrayElemAt: ["$metadata.total", 0] }, 0] },
+                showing: { $size: "$data" },
+                faculty: "$data"
+            }
+        }
+    ];
 
-    if (search) {
-        query.$or = [
-            { name: { $regex: search, $options: "i" } },
-            { employeeId: { $regex: search, $options: "i" } },
-        ];
-    }
-
-    const totalDocuments = await facultySchema.countDocuments(query);
-    const faculty = await facultySchema
-        .find(query)
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .lean();
-
-    return {
-        currentPage: page,
-        limit,
-        totalDocuments,
-        showing: faculty.length,
-        faculty,
-    };
+    const result = await facultySchema.aggregate(pipeline);
+    return result.length > 0 ? result[0] : [];
 };
 
 export const getFacultyById = async (facultyId: string) => {
-    const faculty = await facultySchema.findById(facultyId).lean();
-    if (!faculty) {
-        return null;
-    }
-    return faculty;
-};
 
+    const pipeline = [
+        {
+            $match: {
+                _id: new mongoose.Types.ObjectId(facultyId)
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "userDetails",
+            },
+        },
+        {
+            $unwind: "$userDetails",
+        },
+        {
+            $lookup: {
+                from: "employees",
+                localField: "user",
+                foreignField: "user",
+                as: "employeeDetails",
+            },
+        },
+        {
+            $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true },
+        },
+        {
+            $lookup: {
+                from: "addresses",
+                localField: "employeeDetails.address",
+                foreignField: "_id",
+                as: "addressDetails",
+            }
+        },
+        {
+            $unwind: { path: "$addressDetails", preserveNullAndEmptyArrays: true },
+        },
+        {
+            $project: {
+                _id: 1,
+                name: "$userDetails.name",
+                fatherName: 1,
+                motherName: 1,
+                email: "$userDetails.email",
+                phoneNumber: "$employeeDetails.phoneNumber",
+                gender: "$employeeDetails.gender",
+                dob: "$employeeDetails.dob",
+                photo: "$employeeDetails.photo",
+                aadhaarNumber: "$employeeDetails.aadhaarNumber",
+                address: {
+                    _id: "$addressDetails._id",
+                    city: "$addressDetails.city",
+                    state: "$addressDetails.state",
+                    country: "$addressDetails.country",
+                    pinCode: "$addressDetails.pinCode",
+                    addressLine1: "$addressDetails.addressLine1",
+                    addressLine2: "$addressDetails.addressLine2"
+                },
+                designation: 1,
+                dateOfJoining: "$employeeDetails.dateOfJoining",
+                expertiseSubjects: 1,
+                employeeId: "$employeeDetails.employeeId",
+                qualification: 1,
+                salery: "$employeeDetails.salary",
+                certification: 1,
+                status: 1,
+                documents: "$employeeDetails.documents",
+            }
+        }
+    ];
+    const result = await facultySchema.aggregate(pipeline);
+    return result.length > 0 ? result[0] : null;
+};
 
 export const getUnassignedFaculty = async (
     sessionId: mongoose.Types.ObjectId,
@@ -81,10 +227,34 @@ export const getUnassignedFaculty = async (
         });
     });
 
-    const unassignedFaculty = await facultySchema.find({
-        _id: { $nin: Array.from(assignedFacultyIds) }
-    }).select("_id name designation");
+    const pipeline = [
+        {
+            $match: {
+                _id: { $nin: Array.from(assignedFacultyIds).map(id => new mongoose.Types.ObjectId(id)) }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "userDetails",
+            },
+        },
+        {
+            $unwind: "$userDetails",
+        },
+        {
+            $project: {
+                _id: 1,
+                name: "$userDetails.name",
+                designation: 1
+            }
+        }
+    ]
 
-    return unassignedFaculty;
+    const unassignedFaculty = await facultySchema.aggregate(pipeline);
+
+    return unassignedFaculty.length > 0 ? unassignedFaculty[0] : [];
 };
 

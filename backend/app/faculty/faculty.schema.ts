@@ -4,20 +4,10 @@ import * as Enum from "../common/constant/enum";
 
 
 const facultySchema = new mongoose.Schema<IFaculty>({
-    employeeId: {
-        type: String,
-        required: true,
-        unique: true,
-    },
-    userId: {
+    user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: true,
-    },
-    name: {
-        type: String,
-        required: true,
-        trim: true,
     },
     fatherName: {
         type: String,
@@ -27,16 +17,6 @@ const facultySchema = new mongoose.Schema<IFaculty>({
     motherName: {
         type: String,
         required: false,
-        trim: true,
-    },
-    email: {
-        type: String,
-        unique: true,
-        lowercase: true,
-    },
-    phoneNumber: {
-        type: String,
-        required: true,
         trim: true,
     },
     designation: {
