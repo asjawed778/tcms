@@ -24,7 +24,6 @@ const SectionDetails: React.FC = () => {
     name: "sections",
   });
   const initialized = useRef(false);
-
   useEffect(() => {
     if (!initialized.current && fields.length === 0) {
       append({

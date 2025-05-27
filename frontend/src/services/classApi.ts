@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { ApiResponse, ClassApiResponse, ClassFormData,  } from "../../type";
+import { ApiResponse, ClassApiResponse, ClassFormData, TimeTableFormData,  } from "../../type";
 import { baseQueryWithReauth } from "./api";
 
 export const classApi = createApi({
@@ -29,10 +29,17 @@ export const classApi = createApi({
         body: data,
       }),
     }),
+    createTimeTable: builder.mutation<ApiResponse, TimeTableFormData>({
+      query:({sessionId, classId, sectionId, ...data}) => ({
+        url: `/class/timetable/${sessionId}/${classId}/${sectionId}`,
+        method: "POST",
+        body: data
+      })
+    })
   }),
 });
 
 export const {
-  useGetAllClassQuery, useCreateClassMutation
+  useGetAllClassQuery, useCreateClassMutation, useCreateTimeTableMutation, 
 } = classApi;
 

@@ -47,6 +47,8 @@ export const cleanData = <T extends Cleanable>(payload: T): T | undefined => {
   return payload;
 };
 
+
+
 export const validateGroupFields = (
   testName: string,
   errorMessage: string,
@@ -66,7 +68,6 @@ export const validateGroupFields = (
       return currentValue !== "";
     });
 };
-
 
 
 

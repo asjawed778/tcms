@@ -61,11 +61,11 @@ const AddStudent = () => {
   );
 
   const currentSchema = steps[activeStep].schema;
-  const methods = useForm({
-    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
-    mode: "onChange",
-  });
-  // const methods = useForm();
+  // const methods = useForm({
+  //   resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+  //   mode: "onChange",
+  // });
+  const methods = useForm();
   const onSubmit = async (data: any) => {
     const isValid = await methods.trigger();    
     if (!isValid) {

@@ -8,9 +8,8 @@ import React, { useEffect, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 const PreviousSchoolDetails: React.FC = () => {
+  const { setValue, control  } = useFormContext();
   const selectedSession = useAppSelector(state => state.session.selectedSession);
-    const { setValue, control  } = useFormContext();
-
   const {data: classData} = useGetAllClassQuery({
     sessionId: selectedSession?._id as string
   });

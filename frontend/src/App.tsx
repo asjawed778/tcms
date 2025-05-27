@@ -13,6 +13,7 @@ const TimeTable = lazy(() => import("./pages/Classes/TimeTable"));
 const Student = lazy(() => import("./pages/Student"));
 const AddStudent = lazy(() => import("./pages/Student/AddStudent"));
 const ForgotPassword = lazy(() => import("./pages/Login/ForgotPassword"));
+const CreateTimeTable = lazy(() => import("./pages/Classes/TimeTable/CreateTimeTable"))
 
 import AuthLayout from "./layouts/AuthLayout";
 import PrivateRoute from "./components/Auth/PrivateRoute";
@@ -54,6 +55,7 @@ function App() {
               <Route path="createClass" element={<CreateClass />} />
               <Route path="section" element={<Section />} />
               <Route path="timetable" element={<TimeTable />} />
+              <Route path="timetable/create" element={<CreateTimeTable />} />
             </Route>
 
             <Route path="student" element={<Student />} />

@@ -57,11 +57,11 @@ import {
     extraOptions
   ) => {
     let result = await baseQuery(args, api, extraOptions);
-  
-    if (result.error && result.error?.status === 401) {
+    
+    if (result.error && result.error?.status === 401 || result.error?.status === 403) {
       const state = api.getState() as RootState;
       const refreshToken = state.auth.refreshToken;
-  
+      
       if (refreshToken) {
         try {
           const refreshResult = await refreshTokenBaseQuery(
@@ -71,9 +71,7 @@ import {
             },
             api,
             extraOptions
-          );
-          console.log("refresh result: ",refreshResult);
-          
+          );          
           if (refreshResult.data) {
             const { accessToken, refreshToken } = refreshResult.data as RefreshTokenResponse;
   

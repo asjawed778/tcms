@@ -137,7 +137,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
                   <TableCell key={col.key}>
                     {col.key === "sno."
                       ? index + 1 + page * rowsPerPage
-                      : row[col.key]}
+                      : row[col.key] || "N/A"}
                   </TableCell>
                 ))}
                 <TableCell>
