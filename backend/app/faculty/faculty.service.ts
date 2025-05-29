@@ -2,6 +2,7 @@ import mongoose, { ClientSession } from "mongoose";
 import * as FacultyDTO from "./faculty.dto";
 import facultySchema from "./faculty.schema"
 import * as Enum from "../common/constant/enum";
+import * as UserService from "../user/user.service";
 import { getTimeTableByDay } from "../class/class.service";
 
 export const createFaculty = async (data: FacultyDTO.ICreateFaculty, session?: ClientSession) => {
@@ -209,34 +210,7 @@ export const getUnassignedFaculty = async (
         });
     });
 
-    const pipeline = [
-        {
-            $match: {
-                _id: { $nin: Array.from(assignedFacultyIds).map(id => new mongoose.Types.ObjectId(id)) }
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "userDetails",
-            },
-        },
-        {
-            $unwind: "$userDetails",
-        },
-        {
-            $project: {
-                _id: 1,
-                name: "$userDetails.name",
-                designation: 1
-            }
-        }
-    ]
-
-    const unassignedFaculty = await facultySchema.aggregate(pipeline);
-
-    return unassignedFaculty.length > 0 ? unassignedFaculty[0] : [];
+    const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
+    return result || [];
 };
 

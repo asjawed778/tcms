@@ -6,7 +6,7 @@ import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
 import { ICreateTimeTable } from "./class.dto";
 import mongoose from "mongoose";
-
+import * as UserService from "../user/user.service";
 
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
@@ -47,6 +47,10 @@ export const assignFaculty = asyncHandler(async (req: Request, res: Response) =>
     const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
     if (!isSessionCurrentOrUpcoming) {
         throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const isFacultyExists = await UserService.isFaculty(facultyId);
+    if (!isFacultyExists) {
+        throw createHttpError(400, "Faculty does not exist or is not a valid faculty");
     }
     const result = await ClassService.assignFaculty(sectionId, facultyId);
     res.send(createResponse({}, "Faculty assigned successfully"));
