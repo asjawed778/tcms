@@ -2,6 +2,7 @@ import mongoose, { ClientSession } from "mongoose";
 import * as FacultyDTO from "./faculty.dto";
 import facultySchema from "./faculty.schema"
 import * as Enum from "../common/constant/enum";
+import * as UserService from "../user/user.service";
 import { getTimeTableByDay } from "../class/class.service";
 
 export const createFaculty = async (data: FacultyDTO.ICreateFaculty, session?: ClientSession) => {
@@ -29,19 +30,8 @@ export const getAllFaculty = async (
         },
         {
             $lookup: {
-                from: "employees",
-                localField: "user",
-                foreignField: "user",
-                as: "employeeDetails",
-            },
-        },
-        {
-            $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true },
-        },
-        {
-            $lookup: {
                 from: "addresses",
-                localField: "employeeDetails.address",
+                localField: "address",
                 foreignField: "_id",
                 as: "addressDetails",
             }
@@ -53,9 +43,13 @@ export const getAllFaculty = async (
             $match: search ? {
                 $or: [
                     { "userDetails.name": { $regex: search, $options: "i" } },
-                    { "employeeDetails.phoneNumber": { $regex: search, $options: "i" } },
-                    { "employeeDetails.employeeId": { $regex: search, $options: "i" } },
-                    { "designation": { $regex: search, $options: "i" } }
+                    { "userDetails.email": { $regex: search, $options: "i" } },
+                    { "phoneNumber": { $regex: search, $options: "i" } },
+                    { "employeeId": { $regex: search, $options: "i" } },
+                    { "designation": { $regex: search, $options: "i" } },
+                    { "adharNumber": { $regex: search, $options: "i" } },
+                    { "fatherName": { $regex: search, $options: "i" } },
+                    { "motherName": { $regex: search, $options: "i" } },
                 ]
             } : {}
         },
@@ -72,11 +66,11 @@ export const getAllFaculty = async (
                             fatherName: 1,
                             motherName: 1,
                             email: "$userDetails.email",
-                            phoneNumber: "$employeeDetails.phoneNumber",
-                            gender: "$employeeDetails.gender",
-                            dob: "$employeeDetails.dob",
-                            photo: "$employeeDetails.photo",
-                            aadhaarNumber: "$employeeDetails.aadhaarNumber",
+                            phoneNumber: 1,
+                            gender: 1,
+                            dob: 1,
+                            photo: 1,
+                            aadhaarNumber: 1,
                             address: {
                                 _id: "$addressDetails._id",
                                 city: "$addressDetails.city",
@@ -87,14 +81,14 @@ export const getAllFaculty = async (
                                 addressLine2: "$addressDetails.addressLine2"
                             },
                             designation: 1,
-                            dateOfJoining: "$employeeDetails.dateOfJoining",
+                            dateOfJoining: 1,
                             expertiseSubjects: 1,
-                            employeeId: "$employeeDetails.employeeId",
+                            employeeId: 1,
                             qualification: 1,
-                            salery: "$employeeDetails.salary",
+                            salery: 1,
                             certification: 1,
                             status: 1,
-                            documents: "$employeeDetails.documents",
+                            documents: 1,
                         }
                     }
                 ]
@@ -137,19 +131,8 @@ export const getFacultyById = async (facultyId: string) => {
         },
         {
             $lookup: {
-                from: "employees",
-                localField: "user",
-                foreignField: "user",
-                as: "employeeDetails",
-            },
-        },
-        {
-            $unwind: { path: "$employeeDetails", preserveNullAndEmptyArrays: true },
-        },
-        {
-            $lookup: {
                 from: "addresses",
-                localField: "employeeDetails.address",
+                localField: "address",
                 foreignField: "_id",
                 as: "addressDetails",
             }
@@ -164,11 +147,11 @@ export const getFacultyById = async (facultyId: string) => {
                 fatherName: 1,
                 motherName: 1,
                 email: "$userDetails.email",
-                phoneNumber: "$employeeDetails.phoneNumber",
-                gender: "$employeeDetails.gender",
-                dob: "$employeeDetails.dob",
-                photo: "$employeeDetails.photo",
-                aadhaarNumber: "$employeeDetails.aadhaarNumber",
+                phoneNumber: 1,
+                gender: 1,
+                dob: 1,
+                photo: 1,
+                aadhaarNumber: 1,
                 address: {
                     _id: "$addressDetails._id",
                     city: "$addressDetails.city",
@@ -179,14 +162,14 @@ export const getFacultyById = async (facultyId: string) => {
                     addressLine2: "$addressDetails.addressLine2"
                 },
                 designation: 1,
-                dateOfJoining: "$employeeDetails.dateOfJoining",
+                dateOfJoining: 1,
                 expertiseSubjects: 1,
-                employeeId: "$employeeDetails.employeeId",
+                employeeId: 1,
                 qualification: 1,
-                salery: "$employeeDetails.salary",
+                salery: 1,
                 certification: 1,
                 status: 1,
-                documents: "$employeeDetails.documents",
+                documents: 1,
             }
         }
     ];
@@ -227,34 +210,7 @@ export const getUnassignedFaculty = async (
         });
     });
 
-    const pipeline = [
-        {
-            $match: {
-                _id: { $nin: Array.from(assignedFacultyIds).map(id => new mongoose.Types.ObjectId(id)) }
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "userDetails",
-            },
-        },
-        {
-            $unwind: "$userDetails",
-        },
-        {
-            $project: {
-                _id: 1,
-                name: "$userDetails.name",
-                designation: 1
-            }
-        }
-    ]
-
-    const unassignedFaculty = await facultySchema.aggregate(pipeline);
-
-    return unassignedFaculty.length > 0 ? unassignedFaculty[0] : [];
+    const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
+    return result || [];
 };
 
