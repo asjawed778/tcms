@@ -14,7 +14,7 @@ export const createUserByAdmin = async (data: {name: string, email: string, role
     if (isUserExists) {
         throw createHttpError(409, "User already exists");
     }
-    const password = `${data.name}@12345`;
+    const password = `TCMS@12345`;
     const hashedPass = await hashPassword(password);
     const [user] = await UserSchema.create([{ ...data, password: hashedPass }], {session});
     return omit(user.toObject() as IUser, ["password"]);

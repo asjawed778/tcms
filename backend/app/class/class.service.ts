@@ -5,7 +5,7 @@ import createHttpError from "http-errors";
 import sectionSchema from "./section.schema";
 import classTimetableSchema from "./class.timetable.schema";
 import * as Enum from "../common/constant/enum";
-import mongoose from "mongoose";
+import mongoose, { PipelineStage } from "mongoose";
 
 export const isClassAlreadyExists = async (name: string, session: string) => {
     const existingClass = await classSchema.findOne({ name, session, deleted: false });
@@ -99,85 +99,290 @@ export const createClass = async (data: ClassDto.ICreateClass) => {
 };
 
 export const getAllClass = async (sessionId: string) => {
-    const classes = await classSchema.find({ session: sessionId })
-        .populate({
-            path: "session",
-            select: "-__v -deleted",
-            match: { deleted: false }
-        })
-        .populate({
-            path: "subjects",
-            select: "-__v -deleted",
-            match: { deleted: false }
-        })
-        .populate({
-            path: "sections",
-            select: "-__v -deleted",
-            populate: {
-                path: "classTeacher",
-                select: "_id designation status",
-                populate: {
-                    path: "user",
-                    select: "_id name",
-                    transform: (doc) => {
-                        if (doc) {
-                            return {
-                                _id: doc._id,
-                                name: doc.name
-                            };
-                        }
-                        return doc;
-                    }
-                }
-            },
-            match: { deleted: false },
-        })
-        .lean();
+  const classOrder = Object.values(Enum.ClassName);
 
-    if (!classes) {
-        throw createHttpError(404, "No classes found for this session invalid sessionId");
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        session: new mongoose.Types.ObjectId(sessionId),
+        deleted: false
+      }
+    },
+    {
+      $lookup: {
+        from: "sessions",
+        localField: "session",
+        foreignField: "_id",
+        as: "sessionDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              session: 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $unwind: { path: "$sessionDetails", preserveNullAndEmptyArrays: true }
+    },
+    {
+      $lookup: {
+        from: "subjects",
+        localField: "subjects",
+        foreignField: "_id",
+        as: "subjectDetails",
+        pipeline: [
+          {
+            $match: { deleted: false }
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              publication: 1,
+              writer: 1,
+              ISBN: 1,
+              subjectType: 1,
+              subjectCategory: 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $lookup: {
+        from: "sections",
+        localField: "sections",
+        foreignField: "_id",
+        as: "sectionDetails",
+        pipeline: [
+          {
+            $match: { deleted: false }
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "classTeacher",
+              foreignField: "_id",
+              as: "facultyDetails"
+            }
+          },
+          {
+            $unwind: { path: "$facultyDetails", preserveNullAndEmptyArrays: true }
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              capacity: 1,
+              classTeacher: {
+                _id: "$facultyDetails._id",
+                name: "$facultyDetails.name"
+              }
+            }
+          },
+          {
+            $sort: {
+              name: 1 
+            }
+          }
+        ]
+      }
+    },
+    {
+      $addFields: {
+        sortOrder: {
+          $indexOfArray: [classOrder, "$name"]
+        }
+      }
+    },
+    {
+      $sort: {
+        sortOrder: 1 
+      }
+    },
+    {
+      $group: {
+        _id: "$_id",
+        name: { $first: "$name" },
+        session: { $first: "$sessionDetails" },
+        courseStream: { $first: "$courseStream" },
+        feeStructure: { $first: "$feeStructure" },
+        subjectDetails: { $first: "$subjectDetails" }, 
+        sectionDetails: { $first: "$sectionDetails" }
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        session: {
+          _id: "$session._id",
+          name: "$session.session"
+        },
+        courseStream: 1,
+        feeStructure: 1,
+        subjects: "$subjectDetails",
+        sections: "$sectionDetails"
+      }
     }
+  ];
 
-    if (classes.length === 0) {
-        return [];
-    }
+  const classes = await classSchema.aggregate(pipeline);
 
+  if (!classes || classes.length === 0) {
+    return { classes: [] };
+  }
 
-    return { classes };
+  return { classes };
 };
 
 export const getClassById = async (classId: string) => {
-    const result = await classSchema.findById(classId)
-        .populate({
-            path: "session",
-            select: "_id session",
-            match: { deleted: false }
-        })
-        .populate({
-            path: "subjects",
-            match: { deleted: false },
-            select: "-__v"
-        })
-        .populate({
-            path: "sections",
-            populate: {
-                path: "classTeacher",
-                select: "_id employeeId name designation status",
-                populate: {
-                    path: "userId",
-                    select: "profilePic"
-                }
+  const pipeline: PipelineStage[] = [
+    {
+      $match: {
+        _id: new mongoose.Types.ObjectId(classId),
+        deleted: false
+      }
+    },
+    {
+      $lookup: {
+        from: "sessions",
+        localField: "session",
+        foreignField: "_id",
+        as: "sessionDetails",
+        pipeline: [
+          {
+            $match: { deleted: false }
+          },
+          {
+            $project: {
+              _id: 1,
+              session: 1
             }
-        })
-        .lean();
+          }
+        ]
+      }
+    },
+    {
+      $unwind: { path: "$sessionDetails", preserveNullAndEmptyArrays: true }
+    },
+    {
+      $lookup: {
+        from: "subjects",
+        localField: "subjects",
+        foreignField: "_id",
+        as: "subjectDetails",
+        pipeline: [
+          {
+            $match: { deleted: false }
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              publication: 1,
+              writer: 1,
+              ISBN: 1,
+              subjectType: 1,
+              subjectCategory: 1
+            }
+          }
+        ]
+      }
+    },
+    {
+      $lookup: {
+        from: "sections",
+        localField: "sections",
+        foreignField: "_id",
+        as: "sectionDetails",
+        pipeline: [
+          {
+            $match: { deleted: false }
+          },
+          {
+            $lookup: {
+              from: "users",
+              localField: "classTeacher",
+              foreignField: "_id",
+              as: "facultyDetails",
+              pipeline: [
+                {
+                  $lookup: {
+                    from: "users",
+                    localField: "userId",
+                    foreignField: "_id",
+                    as: "userDetails"
+                  }
+                },
+                {
+                  $unwind: { path: "$userDetails", preserveNullAndEmptyArrays: true }
+                },
+                {
+                  $project: {
+                    _id: 1,
+                    employeeId: 1,
+                    name: 1,
+                    designation: 1,
+                    status: 1,
+                    profilePic: "$userDetails.profilePic"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            $unwind: { path: "$facultyDetails", preserveNullAndEmptyArrays: true }
+          },
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              capacity: 1,
+              classTeacher: {
+                _id: "$facultyDetails._id",
+                employeeId: "$facultyDetails.employeeId",
+                name: "$facultyDetails.name",
+                designation: "$facultyDetails.designation",
+                status: "$facultyDetails.status",
+                profilePic: "$facultyDetails.profilePic"
+              }
+            }
+          },
+          {
+            $sort: {
+              name: 1 
+            }
+          }
+        ]
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        name: 1,
+        session: {
+          _id: "$sessionDetails._id",
+          name: "$sessionDetails.session"
+        },
+        courseStream: 1,
+        feeStructure: 1,
+        subjects: "$subjectDetails",
+        sections: "$sectionDetails"
+      }
+    }
+  ];
 
-    console.log("result: ", result);
+  const classes = await classSchema.aggregate(pipeline);
 
-    // if (!result) {
-    //     throw createHttpError(404, "Class not found");
-    // }
+  if (!classes || classes.length === 0) {
+    throw createHttpError(404, "Class not found");
+  }
 
-    return result;
+  return classes[0];
 };
 
 export const createTimeTable = async (timeTableData: ClassDto.ICreateTimeTable) => {

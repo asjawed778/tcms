@@ -10,10 +10,17 @@ import mongoose from "mongoose";
 
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
+
+    const isSessionCurrentOrFuture = await SessionService.isSessionCurrentOrFuture(data.session);
+    if (!isSessionCurrentOrFuture) {
+        throw createHttpError(400, "Class can create for only current and future sessions");
+    }
+
     const isClassAlreadyExists = await ClassService.isClassAlreadyExists(data.name, data.session);
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
     }
+
     const result = await ClassService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));
 });
@@ -94,7 +101,7 @@ export const getTimeTableofClass = asyncHandler(async (req: Request, res: Respon
         result = await ClassService.getTimeTableofClassById(timeTableId as string);
     } else {
         if (!sessionId || !classId || !sectionId) {
-            throw createHttpError(400, "Session ID, Class ID and Section ID are required"); 
+            throw createHttpError(400, "Session ID, Class ID and Section ID are required");
         }
         const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId.toString(), classId.toString(), sectionId.toString());
         if (!isClassAndSectionValid) {

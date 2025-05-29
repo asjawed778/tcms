@@ -10,7 +10,7 @@ const sectionSchema = new mongoose.Schema<ISection>({
     },
     classTeacher: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Faculty",
+        ref: "User",
     },
     capacity: {
         type: Number,
