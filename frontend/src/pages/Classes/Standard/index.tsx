@@ -1,28 +1,28 @@
+// import React from "react";
+
+// const Standard: React.FC = () => {
+//   return <h1>This is Standard</h1>;
+// };
+// export default Standard;
+
+
+
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
-import { useGetAllFacultyQuery } from "@/services/facultyApi";
-import { PersonAdd } from "@mui/icons-material";
+import { useGetAllClassQuery } from "@/services/classApi";
+import { useAppSelector } from "@/store/store";
+import { Add } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
-  { key: "name", label: "Name" },
-  { key: "employeeId", label: "Employee Id" },
-  { key: "designation", label: "Designation" },
-  { key: "qualification", label: "Qualification" },
-  // {
-  //   key: "status",
-  //   label: "Status",
-  //   render: (value: string) => (
-  //     <span style={{ color: value === "active" ? "green" : "red" }}>
-  //       {value}
-  //     </span>
-  //   ),
-  // },
+  { key: "name", label: "Standard" },
+//   { key: "courseStream", label: "Stream" },
+//   { key: "totalSubjects", label: "Total Subject" },
+//   { key: "totalSections", label: "Total Section" },
 ];
 const actionsList = [
   {
@@ -30,35 +30,31 @@ const actionsList = [
     label: "",
   },
 ];
-const Faculty: React.FC = () => {
+const Standard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [query, setQuery] = useState("");
-  // const [statusFilter, setStatusFilter] = useState({label: "All", value: "All"});
-  const [statusFilter, setStatusFilter] = useState("All");
+  // const [query, setQuery] = useState("");
+  const [status, setStatus] = useState("All");
   const navigate = useNavigate();
-  console.log("Page: ", page);
-
-  const {
-    data: facultyData,
-    isLoading,
-    isError,
-  } = useGetAllFacultyQuery(
-    {
-      page: page + 1,
-      limit: rowsPerPage,
-      query,
-      active: statusFilter,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-    }
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession
   );
 
+  const {
+    data: classData,
+    isLoading,
+    isError,
+    refetch
+  } = useGetAllClassQuery({
+    sessionId: selectedSession?._id as string,
+    // page: page + 1,
+    // limit: rowsPerPage,
+    // query,
+    // active: status
+  });
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
-
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
@@ -68,20 +64,24 @@ const Faculty: React.FC = () => {
     console.log("Action:", action, "on ID:", row);
     switch (action) {
       case "update":
-      // alert(`Faculty ${row?.name} updated`);
+        // alert(`Faculty ${row?.name} updated`);
     }
   };
+
   const handleAddFaculty = () => {
-    navigate("/dashboard/addFaculty");
+    refetch();
+    navigate("/dashboard/createClass");
   };
 
   const handleChange = (val: any) => {
-    console.log("status: ", val);
-    setStatusFilter(val);
-    setPage(0);
+    setStatus(val);
   };
-  console.log("Faculty data: ", facultyData);
-  
+  const updatedClasses = classData?.data.classes?.map((cls) => ({
+    ...cls,
+    totalSections: cls.sections?.length || 0,
+    totalSubjects: cls.subjects?.length || 0,
+  }));
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box
@@ -93,8 +93,7 @@ const Faculty: React.FC = () => {
           mb: 2,
         }}
       >
-        {" "}
-        <CustomSearchField onSearch={setQuery} />
+        {/* <CustomSearchField onSearch={setQuery} /> */}
         <Box
           sx={{
             display: "flex",
@@ -102,44 +101,41 @@ const Faculty: React.FC = () => {
             gap: 1,
           }}
         >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+          {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
             Filter By:
-          </Typography>
-          <CustomDropdownField
-            // name="status"
+          </Typography> */}
+
+          {/* <CustomDropdownField
+            name="status"
             label="Status"
             required={false}
-            value={statusFilter}
-            // onChange={(val) => {
-            //   setStatusFilter(val);
-            //   setPage(0);
-            // }}
+            value={status}
             onChange={handleChange}
             options={[
               { label: "All", value: "All" },
               // { label: "Active", value: "true" },
               // { label: "Inactive", value: "false" },
             ]}
-          />
+          /> */}
 
-          <CustomButton
+          {/* <CustomButton
             variant="outlined"
             fullWidth
-            startIcon={<PersonAdd />}
+            startIcon={<Add />}
             onClick={handleAddFaculty}
             sx={{
               whiteSpace: "nowrap",
             }}
           >
-            Add Faculty
-          </CustomButton>
+            Create Class
+          </CustomButton> */}
         </Box>
       </Box>
 
       <TableWrapper
         columns={facultyColumns}
-        rows={facultyData?.data?.faculty || []}
-        totalCount={facultyData?.data?.totalDocuments || 0}
+        rows={updatedClasses || []}
+        totalCount={0}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}
@@ -153,4 +149,4 @@ const Faculty: React.FC = () => {
   );
 };
 
-export default Faculty;
+export default Standard;

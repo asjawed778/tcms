@@ -39,6 +39,6 @@ router
         catchError,
         FaculytyController.getUnassignedFaculty
     )
-
+    
 
 export default router;

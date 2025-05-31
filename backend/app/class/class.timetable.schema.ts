@@ -58,7 +58,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
                     hour: { type: Number, required: true },
                     minute: { type: Number, required: true }
                 },
-                durationMinutes: { type: Number, }
+                durationMinutes: { type: Number, required: false }
             }
         }],
         isHoliday: {

@@ -1,13 +1,19 @@
 import * as Enum from "@/utils/enum";
 import { EasingModifier } from "framer-motion";
 
+//  General data..................................................
+interface DropdownOptions{
+  label: string;
+  value: string;
+};
+
 interface ForgotPasswordFormValues {
   email: string;
-};
+}
 interface ResetPasswordFormValues {
   newPassword: string;
   confirmPassword: string;
-};
+}
 
 interface Session {
   _id: string;
@@ -65,7 +71,7 @@ interface Address {
   pinCode: number;
   addressLine1: string;
   addressLine2?: string;
-};
+}
 
 interface Experience {
   organisationName: string;
@@ -101,10 +107,10 @@ interface FacultyFormData {
 }
 
 interface FacultyTableData {
-  currentPage: number,
-  limit: number,
-  totalDocuments: number,
-  showing: number,
+  currentPage: number;
+  limit: number;
+  totalDocuments: number;
+  showing: number;
   faculty: FacultyFormData[];
 }
 
@@ -124,17 +130,31 @@ interface ClassApiResponse {
   message: string;
 }
 interface Subjects {
+  _id?: string;
+  deleted?: boolean;
   name: string;
   subjectType: Enum.SubjectType;
   subjectCategory: Enum.SubjectCategory;
   publication: string;
   writer: string;
   ISBN: string;
+};
+interface Students{
+
+};
+interface ClassTeacher{
+  name: string;
+  designation: string;
+  status: Enum.FacultyStatus;
+  employeedId: string;
+  _id: string;
 }
 interface Sections {
   _id?: string;
   name: string;
   capacity: number;
+  students?: Students[];
+  classTeacher?: ClassTeacher;
 }
 interface FeeDeclaration {
   amount: number;
@@ -154,6 +174,86 @@ interface ClassFormData {
   sections: Sections[];
   feeStructure: FeeStructure;
 }
+interface Time {
+  hour: number;
+  minute: number;
+}
+interface TimeSlot {
+  start: Time;
+  end: Time;
+};
+
+interface Periods {
+  periodNumber: number;
+  periodType: Enum.PeriodType;
+  subject: string;
+  faculty: string;
+  timeSlot: TimeSlot;
+  room?: string;
+};
+interface WeeklyScheduleItem{
+  day: Enum.WeekDay;
+  isHoliday?: boolean;
+  holidayReason?: string;
+  periods?: Periods[];
+};
+interface TimeTableFormData {
+  classId: string;
+  sectionId: string;
+  sessionId: string;
+  weeklySchedule: WeeklyScheduleItem[];
+};
+
+// TimeTable response.....................................
+interface TimeSlotResponse{
+  durationMinutes: number;
+  end: Time;
+  start: Time;
+};
+interface FacultyRespose{
+  _id: string;
+  name: string;
+}
+interface PeriodsResponse{
+  periodNumber: number;
+  periodType: Enum.PeriodType;
+  room: string;
+  faculty: FacultyRespose;
+  subject: Subjects;
+  timeSlot: TimeSlotResponse;
+}
+interface weeklyScheduleResponse{
+  day: string;
+  isHoliday: boolean;
+  periods: PeriodsResponse[];
+}
+interface TimeTableResponse{
+  class: Enum.ClassName;
+  section: string;
+  session: string;
+  weeklySchedule: weeklyScheduleResponse[];
+}
+interface TimeTableApiResponse{
+  data: TimeTableResponse;
+  message: string;
+  success: boolean;
+}
+interface UnAssignFacultyFormData {
+  sessionId: string;
+  day: string;
+  startTime: Time;
+  endTime: Time;
+};
+interface UnAssingFaculty {
+  _id: string;
+  name: string;
+  designation: string;
+};
+interface UnAssingFacultyApiResponse {
+  data: UnAssingFaculty[];
+  message: string;
+  success: boolean;
+};
 
 // Student Admission Data..................................
 interface Parent {
@@ -165,8 +265,7 @@ interface Parent {
   bussinessOrEmployerName?: string;
   officeAddress?: string;
   officeNumber?: number;
-
-};
+}
 interface PreviousSchool {
   name: string;
   address: string;
@@ -174,18 +273,18 @@ interface PreviousSchool {
   dateOfLeaving: string;
   schoolLeavingCertificate: Document;
   transferCertificate: Document;
-
-};
+}
 interface AdmissionClass {
   name: Enum.ClassName;
   section: string;
   admissionDate: string;
-};
+}
 interface StudentFormData {
   _id?: string;
   enrollmentNumber?: string;
   name: string;
   dob: string;
+  gender: string;
   gender: string;
   nationality: string;
   religion: string;
@@ -202,7 +301,7 @@ interface StudentFormData {
   previousSchool?: PreviousSchool;
   admission: AdmissionClass;
   documents: Document[];
-};
+}
 interface Admission {
   admissionStatus: string;
   rollNumber: number;
@@ -226,7 +325,7 @@ interface studentTableData {
   pageLimit: number;
   hasPrevious: boolean;
   hasNext: boolean;
-};
+}
 interface StudentApiResponse {
   data: studentTableData;
   success: boolean;

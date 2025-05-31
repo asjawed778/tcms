@@ -4,7 +4,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import {
   basicDetailsSchema,
   feeStructureSchema,
-} from "../../../../yup";
+} from "../../../../../yup";
 import {
   Stepper,
   Step,
@@ -21,9 +21,9 @@ import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import FeeStructure from "./FeeStructure";
 import { useCreateClassMutation } from "@/services/classApi";
-import BasicDetails from "./BasicDetails";
 import { useAppSelector } from "@/store/store";
 import { cleanData } from "@/utils/helper";
+import BasicDetails from "./BasicDetails";
 
 const steps = [
   {
@@ -60,7 +60,6 @@ const CreateClass = () => {
 
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-      toast.success("Step completed! Moving to next step.");
     } else {
       try {
         
@@ -68,15 +67,14 @@ const CreateClass = () => {
           ...data,
           session: selectedSession?._id,
         }
-        console.log("Class Form: ",data);
         const freshData = cleanData(payload);
-        console.log("Fresh Data: ", freshData);
         const response = await createClass(freshData).unwrap();
         if (response.success) {
           toast.success(
             response.message || "Class Created successfully!"
           );
-          navigate("/dashboard/class");
+          navigate("/dashboard/classes", { state: { refetch: true } });
+
         } else {
           toast.error(response.message || "Something went wrong.");
         }

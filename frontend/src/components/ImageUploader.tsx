@@ -1,12 +1,7 @@
-import React, { useRef, useState } from "react";
-import {
-  Box,
-  Typography,
-  IconButton,
-  CircularProgress,
-} from "@mui/material";
+import React, { useEffect, useRef, useState } from "react";
+import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Controller, useFormContext, Control } from "react-hook-form";
+import { Controller, useFormContext, Control, useWatch } from "react-hook-form";
 import { useUploadFileMutation } from "@/services/commonApi";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CloudUploadOutlined } from "@mui/icons-material";
@@ -39,6 +34,14 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [uploadImage, { isLoading: isUploading }] = useUploadFileMutation();
+
+  const watchedValue = useWatch({ control: activeControl, name });
+
+  useEffect(() => {
+    if (typeof watchedValue === "string" && watchedValue !== previewUrl) {
+      setPreviewUrl(watchedValue);
+    }
+  }, [watchedValue]);
 
   const handleFileChange = async (
     file: File,

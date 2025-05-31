@@ -112,7 +112,7 @@ export enum FacultyStatus {
   INACTIVE = "Inactive"
 }
 
-// Classes.....................
+// Classes.......................................................
 export enum ClassName {
     NURSERY = "Nursery",
     LKG = "LKG",
@@ -153,5 +153,24 @@ export enum SubjectCategory {
     VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
 };
 
+// Time Table........................................................
+export enum WeekDay {
+  MONDAY = "Monday",
+  TUESDAY = "Tuesday",
+  WEDNESDAY = "Wednesday",
+  THURSDAY = "Thursday",
+  FRIDAY = "Friday",
+  SATURDAY = "Saturday",
+  SUNDAY = "Sunday"
+};
+export enum PeriodType {
+  LECTURE = "Lecture",
+  LAB = "Lab",
+  ASSEMBLY = "Assembly",
+  RECESS = "Recess",
+  ACTIVITY = "Activity",
+  MEETING = "Meeting",
+  OTHER = "Other"
+};
 
 

@@ -67,6 +67,12 @@ export const validateGroupFields = (
     });
 };
 
+export const formatTime = (hour: number, minute: number) =>
+  `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+
+
+
+
 
 
 
