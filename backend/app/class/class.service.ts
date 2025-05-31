@@ -464,12 +464,17 @@ export const getTimeTableofClassById = async (timeTableId: string) => {
 };
 
 export const getTimeTableBySectionId = async (sessionId: string, sectionId: string, classId: string) => {
-
-  const timeTable = await classTimetableSchema.findOne({
-    session: new mongoose.Types.ObjectId(sessionId),
-    section: new mongoose.Types.ObjectId(sectionId),
-    class: new mongoose.Types.ObjectId(classId)
-  })
+  const query: any = {};
+  if (sessionId) {
+    query.session = new mongoose.Types.ObjectId(sessionId);
+  }
+  if (sectionId) {
+    query.section = new mongoose.Types.ObjectId(sectionId);
+  }
+  if (classId) {
+    query.class = new mongoose.Types.ObjectId(classId);
+  }
+  const timeTable = await classTimetableSchema.find(query)
     .populate("session", "session")
     .populate("class", "name")
     .populate("section", "name")
