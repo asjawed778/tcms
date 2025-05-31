@@ -176,7 +176,6 @@
 
 
 
-
 import React from "react";
 import {
   Autocomplete,
@@ -193,6 +192,7 @@ import {
 } from "react-hook-form";
 import { useAppTheme } from "@/context/ThemeContext";
 
+// Types
 export interface DropdownOption {
   label: string;
   value: string;
@@ -207,8 +207,8 @@ interface SharedProps {
   required?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
-  hasMore?: boolean;             // <-- Added for infinite scroll
-  onLoadMore?: () => void;       // <-- Added for infinite scroll
+  loadMoreOptions?: () => Promise<void>;
+  hasMore?: boolean;
 }
 
 interface WithHookFormProps extends SharedProps {
@@ -224,7 +224,7 @@ interface WithoutHookFormProps extends SharedProps {
 type DropdownFieldProps = WithHookFormProps | WithoutHookFormProps;
 
 const getErrorMessage = (errors: any, name: string) => {
-  const keys = name.split("."); // Handle nested field names like 'address.city'
+  const keys = name.split(".");
   let error = errors;
   for (let key of keys) {
     if (error && error[key]) {
@@ -246,32 +246,29 @@ const CustomDropdownField: React.FC<DropdownFieldProps> = (props) => {
     required = true,
     fullWidth = true,
     loading = false,
-    hasMore = false, // Infinite scroll flag
-    onLoadMore,      // Callback to load more
     control: incomingControl,
     name,
-  } = props as Partial<WithHookFormProps & { hasMore?: boolean; onLoadMore?: () => void }>;
+    loadMoreOptions,
+    hasMore = false,
+  } = props as Partial<WithHookFormProps & { loadMoreOptions?: () => Promise<void>; hasMore?: boolean }>;
 
   const formContext = useFormContext<FieldValues>();
   const control = incomingControl ?? formContext?.control;
   const isUsingHookForm = !!name && !!control;
-
   const { colors } = useAppTheme();
 
-  // Scroll handler to trigger loading more data when near the bottom
-  const handleScroll = (event: React.SyntheticEvent) => {
-    const listboxNode = event.currentTarget;
-    const { scrollTop, scrollHeight, clientHeight } = listboxNode;
-
-    if (
-      scrollTop + clientHeight >= scrollHeight - 10 && // Near bottom
-      hasMore &&
-      !loading &&
-      onLoadMore
-    ) {
-      onLoadMore();
-    }
-  };
+  const handleScroll = React.useCallback(
+    (event: React.UIEvent<HTMLElement>) => {
+      const listboxNode = event.currentTarget;
+      if (
+        hasMore &&
+        listboxNode.scrollTop + listboxNode.clientHeight >= listboxNode.scrollHeight - 10
+      ) {
+        loadMoreOptions && loadMoreOptions();
+      }
+    },
+    [hasMore, loadMoreOptions]
+  );
 
   const renderAutocomplete = (
     value: any,
@@ -305,16 +302,16 @@ const CustomDropdownField: React.FC<DropdownFieldProps> = (props) => {
         disabled={disabled}
         fullWidth={fullWidth}
         loading={loading}
-        ListboxProps={{
-          onScroll: handleScroll,
-          style: { maxHeight: 200, overflow: "auto" }, // limit height + scroll
-        }}
         loadingText={
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             <CircularProgress size={20} />
             Loading...
           </div>
         }
+        ListboxProps={{
+          onScroll: handleScroll,
+          style: { maxHeight: 250, overflowY: "auto" },
+        }}
         renderInput={(params: AutocompleteRenderInputParams) => (
           <TextField
             {...params}

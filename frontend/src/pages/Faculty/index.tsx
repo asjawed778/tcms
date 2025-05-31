@@ -80,6 +80,8 @@ const Faculty: React.FC = () => {
     setStatusFilter(val);
     setPage(0);
   };
+  console.log("Faculty data: ", facultyData);
+  
   return (
     <Box sx={{ width: "100%" }}>
       <Box

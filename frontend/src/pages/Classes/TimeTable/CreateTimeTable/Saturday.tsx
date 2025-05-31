@@ -19,13 +19,13 @@ import React, { useEffect, useRef } from "react";
 import { useAppSelector } from "@/store/store";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import { PeriodType } from "@/utils/enum";
-import { Options } from "../../../../../type";
 import { useUnAssignFaculty } from "../../../../hooks/useUnAssignFaculty";
+import { DropdownOptions } from "../../../../../type";
 
 interface Props {
   dayIndex: number;
   dayName: string;
-  subjectOptions: Options[];
+  subjectOptions: DropdownOptions[];
 }
 
 const Saturday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {

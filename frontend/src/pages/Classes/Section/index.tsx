@@ -86,7 +86,7 @@ const Section = () => {
   }));
   const handleChange = (val: any) => {
     setSelectedClassId(val);
-  };;
+  };
   
   return (
     <Box sx={{ width: "100%" }}>
@@ -110,7 +110,7 @@ const Section = () => {
             Filter By:
           </Typography>
           <CustomDropdownField
-            name="status"
+            // name="status"
             label="Class Name"
             required={false}
             value={selectedClassId}

@@ -94,13 +94,13 @@ const CreateTimeTable = () => {
       sectionId: "",
       weeklySchedule: defaultWeeklySchedule,
     },
-    // resolver: yupResolver(weeklySchema),
+    resolver: yupResolver(weeklySchema),
     // resolver: yupResolver(daySchema(activeStep)),
     //   mode: "onChange",
     // shouldUnregister: false,
   });
 
-  console.log("Erros: ", methods.formState.errors);
+  // console.log("Erros: ", methods.formState.errors);
   // const control = methods.control;
   const { control, getValues } = methods;
 
@@ -144,12 +144,13 @@ const CreateTimeTable = () => {
   const onSubmit = async (data: any) => {
     console.log("Time Table: ", data);
 
-    const fieldsToValidate =
-      activeStep === 0
-        ? ["classId", "sectionId"]
-        : [`weeklySchedule.${activeStep - 1}`];
+    // const fieldsToValidate =
+    //   activeStep === 0
+    //     ? ["classId", "sectionId"]
+    //     : [`weeklySchedule.${activeStep - 1}`];
 
-    const isValid = await methods.trigger(fieldsToValidate);
+    // const isValid = await methods.trigger(fieldsToValidate);
+    const isValid = await methods.trigger();
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
       return;
@@ -175,8 +176,6 @@ const CreateTimeTable = () => {
       }
     }
   };
-  console.log("getValues: ", getValues());
-
   const handleBack = () => {
     setActiveStep((s) => s - 1);
   };

@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { Options } from "../../type";
 import { useUnAssignFacultyMutation } from "@/services/facultyApi";
+import { DropdownOptions } from "../../type";
 
 interface Time {
   hour: number;
@@ -21,7 +21,9 @@ export const useUnAssignFaculty = ({
   day: string;
   periods: { timeSlot: TimeSlot }[];
 }) => {
-  const [facultyMap, setFacultyMap] = useState<Record<number, Options[]>>({});
+  const [facultyMap, setFacultyMap] = useState<
+    Record<number, DropdownOptions[]>
+  >({});
   const [unAssignFaculty, { isLoading }] = useUnAssignFacultyMutation();
   const [durationMinutes, setDurationMinutes] = useState<number | null>(null);
   useEffect(() => {
@@ -37,14 +39,23 @@ export const useUnAssignFaculty = ({
           startTime: start,
           endTime: end,
         }).unwrap();
+        console.log("Result: ", result);
+        
+        if (result?.data?.length > 1) {
+          const options: DropdownOptions[] =
+            result?.data?.map((f: any) => ({
+              label: f.name,
+              value: f._id,
+            })) || [];
+            setFacultyMap((prev) => ({ ...prev, [index]: options }));
+        } else{
+          const options: DropdownOptions[] = [{
+            label: result?.data?.name,
+            value: result?.data?._id
+          }]
+          setFacultyMap((prev) => ({ ...prev, [index]: options }));
+        }
 
-        const options: Options[] =
-          result?.data?.map((f: any) => ({
-            label: f.name,
-            value: f._id,
-          })) || [];
-
-        setFacultyMap((prev) => ({ ...prev, [index]: options }));
       } catch (err) {
         console.error("Failed to fetch faculty:", err);
       }

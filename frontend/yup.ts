@@ -116,6 +116,10 @@ export const personalInfoSchema = yup.object({
     .required("Aadhaar number is required"),
 });
 export const professionalInfoSchema = yup.object({
+  salary: yup
+    .string()
+    .required("Salary is required")
+    .matches(/^\d+$/, "Salary must be a number"),
   expertiseSubjects: yup
     .array()
     .of(
@@ -186,10 +190,7 @@ export const documentUploadSchema = yup.object({
       })
     )
     .min(1, "At least one document is required"),
-  salary: yup
-    .string()
-    .required("Salary is required")
-    .matches(/^\d+$/, "Salary must be a number"),
+  
 });
 
 // ClassSchema.........................................................
@@ -488,167 +489,166 @@ export const addRemarkSchema = yup.object({
 });
 
 // Time Table Schema............................................
-// export const weeklySchema = yup.object().shape({
-//   classId: yup.string().required("Class name is required"),
-//   sectionId: yup.string().required("Section name is required"),
-//   weeklySchedule: yup.array().of(
-//     yup.object().shape({
-//       isHoliday: yup.boolean(),
-//       holidayReason: yup.string().when("isHoliday", {
-//         is: true,
-//         then: (schema) => schema.required("Holiday reason is required"),
-//         otherwise: (schema) => schema.notRequired().strip(),
-//       }),
-//       periods: yup.array().of(
-//         yup.object().shape({
-//           periodType: yup
-//             .string()
-//             .oneOf(Object.values(Enum.PeriodType), "Invalid period type")
-//             .required("Period type is required"),
-
-//           periodNumber: yup
-//             .number()
-//             .typeError("Period number must be a number")
-//             .positive("Must be a positive number")
-//             .required("Period number is required"),
-
-//           subject: yup.string().required("Subject is required"),
-//           faculty: yup.string().required("Teacher is required"),
-//           room: yup.string().optional(),
-
-//           timeSlot: yup
-//             .object({
-//               start: yup
-//                 .object({
-//                   hour: yup
-//                     .number()
-//                     .transform((value, originalValue) =>
-//                       originalValue === "" ? undefined : value
-//                     )
-//                     .typeError("Start hour must be a number")
-//                     .min(1, "Start hour must be between 1 and 23")
-//                     .max(23, "Start hour must be between 1 and 23")
-//                     .required("Start hour is required"),
-
-//                   minute: yup
-//                     .number()
-//                     .transform((value, originalValue) =>
-//                       originalValue === "" ? undefined : value
-//                     )
-//                     .typeError("Start minute must be a number")
-//                     .min(0, "Start minute must be between 0 and 59")
-//                     .max(59, "Start minute must be between 0 and 59")
-//                     .required("Start minute is required"),
-//                 })
-//                 .required("Start time is required"),
-
-//               end: yup
-//                 .object({
-//                   hour: yup
-//                     .number()
-//                     .transform((value, originalValue) =>
-//                       originalValue === "" ? undefined : value
-//                     )
-//                     .typeError("End hour must be a number")
-//                     .min(1, "End hour must be between 1 and 23")
-//                     .max(23, "End hour must be between 1 and 23")
-//                     .required("End hour is required"),
-
-//                   minute: yup
-//                     .number()
-//                     .transform((value, originalValue) =>
-//                       originalValue === "" ? undefined : value
-//                     )
-//                     .typeError("End minute must be a number")
-//                     .min(0, "End minute must be between 0 and 59")
-//                     .max(59, "End minute must be between 0 and 59")
-//                     .required("End minute is required"),
-//                 })
-//                 .required("End time is required"),
-//             })
-//             .required("Time slot is required"),
-//         })
-//       ),
-//     })
-//   ),
-// });
-
-
-
-
-
-const periodSchema = yup.object().shape({
-  periodType: yup
-    .string()
-    .oneOf(Object.values(Enum.PeriodType), "Invalid period type")
-    .required("Period type is required"),
-  periodNumber: yup
-    .number()
-    .typeError("Period number must be a number")
-    .positive("Must be a positive number")
-    .required("Period number is required"),
-  subject: yup.string().required("Subject is required"),
-  faculty: yup.string().required("Teacher is required"),
-  room: yup.string().optional(),
-  timeSlot: yup
-    .object({
-      start: yup.object({
-        hour: yup
-          .number()
-          .transform((value, originalValue) => (originalValue === "" ? undefined : value))
-          .typeError("Start hour must be a number")
-          .min(1, "Start hour must be between 1 and 23")
-          .max(23, "Start hour must be between 1 and 23")
-          .required("Start hour is required"),
-        minute: yup
-          .number()
-          .transform((value, originalValue) => (originalValue === "" ? undefined : value))
-          .typeError("Start minute must be a number")
-          .min(0, "Start minute must be between 0 and 59")
-          .max(59, "Start minute must be between 0 and 59")
-          .required("Start minute is required"),
-      }),
-      end: yup.object({
-        hour: yup
-          .number()
-          .transform((value, originalValue) => (originalValue === "" ? undefined : value))
-          .typeError("End hour must be a number")
-          .min(1, "End hour must be between 1 and 23")
-          .max(23, "End hour must be between 1 and 23")
-          .required("End hour is required"),
-        minute: yup
-          .number()
-          .transform((value, originalValue) => (originalValue === "" ? undefined : value))
-          .typeError("End minute must be a number")
-          .min(0, "End minute must be between 0 and 59")
-          .max(59, "End minute must be between 0 and 59")
-          .required("End minute is required"),
-      }),
-    })
-    .required("Time slot is required"),
-});
-
-export const daySchema = (dayIndex: number) => {
-  return yup.object().shape({
-    // Class/section only for first step
-    ...(dayIndex === 0 && {
-      classId: yup.string().required("Class name is required"),
-      sectionId: yup.string().required("Section name is required"),
-    }),
-    
-    // Current day's validation
-    [`weeklySchedule.${dayIndex}`]: yup.object().shape({
+export const weeklySchema = yup.object().shape({
+  classId: yup.string().required("Class name is required"),
+  sectionId: yup.string().required("Section name is required"),
+  weeklySchedule: yup.array().of(
+    yup.object().shape({
       isHoliday: yup.boolean(),
       holidayReason: yup.string().when("isHoliday", {
         is: true,
         then: (schema) => schema.required("Holiday reason is required"),
-        otherwise: (schema) => schema.notRequired(),
+        otherwise: (schema) => schema.notRequired().strip(),
       }),
-      periods: yup.array().when("isHoliday", {
-        is: false,
-        then: (schema) => schema.of(periodSchema).min(1, "At least one period is required"),
-        otherwise: (schema) => schema.notRequired(),
-      }),
-    }),
-  });
-};
+      periods: yup.array().of(
+        yup.object().shape({
+          periodType: yup
+            .string()
+            .oneOf(Object.values(Enum.PeriodType), "Invalid period type")
+            .required("Period type is required"),
+
+          periodNumber: yup
+            .number()
+            .typeError("Period number must be a number")
+            .positive("Must be a positive number")
+            .required("Period number is required"),
+
+          subject: yup.string().required("Subject is required"),
+          faculty: yup.string().required("Teacher is required"),
+          room: yup.string().optional(),
+
+          timeSlot: yup
+            .object({
+              start: yup
+                .object({
+                  hour: yup
+                    .number()
+                    .transform((value, originalValue) =>
+                      originalValue === "" ? undefined : value
+                    )
+                    .typeError("Start hour must be a number")
+                    .min(1, "Start hour must be between 1 and 23")
+                    .max(23, "Start hour must be between 1 and 23")
+                    .required("Start hour is required"),
+
+                  minute: yup
+                    .number()
+                    .transform((value, originalValue) =>
+                      originalValue === "" ? undefined : value
+                    )
+                    .typeError("Start minute must be a number")
+                    .min(0, "Start minute must be between 0 and 59")
+                    .max(59, "Start minute must be between 0 and 59")
+                    .required("Start minute is required"),
+                })
+                .required("Start time is required"),
+
+              end: yup
+                .object({
+                  hour: yup
+                    .number()
+                    .transform((value, originalValue) =>
+                      originalValue === "" ? undefined : value
+                    )
+                    .typeError("End hour must be a number")
+                    .min(1, "End hour must be between 1 and 23")
+                    .max(23, "End hour must be between 1 and 23")
+                    .required("End hour is required"),
+
+                  minute: yup
+                    .number()
+                    .transform((value, originalValue) =>
+                      originalValue === "" ? undefined : value
+                    )
+                    .typeError("End minute must be a number")
+                    .min(0, "End minute must be between 0 and 59")
+                    .max(59, "End minute must be between 0 and 59")
+                    .required("End minute is required"),
+                })
+                .required("End time is required"),
+            })
+            .required("Time slot is required"),
+        })
+      ),
+    })
+  ),
+});
+
+
+
+
+// const periodSchema = yup.object().shape({
+//   periodType: yup
+//     .string()
+//     .oneOf(Object.values(Enum.PeriodType), "Invalid period type")
+//     .required("Period type is required"),
+//   periodNumber: yup
+//     .number()
+//     .typeError("Period number must be a number")
+//     .positive("Must be a positive number")
+//     .required("Period number is required"),
+//   subject: yup.string().required("Subject is required"),
+//   faculty: yup.string().required("Teacher is required"),
+//   room: yup.string().optional(),
+//   timeSlot: yup
+//     .object({
+//       start: yup.object({
+//         hour: yup
+//           .number()
+//           .transform((value, originalValue) => (originalValue === "" ? undefined : value))
+//           .typeError("Start hour must be a number")
+//           .min(1, "Start hour must be between 1 and 23")
+//           .max(23, "Start hour must be between 1 and 23")
+//           .required("Start hour is required"),
+//         minute: yup
+//           .number()
+//           .transform((value, originalValue) => (originalValue === "" ? undefined : value))
+//           .typeError("Start minute must be a number")
+//           .min(0, "Start minute must be between 0 and 59")
+//           .max(59, "Start minute must be between 0 and 59")
+//           .required("Start minute is required"),
+//       }),
+//       end: yup.object({
+//         hour: yup
+//           .number()
+//           .transform((value, originalValue) => (originalValue === "" ? undefined : value))
+//           .typeError("End hour must be a number")
+//           .min(1, "End hour must be between 1 and 23")
+//           .max(23, "End hour must be between 1 and 23")
+//           .required("End hour is required"),
+//         minute: yup
+//           .number()
+//           .transform((value, originalValue) => (originalValue === "" ? undefined : value))
+//           .typeError("End minute must be a number")
+//           .min(0, "End minute must be between 0 and 59")
+//           .max(59, "End minute must be between 0 and 59")
+//           .required("End minute is required"),
+//       }),
+//     })
+//     .required("Time slot is required"),
+// });
+
+// export const daySchema = (dayIndex: number) => {
+//   return yup.object().shape({
+//     // Class/section only for first step
+//     ...(dayIndex === 0 && {
+//       classId: yup.string().required("Class name is required"),
+//       sectionId: yup.string().required("Section name is required"),
+//     }),
+    
+//     // Current day's validation
+//     [`weeklySchedule.${dayIndex}`]: yup.object().shape({
+//       isHoliday: yup.boolean(),
+//       holidayReason: yup.string().when("isHoliday", {
+//         is: true,
+//         then: (schema) => schema.required("Holiday reason is required"),
+//         otherwise: (schema) => schema.notRequired(),
+//       }),
+//       periods: yup.array().when("isHoliday", {
+//         is: false,
+//         then: (schema) => schema.of(periodSchema).min(1, "At least one period is required"),
+//         otherwise: (schema) => schema.notRequired(),
+//       }),
+//     }),
+//   });
+// };

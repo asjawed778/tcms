@@ -39,7 +39,6 @@ export const facultyApi = createApi({
 
 export const {
   useGetAllFacultyQuery,
-  useLazyGetAllFacultyQuery, 
   useAddFacultyMutation, 
   useUnAssignFacultyMutation,
 } = facultyApi;

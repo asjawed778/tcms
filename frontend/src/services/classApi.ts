@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { ApiResponse, ClassApiResponse, ClassFormData, TimeTableFormData,  } from "../../type";
+import { ApiResponse, ClassApiResponse, ClassFormData, TimeTableApiResponse, TimeTableFormData,  } from "../../type";
 import { baseQueryWithReauth } from "./api";
 
 export const classApi = createApi({
@@ -40,7 +40,20 @@ export const classApi = createApi({
         method: "POST",
         body: data
       })
-    })
+    }),
+    getTimeTable: builder.query<TimeTableApiResponse, {sessionId: string, classId: string, sectionId: string}>({
+      query:({sessionId, classId, sectionId}) => ({
+        url: `/class/timetable/${sessionId}/${classId}/${sectionId}`,
+        method: "GET"
+      })
+    }),
+    assignClassTeacher: builder.mutation<ApiResponse, {sessionId: string, classId: string, sectionId: string, facultyId: string}>({
+      query:({sessionId, ...body}) => ({
+        url: `/class/assign-faculty/${sessionId}`,
+        method: "PATCH",
+        body
+      })
+    }), 
   }),
 });
 
@@ -48,6 +61,8 @@ export const {
   useGetAllClassQuery, 
   useCreateClassMutation, 
   useCreateTimeTableMutation,
+  useGetTimeTableQuery,
   useGetClassQuery, 
+  useAssignClassTeacherMutation,
 } = classApi;
 

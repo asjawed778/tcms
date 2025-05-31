@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import { Box, Grid, IconButton, Button } from "@mui/material";
+import { Box, Grid, IconButton, Button, Typography, Divider } from "@mui/material";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
@@ -22,12 +22,11 @@ const DocumentUpload: React.FC = () => {
 
   return (
     <Grid container spacing={2}>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="salary"
-          label="Salary we offers"
-          placeholder="Enter how much salary you offer."
-        />
+      <Grid size={{ md: 12 }}>
+        <Typography variant="h6" gutterBottom fontWeight={600}>
+          Upload Supporting Documents if any
+        </Typography>
+        <Divider />
       </Grid>
       {fields.map((field, index) => (
         <Grid
@@ -73,11 +72,8 @@ const DocumentUpload: React.FC = () => {
                 required={false}
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }} sx={{mt: 2}}>
-              <FileUploader 
-                name={`documents.${index}.url`}
-                control={control}
-              />
+            <Grid size={{ xs: 12, md: 6 }} sx={{ mt: 2 }}>
+              <FileUploader name={`documents.${index}.url`} control={control} />
             </Grid>
           </Grid>
         </Grid>

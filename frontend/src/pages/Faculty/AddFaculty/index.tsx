@@ -115,10 +115,10 @@ const AddFaculty = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <Paper sx={{ width: "100%" }}>
             <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
-              <Typography variant="h6" gutterBottom fontWeight={600}>
+              {/* <Typography variant="h6" gutterBottom fontWeight={600}>
                 {steps[activeStep].label}
               </Typography>
-              <Divider sx={{ mb: 3 }} />
+              <Divider sx={{ mb: 3 }} /> */}
               <Box>
                 <StepComponent />
               </Box>
