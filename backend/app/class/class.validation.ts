@@ -221,10 +221,10 @@ export const getTimeTableofClass = [
         .notEmpty().withMessage("Session Id is required")
         .isMongoId().withMessage("Session Id must be a valid Mongo ID"),
     param("classId")
-        .notEmpty().withMessage("Class Id is required")
+        .optional()
         .isMongoId().withMessage("Class Id must be a valid Mongo ID"),
     param("sectionId")
-        .notEmpty().withMessage("Section Id is required")
+        .optional()
         .isMongoId().withMessage("Section Id must be a valid Mongo ID"),
 ];
 

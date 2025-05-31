@@ -104,8 +104,8 @@ export const getTimeTableofClass = asyncHandler(async (req: Request, res: Respon
     if (timeTableId) {
         result = await ClassService.getTimeTableofClassById(timeTableId as string);
     } else {
-        if (!sessionId || !classId || !sectionId) {
-            throw createHttpError(400, "Session ID, Class ID and Section ID are required");
+        if (!sessionId) {
+            throw createHttpError(400, "Session ID is reuired");
         }
         const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId.toString(), classId.toString(), sectionId.toString());
         if (!isClassAndSectionValid) {
