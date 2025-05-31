@@ -3,7 +3,7 @@ import * as FacultyDTO from "./faculty.dto";
 import facultySchema from "./faculty.schema"
 import * as Enum from "../common/constant/enum";
 import * as UserService from "../user/user.service";
-import { getTimeTableByDay } from "../class/class.service";
+import { getAssignedFaculyIds } from "../class/class.service";
 
 export const createFaculty = async (data: FacultyDTO.ICreateFaculty, session?: ClientSession) => {
     const [result] = await facultySchema.create([data], { session });
@@ -183,32 +183,8 @@ export const getUnassignedFaculty = async (
     startTime: { hour: number; minute: number },
     endTime: { hour: number; minute: number }
 ) => {
-    const startTotalMinutes = startTime.hour * 60 + startTime.minute;
-    const endTotalMinutes = endTime.hour * 60 + endTime.minute;
 
-    const timeTables = await getTimeTableByDay(sessionId, day);
-
-    const assignedFacultyIds = new Set<string>();
-
-    timeTables.forEach((timetable) => {
-        timetable.weeklySchedule.forEach((schedule) => {
-            if (schedule.day !== day) return;
-
-            schedule.periods?.forEach((period) => {
-                if (!period.faculty || !period.timeSlot) return;
-
-                const periodStart = period.timeSlot.start.hour * 60 + period.timeSlot.start.minute;
-                const periodEnd = period.timeSlot.end.hour * 60 + period.timeSlot.end.minute;
-
-                const buffer = 5;
-                const isOverlap = (startTotalMinutes - buffer) < periodEnd && periodStart < (endTotalMinutes + buffer);
-
-                if (isOverlap && period.faculty) {
-                    assignedFacultyIds.add(String(period.faculty));
-                }
-            });
-        });
-    });
+    const assignedFacultyIds = await getAssignedFaculyIds(sessionId, day, startTime, endTime);
 
     const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
     return result || [];
