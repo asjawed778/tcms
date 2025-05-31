@@ -113,7 +113,7 @@ export const isFaculty = async (userId: string) => {
     return true;
 };
 
-export const getUnassignedFaculty = async (assignedFacultyIds: Set<string>) => {
+export const getUnassignedFaculty = async (assignedFacultyIds: string[]) => {
     const unassignedFaculty = await UserSchema.find({
         role: Enum.UserRole.FACULTY,
         _id: { $nin: Array.from(assignedFacultyIds) }

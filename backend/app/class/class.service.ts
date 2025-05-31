@@ -385,21 +385,49 @@ export const getClassById = async (classId: string) => {
   return classes[0];
 };
 
-export const getTimeTableByDay = async (sessionId: mongoose.Types.ObjectId, day: Enum.WeekDay) => {
+export const getAssignedFaculyIds = async (sessionId: mongoose.Types.ObjectId,
+  day: Enum.WeekDay,
+  startTime: { hour: number; minute: number },
+  endTime: { hour: number; minute: number }
+) => {
   const timeTable = await classTimetableSchema.find({
     session: sessionId,
     "weeklySchedule.day": day,
     "weeklySchedule.periods": {
       $elemMatch: {
-        "timeSlot.start.hour": { $exists: true },
-        "timeSlot.start.minute": { $exists: true },
-        "timeSlot.end.hour": { $exists: true },
-        "timeSlot.end.minute": { $exists: true },
+        "timeSlot.start.hour": startTime.hour,
+        "timeSlot.start.minute": startTime.minute,
+        "timeSlot.end.hour": endTime.hour,
+        "timeSlot.end.minute": endTime.minute,
         faculty: { $ne: null }
       }
     }
   });
-  return timeTable;
+  const assignedFacultyIds = new Set<string>();
+  timeTable.forEach((timetable) => {
+    timetable.weeklySchedule.forEach((schedule) => {
+      if (schedule.day !== day) return;
+
+      schedule.periods?.forEach((period) => {
+        if (!period.faculty || !period.timeSlot) return;
+
+        const periodStart = period.timeSlot.start.hour * 60 + period.timeSlot.start.minute;
+        const periodEnd = period.timeSlot.end.hour * 60 + period.timeSlot.end.minute;
+
+        const startTotalMinutes = startTime.hour * 60 + startTime.minute;
+        const endTotalMinutes = endTime.hour * 60 + endTime.minute;
+
+        const buffer = 5;
+        const isOverlap = (startTotalMinutes - buffer) < periodEnd && periodStart < (endTotalMinutes + buffer);
+
+        if (isOverlap && period.faculty) {
+          assignedFacultyIds.add(String(period.faculty));
+        }
+      });
+    });
+  })
+  return Array.from(assignedFacultyIds);
+
 };
 
 export const createTimeTable = async (timeTableData: ClassDto.ICreateTimeTable) => {
@@ -436,7 +464,7 @@ export const getTimeTableofClassById = async (timeTableId: string) => {
 };
 
 export const getTimeTableBySectionId = async (sessionId: string, sectionId: string, classId: string) => {
-  
+
   const timeTable = await classTimetableSchema.findOne({
     session: new mongoose.Types.ObjectId(sessionId),
     section: new mongoose.Types.ObjectId(sectionId),
