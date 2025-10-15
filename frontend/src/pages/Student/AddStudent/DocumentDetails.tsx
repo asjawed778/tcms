@@ -1,7 +1,7 @@
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
 import { AddCircleOutline, Close } from "@mui/icons-material";
-import { Box, Button, Grid, IconButton } from "@mui/material";
+import { Box, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
@@ -22,6 +22,10 @@ const DocumentDetails: React.FC = () => {
   return (
     <Box width="100%">
       <Grid container spacing={2}>
+        <Typography variant="h6" gutterBottom fontWeight={600}>
+          Upload Supporting Documents
+        </Typography>
+        <Divider sx={{ mb: 3 }} />
         {fields.map((field, index) => (
           <Grid
             key={field.id}

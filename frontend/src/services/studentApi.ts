@@ -37,6 +37,13 @@ export const studentApi = createApi({
         body,
       }),
     }),
+    uploadBulkStudents: builder.mutation({
+      query: ({students}) => ({
+        url: "/student/bulk-upload",
+        method: "POST",
+        body: students,
+      }),
+    }),
     addRemark: builder.mutation<
       ApiResponse,
       { sessionId: string; studentId: string; body: AddRemarkFormData }
@@ -54,4 +61,5 @@ export const {
   useGetAllStudentQuery,
   useAddStudentMutation,
   useAddRemarkMutation,
+  useUploadBulkStudentsMutation,
 } = studentApi;

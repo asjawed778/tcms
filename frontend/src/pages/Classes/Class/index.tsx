@@ -5,8 +5,8 @@ import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
 import { Add } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
@@ -27,6 +27,7 @@ const Class = () => {
   // const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
   const navigate = useNavigate();
+  const location = useLocation();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
@@ -61,8 +62,13 @@ const Class = () => {
 
   const handleAddFaculty = () => {
     refetch();
-    navigate("/dashboard/classes/createClass");
+    navigate("/dashboard/classes/createClass", { state: { fromClassPage: true } });
   };
+  useEffect(() => {
+  if (location.state?.refetch) {
+    refetch();
+  }
+}, [location.state]);
 
   const handleChange = (val: any) => {
     setStatus(val);

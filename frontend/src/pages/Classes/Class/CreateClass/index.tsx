@@ -73,7 +73,7 @@ const CreateClass = () => {
           toast.success(
             response.message || "Class Created successfully!"
           );
-          navigate("/dashboard/classes", { state: { refetch: true } });
+          navigate("/dashboard/classes/class", { state: { refetch: true } });
 
         } else {
           toast.error(response.message || "Something went wrong.");

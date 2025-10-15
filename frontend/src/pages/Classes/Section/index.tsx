@@ -16,11 +16,11 @@ const facultyColumns = [
 const actionsList = [
   {
     action: "assignClassTeacher",
-    label: "Assign Class Teacher",
+    label: "",
   },
   {
     action: "removeClassTeacher",
-    label: "Remove Class Teacher",
+    label: "",
   },
 ];
 const Section = () => {
@@ -47,7 +47,8 @@ const Section = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
   };
-
+  console.log("Class Data: ", classData);
+  
   const handleActionClick = (action: string, row: any) => {
     console.log("Action:", action, "on ID:", row);
     switch (action) {

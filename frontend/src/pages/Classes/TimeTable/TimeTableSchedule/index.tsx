@@ -14,17 +14,43 @@ import React from "react";
 import { formatTime } from "@/utils/helper";
 import { TimeTableResponse } from "../../../../../type";
 import { Download, Edit } from "@mui/icons-material";
-import EditIcon from '@mui/icons-material/Edit';
-import DownloadIcon from '@mui/icons-material/Download';
 
 interface Props {
   data: TimeTableResponse;
 }
 
-const ShowTimeTable: React.FC<Props> = ({ data }) => {
-  const maxPeriods = Math.max(
-    ...data.weeklySchedule?.map((day) => day.periods?.length ?? 0)
+const TimeTableShedule: React.FC<Props> = ({ data }) => {
+  console.log("data: ", data);
+  
+  if (!data) {
+    return (
+      <Box p={4} textAlign="center">
+        <Typography variant="h6" color="text.secondary">
+          No timetable available.
+        </Typography>
+      </Box>
+    );
+  }
+
+  const hasValidPeriods = data?.weeklySchedule?.some(
+    (day) => Array.isArray(day.periods) && day.periods?.length > 0
   );
+ 
+  
+  if (!hasValidPeriods) {
+    return (
+      <Box p={4} textAlign="center">
+        <Typography variant="h6" color="text.secondary">
+          No timetable available for Class {data.class?.name} - Section {data.section?.name}
+        </Typography>
+      </Box>
+    );
+  }
+
+  const maxPeriods = Math.max(
+    ...data?.weeklySchedule?.map((day) => day.periods?.length ?? 0)
+  );
+
   const periodTimeSlots = [...Array(maxPeriods)].map((_, idx) => {
     for (const day of data.weeklySchedule) {
       const period = day.periods?.find((p) => p.periodNumber === idx + 1);
@@ -32,18 +58,20 @@ const ShowTimeTable: React.FC<Props> = ({ data }) => {
     }
     return null;
   });
-  const handleEdit = () => {
 
-  }
+  const handleEdit = () => {
+    // edit logic
+  };
+
   const handleDownload = () => {
-    
-  }
+    // download logic
+  };
 
   return (
     <Box p={2}>
       <Box display="flex" justifyContent="space-between">
         <Typography variant="h5" fontWeight={600} gutterBottom>
-          Class {data.class} - Section {data.section} | Session: {data.session}
+          Class {data.class.name} - Section {data.section.name} | Session: {data.session.session}
         </Typography>
         <Box
           display="flex"
@@ -53,11 +81,11 @@ const ShowTimeTable: React.FC<Props> = ({ data }) => {
           gap={2}
         >
           <IconButton color="primary" onClick={handleEdit}>
-            <EditIcon />
+            <Edit />
           </IconButton>
 
           <IconButton color="primary" onClick={handleDownload}>
-            <DownloadIcon />
+            <Download />
           </IconButton>
         </Box>
       </Box>
@@ -107,10 +135,10 @@ const ShowTimeTable: React.FC<Props> = ({ data }) => {
                       {period ? (
                         <>
                           <Typography fontWeight={600}>
-                            {period.subject.name}
+                            {period.subject?.name || "No Subject"}
                           </Typography>
                           <Typography color="text.secondary">
-                            {period.faculty.name}
+                            {period.faculty?.name || "No Faculty"}
                           </Typography>
                         </>
                       ) : (
@@ -130,4 +158,4 @@ const ShowTimeTable: React.FC<Props> = ({ data }) => {
   );
 };
 
-export default ShowTimeTable;
+export default TimeTableShedule;

@@ -8,8 +8,23 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ShowTimeTable from "./ShowTimeTable";
 
+const timeTableColumns = [
+  { key: "sno.", label: "S.No." },
+  { key: "name", label: "Class Name" },
+  { key: "name2", label: "Section Name" },
+  // { key: "totalSubjects", label: "Total Subject" },
+  // { key: "totalSections", label: "Total Section" },
+];
+const actionsList = [
+  {
+    action: "update",
+    label: "Update Time Table",
+  },
+];
 const TimeTable: React.FC = () => {
   const navigate = useNavigate();
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSection, setSelectedSecton] = useState("");
   const [sectionOptions, setSectionOptions] = useState<
@@ -21,15 +36,15 @@ const TimeTable: React.FC = () => {
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
   });
-  const { data: timeTable } = useGetTimeTableQuery(
+  const { data: timeTable, isLoading, isError } = useGetTimeTableQuery(
     {
       sessionId: selectedSession?._id as string,
-      classId: selectedClass,
-      sectionId: selectedSection,
-    },
-    {
-      skip: !selectedSection,
+      // classId: selectedClass,
+      // sectionId: selectedSection,
     }
+    // {
+    //   skip: !selectedSection ,
+    // }
   );
   console.log("Time Table: ", timeTable);
 
@@ -61,6 +76,25 @@ const TimeTable: React.FC = () => {
   // console.log("class option: ", classData);
   const handleCreateTimeTable = () => {
     navigate("/dashboard/classes/timetable/create");
+  };
+  const handleClassChange = (value: any) => {
+    setSelectedClass(value);
+    setSelectedSecton("");
+  }
+  const handlePageChange = (newPage: number) => {
+    setPage(newPage);
+  };
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setPage(0);
+  };
+
+  const handleActionClick = (action: string, row: any) => {
+    console.log("Action:", action, "on ID:", row);
+    switch (action) {
+      case "update":
+        // alert(`Faculty ${row?.name} updated`);
+    }
   };
   return (
     <Box
@@ -97,7 +131,7 @@ const TimeTable: React.FC = () => {
           <CustomDropdownField
             label="Select Class"
             value={selectedClass}
-            onChange={(val: any) => setSelectedClass(val)}
+            onChange={handleClassChange}
             options={classOptions}
           />
           <CustomDropdownField
@@ -131,11 +165,25 @@ const TimeTable: React.FC = () => {
       </Box>
 
       {/* Render TimeTable if available */}
-      {timeTable && (
+      {/* {timeTable && (
         <Box>
-          <ShowTimeTable data={timeTable.data} />
+          <ShowTimeTable data={timeTable?.data} />
         </Box>
-      )}
+      )} */}
+
+      <ShowTimeTable 
+        columns={timeTableColumns}
+        rows={timeTable?.data || []}
+        totalCount={0}
+        page={page}
+        rowsPerPage={rowsPerPage}
+        onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
+        onActionClick={handleActionClick}
+        isLoading={isLoading}
+        actionsList={actionsList}
+        isError={isError}
+      />
     </Box>  
   );
 };

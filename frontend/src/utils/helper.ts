@@ -71,7 +71,35 @@ export const formatTime = (hour: number, minute: number) =>
   `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
 
 
+export const formatClassName = (value: string | number | null | undefined): string => {
+  if (value === null || value === undefined) return "";
 
+  let trimmed = value.toString().trim().toLowerCase();
+  const specialClasses: Record<string, string> = {
+    nursery: "Nursery",
+    lkg: "LKG",
+    ukg: "UKG",
+    kg: "KG",
+  };
+
+  if (specialClasses[trimmed]) return specialClasses[trimmed];
+  if (!isNaN(Number(trimmed))) {
+    return `Standard ${Number(trimmed)}`;
+  }
+  if (trimmed.startsWith("standard")) {
+    const numPart = trimmed.replace("standard", "").trim();
+    if (!isNaN(Number(numPart))) {
+      return `Standard ${Number(numPart)}`;
+    }
+    return `Standard ${numPart}`;
+  }
+  return trimmed.charAt(0).toUpperCase() + trimmed.slice(1);
+};
+
+export const formatSectionName = (value: string | null | undefined): string => {
+  if (!value) return "";
+  return value.toString().trim().toUpperCase();
+};
 
 
 

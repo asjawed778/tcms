@@ -2,7 +2,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import { useAppSelector } from "@/store/store";
-import { PersonAdd } from "@mui/icons-material";
+import { PersonAdd, Upload } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -10,6 +10,7 @@ import StudentTable from "./StudentTable";
 import ViewDetails from "./ViewDetails";
 import AddRemark from "./AddRemark";
 import { useGetAllStudentQuery } from "@/services/studentApi";
+import BulkUpload from "./BulkUpload";
 
 const actionsList = [
   {
@@ -29,6 +30,7 @@ const Student: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [openViewDetailsModal, setOpenViewDetailsModal] = useState(false);
+  const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
@@ -37,6 +39,7 @@ const Student: React.FC = () => {
     data: studentData,
     isLoading,
     isError,
+    refetch,
   } = useGetAllStudentQuery({
     sessionId: selectedSession?._id as string,
     page: page + 1,
@@ -64,6 +67,9 @@ const Student: React.FC = () => {
   };
   const handleAddStudent = () => {
     navigate("/dashboard/student/add");
+  };
+  const handleBulkUpload = () => {
+    setOpenBulkUpload(true);
   };
   const handleChange = (val: any) => {
     console.log("status: ", val);
@@ -118,6 +124,17 @@ const Student: React.FC = () => {
             Add Student
           </CustomButton>
         </Box>
+          <CustomButton
+            variant="outlined"
+            fullWidth
+            startIcon={<Upload />}
+            onClick={handleBulkUpload}
+            sx={{
+              maxWidth: 200,
+            }}
+          >
+            Upload Bulk Student
+          </CustomButton>
       </Box>
 
       <StudentTable
@@ -145,6 +162,13 @@ const Student: React.FC = () => {
           onClose={() => setOpenRemarksModal(false)}
           student={selectedStudent}
         /> 
+      )}
+      {openBulkUpload && (
+        <BulkUpload 
+          open={openBulkUpload}
+          onClose={() => setOpenBulkUpload(false)}
+          refetch={refetch}
+        />
       )}
     </Box>
   );

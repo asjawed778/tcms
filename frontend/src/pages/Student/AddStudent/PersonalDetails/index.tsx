@@ -3,7 +3,7 @@ import CustomInputField from "@/components/CustomInputField";
 import CustomRadioGroup from "@/components/CustomRadioGroup";
 import ImageUploader from "@/components/ImageUploader";
 import { BloodGroup, Gender, Religion } from "@/utils/enum";
-import { Grid } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 import AddressDetails from "./AddressDetails";
 
@@ -13,15 +13,20 @@ const PersonalDetails: React.FC = () => {
     value: value,
   }));
   const bloodGroupOptions = Object.entries(BloodGroup).map(([_, value]) => ({
-  label: value,
-  value: value,
-}));
+    label: value,
+    value: value,
+  }));
 
   return (
     <Grid container spacing={2}>
+      <Typography variant="h6" gutterBottom fontWeight={600}>
+        Personal Details
+        
+      </Typography>
+      <Divider sx={{ mb: 3 }} />
       <Grid size={{ xs: 12, md: 6 }}>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12}}>
+          <Grid size={{ xs: 12 }}>
             <CustomInputField
               name="name"
               label="Student Name"
@@ -47,7 +52,7 @@ const PersonalDetails: React.FC = () => {
       </Grid>
       <Grid
         size={{ xs: 12, md: 6 }}
-        sx={{ display: "flex", justifyContent: "center" }} 
+        sx={{ display: "flex", justifyContent: "center" }}
       >
         <ImageUploader name="image" />
       </Grid>
@@ -106,7 +111,7 @@ const PersonalDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-        <AddressDetails />
+      <AddressDetails />
     </Grid>
   );
 };

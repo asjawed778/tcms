@@ -190,7 +190,6 @@ export const documentUploadSchema = yup.object({
       })
     )
     .min(1, "At least one document is required"),
-  
 });
 
 // ClassSchema.........................................................
@@ -290,16 +289,31 @@ export const personalDetailsSchema = yup.object({
     .required("Date of birth is required"),
   email: yup
     .string()
-    .optional()
+    .nullable()
+    .notRequired()
     .email("Invalid email format")
-    .matches(
-      /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      "Email must include domain (e.g. gmail.com)"
+    .test(
+      "has-domain",
+      "Email must include domain (e.g. gmail.com)",
+      (value) => {
+        if (!value) return true; // allow empty
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+      }
     ),
+
   contactNumber: yup
     .string()
-    .optional()
-    .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
+    .nullable()
+    .notRequired()
+    .test(
+      "is-valid-phone",
+      "Enter a valid Indian phone number (10 digits)",
+      (value) => {
+        if (!value) return true; // allow empty
+        return /^[0-9]{10}$/.test(value);
+      }
+    ),
+
   image: yup.string().required("Image is required"),
   gender: yup.string().required("Gender is required"),
   nationality: yup.string().required("Nationality is required"),
@@ -513,8 +527,8 @@ export const weeklySchema = yup.object().shape({
             .positive("Must be a positive number")
             .required("Period number is required"),
 
-          subject: yup.string().required("Subject is required"),
-          faculty: yup.string().required("Teacher is required"),
+          subject: yup.string().optional(),
+          faculty: yup.string().optional(),
           room: yup.string().optional(),
 
           timeSlot: yup
@@ -574,9 +588,6 @@ export const weeklySchema = yup.object().shape({
   ),
 });
 
-
-
-
 // const periodSchema = yup.object().shape({
 //   periodType: yup
 //     .string()
@@ -635,7 +646,7 @@ export const weeklySchema = yup.object().shape({
 //       classId: yup.string().required("Class name is required"),
 //       sectionId: yup.string().required("Section name is required"),
 //     }),
-    
+
 //     // Current day's validation
 //     [`weeklySchedule.${dayIndex}`]: yup.object().shape({
 //       isHoliday: yup.boolean(),
