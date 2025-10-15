@@ -13,45 +13,49 @@ export const isClassAlreadyExists = async (name: string, session: string) => {
 };
 
 
-const getClassCode = (className: string): string => {
+const getFixedClassCode = (className: string): string => {
+  const name = className.toLowerCase();
+
+  if (name.includes("nursery")) return "NR";
+  if (name.includes("lkg")) return "LK";
+  if (name.includes("ukg")) return "UK";
+
   const numberMatch = className.match(/\d+/);
   if (numberMatch) {
-    return numberMatch[0];
+    const num = parseInt(numberMatch[0], 10);
+    return num < 10 ? `0${num}` : `${num}`;
   }
-  return className.replace(/\s+/g, '').toUpperCase();
-};
-
-export const generateSectionId = async (className: string, sectionName: string): Promise<string> => {
-  const classCode = getClassCode(className);
-  const sectionCode = sectionName.replace(/\s+/g, '').toUpperCase();
-  const currentYear = new Date().getFullYear().toString().slice(-2);
-
-  let uniqueId: string;
-  let exists = true;
-
-  while (exists) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
-    uniqueId = `S${classCode}${sectionCode}${currentYear}${randomNum}`; // Example: S10A2587
-    exists = !!(await sectionSchema.exists({ sectionId: uniqueId }));
-  }
-
-  return uniqueId!;
+  return className.replace(/\s+/g, "").substring(0, 2).toUpperCase();
 };
 
 export const generateClassId = async (className: string): Promise<string> => {
-  const classCode = getClassCode(className);
-  const currentYear = new Date().getFullYear().toString().slice(-2);
-
-  let uniqueId: string;
+  const classCode = getFixedClassCode(className);
+  const year = new Date().getFullYear().toString().slice(-2);
+  let classId: string;
   let exists = true;
   while (exists) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000);
-    uniqueId = `C${classCode}${currentYear}${randomNum}`;
-    exists = !!(await classSchema.exists({ classId: uniqueId }));
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 digits
+    classId = `C${classCode}${year}${randomNum}`; // e.g. C01254567
+    exists = !!(await classSchema.exists({ classId }));
   }
-
-  return uniqueId!;
+  return classId!;
 };
+
+export const generateSectionId = async (className: string, sectionName: string): Promise<string> => {
+  const classCode = getFixedClassCode(className);
+  const sectionCode = sectionName.replace(/\s+/g, "").substring(0, 1).toUpperCase(); // single letter (A, B, C)
+  const year = new Date().getFullYear().toString().slice(-2);
+
+  let sectionId: string;
+  let exists = true;
+  while (exists) {
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 digits
+    sectionId = `S${classCode}${sectionCode}${year}${randomNum}`; // e.g. S12A254321
+    exists = !!(await sectionSchema.exists({ sectionId }));
+  }
+  return sectionId!;
+};
+
 
 
 export const isClassAndSectionValid = async (sessionId: string, classId: string, sectionId?: string) => {
