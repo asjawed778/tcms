@@ -12,6 +12,48 @@ export const isClassAlreadyExists = async (name: string, session: string) => {
   return !!existingClass;
 };
 
+
+const getClassCode = (className: string): string => {
+  const numberMatch = className.match(/\d+/);
+  if (numberMatch) {
+    return numberMatch[0];
+  }
+  return className.replace(/\s+/g, '').toUpperCase();
+};
+
+export const generateSectionId = async (className: string, sectionName: string): Promise<string> => {
+  const classCode = getClassCode(className);
+  const sectionCode = sectionName.replace(/\s+/g, '').toUpperCase();
+  const currentYear = new Date().getFullYear().toString().slice(-2);
+
+  let uniqueId: string;
+  let exists = true;
+
+  while (exists) {
+    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4-digit random number
+    uniqueId = `S${classCode}${sectionCode}${currentYear}${randomNum}`; // Example: S10A2587
+    exists = !!(await sectionSchema.exists({ sectionId: uniqueId }));
+  }
+
+  return uniqueId!;
+};
+
+export const generateClassId = async (className: string): Promise<string> => {
+  const classCode = getClassCode(className);
+  const currentYear = new Date().getFullYear().toString().slice(-2);
+
+  let uniqueId: string;
+  let exists = true;
+  while (exists) {
+    const randomNum = Math.floor(1000 + Math.random() * 9000);
+    uniqueId = `C${classCode}${currentYear}${randomNum}`;
+    exists = !!(await classSchema.exists({ classId: uniqueId }));
+  }
+
+  return uniqueId!;
+};
+
+
 export const isClassAndSectionValid = async (sessionId: string, classId: string, sectionId?: string) => {
   const result = await classSchema.findOne({ _id: classId, session: sessionId, deleted: false });
   if (!result) {
@@ -78,13 +120,20 @@ export const createClass = async (data: ClassDto.ICreateClass) => {
     }
     subjectIds = createdSubjects.map((subject) => subject._id);
   }
+  const sectionsWithIds = await Promise.all(
+    sectionInputs.map(async (section) => ({
+      ...section,
+      sectionId: await generateSectionId(classData.name, section.name)
+    }))
+  );
 
-  const createdSections = await sectionSchema.insertMany(sectionInputs);
-  if (!createdSections || createdSections.length !== sectionInputs.length) {
+  const createdSections = await sectionSchema.insertMany(sectionsWithIds);
+  if (!createdSections || createdSections.length !== sectionsWithIds.length) {
     throw createHttpError(500, "Failed to create some or all sections");
   }
   const sectionIds = createdSections.map((section) => section._id);
-
+  const classId = await generateClassId(classData.name);
+  classData.classId = classId;
   const newClass = await classSchema.create({
     ...classData,
     subjects: subjectIds,
@@ -176,6 +225,7 @@ export const getAllClass = async (sessionId: string) => {
             $project: {
               _id: 1,
               name: 1,
+              sectionId: 1,
               capacity: 1,
               classTeacher: {
                 _id: "$facultyDetails._id",
@@ -207,6 +257,7 @@ export const getAllClass = async (sessionId: string) => {
       $group: {
         _id: "$_id",
         name: { $first: "$name" },
+        classId: { $first: "$classId" },
         session: { $first: "$sessionDetails" },
         courseStream: { $first: "$courseStream" },
         feeStructure: { $first: "$feeStructure" },
@@ -218,6 +269,7 @@ export const getAllClass = async (sessionId: string) => {
       $project: {
         _id: 1,
         name: 1,
+        classId: 1,
         session: {
           _id: "$session._id",
           name: "$session.session"
