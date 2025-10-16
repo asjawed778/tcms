@@ -72,7 +72,6 @@ const Student: React.FC = () => {
     setOpenBulkUpload(true);
   };
   const handleChange = (val: any) => {
-    console.log("status: ", val);
     setStatus(val);
     setPage(0);
   };

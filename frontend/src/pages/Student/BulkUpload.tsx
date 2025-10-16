@@ -9,30 +9,10 @@ import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import CustomButton from "@/components/CustomButton";
 import toast from "react-hot-toast";
 import { CheckCircleOutline } from "@mui/icons-material";
-import { formatClassName, formatSectionName } from "@/utils/helper";
+import { useAppSelector } from "@/store/store";
 import { useUploadBulkStudentsMutation } from "@/services/studentApi";
-// import { useBulkUploadStudentMutation } from "../../../../services/studentApi";
-
-const unflattenObject = (data: Record<string, any>) => {
-  const result: Record<string, any> = {};
-  for (const key in data) {
-    if (!Object.prototype.hasOwnProperty.call(data, key)) continue;
-
-    const value = data[key];
-    const keys = key.split(".");
-    let current = result;
-
-    keys.forEach((k, index) => {
-      if (index === keys.length - 1) {
-        current[k] = value;
-      } else {
-        current[k] = current[k] || {};
-        current = current[k];
-      }
-    });
-  }
-  return result;
-};
+import FailedRecordsModal from "./FailedRecordsModal";
+import { convertExcelDOBToISO, unflattenObject } from "@/utils/helper";
 
 const STUDENT_COLUMNS = [
   // Basic Info
@@ -41,8 +21,8 @@ const STUDENT_COLUMNS = [
   "gender",
   "contactNumber",
   "email",
-  "class",
-  "section",
+  "classId",
+  "sectionId",
   "admissionYear",
   "bloodGroup",
   "religion",
@@ -110,11 +90,6 @@ interface ExcelRow {
   [key: string]: any;
 }
 
-interface ValidationError {
-  row: number;
-  errors: Record<string, string>;
-}
-
 interface FormValues {
   file: File | null;
 }
@@ -136,6 +111,13 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
   const [excelData, setExcelData] = useState<ExcelRow[]>([]);
   const [fileName, setFileName] = useState<string>("");
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession
+  );
+  const [failedRows, setFailedRows] = useState<
+    { row: number; name?: string; error: string; data: any }[]
+  >([]);
+  const [showFailedModal, setShowFailedModal] = useState<boolean>(false);
 
   const {
     handleSubmit,
@@ -146,7 +128,7 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
     defaultValues: { file: null },
   });
 
-    const [uploadBulkData, { isLoading }] = useUploadBulkStudentsMutation();
+  const [uploadBulkData, { isLoading }] = useUploadBulkStudentsMutation();
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -187,25 +169,46 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
   };
 
   const onSubmit = async () => {
+    // const formattedData = excelData.map((row) => {
+    //   const obj = unflattenObject(row);
+    //   if (obj.class) obj.class = formatClassName(obj.class);
+    //   if (obj.section) obj.section = formatSectionName(obj.section);
+
+    //   return obj;
+    // });
     const formattedData = excelData.map((row) => {
-      const obj = unflattenObject(row);
+      const nestedRow = unflattenObject(row);
 
-      // Format class and section
-      if (obj.class) obj.class = formatClassName(obj.class);
-      if (obj.section) obj.section = formatSectionName(obj.section);
+      // Convert DOB to ISO
+      if (nestedRow.dob) {
+        nestedRow.dob = convertExcelDOBToISO(nestedRow.dob);
+      }
 
-      return obj;
+      // Convert previousSchool.dateOfLeaving if needed
+      if (nestedRow.previousSchool?.dateOfLeaving) {
+        nestedRow.previousSchool.dateOfLeaving = convertExcelDOBToISO(
+          nestedRow.previousSchool.dateOfLeaving
+        );
+      }
+
+      return nestedRow;
     });
 
-    console.log("Final data to send:", formattedData);
-    onClose();
-    // return;
-
     try {
-      await uploadBulkData({students: formattedData}).unwrap();
-      toast.success("Student data uploaded successfully!");
+      const res = await uploadBulkData({
+        students: formattedData,
+        sessionId: selectedSession?._id,
+      }).unwrap();
+      const { success, failed } = res.data;
+      if (success.length > 0)
+        toast.success(`${success.length} student(s) uploaded successfully!`);
+      if (failed.length > 0) {
+        setFailedRows(failed);
+        setShowFailedModal(true);
+      } else {
+        onClose();
+      }
       refetch();
-      onClose();
     } catch (error: any) {
       const errorMsg =
         error?.data?.message || "Something went wrong. Please try again!";
@@ -218,7 +221,7 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
       open={open}
       onClose={onClose}
       title="Upload Bulk Student Details"
-      width="50%"
+      width="70%"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Stack spacing={2}>
@@ -239,7 +242,15 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
               for.
             </Typography>
 
-            <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+            <Box
+              sx={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 1,
+                maxHeight: 100,
+                overflowY: "auto",
+              }}
+            >
               {STUDENT_COLUMNS.map((col) => (
                 <Box
                   key={col}
@@ -347,7 +358,7 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
           <CustomButton
             variant="contained"
             type="submit"
-            // loading={isLoading}
+            loading={isLoading}
             disabled={validationErrors.length > 0}
             fullWidth
           >
@@ -355,6 +366,13 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
           </CustomButton>
         </Stack>
       </form>
+      {showFailedModal && (
+        <FailedRecordsModal
+          open={showFailedModal}
+          onClose={() => setShowFailedModal(false)}
+          failedRows={failedRows}
+        />
+      )}
     </ModalWrapper>
   );
 };

@@ -24,8 +24,6 @@ const PreviousSchoolDetails: React.FC = () => {
     control,
     name: "class",
   });
-  console.log("class Data: ", classData);
-
   const sectionOptions = useMemo(() => {
     const foundClass = classData?.data.classes.find(
       (cls) => cls._id === selectedClassId

@@ -39,23 +39,33 @@ export const useUnAssignFaculty = ({
           startTime: start,
           endTime: end,
         }).unwrap();
-        console.log("Result: ", result);
-        
-        if (result?.data?.length > 1) {
-          const options: DropdownOptions[] =
-            result?.data?.map((f: any) => ({
-              label: f.name,
-              value: f._id,
-            })) || [];
-            setFacultyMap((prev) => ({ ...prev, [index]: options }));
-        } else{
-          const options: DropdownOptions[] = [{
-            label: result?.data?.name,
-            value: result?.data?._id
-          }]
+
+        // if (result?.data?.length > 1) {
+        //   const options: DropdownOptions[] =
+        //     result?.data?.map((f: any) => ({
+        //       label: f.name,
+        //       value: f._id,
+        //     })) || [];
+        //     setFacultyMap((prev) => ({ ...prev, [index]: options }));
+        // } else{
+        //   const options: DropdownOptions[] = [{
+        //     label: result?.data?.name,
+        //     value: result?.data?._id
+        //   }]
+        //   setFacultyMap((prev) => ({ ...prev, [index]: options }));
+        // }
+        if (Array.isArray(result.data)) {
+          const options: DropdownOptions[] = result.data.map((f) => ({
+            label: f.name,
+            value: f._id,
+          }));
+          setFacultyMap((prev) => ({ ...prev, [index]: options }));
+        } else if (result.data) {
+          const options: DropdownOptions[] = [
+            { label: result.data.name, value: result.data._id },
+          ];
           setFacultyMap((prev) => ({ ...prev, [index]: options }));
         }
-
       } catch (err) {
         console.error("Failed to fetch faculty:", err);
       }

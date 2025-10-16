@@ -19,9 +19,7 @@ interface Props {
   data: TimeTableResponse;
 }
 
-const TimeTableShedule: React.FC<Props> = ({ data }) => {
-  console.log("data: ", data);
-  
+const TimeTableShedule: React.FC<Props> = ({ data }) => {  
   if (!data) {
     return (
       <Box p={4} textAlign="center">

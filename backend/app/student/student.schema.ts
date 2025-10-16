@@ -55,7 +55,7 @@ const studentSchema = new mongoose.Schema<IStudent>({
     },
     motherTongue: { type: String, required: false },
     image: { type: String, required: false },
-    adharNumber: { type: String, required: false, unique: true },
+    adharNumber: { type: String, required: false, unique: true, sparse: true},
     contactNumber: { type: String },
     email: { type: String },
     bloodGroup: {
@@ -89,7 +89,7 @@ const studentSchema = new mongoose.Schema<IStudent>({
 
 studentSchema.pre("save", async function (next) {
     if (!this.enrollmentNumber) {
-        const year = this.admissionYear;
+        const year = this.admissionYear || new Date().getFullYear();
         let unique = false;
         let registrationNumber = "";
         while (!unique) {

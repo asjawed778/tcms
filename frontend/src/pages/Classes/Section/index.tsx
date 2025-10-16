@@ -9,6 +9,7 @@ import AssignClassTeacher from "./AssignClassTeacher";
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
   { key: "name", label: "Section Name" },
+  { key: "sectionId", label: "Section Id" },
   { key: "classTeacher", label: "Class Teacher" },
   { key: "totalStudents", label: "Total Students" },
   { key: "capacity", label: "Total Capacity" },
@@ -47,10 +48,8 @@ const Section = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
   };
-  console.log("Class Data: ", classData);
   
   const handleActionClick = (action: string, row: any) => {
-    console.log("Action:", action, "on ID:", row);
     switch (action) {
       case "assignClassTeacher":
         setSelectedRow(row)

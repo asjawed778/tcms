@@ -12,9 +12,7 @@ import {
   StepLabel,
   Box,
   Button,
-  Typography,
   CardContent,
-  Divider,
   Paper,
 } from "@mui/material";
 import PersonalInfo from "./PersonalInfo";

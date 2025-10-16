@@ -39,15 +39,14 @@ const TimeTable: React.FC = () => {
   const { data: timeTable, isLoading, isError } = useGetTimeTableQuery(
     {
       sessionId: selectedSession?._id as string,
-      // classId: selectedClass,
-      // sectionId: selectedSection,
+      classId: selectedClass,
+      sectionId: selectedSection,
+    },
+    {
+      skip: !selectedSection || !selectedClass,
     }
-    // {
-    //   skip: !selectedSection ,
-    // }
   );
-  console.log("Time Table: ", timeTable);
-
+  
   const classOptions =
     classData?.data?.classes?.map((item) => ({
       label: item.name,
@@ -73,7 +72,6 @@ const TimeTable: React.FC = () => {
     }
   }, [selectedClass, classData]);
 
-  // console.log("class option: ", classData);
   const handleCreateTimeTable = () => {
     navigate("/dashboard/classes/timetable/create");
   };
@@ -89,8 +87,7 @@ const TimeTable: React.FC = () => {
     setPage(0);
   };
 
-  const handleActionClick = (action: string, row: any) => {
-    console.log("Action:", action, "on ID:", row);
+  const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
         // alert(`Faculty ${row?.name} updated`);
@@ -183,6 +180,8 @@ const TimeTable: React.FC = () => {
         isLoading={isLoading}
         actionsList={actionsList}
         isError={isError}
+        classId={selectedClass}
+        sectionId={selectedSection}
       />
     </Box>  
   );

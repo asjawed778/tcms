@@ -38,10 +38,10 @@ export const studentApi = createApi({
       }),
     }),
     uploadBulkStudents: builder.mutation({
-      query: ({students}) => ({
+      query: (payload) => ({
         url: "/student/bulk-upload",
         method: "POST",
-        body: students,
+        body: payload,
       }),
     }),
     addRemark: builder.mutation<

@@ -60,7 +60,6 @@ const AssignClassTeacher: React.FC<Props> = ({
       setPage((prev) => prev + 1);
     }
   }, [isFetching, hasMore]);
-  console.log("Class Data: ", classData);
   if(selectedFaculty){
     
   }

@@ -186,10 +186,6 @@
 
 // export default TableWrapper;
 
-
-
-
-
 import React, { useState, MouseEvent, useMemo } from "react";
 import {
   Table,
@@ -238,11 +234,13 @@ interface CustomTableProps {
   actionsList?: ActionsList[];
   isLoading?: boolean;
   isError?: boolean;
+  classId?: string | null;
+  sectionId?: string | null;
 }
 
 const ShowTimeTable: React.FC<CustomTableProps> = ({
   columns,
-  rows,
+  rows = [],
   totalCount = 0,
   page = 0,
   rowsPerPage = 10,
@@ -252,6 +250,8 @@ const ShowTimeTable: React.FC<CustomTableProps> = ({
   isLoading = false,
   isError = false,
   actionsList,
+  classId,
+  sectionId,
 }) => {
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -342,6 +342,16 @@ const ShowTimeTable: React.FC<CustomTableProps> = ({
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
                 <Box display="flex" justifyContent="center" py={4}>
                   <CircularProgress />
+                </Box>
+              </TableCell>
+            </TableRow>
+          ) : !classId || !sectionId ? (
+            <TableRow>
+              <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
+                <Box display="flex" justifyContent="center" py={4}>
+                  <Typography variant="subtitle1" color="text.secondary">
+                    Please select Class and Section to view timetable.
+                  </Typography>
                 </Box>
               </TableCell>
             </TableRow>

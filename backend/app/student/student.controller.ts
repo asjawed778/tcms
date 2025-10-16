@@ -68,99 +68,77 @@ export const addStudent = asyncHandler(async (req: Request, res: Response) => {
 export const bulkUploadStudents = asyncHandler(
   async (req: Request, res: Response) => {
     const students = req.body.students;
+    const sessionId = req.body.sessionId;
+
     if (!Array.isArray(students) || students.length === 0) {
       throw createHttpError(400, "No student data provided.");
     }
 
     const results: {
       success: any[];
-      failed: { index: number; error: string; data: any }[];
+      failed: { row: number; name?: string; error: string; data: any }[];
     } = { success: [], failed: [] };
 
-    const session = await mongoose.startSession();
-    session.startTransaction();
+    for (let i = 0; i < students.length; i++) {
+      const studentData = students[i];
+      try {
+        const { classId, sectionId, address, name, ...rest } = studentData;
 
-    try {
-      for (let i = 0; i < students.length; i++) {
-        const studentData = students[i];
+        if (!sessionId) throw new Error("Session ID missing");
+        if (!classId) throw new Error("Class ID missing");
+        if (!sectionId) throw new Error("Section ID missing");
+        if (!mongoose.Types.ObjectId.isValid(sessionId))
+          throw new Error(`Invalid sessionId: ${sessionId}`);
 
-        try {
-          const {
-            session: sessionName,
-            class: className,
-            section: sectionName,
-            address,
-            ...rest
-          } = studentData;
+        const classDoc = await ClassModel.findOne({ classId }).exec();
+        if (!classDoc)
+          throw new Error(`Class not found for classId: ${classId}`);
 
-          const sessionDoc = await SessionModel.findOne({ name: sessionName });
-          if (!sessionDoc)
-            throw new Error(`Session "${sessionName}" not found`);
-          const sessionId = sessionDoc._id;
-          let classId;
-          let classDoc;
-          if (className) {
-            classDoc = await ClassModel.findOne({
-              name: className,
-            }).exec();
-            if (!classDoc) throw new Error(`Class "${className}" not found`);
-            classId = classDoc._id;
-          }
-          let sectionId;
-          if (classDoc && sectionName) {
-            const sectionDoc = await SectionModel.findOne({
-              _id: { $in: classDoc.sections },
-              name: sectionName,
-            }).exec();
-            if (!sectionDoc)
-              throw new Error(
-                `Section "${sectionName}" not found in class "${className}"`
-              );
-            sectionId = sectionDoc._id;
-          }
-          const addressData = await addressService.createAddress(
-            address,
-            session
+        const sectionDoc = await SectionModel.findOne({
+          sectionId,
+          _id: { $in: classDoc.sections },
+        }).exec();
+        if (!sectionDoc)
+          throw new Error(
+            `Section with sectionId ${sectionId} not found under class ${classDoc.name}`
           );
-          const student = await StudentService.addStudent(
-            { ...rest, address: new mongoose.Types.ObjectId(addressData._id) },
-            session
-          );
-          if (classId && sectionId) {
-            await StudentService.admissionStudentToClass(
-              student._id,
-              sessionId,
-              classId,
-              sectionId,
-              session
-            );
-          }
-          results.success.push(student);
-        } catch (err: any) {
-          results.failed.push({
-            index: i + 1,
-            error: err.message || "Unknown error",
-            data: studentData,
-          });
-        }
-      }
 
-      await session.commitTransaction();
-      await session.endSession();
+        const addressData = await addressService.createAddress(address);
 
-      res
-        .status(200)
-        .send(
-          createResponse(
-            results,
-            `Processed ${students.length} records. Success: ${results.success.length}, Failed: ${results.failed.length}`
-          )
+        const student = await StudentService.addStudent({
+          ...rest,
+          name,
+          address: addressData._id,
+        });
+
+        await StudentService.admissionStudentToClass(
+          student._id,
+          sessionId,
+          classDoc._id,
+          sectionDoc._id
         );
-    } catch (error) {
-      await session.abortTransaction();
-      session.endSession();
-      throw error;
+
+        results.success.push(student);
+      } catch (err: any) {
+        results.failed.push({
+          row: i + 2,
+          name: studentData.name || "Unnamed Student",
+          error: err.message || "Unknown error",
+          data: studentData,
+        });
+
+        console.error(`Error processing student at row ${i + 2}:`, err.message);
+      }
     }
+
+    res
+      .status(200)
+      .send(
+        createResponse(
+          results,
+          `Processed ${students.length} records. Success: ${results.success.length}, Failed: ${results.failed.length}`
+        )
+      );
   }
 );
 

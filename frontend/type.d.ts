@@ -246,7 +246,7 @@ interface TimeTableResponse{
   weeklySchedule: weeklyScheduleResponse[];
 }
 interface TimeTableApiResponse{
-  data: TimeTableResponse;
+  data: TimeTableResponse[];
   message: string;
   success: boolean;
 }
@@ -262,7 +262,7 @@ interface UnAssingFaculty {
   designation: string;
 };
 interface UnAssingFacultyApiResponse {
-  data: UnAssingFaculty[];
+  data: UnAssingFaculty | UnAssingFaculty[];
   message: string;
   success: boolean;
 };

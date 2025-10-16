@@ -47,8 +47,7 @@ const  Profile: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await logoutUser().unwrap(); 
-      console.log("Logout response: ", response);
+      await logoutUser().unwrap(); 
       handleClose();
       dispatch(logout());
       dispatch(resetSession());

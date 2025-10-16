@@ -55,9 +55,7 @@ const Sunday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {
     sessionId: selectedSession?._id,
     day: dayName,
     periods,
-  });
-  console.log("Isn Holiday: ", isHoliday);
-  
+  });  
   useEffect(() => {
     if (isHoliday) {
       remove();
