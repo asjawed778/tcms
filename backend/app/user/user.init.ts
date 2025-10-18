@@ -3,7 +3,7 @@ import userSchema from "../user/user.schema";
 import * as Enum from "../common/constant/enum";
 
 export const initUser = async () => {
-    const email = "akrtimes@gmail.com";
+    const email = "girish@girishganeriwala.com";
 
     const existingUser = await userSchema.findOne({ email });
     if (existingUser) {
@@ -11,7 +11,7 @@ export const initUser = async () => {
         return;
     }
 
-    const hashedPassword = await bcrypt.hash("Test@1234", 10);
+    const hashedPassword = await bcrypt.hash("Tcms@1234", 10);
 
     const superAdmin = await userSchema.create({
         name: "Super Admin",
