@@ -1,32 +1,35 @@
-import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
 import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
-import { Add } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import AssignClassTeacher from "./AssignClassTeacher";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
-  { key: "name", label: "Class Name" },
-  { key: "courseStream", label: "Stream" },
-  { key: "totalSubjects", label: "Total Subject" },
-  { key: "totalSections", label: "Total Section" },
+  { key: "name", label: "Section Name" },
+  { key: "sectionId", label: "Section Id" },
+  { key: "classTeacher", label: "Class Teacher" },
+  { key: "totalStudents", label: "Total Students" },
+  { key: "capacity", label: "Total Capacity" },
 ];
 const actionsList = [
   {
-    action: "update",
+    action: "assignClassTeacher",
+    label: "",
+  },
+  {
+    action: "removeClassTeacher",
     label: "",
   },
 ];
-const Class = () => {
+const Section = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  // const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("All");
-  const navigate = useNavigate();
+  const [selectedClassId, setSelectedClassId] = useState("");
+  const [selectedRow, setSelectedRow] = useState(null);
+  const [openAssignTeacher, setOpenAssignTeacher] = useState(false);
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
@@ -35,13 +38,8 @@ const Class = () => {
     data: classData,
     isLoading,
     isError,
-    refetch
   } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
-    // page: page + 1,
-    // limit: rowsPerPage,
-    // query,
-    // active: status
   });
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -50,29 +48,46 @@ const Class = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
   };
-
+  
   const handleActionClick = (action: string, row: any) => {
-    console.log("Action:", action, "on ID:", row);
     switch (action) {
-      case "update":
-        // alert(`Faculty ${row?.name} updated`);
+      case "assignClassTeacher":
+        setSelectedRow(row)
+        setOpenAssignTeacher(true)
+        break;
+      case "removeClassTeacher":
+        break;
+      default:
+      break;
     }
   };
+  useEffect(() => {
+    const defaultClassId = classData?.data?.classes?.[0]?._id;
+    if (defaultClassId) {
+      setSelectedClassId((prev) =>
+        prev !== defaultClassId ? defaultClassId : prev
+      );
+    }
+  }, [classData]);
 
-  const handleAddFaculty = () => {
-    refetch();
-    navigate("/dashboard/createClass");
-  };
+  const classOptions =
+    classData?.data?.classes?.map((item) => ({
+      label: item.name,
+      value: item._id as string,
+    })) || [];
 
-  const handleChange = (val: any) => {
-    setStatus(val);
-  };
-  const updatedClasses = classData?.data.classes?.map((cls) => ({
-    ...cls,
-    totalSections: cls.sections?.length || 0,
-    totalSubjects: cls.subjects?.length || 0,
+  const sections = classData?.data?.classes?.find(
+    (item) => item._id === selectedClassId
+  )?.sections;
+  const updatedSections = sections?.map((section) => ({
+    ...section,
+    totalStudents: section.students?.length || 0,
+    classTeacher: section.classTeacher?.name,
   }));
-
+  const handleChange = (val: any) => {
+    setSelectedClassId(val);
+  };
+  
   return (
     <Box sx={{ width: "100%" }}>
       <Box
@@ -84,7 +99,6 @@ const Class = () => {
           mb: 2,
         }}
       >
-        {/* <CustomSearchField onSearch={setQuery} /> */}
         <Box
           sx={{
             display: "flex",
@@ -95,37 +109,20 @@ const Class = () => {
           <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
             Filter By:
           </Typography>
-
           <CustomDropdownField
-            name="status"
-            label="Status"
+            // name="status"
+            label="Class Name"
             required={false}
-            value={status}
+            value={selectedClassId}
             onChange={handleChange}
-            options={[
-              { label: "All", value: "All" },
-              // { label: "Active", value: "true" },
-              // { label: "Inactive", value: "false" },
-            ]}
+            options={classOptions}
           />
-
-          <CustomButton
-            variant="outlined"
-            fullWidth
-            startIcon={<Add />}
-            onClick={handleAddFaculty}
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
-            Create Class
-          </CustomButton>
         </Box>
       </Box>
 
       <TableWrapper
         columns={facultyColumns}
-        rows={updatedClasses || []}
+        rows={updatedSections || []}
         totalCount={0}
         page={page}
         rowsPerPage={rowsPerPage}
@@ -136,8 +133,16 @@ const Class = () => {
         actionsList={actionsList}
         isError={isError}
       />
+      {openAssignTeacher &&(
+        <AssignClassTeacher 
+          open={openAssignTeacher}
+          onClose={() => setOpenAssignTeacher(false)}
+          classId={selectedClassId}
+          sections={selectedRow}
+        />
+      )}
     </Box>
   );
 };
 
-export default Class;
+export default Section;

@@ -57,6 +57,7 @@ app.use(fileUpload({
 
 
 import swaggerDocument from "./app/swagger/swagger";
+import { initUser } from "./app/user/user.init";
 
 
 const initApp = async (): Promise<void> => {
@@ -65,6 +66,9 @@ const initApp = async (): Promise<void> => {
 
   // passport init
   initPassport();
+
+  // init default admin user
+  await initUser();
 
   // set base path to /api
   app.use("/api", apiLimiter, routes);

@@ -6,8 +6,11 @@ import {
   Typography,
   Divider,
   Box,
+  MenuItem,
+  ListItemIcon,
 } from '@mui/material';
 import {
+  Dashboard,
   Logout,
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
@@ -18,12 +21,12 @@ import { useLogoutUserMutation } from '@/services/userApi';
 import CustomButton from '../CustomButton';
 import { resetSession } from '@/store/reducers/sessionSlice';
 
-// const menuItems = [
-  // { icon: <Person />, label: 'Profile' },
+const menuItems = [
+  { icon: <Dashboard />, label: 'Dashboard' },
   // { icon: <Message />, label: 'Message' },
   // { icon: <Notifications />, label: 'Notification' },
   // { icon: <Settings />, label: 'Settings' },
-// ];
+];
 
 const  Profile: React.FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -44,8 +47,7 @@ const  Profile: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await logoutUser().unwrap(); 
-      console.log("Logout response: ", response);
+      await logoutUser().unwrap(); 
       handleClose();
       dispatch(logout());
       dispatch(resetSession());
@@ -108,12 +110,12 @@ const  Profile: React.FC = () => {
 
         <Divider sx={{ my: 1 }} />
 
-        {/* {menuItems.map(({ icon, label }) => (
+        {menuItems.map(({ icon, label }) => (
           <MenuItem key={label} onClick={handleClose}>
             <ListItemIcon>{icon}</ListItemIcon>
             {label}
           </MenuItem>
-        ))} */}
+        ))}
 
         <Divider sx={{ my: 1 }} />
            <CustomButton type='button' variant='outlined' color='secondary'   startIcon={<Logout fontSize="small" />} loading={isLoading} fullWidth onClick={handleLogout} >

@@ -27,12 +27,9 @@ const CreateSession: React.FC<CreateSessionProps> = ({ open, onClose }) => {
   const [createSession, { isLoading }] = useCreateSessionMutation();
 
   const onSubmit: SubmitHandler<SessionFormValues> = async (data: SessionFormValues) => {
-    console.log("Session data: ", data);
     
     try {
-      console.log("create session data: ", data);
-      const response = await createSession(data).unwrap();
-      console.log("Session created:", response);
+      await createSession(data).unwrap();
       methods.reset();
       onClose();
       toast.success("Session created successfully!"); 

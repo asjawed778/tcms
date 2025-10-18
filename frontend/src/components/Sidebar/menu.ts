@@ -1,7 +1,10 @@
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import PeopleIcon from '@mui/icons-material/People';
 import { ElementType } from 'react';
-import { AddBox, School } from '@mui/icons-material';
+import { AddBox, School,
+  Class as ClassIcon,
+  Group as SectionIcon,
+  AccessTime as TimetableIcon } from '@mui/icons-material';
 
 export interface MenuItem {
   id: string;
@@ -33,9 +36,29 @@ export const menuItems: MenuItem[] = [
     path: '/dashboard/student'
   },
   {
-    id: 'class',
-    title: 'Class',
-    icon: AddBox,
-    path: '/dashboard/class'
-  },
+    id: 'classes',
+    title: 'Classes',
+    icon: AddBox, 
+    children: [
+      {
+        id: 'standard',
+        title: 'Standard',
+        path: '/dashboard/classes/class',
+        icon: ClassIcon, 
+      },
+      
+      {
+        id: 'section',
+        title: 'Section',
+        path: '/dashboard/classes/section',
+        icon: SectionIcon, 
+      },
+      {
+        id: 'timetable',
+        title: 'Time Table',
+        path: '/dashboard/classes/timetable',
+        icon: TimetableIcon, 
+      }
+    ]
+  }
 ];

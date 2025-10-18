@@ -13,9 +13,7 @@ import {
   StepLabel,
   Box,
   Button,
-  Typography,
   CardContent,
-  Divider,
   Paper,
 } from "@mui/material";
 import * as yup from "yup";
@@ -67,6 +65,7 @@ const AddStudent = () => {
   });
   // const methods = useForm();
   const onSubmit = async (data: any) => {
+    
     const isValid = await methods.trigger();    
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
@@ -75,7 +74,6 @@ const AddStudent = () => {
 
     if (activeStep < steps.length - 1) {
       setActiveStep((prev) => prev + 1);
-      toast.success("Step completed! Moving to next step.");
     } else {
       try {
         const payload = {
@@ -122,10 +120,6 @@ const AddStudent = () => {
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
           <Paper sx={{ width: "100%" }}>
             <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
-              <Typography variant="h6" gutterBottom fontWeight={600}>
-                {steps[activeStep].label}
-              </Typography>
-              <Divider sx={{ mb: 3 }} />
               <Box>
                 <StepComponent />
               </Box>

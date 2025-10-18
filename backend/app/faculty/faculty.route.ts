@@ -11,7 +11,7 @@ router
     .post(
         "/",
         authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
         FacultyValidation.createFaculty,
         catchError,
         FaculytyController.createFaculty
@@ -19,18 +19,26 @@ router
     .get(
         "/all",
         authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
         catchError,
         FaculytyController.getAllFaculty
     )
     .get(
         "/:facultyId",
         authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
         FacultyValidation.getFacultyById,
         catchError,
         FaculytyController.getFacultyById
     )
-
+    .post(
+        "/unassigned/:sessionId",
+        authMiddleware.auth,
+        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        FacultyValidation.getUnassignedFaculty,
+        catchError,
+        FaculytyController.getUnassignedFaculty
+    )
+    
 
 export default router;

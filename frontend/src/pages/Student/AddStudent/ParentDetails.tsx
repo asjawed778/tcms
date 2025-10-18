@@ -5,6 +5,10 @@ import React from "react";
 const ParentDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
+      <Typography variant="h6" gutterBottom fontWeight={600}>
+        Parents Details
+      </Typography>
+      <Divider sx={{ mb: 3 }} />
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={500}>
           Father Details

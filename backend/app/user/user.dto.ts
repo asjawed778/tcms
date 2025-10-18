@@ -8,6 +8,8 @@ export interface IUser extends BaseSchema {
         password: string;
         refreshToken: string;
         resetPasswordToken: string;
+        active: boolean;
+        isLoginAllowed: boolean;
 }
 export interface IUserCreate {
         name: string;

@@ -5,9 +5,9 @@ import * as Enum from "../common/constant/enum";
 // Parent details sub-schema
 const ParentDetails = {
     _id: false,
-    name: { type: String, required: true },
-    qualification: { type: String, required: true },
-    occupation: { type: String, required: true },
+    name: { type: String, required: false },
+    qualification: { type: String, required: false },
+    occupation: { type: String, required: false },
     businessOrEmployerName: { type: String },
     officeAddress: { type: String },
     officeNumber: { type: String },
@@ -18,9 +18,9 @@ const ParentDetails = {
 // Document sub-schema
 const Document = {
     _id: false,
-    name: { type: String, required: true },
+    name: { type: String, required: false },
     documentNumber: { type: String },
-    url: { type: String, required: true },
+    url: { type: String, required: false },
 };
 
 // Previous school sub-schema
@@ -40,22 +40,22 @@ const studentSchema = new mongoose.Schema<IStudent>({
         type: String,
         unique: true,
     },
-    name: { type: String, required: true },
-    dob: { type: Date, required: true },
+    name: { type: String, required: false },
+    dob: { type: Date, required: false },
     gender: {
         type: String,
         enum: Object.values(Enum.Gender),
-        required: true,
+        required: false,
     },
-    nationality: { type: String, required: true },
+    nationality: { type: String, required: false },
     religion: {
         type: String,
         enum: Object.values(Enum.Religion),
-        required: true,
+        required: false,
     },
-    motherTongue: { type: String, required: true },
-    image: { type: String, required: true },
-    adharNumber: { type: String, required: true, unique: true },
+    motherTongue: { type: String, required: false },
+    image: { type: String, required: false },
+    adharNumber: { type: String, required: false, unique: true, sparse: true},
     contactNumber: { type: String },
     email: { type: String },
     bloodGroup: {
@@ -63,9 +63,8 @@ const studentSchema = new mongoose.Schema<IStudent>({
         enum: Object.values(Enum.BloodGroup),
     },
 
-    father: { type: ParentDetails, required: true },
-    mother: { type: ParentDetails, required: true },
-    // localGuardian: ParentDetails,
+    father: { type: ParentDetails, required: false },
+    mother: { type: ParentDetails, required: false },
     localGuardian: {type: ParentDetails, required: false},
 
     previousSchool: PreviousSchool,
@@ -73,24 +72,24 @@ const studentSchema = new mongoose.Schema<IStudent>({
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address",
-        required: true,
+        required: false,
     },
 
     documents: [Document],
 
-    admissionYear: { type: Number, required: true },
+    admissionYear: { type: Number, required: false },
 
     status: {
         type: String,
         enum: Object.values(Enum.StudentStatus),
         default: Enum.StudentStatus.ACTIVE,
-        required: true,
+        required: false,
     },
 }, { timestamps: true, });
 
 studentSchema.pre("save", async function (next) {
     if (!this.enrollmentNumber) {
-        const year = this.admissionYear;
+        const year = this.admissionYear || new Date().getFullYear();
         let unique = false;
         let registrationNumber = "";
         while (!unique) {
@@ -108,6 +107,6 @@ studentSchema.pre("save", async function (next) {
     next();
 });
 
-
-
 export default mongoose.model<IStudent>("Student", studentSchema);
+
+

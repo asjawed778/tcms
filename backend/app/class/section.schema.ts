@@ -8,9 +8,14 @@ const sectionSchema = new mongoose.Schema<ISection>({
         required: true,
         trim: true
     },
+    sectionId: {
+        type: String,   
+        unique: true,
+        required: true
+    },
     classTeacher: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Faculty"
+        ref: "User",
     },
     capacity: {
         type: Number,

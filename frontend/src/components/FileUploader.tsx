@@ -65,7 +65,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               formData.append("file", file);
 
               const response = await uploadFile(formData).unwrap();
-              console.log("file response: ", response);
 
               const uploadedUrl = response?.data?.url;
               if (uploadedUrl) {
@@ -103,6 +102,11 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                   bgcolor: isDragActive ? colors.primary : "transparent",
                   transition: "0.3s",
                   position: "relative",
+                  minHeight: 100,
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
                   "&:hover": {
                     backgroundColor: colors.uploadFileHover,
                   },
@@ -138,7 +142,14 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                   justifyContent: "space-between",
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1, width:"100%" }}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1,
+                    width: "100%",
+                  }}
+                >
                   <PictureAsPdfIcon sx={{ color: colors.error }} />
                   <Typography
                     sx={{

@@ -11,6 +11,7 @@ export interface FeeStructure {
 
 export interface ISection extends BaseSchema {
     name: string;
+    sectionId: string;
     classTeacher?: Types.ObjectId;
     capacity?: number;
     students?: Types.ObjectId[];
@@ -20,6 +21,7 @@ export interface ICreateSection extends Omit<ISection, "_id" | "deleted" | "crea
 
 export interface IClass extends BaseSchema {
     name: string;
+    classId: string;
     session: Types.ObjectId;
     sections: Types.ObjectId[];
     subjects: Types.ObjectId[];
@@ -49,7 +51,7 @@ export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "de
 export interface ITimeSlot {
     start: { hour: number; minute: number };
     end: { hour: number; minute: number };
-    durationMinutes: number;
+    durationMinutes?: number;
 }
 
 export interface IPeriod {

@@ -37,7 +37,6 @@ const Faculty: React.FC = () => {
   // const [statusFilter, setStatusFilter] = useState({label: "All", value: "All"});
   const [statusFilter, setStatusFilter] = useState("All");
   const navigate = useNavigate();
-  console.log("Page: ", page);
 
   const {
     data: facultyData,
@@ -64,8 +63,7 @@ const Faculty: React.FC = () => {
     setPage(0);
   };
 
-  const handleActionClick = (action: string, row: any) => {
-    console.log("Action:", action, "on ID:", row);
+  const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
       // alert(`Faculty ${row?.name} updated`);
@@ -76,10 +74,9 @@ const Faculty: React.FC = () => {
   };
 
   const handleChange = (val: any) => {
-    console.log("status: ", val);
     setStatusFilter(val);
     setPage(0);
-  };
+  };  
   return (
     <Box sx={{ width: "100%" }}>
       <Box

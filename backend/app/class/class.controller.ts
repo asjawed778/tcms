@@ -6,14 +6,21 @@ import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
 import { ICreateTimeTable } from "./class.dto";
 import mongoose from "mongoose";
-
+import * as UserService from "../user/user.service";
 
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
+
+    const isSessionCurrentOrFuture = await SessionService.isSessionCurrentOrFuture(data.session);
+    if (!isSessionCurrentOrFuture) {
+        throw createHttpError(400, "Class can create for only current and future sessions");
+    }
+
     const isClassAlreadyExists = await ClassService.isClassAlreadyExists(data.name, data.session);
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
     }
+
     const result = await ClassService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));
 });
@@ -40,6 +47,10 @@ export const assignFaculty = asyncHandler(async (req: Request, res: Response) =>
     const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
     if (!isSessionCurrentOrUpcoming) {
         throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const isFacultyExists = await UserService.isFaculty(facultyId);
+    if (!isFacultyExists) {
+        throw createHttpError(400, "Faculty does not exist or is not a valid faculty");
     }
     const result = await ClassService.assignFaculty(sectionId, facultyId);
     res.send(createResponse({}, "Faculty assigned successfully"));
@@ -86,3 +97,24 @@ export const createTimeTable = asyncHandler(async (req: Request, res: Response) 
     const result = await ClassService.createTimeTable(timeTablePayload);
     res.send(createResponse(timeTablePayload, "Time table created successfully"));
 });
+
+export const getTimeTableofClass = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId, classId, sectionId, timeTableId } = req.params;
+    let result = null;
+    if (timeTableId) {
+        result = await ClassService.getTimeTableofClassById(timeTableId as string);
+    } else {
+        if (!sessionId) {
+            throw createHttpError(400, "Session ID is reuired");
+        }
+        const isClassAndSectionValid = await ClassService.isClassAndSectionValid(sessionId.toString(), classId.toString(), sectionId.toString());
+        if (!isClassAndSectionValid) {
+            throw createHttpError(400, "Invalid class or section");
+        }
+        result = await ClassService.getTimeTableBySectionId(sessionId as string, sectionId as string, classId as string);
+    }
+
+
+    res.send(createResponse(result, "Time table fetched successfully"));
+});
+

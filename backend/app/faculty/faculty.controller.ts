@@ -6,7 +6,6 @@ import * as FacultyService from "./faculty.service";
 import { createResponse } from "../common/helper/response.hepler";
 import * as EmployeeService from "../employee/employee.service";
 import * as AddressService from "../common/services/address.service";
-import { ICreateEmployee } from "../employee/employee.dto";
 import mongoose, { Types } from "mongoose";
 import * as Enum from "../common/constant/enum";
 
@@ -21,10 +20,21 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
             throw createHttpError(400, "User not created");
         }
         const address = await AddressService.createAddress(data.address, session)
-        const empData = {
-            userId: user._id as string,
-            name: data.name,
-            email: data.email,
+
+        const employeeId: string = await EmployeeService.createEmployeeId(session);
+        if (!employeeId) {
+            throw createHttpError(400, "Employee not created");
+        }
+
+        const facultyData = {
+            user: new Types.ObjectId(user._id),
+            employeeId,
+            fatherName: data.fatherName,
+            motherName: data.motherName,
+            designation: data.designation,
+            expertiseSubjects: data.expertiseSubjects,
+            qualification: data.qualification,
+            certification: data.certification,
             phoneNumber: data.phoneNumber,
             gender: data.gender,
             dob: data.dob,
@@ -36,24 +46,6 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
             salary: data.salary,
             documents: data.documents,
             isActive: true,
-        };
-        const employee = await EmployeeService.createEmployee(empData as ICreateEmployee, session);
-        if (!employee) {
-            throw createHttpError(400, "Employee not created");
-        }
-
-        const facultyData = {
-            userId: new Types.ObjectId(user._id),
-            employeeId: employee.employeeId,
-            name: data.name,
-            fatherName: data.fatherName,
-            motherName: data.motherName,
-            email: data.email,
-            phoneNumber: data.phoneNumber,
-            designation: data.designation,
-            expertiseSubjects: data.expertiseSubjects,
-            qualification: data.qualification,
-            certification: data.certification,
             status: data.status,
         }
 
@@ -71,7 +63,7 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
         await session.abortTransaction();
         session.endSession();
 
-        throw createHttpError(500, "Faculty creation failed: " + error.message); // let
+        throw createHttpError(500, "Faculty creation failed: " + error.message);
     }
 
 });
@@ -94,4 +86,12 @@ export const getFacultyById = asyncHandler(async (req: Request, res: Response) =
         throw createHttpError(404, "Faculty not found");
     }
     res.send(createResponse(faculty, "Faculty fetched successfully"));
+});
+
+export const getUnassignedFaculty = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const {day, startTime, endTime} = req.body;
+
+    const unassignedFaculty = await FacultyService.getUnassignedFaculty(new Types.ObjectId(sessionId), day, startTime, endTime);
+    res.send(createResponse(unassignedFaculty, "Unassigned faculty fetched successfully"));
 });
