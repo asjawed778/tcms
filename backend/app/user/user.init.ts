@@ -1,10 +1,11 @@
 import bcrypt from "bcrypt";
 import userSchema from "../user/user.schema";
 import * as Enum from "../common/constant/enum";
+import { loadConfig } from "../common/helper/config.hepler";
+loadConfig();
 
 export const initUser = async () => {
-    // const email = "akrtimes@gmail.com";
-    const email = "girish@girishganeriwala.com";
+    const email = process.env.NODE_ENV === "Production" ? "girish@girishganeriwala.com" : "akrtimes@gmail.com";
 
     const existingUser = await userSchema.findOne({ email });
     if (existingUser) {

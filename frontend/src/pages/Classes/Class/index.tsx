@@ -40,13 +40,18 @@ const Class = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetAllClassQuery({
-    sessionId: selectedSession?._id as string,
-    // page: page + 1,
-    // limit: rowsPerPage,
-    // query,
-    // active: status
-  });
+  } = useGetAllClassQuery(
+    {
+      sessionId: selectedSession?._id as string,
+      // page: page + 1,
+      // limit: rowsPerPage,
+      // query,
+      // active: status
+    },
+    {
+      skip: !selectedSession?._id,
+    }
+  );
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -59,9 +64,9 @@ const Class = () => {
   const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
-        // setSelectedClass(row);
-        // setOpenUpdateClass(true);
-        // alert(`Faculty ${row?.name} updated`);
+      // setSelectedClass(row);
+      // setOpenUpdateClass(true);
+      // alert(`Faculty ${row?.name} updated`);
     }
   };
 
@@ -148,6 +153,7 @@ const Class = () => {
           isLoading={isLoading}
           actionsList={actionsList}
           isError={isError}
+          isSessionNotSelected={!selectedSession?._id}
         />
       </Box>
     </>

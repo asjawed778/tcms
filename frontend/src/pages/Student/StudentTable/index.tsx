@@ -41,6 +41,7 @@ interface CustomTableProps {
   actionsList: ActionsList[];
   isLoading?: boolean;
   isError?: boolean;
+  isSessionNotSelected?: boolean;
 }
 
 const StudentTable: React.FC<CustomTableProps> = ({
@@ -54,12 +55,13 @@ const StudentTable: React.FC<CustomTableProps> = ({
   isLoading = false,
   isError = false,
   actionsList,
+  isSessionNotSelected,
 }) => {
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
 
-  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {    
+  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
@@ -99,7 +101,17 @@ const StudentTable: React.FC<CustomTableProps> = ({
         </TableHead>
 
         <TableBody>
-          {isError ? (
+          {isSessionNotSelected ? (
+            <TableRow>
+              <TableCell colSpan={6}>
+                <Box display="flex" justifyContent="center" py={4}>
+                  <Typography variant="subtitle1" color="text.secondary">
+                    Please select or create a session to view class records.
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+          ) : isError ? (
             <TableRow>
               <TableCell colSpan={6}>
                 <Box display="flex" justifyContent="center" py={4}>

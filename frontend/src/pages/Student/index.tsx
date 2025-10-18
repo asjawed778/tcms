@@ -40,13 +40,18 @@ const Student: React.FC = () => {
     isLoading,
     isError,
     refetch,
-  } = useGetAllStudentQuery({
-    sessionId: selectedSession?._id as string,
-    page: page + 1,
-    limit: rowsPerPage,
-    searchQuery,
-  });
-  
+  } = useGetAllStudentQuery(
+    {
+      sessionId: selectedSession?._id as string,
+      page: page + 1,
+      limit: rowsPerPage,
+      searchQuery,
+    },
+    {
+      skip: !selectedSession?._id,
+    }
+  );
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -62,7 +67,7 @@ const Student: React.FC = () => {
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
-        // alert(`Faculty ${row.student.name} updated`);
+      // alert(`Faculty ${row.student.name} updated`);
     }
   };
   const handleAddStudent = () => {
@@ -123,17 +128,17 @@ const Student: React.FC = () => {
             Add Student
           </CustomButton>
         </Box>
-          <CustomButton
-            variant="outlined"
-            fullWidth
-            startIcon={<Upload />}
-            onClick={handleBulkUpload}
-            sx={{
-              maxWidth: 200,
-            }}
-          >
-            Upload Bulk Student
-          </CustomButton>
+        <CustomButton
+          variant="outlined"
+          fullWidth
+          startIcon={<Upload />}
+          onClick={handleBulkUpload}
+          sx={{
+            maxWidth: 150,
+          }}
+        >
+          Upload Bulk
+        </CustomButton>
       </Box>
 
       <StudentTable
@@ -147,23 +152,24 @@ const Student: React.FC = () => {
         isLoading={isLoading}
         actionsList={actionsList}
         isError={isError}
+        isSessionNotSelected={!selectedSession?._id}
       />
       {selectedStudent && (
-        <ViewDetails 
+        <ViewDetails
           open={openViewDetailsModal}
           onClose={() => setOpenViewDetailsModal(false)}
           student={selectedStudent}
         />
       )}
       {selectedStudent && (
-        <AddRemark 
+        <AddRemark
           open={openRemarksModal}
           onClose={() => setOpenRemarksModal(false)}
           student={selectedStudent}
-        /> 
+        />
       )}
       {openBulkUpload && (
-        <BulkUpload 
+        <BulkUpload
           open={openBulkUpload}
           onClose={() => setOpenBulkUpload(false)}
           refetch={refetch}
