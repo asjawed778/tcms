@@ -54,7 +54,7 @@ const studentSchema = new mongoose.Schema<IStudent>({
         required: false,
     },
     motherTongue: { type: String, required: false },
-    image: { type: String, required: false },
+    profileImage: { type: String, required: false },
     adharNumber: { type: String, required: false, unique: true, sparse: true},
     contactNumber: { type: String },
     email: { type: String },
@@ -82,8 +82,7 @@ const studentSchema = new mongoose.Schema<IStudent>({
     status: {
         type: String,
         enum: Object.values(Enum.StudentStatus),
-        default: Enum.StudentStatus.ACTIVE,
-        required: false,
+        default: Enum.StudentStatus.DRAFT,
     },
 }, { timestamps: true, });
 
