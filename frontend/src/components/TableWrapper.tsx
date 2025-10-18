@@ -189,7 +189,6 @@
 
 
 
-
 import React, { useState, MouseEvent, useMemo } from "react";
 import {
   Table,
@@ -238,6 +237,7 @@ interface CustomTableProps {
   actionsList?: ActionsList[];
   isLoading?: boolean;
   isError?: boolean;
+  isSessionNotSelected?: boolean;
 }
 
 const TableWrapper: React.FC<CustomTableProps> = ({
@@ -252,6 +252,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
   isLoading = false,
   isError = false,
   actionsList,
+  isSessionNotSelected
 }) => {
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -327,7 +328,17 @@ const TableWrapper: React.FC<CustomTableProps> = ({
         </TableHead>
 
         <TableBody>
-          {isError ? (
+          {isSessionNotSelected ? (
+            <TableRow>
+              <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
+                <Box display="flex" justifyContent="center" py={4}>
+                  <Typography variant="subtitle1" color="text.secondary">
+                    Please select or create a session to view records.
+                  </Typography>
+                </Box>
+              </TableCell>
+            </TableRow>
+          ) : isError ? (
             <TableRow>
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
                 <Box display="flex" justifyContent="center" py={4}>
