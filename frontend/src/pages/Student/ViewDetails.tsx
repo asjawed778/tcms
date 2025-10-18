@@ -7,6 +7,7 @@ interface ViewDetailsProps {
   open: boolean;
   onClose: () => void;
 }
+
 const ViewDetails: React.FC<ViewDetailsProps> = ({
   student,
   open,
@@ -27,7 +28,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
             aria-label="Avatar image"
           >
             <Avatar
-              src={student.student?.image}
+              src={student?.student?.image}
               alt="image"
               sx={{
                 width: 100,
@@ -38,33 +39,36 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
               }}
             />
           </Grid>
+
           <Grid size={{ xs: 12 }}>
             <Typography variant="h6" gutterBottom fontWeight={500}>
               Admission Details
             </Typography>
             <Divider />
           </Grid>
+
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Class:</strong> {student.admission.class.name || "N/A"}
+            <strong>Class:</strong> {student?.admission?.class?.name || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Section:</strong> {student.admission.section.name || "N/A"}
+            <strong>Section:</strong>{" "}
+            {student?.admission?.section?.name || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Roll Number:</strong>{" "}
-            {student.admission.rollNumber || "N/A"}
+            {student?.admission?.rollNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Session:</strong>{" "}
-            {student.admission.session.session || "N/A"}
+            {student?.admission?.session?.session || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Admission Status:</strong>{" "}
-            {student.admission.admissionStatus || "N/A"}
+            {student?.admission?.admissionStatus || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Admission Year:</strong>{" "}
-            {student.student.admissionYear || "N/A"}
+            {student?.student?.admissionYear || "N/A"}
           </Grid>
 
           <Grid size={{ xs: 12 }}>
@@ -73,45 +77,50 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
             </Typography>
             <Divider />
           </Grid>
+
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Name:</strong> {student.student.name || "N/A"}
+            <strong>Name:</strong> {student?.student?.name || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Gender:</strong> {student.student.gender || "N/A"}
+            <strong>Gender:</strong> {student?.student?.gender || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>DOB:</strong>{" "}
-            {new Date(student.student.dob || "N/A").toLocaleDateString()}
+            {student?.student?.dob
+              ? new Date(student.student.dob).toLocaleDateString()
+              : "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Email:</strong> {student.student.email || "N/A"}
+            <strong>Email:</strong> {student?.student?.email || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Phone:</strong> {student.student.contactNumber || "N/A"}
+            <strong>Phone:</strong> {student?.student?.contactNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Adhar No:</strong> {student.student.adharNumber || "N/A"}
+            <strong>Adhar No:</strong> {student?.student?.adharNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Enrollment No:</strong>{" "}
-            {student.student.enrollmentNumber || "N/A"}
+            {student?.student?.enrollmentNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Blood Group:</strong> {student.student.bloodGroup || "N/A"}
+            <strong>Blood Group:</strong>{" "}
+            {student?.student?.bloodGroup || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Religion:</strong> {student.student.religion || "N/A"}
+            <strong>Religion:</strong> {student?.student?.religion || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Nationality:</strong> {student.student.nationality || "N/A"}
+            <strong>Nationality:</strong>{" "}
+            {student?.student?.nationality || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Address:</strong>
             <br />
-            {student.student.address?.addressLine1 || "N/A"},{" "}
-            {student.student.address?.city || "N/A"},{" "}
-            {student.student.address?.state || "N/A"},{" "}
-            {student.student.address?.pincode || "N/A"}
+            {student?.student?.address?.addressLine1 || "N/A"},{" "}
+            {student?.student?.address?.city || "N/A"},{" "}
+            {student?.student?.address?.state || "N/A"},{" "}
+            {student?.student?.address?.pincode || "N/A"}
           </Grid>
 
           <Grid size={{ xs: 12 }}>
@@ -120,113 +129,126 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
             </Typography>
             <Divider />
           </Grid>
-          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center"}}>
+
+          {/* Father */}
+          <Grid
+            size={{ xs: 12 }}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <strong>Father Details:-</strong>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Father:</strong> {student.student.father.name || "N/A"}
+            <strong>Father:</strong> {student?.student?.father?.name || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Qualification:</strong>{" "}
-            {student.student.father.qualification || "N/A"}
+            {student?.student?.father?.qualification || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Occupation:</strong>{" "}
-            {student.student.father.occupation || "N/A"}
+            {student?.student?.father?.occupation || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Contact Number:</strong>{" "}
-            {student.student.father.contactNumber || "N/A"}
+            {student?.student?.father?.contactNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Email:</strong> {student.student.father.email || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Business?Employer Name:</strong>{" "}
-            {student.student.father.businessOrEmployerName || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Office Contact Number:</strong>{" "}
-            {student.student.father.officeNumber || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Offoce Address:</strong>{" "}
-            {student.student.father.officeAddress || "N/A"}
-          </Grid>
-
-          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center"}}>
-            <strong>Mother Details:-</strong>
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Mother:</strong> {student.student.mother.name || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Qualification:</strong>{" "}
-            {student.student.mother.qualification || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Occupation:</strong>{" "}
-            {student.student.mother.occupation || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Contact Number:</strong>{" "}
-            {student.student.mother.contactNumber || "N/A"}
-          </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <strong>Email:</strong> {student.student.mother.email || "N/A"}
+            <strong>Email:</strong> {student?.student?.father?.email || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Business/Employer Name:</strong>{" "}
-            {student.student.mother.businessOrEmployerName || "N/A"}
+            {student?.student?.father?.businessOrEmployerName || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Office Contact Number:</strong>{" "}
-            {student.student.mother.officeNumber || "N/A"}
+            {student?.student?.father?.officeNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Office Address:</strong>{" "}
-            {student.student.mother.officeAddress || "N/A"}
+            {student?.student?.father?.officeAddress || "N/A"}
           </Grid>
 
-          <Grid size={{ xs: 12 }} sx={{ display: "flex", justifyContent: "center"}}>
+          {/* Mother */}
+          <Grid
+            size={{ xs: 12 }}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
+            <strong>Mother Details:-</strong>
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Mother:</strong> {student?.student?.mother?.name || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Qualification:</strong>{" "}
+            {student?.student?.mother?.qualification || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Occupation:</strong>{" "}
+            {student?.student?.mother?.occupation || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Contact Number:</strong>{" "}
+            {student?.student?.mother?.contactNumber || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Email:</strong> {student?.student?.mother?.email || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Business/Employer Name:</strong>{" "}
+            {student?.student?.mother?.businessOrEmployerName || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Office Contact Number:</strong>{" "}
+            {student?.student?.mother?.officeNumber || "N/A"}
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <strong>Office Address:</strong>{" "}
+            {student?.student?.mother?.officeAddress || "N/A"}
+          </Grid>
+
+          {/* Local Guardian */}
+          <Grid
+            size={{ xs: 12 }}
+            sx={{ display: "flex", justifyContent: "center" }}
+          >
             <strong>Local Guardian Details:-</strong>
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Local Guardian:</strong>{" "}
-            {student.student.localGuardian?.name || "N/A"}
+            {student?.student?.localGuardian?.name || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Qualification:</strong>{" "}
-            {student.student.localGuardian?.qualification || "N/A"}
+            {student?.student?.localGuardian?.qualification || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Occupation:</strong>{" "}
-            {student.student.localGuardian?.occupation || "N/A"}
+            {student?.student?.localGuardian?.occupation || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Contact Number:</strong>{" "}
-            {student.student.localGuardian?.contactNumber || "N/A"}
+            {student?.student?.localGuardian?.contactNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Email:</strong>{" "}
-            {student.student.localGuardian?.email || "N/A"}
+            {student?.student?.localGuardian?.email || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Business/Employer Name:</strong>{" "}
-            {student.student.localGuardian?.businessOrEmployerName || "N/A"}
+            {student?.student?.localGuardian?.businessOrEmployerName || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Office Contact Number:</strong>{" "}
-            {student.student.localGuardian?.officeNumber || "N/A"}
+            {student?.student?.localGuardian?.officeNumber || "N/A"}
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <strong>Office Address:</strong>{" "}
-            {student.student.localGuardian?.officeAddress || "N/A"}
+            {student?.student?.localGuardian?.officeAddress || "N/A"}
           </Grid>
-
         </Grid>
       </Box>
     </ModalWrapper>
   );
 };
+
 export default ViewDetails;

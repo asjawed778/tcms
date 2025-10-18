@@ -6,17 +6,16 @@ import admissionSchema from "./admission.schema";
 import mongoose, { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
 
-export const addStudent = async (studentData: StudentDto.IStudentCreate, session: mongoose.ClientSession) => {
+export const addStudent = async (studentData: StudentDto.IStudentCreate, session?: mongoose.ClientSession) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
     if (student) {
         throw createHttpError(400, "Student with this Aadhar number already exists");
     }
     const newStudent = new studentSchema(studentData);
-    const result = await newStudent.save({ session });
-    return result;
+    return session ? newStudent.save({ session }) : newStudent.save();
 };
 
-export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string, session: mongoose.ClientSession) => {
+export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string, session?: mongoose.ClientSession) => {
     const admission = await admissionSchema.create([{
         student: studentId,
         class: classId,

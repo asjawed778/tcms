@@ -23,8 +23,6 @@ type Props = {
 };
 const ForgotPassword: React.FC<Props> = ({ onBackToLogin }) => {
   const { token } = useParams<{ token: string }>();
-  console.log("Token: ", token);
-
   const mode: "forgot" | "reset" = token ? "reset" : "forgot";
 
   const [sendResetLink, { isLoading: sending }] = useForgotPasswordMutation();

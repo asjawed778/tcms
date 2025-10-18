@@ -7,15 +7,14 @@
 
 
 
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
+// import CustomButton from "@/components/CustomButton";
+// import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
 import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
-import { Add } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
@@ -34,8 +33,8 @@ const Standard = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [query, setQuery] = useState("");
-  const [status, setStatus] = useState("All");
-  const navigate = useNavigate();
+  // const [status, setStatus] = useState("All");
+  // const navigate = useNavigate();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
@@ -44,7 +43,7 @@ const Standard = () => {
     data: classData,
     isLoading,
     isError,
-    refetch
+    // refetch
   } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
     // page: page + 1,
@@ -60,22 +59,21 @@ const Standard = () => {
     setPage(0);
   };
 
-  const handleActionClick = (action: string, row: any) => {
-    console.log("Action:", action, "on ID:", row);
+  const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
         // alert(`Faculty ${row?.name} updated`);
     }
   };
 
-  const handleAddFaculty = () => {
-    refetch();
-    navigate("/dashboard/createClass");
-  };
+  // const handleAddFaculty = () => {
+  //   refetch();
+  //   navigate("/dashboard/createClass");
+  // };
 
-  const handleChange = (val: any) => {
-    setStatus(val);
-  };
+  // const handleChange = (val: any) => {
+  //   setStatus(val);
+  // };
   const updatedClasses = classData?.data.classes?.map((cls) => ({
     ...cls,
     totalSections: cls.sections?.length || 0,

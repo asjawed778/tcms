@@ -55,9 +55,7 @@ const Sunday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {
     sessionId: selectedSession?._id,
     day: dayName,
     periods,
-  });
-  console.log("Isn Holiday: ", isHoliday);
-  
+  });  
   useEffect(() => {
     if (isHoliday) {
       remove();
@@ -193,6 +191,7 @@ const Sunday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {
                     disabled={!facultyMap[index]}
                     loading={isLoading}
                     options={facultyMap[index]}
+                    required={false}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>
@@ -231,6 +230,7 @@ const Sunday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {
                     name={`${fieldName}.${index}.subject`}
                     label="Select Subject"
                     options={subjectOptions}
+                    required={false}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, md: 6 }}>

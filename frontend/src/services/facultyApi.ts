@@ -1,5 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
-import { ApiResponse, FacultyApiResponse, FacultyFormData, UnAssignFacultyFormData, UnAssingFacultyApiResponse } from "../../type";
+import { FacultyApiResponse, FacultyFormData, UnAssignFacultyFormData, UnAssingFacultyApiResponse } from "../../type";
 import { baseQueryWithReauth } from "./api";
 
 export const facultyApi = createApi({

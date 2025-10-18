@@ -8,6 +8,11 @@ const classSchema = new mongoose.Schema<IClass>({
         enum: Object.values(Enum.ClassName),
         required: true
     },
+    classId: {
+        type: String,   
+        unique: true,
+        required: true
+    },
     session: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Session",

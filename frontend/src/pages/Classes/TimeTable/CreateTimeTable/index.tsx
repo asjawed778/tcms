@@ -20,7 +20,6 @@ import {
   useGetAllClassQuery,
 } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
-import { cleanData } from "@/utils/helper";
 import Monday from "./Monday";
 import Tuesday from "./Tuesday";
 import Wednesday from "./Wednesday";
@@ -31,8 +30,6 @@ import Sunday from "./Sunday";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import { WeekDay } from "@/utils/enum";
 import { weeklySchema } from "../../../../../yup";
-import * as yup from "yup";
-import { TimeTableFormData } from "../../../../../type";
 
 const steps = [
   {
@@ -100,9 +97,8 @@ const CreateTimeTable = () => {
     // shouldUnregister: false,
   });
 
-  // console.log("Erros: ", methods.formState.errors);
   // const control = methods.control;
-  const { control, getValues } = methods;
+  const { control } = methods;
 
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
@@ -142,8 +138,6 @@ const CreateTimeTable = () => {
   }, [selectedClassId, classData]);
 
   const onSubmit = async (data: any) => {
-    console.log("Time Table: ", data);
-
     // const fieldsToValidate =
     //   activeStep === 0
     //     ? ["classId", "sectionId"]
@@ -164,7 +158,6 @@ const CreateTimeTable = () => {
           ...data,
           sessionId: selectedSession?._id,
         };
-        console.log("Fresh data: ", payload);
         await createTimeTable(payload).unwrap();
         toast.success("Time table Created successfully!");
         navigate("/dashboard/classes/timetable");

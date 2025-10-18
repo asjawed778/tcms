@@ -8,23 +8,26 @@ import React, { useEffect, useMemo } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 const PreviousSchoolDetails: React.FC = () => {
-  const { setValue, control  } = useFormContext();
-  const selectedSession = useAppSelector(state => state.session.selectedSession);
-  const {data: classData} = useGetAllClassQuery({
-    sessionId: selectedSession?._id as string
+  const { setValue, control } = useFormContext();
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession
+  );
+  const { data: classData } = useGetAllClassQuery({
+    sessionId: selectedSession?._id as string,
   });
-  const className = classData?.data.classes.map(items => ({
-    label: items.name,
-    value: items._id as string,
-  })) || [];
+  const className =
+    classData?.data.classes.map((items) => ({
+      label: items.name,
+      value: items._id as string,
+    })) || [];
   const selectedClassId: string = useWatch({
     control,
     name: "class",
   });
-  console.log("class Data: ", classData);
-  
   const sectionOptions = useMemo(() => {
-    const foundClass = classData?.data.classes.find((cls) => cls._id === selectedClassId);
+    const foundClass = classData?.data.classes.find(
+      (cls) => cls._id === selectedClassId
+    );
     return (
       foundClass?.sections.map((section) => ({
         label: section.name,
@@ -32,7 +35,7 @@ const PreviousSchoolDetails: React.FC = () => {
       })) || []
     );
   }, [selectedClassId, classData]);
-  
+
   useEffect(() => {
     setValue("previousSchool.transferCertificate.name", "Transfer Certificate");
     setValue(
@@ -42,6 +45,10 @@ const PreviousSchoolDetails: React.FC = () => {
   }, [setValue]);
   return (
     <Grid container spacing={2}>
+      <Typography variant="h6" gutterBottom fontWeight={600}>
+        Previous School Details (if applicable)
+      </Typography>
+      <Divider sx={{ mb: 3 }} />
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
           name="previousSchool.name"
@@ -146,29 +153,29 @@ const PreviousSchoolDetails: React.FC = () => {
           />
         </Grid>
       </Grid>
-      <Grid size={{xs:12}}>
+      <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={500}>
           Addmission Details
         </Typography>
         <Divider />
       </Grid>
-      <Grid size={{xs: 12, md: 6}}>
-        <CustomDropdownField 
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
           name="class"
           label="Select Class"
           options={className}
         />
       </Grid>
-      <Grid size={{xs: 12, md: 6}}>
-        <CustomDropdownField 
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
           name="section"
           label="Select section"
           options={sectionOptions}
           disabled={!selectedClassId}
         />
       </Grid>
-      <Grid size={{xs: 12, md: 6}}>
-        <CustomInputField 
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
           name="admissionYear"
           label="Admission Year"
           type="number"

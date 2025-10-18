@@ -32,6 +32,7 @@
     "slick-carousel": "^1.8.1",
     "use-click-away": "^0.0.1",
     "usehooks-ts": "^3.1.1",
+    "xlsx": "^0.18.5",
     "yup": "^1.6.1"
   },
   "devDependencies": {

@@ -65,7 +65,6 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               formData.append("file", file);
 
               const response = await uploadFile(formData).unwrap();
-              console.log("file response: ", response);
 
               const uploadedUrl = response?.data?.url;
               if (uploadedUrl) {

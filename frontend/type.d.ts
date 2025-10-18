@@ -226,15 +226,27 @@ interface weeklyScheduleResponse{
   day: string;
   isHoliday: boolean;
   periods: PeriodsResponse[];
-}
-interface TimeTableResponse{
-  class: Enum.ClassName;
-  section: string;
+};
+interface SectionResponse{
+  _id: string;
+  name: string;
+};
+interface ClassResponse{
+  _id: string;
+  name: Enum.ClassName;
+};
+interface SessionResponse{
+  _id: string;
   session: string;
+};
+interface TimeTableResponse{
+  class: ClassResponse;
+  section: SectionResponse;
+  session: SessionResponse;
   weeklySchedule: weeklyScheduleResponse[];
 }
 interface TimeTableApiResponse{
-  data: TimeTableResponse;
+  data: TimeTableResponse[];
   message: string;
   success: boolean;
 }
@@ -250,7 +262,7 @@ interface UnAssingFaculty {
   designation: string;
 };
 interface UnAssingFacultyApiResponse {
-  data: UnAssingFaculty[];
+  data: UnAssingFaculty | UnAssingFaculty[];
   message: string;
   success: boolean;
 };
