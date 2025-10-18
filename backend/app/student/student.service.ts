@@ -6,6 +6,43 @@ import admissionSchema from "./admission.schema";
 import mongoose, { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
 
+
+export const generateEnrollmentNumber = async (
+    admissionYear?: number,
+    prefix: string = "TCMS"
+): Promise<string> => {
+    const year = admissionYear || new Date().getFullYear();
+    let unique = false;
+    let registrationNumber = "";
+
+    while (!unique) {
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        registrationNumber = `${prefix}${year}${randomNumber}`;
+
+        const existingStudent = await studentSchema.findOne({
+            enrollmentNumber: registrationNumber,
+        });
+
+        if (!existingStudent) {
+            unique = true;
+        }
+    }
+    return registrationNumber;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+// old student addition function
+
 export const addStudent = async (studentData: StudentDto.IStudentCreate, session?: mongoose.ClientSession) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
     if (student) {

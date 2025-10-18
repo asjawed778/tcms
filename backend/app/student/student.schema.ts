@@ -87,25 +87,6 @@ const studentSchema = new mongoose.Schema<IStudent>({
     },
 }, { timestamps: true, });
 
-studentSchema.pre("save", async function (next) {
-    if (!this.enrollmentNumber) {
-        const year = this.admissionYear || new Date().getFullYear();
-        let unique = false;
-        let registrationNumber = "";
-        while (!unique) {
-            const randomNumber = Math.floor(100000 + Math.random() * 900000);
-            registrationNumber = `TCMS${year}${randomNumber}`;
-            const existingStudent = await mongoose.models.Student.findOne({
-                enrollmentNumber: registrationNumber
-            });
-            if (!existingStudent) {
-                unique = true;
-            }
-        }
-        this.enrollmentNumber = registrationNumber;
-    }
-    next();
-});
 
 export default mongoose.model<IStudent>("Student", studentSchema);
 
