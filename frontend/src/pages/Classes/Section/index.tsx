@@ -38,9 +38,14 @@ const Section = () => {
     data: classData,
     isLoading,
     isError,
-  } = useGetAllClassQuery({
-    sessionId: selectedSession?._id as string,
-  });
+  } = useGetAllClassQuery(
+    {
+      sessionId: selectedSession?._id as string,
+    },
+    {
+      skip: !selectedSession?._id,
+    }
+  );
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -48,17 +53,17 @@ const Section = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(0);
   };
-  
+
   const handleActionClick = (action: string, row: any) => {
     switch (action) {
       case "assignClassTeacher":
-        setSelectedRow(row)
-        setOpenAssignTeacher(true)
+        setSelectedRow(row);
+        setOpenAssignTeacher(true);
         break;
       case "removeClassTeacher":
         break;
       default:
-      break;
+        break;
     }
   };
   useEffect(() => {
@@ -87,7 +92,7 @@ const Section = () => {
   const handleChange = (val: any) => {
     setSelectedClassId(val);
   };
-  
+
   return (
     <Box sx={{ width: "100%" }}>
       <Box
@@ -132,9 +137,10 @@ const Section = () => {
         isLoading={isLoading}
         actionsList={actionsList}
         isError={isError}
+        isSessionNotSelected={!selectedSession?._id}
       />
       {openAssignTeacher &&(
-        <AssignClassTeacher 
+        <AssignClassTeacher
           open={openAssignTeacher}
           onClose={() => setOpenAssignTeacher(false)}
           classId={selectedClassId}
