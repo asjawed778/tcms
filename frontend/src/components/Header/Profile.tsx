@@ -63,7 +63,7 @@ const  Profile: React.FC = () => {
   return (
     <>
       <IconButton onClick={handleOpen}>
-        <Avatar src={user?.profilePic} alt="profile" />
+        <Avatar sx={{ width: 32, height: 32 }} src={user?.profilePic} alt="profile" />
       </IconButton>
 
       <Menu

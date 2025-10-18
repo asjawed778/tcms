@@ -49,7 +49,7 @@ const Header: React.FC = () => {
         backgroundColor: colors.headerBackground,
         color: colors.headerText,
         zIndex: 1300,
-        height: 64,
+        height: 52,
         justifyContent: "center",
         
       }}
