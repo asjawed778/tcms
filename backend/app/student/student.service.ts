@@ -36,7 +36,7 @@ export const addStudentStep1 = async (studentData: StudentDto.IAddStudentStep1) 
     return result;
 };
 
-export const updateStudent = async (studentId: string, updateData: Partial<StudentDto.IStudentCreate>) => {
+export const updateStudent = async (studentId: string, updateData: Partial<StudentDto.IStudent>) => {
     const student = await studentSchema.findByIdAndUpdate(studentId, updateData, { new: true });
     if (!student) {
         throw createHttpError(404, "Student not found");
@@ -57,13 +57,14 @@ export const updateStudent = async (studentId: string, updateData: Partial<Stude
 
 // old student addition function
 
-export const addStudent = async (studentData: StudentDto.IStudentCreate, session?: mongoose.ClientSession) => {
+export const addStudent = async (studentData: StudentDto.IStudentCreate) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
     if (student) {
         throw createHttpError(400, "Student with this Aadhar number already exists");
     }
     const newStudent = new studentSchema(studentData);
-    return session ? newStudent.save({ session }) : newStudent.save();
+    const result = await newStudent.save();
+    return result;
 };
 
 export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string) => {

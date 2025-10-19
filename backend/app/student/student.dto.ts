@@ -109,7 +109,7 @@ export interface IAddStudentStep1 {
 
 
 
-export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt" | "enrollmentNumber" | "status"> { };
+export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt"> { };
 export interface IGetStudentResponse<T> {
     students: T[];
     totalDocs: number;
