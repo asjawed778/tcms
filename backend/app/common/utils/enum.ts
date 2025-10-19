@@ -1,11 +1,8 @@
 
 export enum UserRole {
-  SUPER_ADMIN = "Super Admin",
-  PRINCIPAL = "Principal",
+  ADMIN = "Admin",
   FACULTY = "Faculty",
-  STUDENT = "Student",
   ADMINISTRATOR = "Administrator",
-  STAFF = "Staff",
   USER = "User",
 }
 
@@ -126,46 +123,46 @@ export enum FacultyStatus {
 //  class
 
 export enum ClassName {
-    NURSERY = "Nursery",
-    LKG = "LKG",
-    UKG = "UKG",
-    STANDARD_1 = "Standard 1",
-    STANDARD_2 = "Standard 2",
-    STANDARD_3 = "Standard 3",
-    STANDARD_4 = "Standard 4",
-    STANDARD_5 = "Standard 5",
-    STANDARD_6 = "Standard 6",
-    STANDARD_7 = "Standard 7",
-    STANDARD_8 = "Standard 8",
-    STANDARD_9 = "Standard 9",
-    STANDARD_10 = "Standard 10",
-    STANDARD_11 = "Standard 11",
-    STANDARD_12 = "Standard 12"
+  NURSERY = "Nursery",
+  LKG = "LKG",
+  UKG = "UKG",
+  STANDARD_1 = "Standard 1",
+  STANDARD_2 = "Standard 2",
+  STANDARD_3 = "Standard 3",
+  STANDARD_4 = "Standard 4",
+  STANDARD_5 = "Standard 5",
+  STANDARD_6 = "Standard 6",
+  STANDARD_7 = "Standard 7",
+  STANDARD_8 = "Standard 8",
+  STANDARD_9 = "Standard 9",
+  STANDARD_10 = "Standard 10",
+  STANDARD_11 = "Standard 11",
+  STANDARD_12 = "Standard 12"
 }
 
 export enum CourseStream {
-    SCIENCE = "Science",
-    COMMERCE = "Commerce",
-    ARTS = "Arts",
-    VOCATIONAL = "Vocational",
-    GENERAL = "General",
+  SCIENCE = "Science",
+  COMMERCE = "Commerce",
+  ARTS = "Arts",
+  VOCATIONAL = "Vocational",
+  GENERAL = "General",
 };
 
 export enum SubjectType {
-    CUMPULSARY = "Compulsary",
-    OPTIONAL = "Optional",
+  CUMPULSARY = "Compulsary",
+  OPTIONAL = "Optional",
 };
 
 export enum SubjectCategory {
-    MATHEMATICS = "Mathematics",
-    NATURAL_SCIENCES = "Natural Sciences",
-    SOCIAL_SCIENCES = "Social Sciences",
-    BUSINESS_ECONOMICS = "Business & Economics",
-    LANGUAGES_LITERATURE = "Languages & Literature",
-    COMPUTER_TECHNOLOGY = "Computer & Technology",
-    CREATIVE_ARTS = "Creative & Performing Arts",
-    HEALTH_PHYSICAL_EDUCATION = "Health & Physical Education",
-    VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
+  MATHEMATICS = "Mathematics",
+  NATURAL_SCIENCES = "Natural Sciences",
+  SOCIAL_SCIENCES = "Social Sciences",
+  BUSINESS_ECONOMICS = "Business & Economics",
+  LANGUAGES_LITERATURE = "Languages & Literature",
+  COMPUTER_TECHNOLOGY = "Computer & Technology",
+  CREATIVE_ARTS = "Creative & Performing Arts",
+  HEALTH_PHYSICAL_EDUCATION = "Health & Physical Education",
+  VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
 };
 
 
@@ -188,5 +185,37 @@ export enum PeriodType {
   MEETING = "Meeting",
   OTHER = "Other"
 };
+
+// roles permissions and modules enums
+// Operatioin,  Module and SubModule Names for Role-Based Access Control
+
+export enum Operation {
+  CREATE = "create",
+  READ = "read",
+  UPDATE = "update",
+  DELETE = "delete",
+}
+
+export enum ModuleName {
+  DASHBOARD = "Dashboard",
+  SESSION = "Session",
+  STUDENTS = "Students",
+  CLASSES = "Classes",
+  Employee = "Employee",
+  TOOLS = "Tools",
+}
+
+export enum SubModuleName {
+
+  // Classes
+  CLASS = "Class",
+  SECTION = "Section",
+  TIMETABLE = "Timetable",
+  SUBJECTS = "Subjects",
+
+  // Tools
+  ROLES = "Roles",
+  PERMISSIONS = "Permissions",
+}
 
 

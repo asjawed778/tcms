@@ -1,7 +1,7 @@
 import mongoose, { ClientSession } from "mongoose";
 import * as FacultyDTO from "./faculty.dto";
 import facultySchema from "./faculty.schema"
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import * as UserService from "../user/user.service";
 import { getAssignedFaculyIds } from "../class/class.service";
 

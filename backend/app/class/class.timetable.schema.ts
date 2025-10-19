@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import { ITimeTable } from "./class.dto";
 
 const timeTableSchema = new mongoose.Schema<ITimeTable>({

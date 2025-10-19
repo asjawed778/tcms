@@ -4,7 +4,7 @@ import classSchema from "./class.schema";
 import createHttpError from "http-errors";
 import sectionSchema from "./section.schema";
 import classTimetableSchema from "./class.timetable.schema";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import mongoose, { PipelineStage } from "mongoose";
 
 export const isClassAlreadyExists = async (name: string, session: string) => {

@@ -7,7 +7,7 @@ import { createResponse } from "../common/helper/response.hepler";
 import * as EmployeeService from "../employee/employee.service";
 import * as AddressService from "../common/services/address.service";
 import mongoose, { Types } from "mongoose";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 export const createFaculty = asyncHandler(async (req: Request, res: Response) => {
     const session = await mongoose.startSession();

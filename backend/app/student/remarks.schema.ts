@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 import { IRemark } from './student.dto';
-import * as Enum from '../common/constant/enum';
+import * as Enum from '../common/utils/enum';
 
 const RemarkSchema = new mongoose.Schema<IRemark>({
     student: {

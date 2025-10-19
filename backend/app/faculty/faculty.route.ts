@@ -1,44 +1,40 @@
 import { Router } from "express";
-import * as authMiddleware from "../common/middleware/auth.middleware";
 import { catchError } from "../common/middleware/cath-error.middleware";
 import * as FaculytyController from "./faculty.controller";
 import * as FacultyValidation from "./faculty.validation";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
+import { roleAuth } from "../common/middleware/role-auth.middleware";
 
 const router = Router();
 
 router
     .post(
         "/",
-        authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.CREATE }),
         FacultyValidation.createFaculty,
         catchError,
         FaculytyController.createFaculty
     )
     .get(
         "/all",
-        authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
         catchError,
         FaculytyController.getAllFaculty
     )
     .get(
         "/:facultyId",
-        authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
         FacultyValidation.getFacultyById,
         catchError,
         FaculytyController.getFacultyById
     )
     .post(
         "/unassigned/:sessionId",
-        authMiddleware.auth,
-        authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN, Enum.UserRole.PRINCIPAL]),
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
         FacultyValidation.getUnassignedFaculty,
         catchError,
         FaculytyController.getUnassignedFaculty
     )
-    
+
 
 export default router;

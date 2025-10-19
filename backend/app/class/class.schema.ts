@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IClass } from "./class.dto";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 const classSchema = new mongoose.Schema<IClass>({
     name: {
