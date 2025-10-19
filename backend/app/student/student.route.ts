@@ -52,6 +52,7 @@ router
     "/bulk-upload",
     authMiddleware.auth,
     authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    StudentValidation.bulkAddStudents,
     catchError,
     StudentController.bulkUploadStudents
   )

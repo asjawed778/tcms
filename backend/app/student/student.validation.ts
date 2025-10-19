@@ -196,6 +196,28 @@ export const addStudentStep5 = [
         .optional().isURL().withMessage("Each document URL must be valid"),
 ];
 
+const mapToBulk = (validators: any[]) => {
+    return validators.map((v: any) => {
+        const newBuilder = v.builder.clone();
+        newBuilder.fields = newBuilder.fields.map((field: string) => `students.*.${field}`);
+        v.builder = newBuilder;
+        return v;
+    });
+};
+
+export const bulkAddStudents = [
+    body("students")
+        .isArray({ min: 1 })
+        .withMessage("Students must be an array with at least one student"),
+
+    ...mapToBulk([
+        ...addStudentStep1,
+        ...addStudentStep2,
+        ...addStudentStep3,
+        ...addStudentStep4,
+        ...addStudentStep5,
+    ]),
+];
 
 
 

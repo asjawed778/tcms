@@ -441,6 +441,22 @@ export const getClassById = async (classId: string) => {
   return classes[0];
 };
 
+export const getClassByUniqueId = async (classUniqueId: string) => {
+  const classDoc = await classSchema.findOne({ classId: classUniqueId, deleted: false });
+  if (!classDoc) {
+    throw createHttpError(404, "Class not found");
+  }
+  return classDoc;
+};
+
+export const getSectionByUniqueId = async (sectionUniqueId: string) => {
+  const sectionDoc = await sectionSchema.findOne({ sectionId: sectionUniqueId, deleted: false });
+  if (!sectionDoc) {
+    throw createHttpError(404, "Section not found");
+  }
+  return sectionDoc;
+};
+
 export const getAssignedFaculyIds = async (sessionId: mongoose.Types.ObjectId,
   day: Enum.WeekDay,
   startTime: { hour: number; minute: number },
