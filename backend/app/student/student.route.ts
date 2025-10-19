@@ -9,12 +9,44 @@ const router = Router();
 
 router
   .post(
-    "/add",
+    "/add/step-1/personal-details",
     authMiddleware.auth,
     authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
-    StudentValidation.addStudent,
+    StudentValidation.addStudentStep1,
     catchError,
-    StudentController.addStudent
+    StudentController.addStudentStep1
+  )
+  .put(
+    "/:studentId/step-2/address",
+    authMiddleware.auth,
+    authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    StudentValidation.addStudentStep2,
+    catchError,
+    StudentController.addStudentStep2
+  )
+  .put(
+    "/:studentId/step-3/parents-details",
+    authMiddleware.auth,
+    authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    StudentValidation.addStudentStep3,
+    catchError,
+    StudentController.addStudentStep3
+  )
+  .put(
+    "/:studentId/step-3/admission-details",
+    authMiddleware.auth,
+    authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    StudentValidation.addStudentStep4,
+    catchError,
+    StudentController.addStudentStep4
+  )
+  .put(
+    "/:studentId/step-5/documents",
+    authMiddleware.auth,
+    authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    StudentValidation.addStudentStep5,
+    catchError,
+    StudentController.addStudentStep5
   )
   .post(
     "/bulk-upload",

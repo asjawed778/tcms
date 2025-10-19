@@ -70,7 +70,8 @@ export enum StudentStatus {
   INACTIVE = "Inactive",
   PASSED_OUT = "Passed Out",
   EXPELLED = "Expelled",
-  TRANSFERRED = "Transferred"
+  TRANSFERRED = "Transferred",
+  DRAFT = "Draft"
 };
 
 export enum ParticipationType {

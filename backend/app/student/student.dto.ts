@@ -38,8 +38,8 @@ export interface ExtracurricularActivity extends BaseSchema {
 
 export interface ParentDetails {
     name: string;
-    qualification: string;
-    occupation: string;
+    qualification?: string;
+    occupation?: string;
     businessOrEmployerName?: string;
     officeAddress?: string;
     officeNumber?: string;
@@ -65,18 +65,18 @@ export interface IStudent extends BaseSchema {
     name: string;
     dob: Date;
     gender: Gender;
-    nationality: string;
-    religion: Religion;
-    motherTongue: string;
-    image: string;
-    adharNumber: string;
+    nationality?: string;
+    religion?: Religion;
+    motherTongue?: string;
+    profileImage: string;
+    adharNumber?: string;
     contactNumber?: string;
     email?: string;
     bloodGroup?: Enum.BloodGroup;
 
     // parent details
-    father: ParentDetails;
-    mother: ParentDetails;
+    father?: ParentDetails;
+    mother?: ParentDetails;
     localGuardian?: ParentDetails;
 
     previousSchool?: PreviousSchool;
@@ -91,6 +91,23 @@ export interface IStudent extends BaseSchema {
     admissionYear: number;
     status: Enum.StudentStatus;
 };
+
+export interface IAddStudentStep1 {
+    name: string;
+    dob: Date;
+    gender: Enum.Gender;
+    nationality?: string;
+    religion?: Enum.Religion;
+    motherTongue?: string;
+    profileImage: string;
+    adharNumber?: string;
+    contactNumber?: string;
+    email?: string;
+    bloodGroup?: Enum.BloodGroup;
+}
+
+
+
 
 export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt" | "enrollmentNumber" | "status"> { };
 export interface IGetStudentResponse<T> {

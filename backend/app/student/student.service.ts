@@ -6,6 +6,57 @@ import admissionSchema from "./admission.schema";
 import mongoose, { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
 
+
+export const generateEnrollmentNumber = async (
+    admissionYear?: number,
+    prefix: string = "TCMS"
+): Promise<string> => {
+    const year = admissionYear || new Date().getFullYear();
+    let unique = false;
+    let registrationNumber = "";
+
+    while (!unique) {
+        const randomNumber = Math.floor(100000 + Math.random() * 900000);
+        registrationNumber = `${prefix}${year}${randomNumber}`;
+
+        const existingStudent = await studentSchema.findOne({
+            enrollmentNumber: registrationNumber,
+        });
+
+        if (!existingStudent) {
+            unique = true;
+        }
+    }
+    return registrationNumber;
+};
+
+export const addStudentStep1 = async (studentData: StudentDto.IAddStudentStep1) => {
+    const student = new studentSchema(studentData);
+    const result = await student.save();
+    return result;
+};
+
+export const updateStudent = async (studentId: string, updateData: Partial<StudentDto.IStudentCreate>) => {
+    const student = await studentSchema.findByIdAndUpdate(studentId, updateData, { new: true });
+    if (!student) {
+        throw createHttpError(404, "Student not found");
+    }
+    return student;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+// old student addition function
+
 export const addStudent = async (studentData: StudentDto.IStudentCreate, session?: mongoose.ClientSession) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
     if (student) {
@@ -15,14 +66,14 @@ export const addStudent = async (studentData: StudentDto.IStudentCreate, session
     return session ? newStudent.save({ session }) : newStudent.save();
 };
 
-export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string, session?: mongoose.ClientSession) => {
-    const admission = await admissionSchema.create([{
+export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string) => {
+    const admission = await admissionSchema.create({
         student: studentId,
         class: classId,
         section: sectionId,
         session: sessionId,
-    }], { session });
-    return admission[0];
+    });
+    return admission;
 };
 
 export const getAdmissionByStudentId = async (studentId: string, sessionId: string) => {
