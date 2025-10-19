@@ -19,7 +19,7 @@ export const createFaculty = asyncHandler(async (req: Request, res: Response) =>
         if (!user) {
             throw createHttpError(400, "User not created");
         }
-        const address = await AddressService.createAddress(data.address, session)
+        const address = await AddressService.saveAddress(data.addres)
 
         const employeeId: string = await EmployeeService.createEmployeeId(session);
         if (!employeeId) {
