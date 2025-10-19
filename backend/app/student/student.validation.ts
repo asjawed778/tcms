@@ -198,10 +198,12 @@ export const addStudentStep5 = [
 
 const mapToBulk = (validators: any[]) => {
     return validators.map((v: any) => {
-        const newBuilder = v.builder.clone();
-        newBuilder.fields = newBuilder.fields.map((field: string) => `students.*.${field}`);
-        v.builder = newBuilder;
-        return v;
+        const field = v.builder?.fields?.[0];
+        if (!field) return v;
+
+        const newField = `students.*.${field}`;
+        const newValidator = body(newField);
+        return newValidator;
     });
 };
 
