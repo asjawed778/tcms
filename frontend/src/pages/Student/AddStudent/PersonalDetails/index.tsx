@@ -39,7 +39,7 @@ const PersonalDetails: React.FC = () => {
               name="dob"
               type="date"
               label="Date Of Birth"
-              maxDate={new Date().toISOString().split("T")[0]}
+              maxDate={new Date()}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>

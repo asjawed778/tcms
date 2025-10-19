@@ -88,7 +88,7 @@ const CreateClass = () => {
   const StepComponent = steps[activeStep].component;
 
   return (
-    <Box>
+    <Box px={1} mb={1}>
       <Stepper activeStep={activeStep} alternativeLabel sx={{ my: 2 }}>
         {steps.map((step, index) => (
           <Step key={index}>
@@ -111,7 +111,7 @@ const CreateClass = () => {
             </CardContent>
           </Paper>
           <Box
-            mt={4}
+            mt={2}
             display="flex"
             justifyContent="space-between"
             gap={2}

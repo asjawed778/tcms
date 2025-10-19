@@ -45,6 +45,12 @@ export interface AppColors {
   // Upload File Box
   uploadFileHover: string;
 
+  // Sidebar..................
+  sidebarBg: string;
+  sidebarText: string;
+  sidebarActiveBg: string;
+  sidebarActiveIcon: string;
+  sidebarActiveText: string;
 }
 
 export const Colors: { light: AppColors; dark: AppColors } = {
@@ -98,6 +104,12 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     // active inactive status
     activeStatusColor: 'green',
     inactiveStatusColor: 'gray',
+
+    sidebarBg: "#FFF",
+    sidebarText: "#000",
+    sidebarActiveBg: "#0173f5",
+    sidebarActiveIcon: "#FFF",
+    sidebarActiveText: "#FFF"
   },
 
   // >>>>>>>>>>>>>>>>>>>>>>>>>>DARK THEM>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -151,5 +163,11 @@ export const Colors: { light: AppColors; dark: AppColors } = {
 
     tabIconDefault: "#9BA1A6", 
     tabIconSelected: "#ffffff", 
+
+    sidebarBg: "#000",
+    sidebarText: "#CCC",
+    sidebarActiveBg: "#0173f5",
+    sidebarActiveIcon: "#FFF",
+    sidebarActiveText: "#FFF"
   },
 };

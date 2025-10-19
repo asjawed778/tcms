@@ -81,64 +81,63 @@ const Student: React.FC = () => {
     setPage(0);
   };
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          gap: 2,
-          mb: 2,
-        }}
-      >
-        {" "}
-        <CustomSearchField onSearch={setSearchQuery} />
+    <Box p={1}>
+      <Box sx={{ width: "100%", mb: 2 }}>
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 1,
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "stretch", md: "center" },
+            gap: 2,
+            flexWrap: "wrap",
           }}
         >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-            Filter By:
-          </Typography>
-          <CustomDropdownField
-            name="status"
-            label="Status"
-            required={false}
-            value={status}
-            onChange={handleChange}
-            options={[
-              { label: "All", value: "All" },
-              // { label: "Active", value: "true" },
-              // { label: "Inactive", value: "false" },
-            ]}
-          />
-
-          <CustomButton
-            variant="outlined"
-            fullWidth
-            startIcon={<PersonAdd />}
-            onClick={handleAddStudent}
+          <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
+            <CustomSearchField onSearch={setSearchQuery} />
+          </Box>
+          <Box
             sx={{
-              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
             }}
           >
-            Add Student
-          </CustomButton>
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+              Filter By:
+            </Typography>
+            <CustomDropdownField
+              name="status"
+              label="Status"
+              required={false}
+              value={status}
+              onChange={handleChange}
+              options={[{ label: "All", value: "All" }]}
+            />
+          </Box>
+          <Box >
+            <CustomButton
+              variant="outlined"
+              fullWidth
+              startIcon={<PersonAdd />}
+              onClick={handleAddStudent}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              Add Student
+            </CustomButton>
+          </Box>
+
+          <Box >
+            <CustomButton
+              variant="outlined"
+              fullWidth
+              startIcon={<Upload />}
+              onClick={handleBulkUpload}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              Upload Bulk
+            </CustomButton>
+          </Box>
         </Box>
-        <CustomButton
-          variant="outlined"
-          fullWidth
-          startIcon={<Upload />}
-          onClick={handleBulkUpload}
-          sx={{
-            maxWidth: 150,
-          }}
-        >
-          Upload Bulk
-        </CustomButton>
       </Box>
 
       <StudentTable

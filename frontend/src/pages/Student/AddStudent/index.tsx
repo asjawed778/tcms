@@ -118,7 +118,8 @@ const AddStudent = () => {
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <Paper sx={{ width: "100%" }}>
+          <Box p={1}>
+            <Paper sx={{ width: "100%" }}>
             <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
               <Box>
                 <StepComponent />
@@ -150,6 +151,7 @@ const AddStudent = () => {
             >
               {activeStep === steps.length - 1 ? "Submit" : "Next"}
             </Button>
+          </Box>
           </Box>
         </form>
       </FormProvider>

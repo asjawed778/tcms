@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { toggleCollapsed, toggleMobile } from "../../store/reducers/sidebarReducer";
+// import { toggleCollapsed, toggleMobile } from "../../store/reducers/sidebarReducer";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
 import { useAppDispatch, useAppSelector } from "../../store/store";
@@ -33,13 +33,13 @@ const Header: React.FC = () => {
     // const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
   
 
-  const handleMenuBtn = () => {
-    if (isSmallScreen) {
-      dispatch(toggleMobile());
-    } else {
-      dispatch(toggleCollapsed());
-    }
-  };
+  // const handleMenuBtn = () => {
+  //   if (isSmallScreen) {
+  //     dispatch(toggleMobile());
+  //   } else {
+  //     dispatch(toggleCollapsed());
+  //   }
+  // };
 
   return (
     <AppBar
@@ -67,7 +67,7 @@ const Header: React.FC = () => {
           >
             TCMS
           </Typography>
-          <IconButton
+          {/* <IconButton
             edge="start"
             onClick={handleMenuBtn}
             sx={{
@@ -76,7 +76,7 @@ const Header: React.FC = () => {
             }}
           >
           {isSmallScreen && sidebar.mobileOpen ? <Close /> : <MenuIcon />}
-          </IconButton>
+          </IconButton> */}
         </Box>
         <Box display="flex" alignItems="center" gap={2}>
           

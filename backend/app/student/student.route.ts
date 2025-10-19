@@ -33,7 +33,7 @@ router
     StudentController.addStudentStep3
   )
   .put(
-    "/:studentId/step-3/admission-details",
+    "/:studentId/step-4/admission-details",
     authMiddleware.auth,
     authMiddleware.roleAuth([Enum.UserRole.SUPER_ADMIN]),
     StudentValidation.addStudentStep4,

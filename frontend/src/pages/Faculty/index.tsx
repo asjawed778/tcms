@@ -78,7 +78,7 @@ const Faculty: React.FC = () => {
     setPage(0);
   };  
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", p: 1 }}>
       <Box
         sx={{
           display: "flex",

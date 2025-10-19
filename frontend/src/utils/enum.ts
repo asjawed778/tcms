@@ -173,4 +173,9 @@ export enum PeriodType {
   OTHER = "Other"
 };
 
-
+// Tabs..................................................................
+export enum ClassTabs {
+  STANDARD = "standard",
+  SECTION = "section",
+  TIME_TABLE = "timetable",
+}

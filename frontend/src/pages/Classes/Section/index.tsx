@@ -94,7 +94,7 @@ const Section = () => {
   };
 
   return (
-    <Box sx={{ width: "100%" }}>
+    <Box sx={{ width: "100%", p: 1, mt: 1 }}>
       <Box
         sx={{
           display: "flex",
