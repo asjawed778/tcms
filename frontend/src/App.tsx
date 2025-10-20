@@ -23,6 +23,7 @@ import DashboardLayout from "./layouts/DashboardLayout";
 import SplashScreen from "./components/SplashScreen";
 import ClassesLayout from "./layouts/ClassesLayout";
 import Classes from "./pages/Classes";
+import Tools from "./pages/Tools";
 
 function App() {
   const navigate = useNavigate();
@@ -55,6 +56,7 @@ function App() {
             <Route path="classes" element={<Classes />} />
             {/* <Route path="classes" element={<ClassesLayout />}> */}
             <Route path="class" element={<Class />} />
+            <Route path="tools" element={<Tools />} />
             <Route path="classes/createClass" element={<CreateClass />} />
             {/* <Route path="section" element={<Section />} /> */}
             {/* <Route path="classes/timetable" element={<TimeTable />} /> */}

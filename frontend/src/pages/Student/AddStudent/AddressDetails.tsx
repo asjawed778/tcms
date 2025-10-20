@@ -68,6 +68,7 @@ const AddressDetails: React.FC = () => {
           name="address.addressLine1"
           label="Address Line1"
           placeholder="Enter Line1  details"
+          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -76,6 +77,7 @@ const AddressDetails: React.FC = () => {
           label="Address Line2"
           placeholder="Enter Line2 Details"
           required={false}
+          labelPosition="outside"
         />
       </Grid>
 
@@ -84,6 +86,7 @@ const AddressDetails: React.FC = () => {
           name="address.country"
           label="Country"
           options={countryList}
+          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -93,6 +96,7 @@ const AddressDetails: React.FC = () => {
           control={control}
           options={stateList}
           disabled={!selectedCountry}
+          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -102,6 +106,7 @@ const AddressDetails: React.FC = () => {
           control={control}
           options={cityList}
           disabled={!selectedState}
+          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -109,6 +114,7 @@ const AddressDetails: React.FC = () => {
           name="address.pincode"
           label="Pincode"
           placeholder="Enter Pincode number"
+          labelPosition="outside"
         />
       </Grid>
     </Grid>

@@ -26,7 +26,7 @@ const FeeStructure: React.FC = () => {
         />
       </Grid>
       <Grid size={{xs: 12}}>
-      <Divider sx={{my: 1}} />
+      <Divider  />
       </Grid>
 
       <Grid size={{xs: 12}}>
@@ -49,7 +49,7 @@ const FeeStructure: React.FC = () => {
         />
       </Grid>
       <Grid size={{xs: 12}}>
-      <Divider sx={{my: 1}} />
+      <Divider />
       </Grid>
 
       <Grid size={{xs: 12}}>
@@ -72,7 +72,7 @@ const FeeStructure: React.FC = () => {
         />
       </Grid>
       <Grid size={{xs: 12}}>
-      <Divider sx={{my: 1}} />
+      <Divider />
       </Grid>
 
       <Grid size={{xs: 12}}>

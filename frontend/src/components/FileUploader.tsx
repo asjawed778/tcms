@@ -184,11 +184,12 @@ const FileUploader: React.FC<FileUploaderProps> = ({
               </Paper>
             )}
 
-            {(localError || error?.message) && (
+            {/* {(localError || error?.message) && (
               <Alert severity="error" sx={{ mt: 2 }}>
                 {localError || error?.message}
               </Alert>
-            )}
+            )} */}
+            { error?.message}
           </Box>
         );
       }}

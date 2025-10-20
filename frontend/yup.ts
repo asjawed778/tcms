@@ -282,24 +282,16 @@ export const feeStructureSchema = yup.object({
 
 // Addmission Schema.....................................................
 export const personalDetailsSchema = yup.object({
-  name: yup.string().required("Name is required"),
+  name: yup.string().trim().required("Name is required"),
   dob: yup
     .string()
     .matches(/^(\d{4})-(\d{2})-(\d{2})$/, "DOB must be a valid date")
     .required("Date of birth is required"),
   email: yup
     .string()
+    .optional()
     .nullable()
-    .notRequired()
-    .email("Invalid email format")
-    .test(
-      "has-domain",
-      "Email must include domain (e.g. gmail.com)",
-      (value) => {
-        if (!value) return true; // allow empty
-        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      }
-    ),
+    .email("Email must be a valid email address"),
 
   contactNumber: yup
     .string()
@@ -309,25 +301,54 @@ export const personalDetailsSchema = yup.object({
       "is-valid-phone",
       "Enter a valid Indian phone number (10 digits)",
       (value) => {
-        if (!value) return true; // allow empty
+        if (!value) return true;
         return /^[0-9]{10}$/.test(value);
       }
     ),
 
-  image: yup.string().required("Image is required"),
-  gender: yup.string().required("Gender is required"),
-  nationality: yup.string().required("Nationality is required"),
-  religion: yup.string().required("Religion is required"),
-  motherTongue: yup.string().required("Mother tongue is required"),
-  bloodGroup: yup.string().optional(),
+  image: yup.string().optional(),
+  gender: yup
+    .mixed()
+    .oneOf(
+      Object.values(Enum.Gender),
+      `Gender must be one of: ${Object.values(Enum.Gender).join(", ")}`
+    )
+    .required("Gender is required"),
+  nationality: yup.string().optional().nullable(),
+  religion: yup
+    .mixed()
+    .oneOf(
+      Object.values(Enum.Religion),
+      `Religion must be one of: ${Object.values(Enum.Religion).join(", ")}`
+    )
+    .optional()
+    .nullable(),
+  motherTongue: yup.string().optional().nullable(),
+  bloodGroup: yup
+    .mixed()
+    .optional()
+    .nullable()
+    .oneOf(
+      Object.values(Enum.BloodGroup),
+      `Invalid blood group. Must be one of: ${Object.values(
+        Enum.BloodGroup
+      ).join(", ")}`
+    ),
   adharNumber: yup
     .string()
+    .optional()
+    .nullable()
     .length(12, "Aadhaar number must be 12 digits")
-    .matches(/^\d{12}$/, "Aadhaar number must be numeric")
-    .required("Aadhaar number is required"),
+    .matches(/^\d{12}$/, "Aadhaar number must be numeric"),
+});
+export const addressdetailsSchema = yup.object({
   address: yup.object().shape({
     addressLine1: yup.string().required("addressLine1 is required in address"),
-    addressLine2: yup.string(),
+    addressLine2: yup
+      .string()
+      .trim()
+      .optional()
+      .nullable(),
     city: yup.string().required("City is required "),
     state: yup.string().required("State is required "),
     country: yup.string().required("State is required "),
@@ -343,37 +364,31 @@ export const parentDetailsSchema = yup.object({
     email: yup
       .string()
       .optional()
-      .email("Invalid email format")
-      .matches(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        "Email must include domain (e.g. gmail.com)"
-      ),
+      .nullable()
+      .email("Father's email must be a valid email address"),
     contactNumber: yup
       .string()
       .optional()
       .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
-    qualification: yup.string().required("Qualification is required"),
+    qualification: yup.string().optional().nullable(),
     occupation: yup.string().required("Occupation is required"),
     bussinessOrEmployerName: yup.string().optional(),
     officeAddress: yup.string().optional(),
     officeNumber: yup.string().optional(),
   }),
   mother: yup.object({
-    name: yup.string().required("Name is required"),
+    name: yup.string().optional(),
     email: yup
       .string()
       .optional()
-      .email("Invalid email format")
-      .matches(
-        /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-        "Email must include domain (e.g. gmail.com)"
-      ),
+      .nullable()
+      .email("Mother's email must be a valid email address"),
     contactNumber: yup
       .string()
       .optional()
       .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
-    qualification: yup.string().required("Qualification is required"),
-    occupation: yup.string().required("Occupation is required"),
+    qualification: yup.string().optional(),
+    occupation: yup.string().optional(),
     bussinessOrEmployerName: yup.string().optional(),
     officeAddress: yup.string().optional(),
     officeNumber: yup.string().optional(),
@@ -399,7 +414,6 @@ export const parentDetailsSchema = yup.object({
   //   officeNumber: yup.string().optional(),
   // }),
 });
-
 const groupedFields = [
   "name",
   "address",
@@ -459,12 +473,12 @@ export const documentDetailsSchema = yup.object({
     .array()
     .of(
       yup.object().shape({
-        name: yup.string().required("Document name is required"),
-        url: yup.string().required("Document file is required"),
-        documentNumber: yup.string().optional(),
+        name: yup.string().nullable().optional(),
+        documentNumber: yup.string().nullable().optional(),
+        url: yup.string().nullable().optional(),
       })
     )
-    .required("At least one document is required"),
+    .optional(),
 });
 
 // Add Remark Schema...........................................
@@ -663,3 +677,42 @@ export const weeklySchema = yup.object().shape({
 //     }),
 //   });
 // };
+
+
+//  Role and Permission ......................................
+export const createRoleSchema = yup.object({
+  name: yup
+    .string()
+    .required("Role name is required")
+    .min(3, "Role name must be at least 3 characters"),
+  description: yup
+    .string()
+    .max(200, "Description should not exceed 200 characters")
+    .optional(),
+  // step 2 is optional
+  // permissions: yup
+  //   .array()
+  //   .of(
+  //     yup.object({
+  //       name: yup.string().required(),
+  //       operations: yup.object({
+  //         create: yup.boolean(),
+  //         read: yup.boolean(),
+  //         update: yup.boolean(),
+  //         delete: yup.boolean(),
+  //       }),
+  //       subModules: yup.array().of(
+  //         yup.object({
+  //           name: yup.string().required(),
+  //           operations: yup.object({
+  //             create: yup.boolean(),
+  //             read: yup.boolean(),
+  //             update: yup.boolean(),
+  //             delete: yup.boolean(),
+  //           }),
+  //         })
+  //       ),
+  //     })
+  //   )
+  //   .optional(),
+});

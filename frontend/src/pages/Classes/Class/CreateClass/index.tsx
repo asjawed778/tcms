@@ -24,6 +24,7 @@ import { useCreateClassMutation } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
 import { cleanData } from "@/utils/helper";
 import BasicDetails from "./BasicDetails";
+import CustomButton from "@/components/CustomButton";
 
 const steps = [
   {
@@ -68,16 +69,10 @@ const CreateClass = () => {
           session: selectedSession?._id,
         }
         const freshData = cleanData(payload);
-        const response = await createClass(freshData).unwrap();
-        if (response.success) {
-          toast.success(
-            response.message || "Class Created successfully!"
-          );
-          navigate("/dashboard/classes/class", { state: { refetch: true } });
-
-        } else {
-          toast.error(response.message || "Something went wrong.");
-        }
+        await createClass(freshData).unwrap();
+        
+          toast.success("Class Created successfully!" );
+          navigate("/dashboard/classes", { state: { refetch: true } });
       } catch (error: any) {
         console.error("Submission failed:", error);
         toast.error(error?.data?.message || 'Submission failed. Please try again!');
@@ -126,7 +121,7 @@ const CreateClass = () => {
               </Button>
             )}
             <Box flexGrow={1} />
-            <Button
+            <CustomButton
               type="submit"
               variant="contained"
               color="primary"
@@ -134,7 +129,7 @@ const CreateClass = () => {
               disabled={isLoading}
             >
               {activeStep === steps.length - 1 ? "Submit" : "Next"}
-            </Button>
+            </CustomButton>
           </Box>
         </form>
       </FormProvider>

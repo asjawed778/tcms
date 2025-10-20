@@ -28,7 +28,7 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   size?: "small" | "medium";
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
-  control?: Control<T>;
+  control?: Control<any>;
   disabled?: boolean;
   fullWidth?: boolean;
   required?: boolean;

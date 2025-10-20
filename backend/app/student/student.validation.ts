@@ -26,7 +26,7 @@ export const addStudentStep1 = [
         .optional(),
 
     body("image")
-        .notEmpty().withMessage("Student image is required"),
+        .optional(),
 
     body("adharNumber")
         .optional()

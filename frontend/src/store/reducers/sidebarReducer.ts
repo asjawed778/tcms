@@ -6,7 +6,7 @@ interface SidebarState {
 }
 
 const initialState: SidebarState = {
-  open: false,
+  open: true,
   isMobileOpen: false,
 };
 

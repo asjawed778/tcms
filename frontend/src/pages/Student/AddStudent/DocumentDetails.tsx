@@ -3,7 +3,7 @@ import FileUploader from "@/components/FileUploader";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Button, Divider, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 
 const DocumentDetails: React.FC = () => {
   const { control } = useFormContext();
@@ -11,6 +11,7 @@ const DocumentDetails: React.FC = () => {
     control,
     name: "documents",
   });
+  const documents = useWatch({ control, name: "documents" }) || [];
   const initialized = useRef(false);
 
   useEffect(() => {
@@ -19,6 +20,14 @@ const DocumentDetails: React.FC = () => {
       initialized.current = true;
     }
   }, [fields, append]);
+  const handleAddDocument = () => {
+    const lastDoc = documents[documents.length - 1];
+    if (!lastDoc?.name || !lastDoc?.url) {
+      alert("Please fill in the current document name and upload file before adding another.");
+      return;
+    }
+    append({ name: "", documentNumber: "", url: null });
+  };
   return (
     <Box width="100%">
       <Grid container spacing={2}>
@@ -54,10 +63,11 @@ const DocumentDetails: React.FC = () => {
               <Grid size={{ xs: 12, md: 6 }}>
                 <CustomInputField
                   name={`documents.${index}.name`}
-                  label="Document Name"
+                  label="Document Name: "
                   placeholder="Enter Document Name"
                   control={control}
-                  margin="normal"
+                  // margin="normal"
+                  required={false}
                 />
 
                 <CustomInputField
@@ -82,7 +92,7 @@ const DocumentDetails: React.FC = () => {
           <Button
             variant="outlined"
             startIcon={<AddCircleOutline />}
-            onClick={() => append({ name: "", documentNumber: "", url: "" })}
+            onClick={handleAddDocument}
           >
             Add More Document
           </Button>

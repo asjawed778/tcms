@@ -30,14 +30,27 @@ export const authApi = createApi({
         body: data,
       }),
     }),
-
     resetPassword: builder.mutation({
       query: (data) => ({
         url: `/user/reset-password/${data.token}`,
         method: 'POST',
         body: {newPassword: data.newPassword},
       }),
-    })
+    }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: '/user/update-password',
+        method: 'PATCH',
+        body: data,
+        credentials: 'include',
+      }),
+    }),
+    logoutUser: builder.mutation<void, void>({
+      query: () => ({
+        url: '/user/logout',
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -45,5 +58,7 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
+  useUpdatePasswordMutation,
+  useLogoutUserMutation,
 } = authApi;

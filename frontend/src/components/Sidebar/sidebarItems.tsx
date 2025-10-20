@@ -28,5 +28,9 @@ export const sidebarItems: SidebarItem[] = [
     icon: <Icons.AddBox />,
     path: "/dashboard/classes",
   },
- 
+  {
+    path: "/dashboard/tools",
+    label: "Tools",
+    icon: <Icons.Build />,
+  },
 ];

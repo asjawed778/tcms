@@ -51,7 +51,8 @@ const Student: React.FC = () => {
       skip: !selectedSession?._id,
     }
   );
-
+  console.log("Student data: ", studentData);
+  
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };

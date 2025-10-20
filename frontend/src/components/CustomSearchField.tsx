@@ -8,7 +8,7 @@ interface CustomSearchFieldProps {
   placeholder?: string;
   delay?: number;
   onSearch: (query: string) => void;
-  value?: string;
+  value?: string | null;
   className?: string;
 }
 
