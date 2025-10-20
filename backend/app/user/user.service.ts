@@ -274,11 +274,12 @@ export const getRoleById = async (roleId: string) => {
 };
 
 export const getRoleByName = async (roleName: string) => {
-    const role = await roleSchema.findOne({ name: roleName }).lean();
+    const role = await roleSchema.findOne({ name: roleName });
     if (!role) {
         throw createHttpError(404, "Role not found");
     }
     return role;
 };
+
 
 

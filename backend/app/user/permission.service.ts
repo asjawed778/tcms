@@ -183,9 +183,9 @@ export const initAdmin = async () => {
         return;
     }
     const role = await UserService.getRoleByName(Enum.UserRole.ADMIN);
-    console.log(role);
-    if (!role) {
-        console.error("❌ Admin role not found. Cannot create Super Admin user.");
+
+    if (!role || !role._id) {
+        console.error("❌ Admin role not found or invalid _id. Cannot create Super Admin.");
         return;
     }
     const superAdmin = await UserService.createUser({
