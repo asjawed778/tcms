@@ -38,6 +38,7 @@ export interface ISubject extends BaseSchema {
     ISBN?: string;
     subjectType: Enum.SubjectType;
     subjectCategory: Enum.SubjectCategory;
+    syllabus?: string;
     deleted: boolean;
 }
 
