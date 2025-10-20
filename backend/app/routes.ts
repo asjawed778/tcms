@@ -10,16 +10,12 @@ const router = express.Router();
 
 // admin routes
 router.use("/admin", adminRoutes);
+router.use("/admin/class", classRoutes);
+router.use("/admin/session", sessionRoutes);
+router.use("/admin/faculty", facultyRoutes);
 
-
-
-
-// old routes
-router.use("/session", sessionRoutes);
-router.use("/faculty", facultyRoutes);
-router.use("/class", classRoutes);
-router.use("/common", commonRoutes);
-router.use("/student", studentRoutes);
+router.use("/admin/common", commonRoutes);
+router.use("/admin/student", studentRoutes);
 
 
 

@@ -29,6 +29,10 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         enum: Object.values(Enum.SubjectCategory),
         required: true
     },
+    syllabus: {
+        type: String,
+        required: false
+    },
     deleted: {
         type: Boolean,
         default: false
