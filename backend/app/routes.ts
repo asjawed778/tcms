@@ -1,14 +1,20 @@
 import express from "express";
-import userRoutes from "./user/user.route";
+import adminRoutes from "./user/admin.route";
 import sessionRoutes from "./session/session.route";
 import facultyRoutes from "./faculty/faculty.route";
-import classRoutes from "./class/class.route";
+import classRoutes from "./class/admin.class.route";
 import commonRoutes from "./common/routes/common.routes";
-import studentRoutes from "./student/student.route";
+import studentRoutes from "./student/admin.student.route";
 
 const router = express.Router();
 
-router.use("/user", userRoutes);
+// admin routes
+router.use("/admin", adminRoutes);
+
+
+
+
+// old routes
 router.use("/session", sessionRoutes);
 router.use("/faculty", facultyRoutes);
 router.use("/class", classRoutes);

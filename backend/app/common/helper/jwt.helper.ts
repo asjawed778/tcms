@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { loadConfig } from "./config.hepler";
 import createHttpError from "http-errors";
-import { Payload } from "../../user/user.dto";
+import { IUserResponse, Payload } from "../../user/user.dto";
+import bcrypt from 'bcrypt';
 loadConfig();
 
 const ACCESS_TOKEN_SECRET: string = process.env.ACCESS_TOKEN_SECRET as string;
@@ -9,13 +10,7 @@ const REFRESH_TOKEN_SECRET: string = process.env.REFRESH_TOKEN_SECRET as string;
 const ACCESS_TOKEN_EXPIRY: string = process.env.ACCESS_TOKEN_EXPIRY as string;
 const REFRESH_TOKEN_EXPIRY: string = process.env.REFRESH_TOKEN_EXPIRY as string;
 
-/**
- * Generates access and refresh tokens for the given payload.
- * 
- * @param {Payload} payload - The payload to be included in the JWT.
- * @returns {Object} - An object containing the generated access and refresh tokens.
- * @throws {Error} - Throws an error if token generation fails.
- */
+
 export const generateTokens = (payload: Payload) => {
   try {
     const accessToken = jwt.sign(payload, ACCESS_TOKEN_SECRET, {
@@ -32,7 +27,6 @@ export const generateTokens = (payload: Payload) => {
   }
 };
 
-
 export const validateToken = (token: string, secret: string) => {
   try {
     const decoded = jwt.verify(token, secret);
@@ -42,20 +36,11 @@ export const validateToken = (token: string, secret: string) => {
   }
 };
 
-
-/**
- * Decodes and verifies the access token, attaching the user information.
- * 
- * @param {string} encryptedAccessToken - The encrypted access token to decode and verify.
- * @returns {Payload} - The decoded payload containing user information.
- * @throws {HttpError} - Throws an HTTP error if the token is invalid or expired.
- */
 export const decodeAccessToken = async (encryptedAccessToken: string) => {
-  // Verify token and attach the user information to the request object
-  const payload: Payload = jwt.verify(
+  const payload: IUserResponse = jwt.verify(
     encryptedAccessToken,
     ACCESS_TOKEN_SECRET
-  ) as Payload;
+  ) as IUserResponse;
   if (payload === null) {
     throw createHttpError(403, {
       message: "Invalid Token...",
@@ -64,14 +49,6 @@ export const decodeAccessToken = async (encryptedAccessToken: string) => {
   return payload;
 };
 
-
-/**
- * Generates a password reset token for the given user ID.
- * 
- * @param {string} userId - The ID of the user requesting the password reset.
- * @returns {string} - The generated password reset token.
- * @throws {Error} - Throws an error if token generation fails.
- */
 export const generatePasswordRestToken = async (userId: string) => {
   const resetToken = jwt.sign({ userId: userId }, ACCESS_TOKEN_SECRET, {
     expiresIn: "1h",
@@ -79,13 +56,6 @@ export const generatePasswordRestToken = async (userId: string) => {
   return resetToken;
 };
 
-
-/**
- * Verifies the password reset token.
- * 
- * @param {string} token - The password reset token to be verified.
- * @returns {Object} - An object with properties `valid` (boolean) and `decoded` (the decoded payload) or `error`.
- */
 export const verifyResetPasswordToken = async (token: string) => {
   try {
     const decoded = jwt.verify(token, ACCESS_TOKEN_SECRET);
@@ -93,4 +63,12 @@ export const verifyResetPasswordToken = async (token: string) => {
   } catch (error) {
     return { valid: false, error };
   }
+};
+
+export const verifyPasswrod = async (password: string, hash: string) => {
+  return await bcrypt.compare(password, hash);
+};
+
+export const hashPassword = async (password: string) => {
+  return await bcrypt.hash(password, 12);
 };

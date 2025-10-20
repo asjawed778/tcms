@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { ISession } from "./session.dto";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 
 const sessionSchema = new mongoose.Schema<ISession>({

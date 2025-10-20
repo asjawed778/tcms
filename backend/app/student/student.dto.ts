@@ -1,7 +1,7 @@
 import { BaseSchema } from "../common/dto/base.dto";
 import { Types } from 'mongoose';
-import * as Enum from "../common/constant/enum";
-import { Gender, Religion } from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
+import { Gender, Religion } from "../common/utils/enum";
 import { IDocument } from '../common/dto/common.dto';
 
 export interface IRemark extends BaseSchema {

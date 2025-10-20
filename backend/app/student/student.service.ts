@@ -1,9 +1,8 @@
 import createHttpError from "http-errors";
-import * as Enum from "../common/constant/enum";
 import * as StudentDto from "./student.dto";
 import studentSchema from "./student.schema";
 import admissionSchema from "./admission.schema";
-import mongoose, { Types } from "mongoose";
+import { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
 
 

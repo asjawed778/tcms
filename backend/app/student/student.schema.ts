@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IStudent } from './student.dto';
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 // Parent details sub-schema
 const ParentDetails = {

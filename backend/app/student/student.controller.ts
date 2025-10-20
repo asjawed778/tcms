@@ -3,7 +3,7 @@ import { type Request, type Response } from "express";
 import * as SessionService from "../session/session.service";
 import createHttpError from "http-errors";
 import { createResponse } from "../common/helper/response.hepler";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import * as StudentService from "./student.service";
 import * as StudentDto from "./student.dto";
 import * as classService from "../class/class.service";

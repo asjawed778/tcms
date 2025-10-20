@@ -1,4 +1,4 @@
-import { SessionStatus } from "../common/constant/enum";
+import { SessionStatus } from "../common/utils/enum";
 import { BaseSchema } from "../common/dto/base.dto";
 
 

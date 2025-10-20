@@ -1,7 +1,7 @@
 import createHttpError from "http-errors";
 import { ISession, ISessionCreate } from "./session.dto";
 import sessionSchema from "./session.schema";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 export const updateOtherCurrentSessionsToPast = async () => {
     await sessionSchema.updateMany(

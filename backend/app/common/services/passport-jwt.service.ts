@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt";
+// import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import passport from "passport";
 import { Strategy, ExtractJwt } from "passport-jwt";
@@ -6,7 +6,9 @@ import { Strategy as LocalStrategy } from "passport-local";
 import createError from "http-errors";
 import * as userService from "../../user/user.service";
 import { type Request } from "express";
-import { type IUser } from "../../user/user.dto";
+import { type IUserResponse, type IUserRole } from "../../user/user.dto";
+import { UserRole } from "../utils/enum";
+import bcrypt from 'bcrypt';
 
 const isValidPassword = async function (value: string, password: string) {
   const compare = await bcrypt.compare(value, password);
@@ -46,39 +48,73 @@ export const initPassport = (): void => {
             return;
           }
 
-          // if (!user.active) {
-          //   done(createError(401, "User is inactive"), false);
-          //   return;
-          // }
+          if (!user.isActive) {
+            done(createError(401, "User is inactive"), false);
+            return;
+          }
 
-          // if (user.blocked) {
-          //   done(createError(401, "User is blocked, Contact to admin"), false);
-          //   return;
-          // }
+          if (!user.password) {
+            return done(
+              createError(401, "Set a password to use email login, or continue with your social provider."),
+              false
+            );
+          }
 
           const validate = await isValidPassword(password, user.password);
           if (!validate) {
             done(createError(401, "Invalid email or password"), false);
             return;
           }
-          const { password: _p, ...result } = user;
-          done(null, result, { message: "Logged in Successfully" });
+          const { password: _p, refreshToken, resetPasswordToken, ...result } = user;
+          const userResp: IUserResponse = {
+            ...result,
+            role: result.role as unknown as IUserRole
+          };
+          done(null, userResp, { message: "Logged in Successfully" });
         } catch (error: any) {
           done(createError(500, error.message));
         }
       }
     )
   );
-};
 
-export const createUserTokens = (user: Omit<IUser, "password">) => {
-  const jwtSecret = process.env.JWT_SECRET ?? "";
-  const token = jwt.sign(user, jwtSecret);
-  return { accessToken: token, refreshToken: "" };
-};
+  passport.use(
+    "admin-login",
+    new LocalStrategy(
+      {
+        usernameField: "email",
+        passwordField: "password",
+      },
+      async (email, password, done) => {
+        try {
+          const user = await userService.getUserByEmail(email);
 
-export const decodeToken = (token: string) => {
-  // const jwtSecret = process.env.JWT_SECRET ?? "";
-  const decode = jwt.decode(token);
-  return decode as IUser;
+          if (!user) return done(createError(401, "User not found!"), false);
+          if (!user.password) {
+            return done(
+              createError(401, "Set a password to use email login, or continue with your social provider."),
+              false
+            );
+          }
+          if (!(await bcrypt.compare(password, user.password))) {
+            return done(createError(401, "Invalid email or password"), false);
+          }
+
+          if (
+            user.role?.name === UserRole.USER ||
+            !user.role?.permissions?.some((perm: any) =>
+              Object.values(perm.operations).includes(true)
+            )
+          ) {
+            return done(createError(403, "You are not Authorized to access admin portal"), false);
+          }
+
+          done(null, user, { message: "Admin Dashboard login successful" });
+        } catch (error: any) {
+          done(createError(500, error.message));
+        }
+      }
+    )
+  );
+
 };

@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 // Personal Details
 export const addStudentStep1 = [

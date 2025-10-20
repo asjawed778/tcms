@@ -1,5 +1,5 @@
 import { BaseSchema } from "../common/dto/base.dto";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import { Types } from "mongoose";
 
 export interface FeeStructure {
