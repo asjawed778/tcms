@@ -30,7 +30,9 @@ export const generateEnrollmentNumber = async (
 };
 
 export const addStudentStep1 = async (studentData: StudentDto.IAddStudentStep1) => {
-    const student = new studentSchema(studentData);
+    const registrationNumber = await generateEnrollmentNumber();
+    const data = {...studentData, registrationNumber};
+    const student = new studentSchema(data);
     const result = await student.save();
     return result;
 };

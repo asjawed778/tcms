@@ -23,7 +23,7 @@ router
     StudentController.addStudentStep2
   )
   .put(
-    "/:studentId/step-3/parents-details",
+    "/:studentId/step-3/parent-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
     StudentValidation.addStudentStep3,
     catchError,
