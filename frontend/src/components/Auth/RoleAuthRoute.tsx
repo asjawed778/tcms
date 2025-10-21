@@ -1,26 +1,36 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
+import React, { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { RootState, useAppSelector } from "@/store/store";
+import { useCan } from "@/hooks/useCan";
 
-interface RoleAuthProps {
-  isAuthenticated: boolean;
-  userRoles: string[];
-  allowedRoles: string[]; 
-  redirectPath?: string;
+interface Permission {
+  module: string;
+  subModule?: string | null;
+  operation: string;
 }
 
-const RoleAuthRoute: React.FC<RoleAuthProps> = ({
-  isAuthenticated,
-  userRoles,
-  allowedRoles,
-  redirectPath = "/unauthorized",
+interface RoleAuthRouteProps {
+  children: ReactNode;
+  permissions?: Permission[];
+}
+
+const RoleAuthRoute: React.FC<RoleAuthRouteProps> = ({
+  children,
+  permissions = [],
 }) => {
-  if (!isAuthenticated) {
-    return <Navigate to="/login" replace />;
+  const { accessToken, isAuthenticated } = useAppSelector((state: RootState) => state.auth);
+  const can = useCan();
+
+  if (!accessToken || isAuthenticated) return <Navigate to="/auth" replace />;
+
+  for (const perm of permissions) {
+    const { module, subModule = null, operation } = perm;
+    if (!can(module, subModule, operation)) {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
-  const hasAccess = userRoles.some((role) => allowedRoles.includes(role));
-
-  return hasAccess ? <Outlet /> : <Navigate to={redirectPath} replace />;
+  return <>{children}</>;
 };
 
 export default RoleAuthRoute;

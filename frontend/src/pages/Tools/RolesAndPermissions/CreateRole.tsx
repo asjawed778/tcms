@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
-import { Box, Stack } from "@mui/material";
+import { Box, Stack, Typography } from "@mui/material";
 import ModalWrapper from "@/components/ModalWrapper";
 import CustomInputField from "@/components/CustomInputField";
 import toast from "react-hot-toast";
@@ -74,24 +74,26 @@ const CreateRole: React.FC<AddRoleProps> = ({ open, onClose, role, refetch }) =>
 
   // ---------------------- Render ----------------------
   return (
-    <ModalWrapper open={open} onClose={onClose} width="70%" title={role ? "Update Role" : "Create Role"}>
+    <ModalWrapper open={open} onClose={onClose} width="70%">
       {activeStep === 0 ? (
-        <form onSubmit={handleSubmit(handleSaveRole)}>
-          {/* <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
+        <form onSubmit={handleSubmit(handleSaveRole)} noValidate>
+          <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
             {role ? "Update Role" : "Create Role"}
-          </Typography> */}
+          </Typography>
 
          <Stack spacing={2}>
           <CustomInputField 
           name="name" 
-          control={control} 
           label="Role Name"
+          placeholder="Enter role name you want to create"
+          control={control} 
           labelPosition="outside" 
           />
           <CustomInputField
             name="description"
-            control={control}
             label="Description"
+            placeholder="Enter role description"
+            control={control}
             rows={3}
             required={false}
             labelPosition="outside"

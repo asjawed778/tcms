@@ -29,8 +29,8 @@ const DialogBoxWrapper: React.FC<DialogBoxWrapperProps> = ({
       <Typography>{message}</Typography>
     </DialogContent>
     <DialogActions>
-      <Button onClick={onClose}>Cancel</Button>
-      <Button color="secondary" onClick={onConfirm} autoFocus>
+      <Button onClick={onClose} color="error">Cancel</Button>
+      <Button color="primary" onClick={onConfirm} autoFocus>
         Confirm
       </Button>
     </DialogActions>

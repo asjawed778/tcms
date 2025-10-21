@@ -10,7 +10,7 @@ export const sessionApi = createApi({
 
     getSessions: builder.query<SessionApiResponse, void>({
       query: () => ({
-        url: "/session",
+        url: "/admin/session",
         method: "GET",
       }),
       providesTags: ["Session"],
@@ -18,7 +18,7 @@ export const sessionApi = createApi({
 
     createSession: builder.mutation<SessionApiResponse, SessionFormValues>({
       query: (body) => ({
-        url: "/session",
+        url: "/admin/session",
         method: "POST",
         body,
       }),
@@ -27,7 +27,7 @@ export const sessionApi = createApi({
 
     updateSession: builder.mutation<Session, Session>({
       query: ({ _id, ...body }) => ({
-        url: `/session/${_id}`,
+        url: `/admin/session/${_id}`,
         method: "PUT",
         body,
       }),
