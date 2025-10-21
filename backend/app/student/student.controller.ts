@@ -70,7 +70,7 @@ export const addStudentStep4 = asyncHandler(async (req: Request, res: Response) 
 export const addStudentStep5 = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
   const { documents } = req.body;
-  const student = await StudentService.updateStudent(studentId, { documents });
+  const student = await StudentService.updateStudent(studentId, { documents, status: Enum.StudentStatus.ACTIVE });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
 
