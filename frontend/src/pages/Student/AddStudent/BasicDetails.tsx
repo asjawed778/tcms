@@ -5,7 +5,6 @@ import ImageUploader from "@/components/ImageUploader";
 import { BloodGroup, Gender, Religion } from "@/utils/enum";
 import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
-import AddressDetails from "./AddressDetails";
 
 const PersonalDetails: React.FC = () => {
   const religionOptions = Object.entries(Religion).map(([_, value]) => ({
@@ -21,7 +20,7 @@ const PersonalDetails: React.FC = () => {
     <Grid container spacing={2}>
       <Grid size={{ md: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={600}>
-          Personal Details
+          Basic Details
         </Typography>
       <Divider  />
       </Grid>
@@ -39,7 +38,7 @@ const PersonalDetails: React.FC = () => {
               name="dob"
               type="date"
               label="Date Of Birth"
-              maxDate={new Date().toISOString().split("T")[0]}
+              maxDate={new Date()}
             />
           </Grid>
           <Grid size={{ xs: 12 }}>
@@ -79,6 +78,7 @@ const PersonalDetails: React.FC = () => {
           type="number"
           label="Aadhaar Number"
           placeholder="Enter Aadhaar Number"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -86,6 +86,7 @@ const PersonalDetails: React.FC = () => {
           name="nationality"
           label="Nationality"
           placeholder="Enter your nationality"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -94,6 +95,7 @@ const PersonalDetails: React.FC = () => {
           label="Select Religion"
           placeholder="Select your religion"
           options={religionOptions}
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -101,18 +103,17 @@ const PersonalDetails: React.FC = () => {
           name="motherTongue"
           label="Mother Tongue"
           placeholder="Enter your mother tongue"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="bloodGroup"
           label="Blood Group"
-          // placeholder="Enter your blood group"
           options={bloodGroupOptions}
           required={false}
         />
       </Grid>
-      <AddressDetails />
     </Grid>
   );
 };

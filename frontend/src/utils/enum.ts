@@ -33,16 +33,7 @@ export enum Religion {
 };
 
 // enum for students
-export enum BloodGroup {
-  A_POSITIVE = "A+",
-  A_NEGATIVE = "A-",
-  B_POSITIVE = "B+",
-  B_NEGATIVE = "B-",
-  AB_POSITIVE = "AB+",
-  AB_NEGATIVE = "AB-",
-  O_POSITIVE = "O+",
-  O_NEGATIVE = "O-"
-};
+
 export enum RemarkType {
   POSITIVE = 'Positive',
   NEGATIVE = 'Negative',
@@ -79,7 +70,8 @@ export enum StudentStatus {
   INACTIVE = "Inactive",
   PASSED_OUT = "Passed Out",
   EXPELLED = "Expelled",
-  TRANSFERRED = "Transferred"
+  TRANSFERRED = "Transferred",
+  DRAFT = "Draft"
 };
 
 export enum ParticipationType {
@@ -92,6 +84,25 @@ export enum AttendanceStatus {
   ABSENT = "Absent",
   LATE = "Late",
   EXCUSED = "Excused"
+};
+
+export enum BloodGroup {
+  A_POSITIVE = "A+",
+  A_NEGATIVE = "A-",
+  B_POSITIVE = "B+",
+  B_NEGATIVE = "B-",
+  AB_POSITIVE = "AB+",
+  AB_NEGATIVE = "AB-",
+  O_POSITIVE = "O+",
+  O_NEGATIVE = "O-"
+};
+
+export enum AdmissionStatus {
+  ACTIVE = "Active",
+  PROMOTED = "Promoted",
+  TRANSFERRED = "Transferred",
+  EXPELLED = "Expelled",
+  ALUMINI = "Alumini",
 };
 
 //  enum for faculty
@@ -112,7 +123,8 @@ export enum FacultyStatus {
   INACTIVE = "Inactive"
 }
 
-// Classes.......................................................
+//  class
+
 export enum ClassName {
     NURSERY = "Nursery",
     LKG = "LKG",
@@ -130,6 +142,7 @@ export enum ClassName {
     STANDARD_11 = "Standard 11",
     STANDARD_12 = "Standard 12"
 }
+
 export enum CourseStream {
     SCIENCE = "Science",
     COMMERCE = "Commerce",
@@ -137,10 +150,12 @@ export enum CourseStream {
     VOCATIONAL = "Vocational",
     GENERAL = "General",
 };
+
 export enum SubjectType {
     CUMPULSARY = "Compulsary",
     OPTIONAL = "Optional",
 };
+
 export enum SubjectCategory {
     MATHEMATICS = "Mathematics",
     NATURAL_SCIENCES = "Natural Sciences",
@@ -153,7 +168,6 @@ export enum SubjectCategory {
     VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
 };
 
-// Time Table........................................................
 export enum WeekDay {
   MONDAY = "Monday",
   TUESDAY = "Tuesday",
@@ -162,7 +176,8 @@ export enum WeekDay {
   FRIDAY = "Friday",
   SATURDAY = "Saturday",
   SUNDAY = "Sunday"
-};
+}
+
 export enum PeriodType {
   LECTURE = "Lecture",
   LAB = "Lab",
@@ -173,4 +188,12 @@ export enum PeriodType {
   OTHER = "Other"
 };
 
-
+// Tabs..................................................................
+export enum ClassTabs {
+  STANDARD = "standard",
+  SECTION = "section",
+  TIME_TABLE = "timetable",
+};
+export enum ToolsTabs {
+  ROLES_AND_PERMISSIONS= "roles-and-permissions"
+}

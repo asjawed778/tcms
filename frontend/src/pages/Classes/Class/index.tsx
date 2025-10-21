@@ -92,14 +92,14 @@ const Class = () => {
   }));
   return (
     <>
-      <Box sx={{ width: "100%" }}>
+      <Box sx={{ width: "100%", p: 1, mt: 1 }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             gap: 2,
-            mb: 2,
+            mb: 1
           }}
         >
           {/* <CustomSearchField onSearch={setQuery} /> */}

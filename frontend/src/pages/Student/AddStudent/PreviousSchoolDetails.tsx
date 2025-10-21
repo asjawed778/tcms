@@ -45,10 +45,12 @@ const PreviousSchoolDetails: React.FC = () => {
   }, [setValue]);
   return (
     <Grid container spacing={2}>
-      <Typography variant="h6" gutterBottom fontWeight={600}>
-        Previous School Details (if applicable)
-      </Typography>
-      <Divider sx={{ mb: 3 }} />
+      <Grid size={{ xs: 12 }}>
+        <Typography variant="h6" gutterBottom fontWeight={600}>
+          Previous School Details (if applicable)
+        </Typography>
+        <Divider />
+      </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
           name="previousSchool.name"
@@ -98,7 +100,7 @@ const PreviousSchoolDetails: React.FC = () => {
           <CustomInputField
             name="previousSchool.schoolLeavingCertificate.name"
             label="Document Name"
-            value="School Leaving Certificate"
+            defaultValue="School Leaving Certificate"
             required={false}
             disabled
           />
@@ -134,7 +136,7 @@ const PreviousSchoolDetails: React.FC = () => {
           <CustomInputField
             name="previousSchool.transferCertificate.name"
             label="Document Name"
-            value="Transfer Certificate"
+            defaultValue="Transfer Certificate"
             disabled
             required={false}
           />

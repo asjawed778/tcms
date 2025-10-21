@@ -84,7 +84,6 @@ const LoginForm: React.FC<Props> = ({onForgotPassword }) => {
             </Link>
           </Box>
           <CustomButton
-            variant="contained"
             type="submit"
             loading={isLoading}
             fullWidth

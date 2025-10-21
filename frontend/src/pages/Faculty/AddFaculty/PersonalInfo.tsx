@@ -59,7 +59,7 @@ const PersonalInfo: React.FC = () => {
     }
   }, [selectedCountry, selectedState]);
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} m={1}>
       <Grid size={{ md: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={600}>
           Personal Details

@@ -13,14 +13,16 @@ const DashboardLayout: React.FC = () => {
       <Sidebar />
       <Box flex={1} display="flex" flexDirection="column">
         <Header />
-        <Toolbar sx={{ mt: { xs: 0, lg: 0 } }} />
+        {/* <Toolbar sx={{ mt: { xs: 0, lg: 0 } }} /> */}
         <Box
           component="main"
           flexGrow={1}
-          p={2}
+          // p={2}
           overflow="auto" 
           bgcolor={colors.background } 
-          color={colors.text}      
+          // bgcolor="#ccc" 
+          color={colors.text}
+          mt={7}    
         >
           {/* <CustomAnimatedDiv key={location.pathname} animationType="zoom"> */}
             <Outlet />

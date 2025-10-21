@@ -17,7 +17,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/store/store';
 import { logout } from '@/store/reducers/authReducer';
 import toast from 'react-hot-toast';
-import { useLogoutUserMutation } from '@/services/userApi';
+import { useLogoutUserMutation } from '@/services/authApi';
 import CustomButton from '../CustomButton';
 import { resetSession } from '@/store/reducers/sessionSlice';
 
@@ -63,7 +63,7 @@ const  Profile: React.FC = () => {
   return (
     <>
       <IconButton onClick={handleOpen}>
-        <Avatar src={user?.profilePic} alt="profile" />
+        <Avatar sx={{ width: 32, height: 32 }} src={user?.profilePic} alt="profile" />
       </IconButton>
 
       <Menu

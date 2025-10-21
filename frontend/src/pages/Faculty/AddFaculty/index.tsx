@@ -111,19 +111,17 @@ const AddFaculty = () => {
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <Paper sx={{ width: "100%" }}>
-            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
-              {/* <Typography variant="h6" gutterBottom fontWeight={600}>
-                {steps[activeStep].label}
-              </Typography>
-              <Divider sx={{ mb: 3 }} /> */}
+          <Box p={1}>
+            <Paper sx={{ width: "100%", }}>
+            <CardContent sx={{ p: { xs: 1, sm: 2 }, }}>
               <Box>
                 <StepComponent />
               </Box>
             </CardContent>
           </Paper>
+          
           <Box
-            mt={4}
+            mt={2}
             display="flex"
             justifyContent="space-between"
             gap={2}
@@ -137,7 +135,7 @@ const AddFaculty = () => {
                 Back
               </Button>
             )}
-            <Box flexGrow={1} />
+            <Box flexGrow={1}/>
             <Button
               type="submit"
               variant="contained"
@@ -147,6 +145,7 @@ const AddFaculty = () => {
             >
               {activeStep === steps.length - 1 ? "Submit" : "Next"}
             </Button>
+          </Box>
           </Box>
         </form>
       </FormProvider>

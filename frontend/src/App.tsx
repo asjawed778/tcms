@@ -13,13 +13,17 @@ const TimeTable = lazy(() => import("./pages/Classes/TimeTable"));
 const Student = lazy(() => import("./pages/Student"));
 const AddStudent = lazy(() => import("./pages/Student/AddStudent"));
 const ForgotPassword = lazy(() => import("./pages/Login/ForgotPassword"));
-const CreateTimeTable = lazy(() => import("./pages/Classes/TimeTable/CreateTimeTable"))
+const CreateTimeTable = lazy(
+  () => import("./pages/Classes/TimeTable/CreateTimeTable")
+);
 
 import AuthLayout from "./layouts/AuthLayout";
 import PrivateRoute from "./components/Auth/PrivateRoute";
 import DashboardLayout from "./layouts/DashboardLayout";
 import SplashScreen from "./components/SplashScreen";
 import ClassesLayout from "./layouts/ClassesLayout";
+import Classes from "./pages/Classes";
+import Tools from "./pages/Tools";
 
 function App() {
   const navigate = useNavigate();
@@ -49,14 +53,15 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="faculty" element={<Faculty />} />
             <Route path="addFaculty" element={<AddFaculty />} />
-
-            <Route path="classes" element={<ClassesLayout />}>
-              <Route path="class" element={<Class />} />
-              <Route path="createClass" element={<CreateClass />} />
-              <Route path="section" element={<Section />} />
-              <Route path="timetable" element={<TimeTable />} />
-              <Route path="timetable/create" element={<CreateTimeTable />} />
-            </Route>
+            <Route path="classes" element={<Classes />} />
+            {/* <Route path="classes" element={<ClassesLayout />}> */}
+            <Route path="class" element={<Class />} />
+            <Route path="tools" element={<Tools />} />
+            <Route path="classes/createClass" element={<CreateClass />} />
+            {/* <Route path="section" element={<Section />} /> */}
+            {/* <Route path="classes/timetable" element={<TimeTable />} /> */}
+            <Route path="classes/timetable/create" element={<CreateTimeTable />} />
+            {/* </Route> */}
 
             <Route path="student" element={<Student />} />
             <Route path="student/add" element={<AddStudent />} />

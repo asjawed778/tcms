@@ -5,10 +5,12 @@ import React from "react";
 const ParentDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
-      <Typography variant="h6" gutterBottom fontWeight={600}>
-        Parents Details
-      </Typography>
-      <Divider sx={{ mb: 3 }} />
+      <Grid size={{ xs: 12 }}>
+        <Typography variant="h6" gutterBottom fontWeight={600}>
+          Parents Details
+        </Typography>
+        <Divider />
+      </Grid>
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={500}>
           Father Details
@@ -27,6 +29,7 @@ const ParentDetails: React.FC = () => {
           name="father.qualification"
           label="Qualification"
           placeholder="Enter father's qualification"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -88,6 +91,7 @@ const ParentDetails: React.FC = () => {
           name="mother.name"
           label="Mother Name"
           placeholder="Enter mother's name"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -95,6 +99,7 @@ const ParentDetails: React.FC = () => {
           name="mother.qualification"
           label="Qualification"
           placeholder="Enter mother's qualification"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -102,6 +107,7 @@ const ParentDetails: React.FC = () => {
           name="mother.occupation"
           label="Occupation"
           placeholder="Enter mother's occupation"
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -167,7 +173,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      {/* <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
           name="localGuardian.email"
           label="Email"
@@ -214,7 +220,7 @@ const ParentDetails: React.FC = () => {
           placeholder="Enter local guardian's office number"
           required={false}
         />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };
