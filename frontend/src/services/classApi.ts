@@ -25,7 +25,7 @@ export const classApi = createApi({
       query: ({ sessionId }) => {
         // let url = `/class/all/${sessionId}?pageNo=${page}&limit=${limit}`;
 
-        let url = `/class/all/${sessionId}`;
+        let url = `/admin/class/all/${sessionId}`;
         // if (query.trim() !== '') {
         //   url += `&search=${encodeURIComponent(query.trim())}`;
         // }
@@ -37,20 +37,20 @@ export const classApi = createApi({
     }),
     getClass: builder.query({
       query: (classId) => ({
-        url: `/class/${classId}`,
+        url: `/admin/class/${classId}`,
         method: "GET",
       }),
     }),
     createClass: builder.mutation<ApiResponse, ClassFormData>({
       query: (data) => ({
-        url: "/class",
+        url: "/admin/class",
         method: "POST",
         body: data,
       }),
     }),
     createTimeTable: builder.mutation<ApiResponse, TimeTableFormData>({
       query: ({ sessionId, classId, sectionId, ...data }) => ({
-        url: `/class/timetable/${sessionId}/${classId}/${sectionId}`,
+        url: `/admin/class/timetable/${sessionId}/${classId}/${sectionId}`,
         method: "POST",
         body: data,
       }),
@@ -58,7 +58,7 @@ export const classApi = createApi({
     getTimeTable: builder.query<TimeTableApiResponse, { sessionId: string; classId?: string; sectionId?: string }
     >({
       query: ({ sessionId, classId, sectionId }) => {
-        let url = `/class/timetable/${sessionId}`;
+        let url = `/admin/class/timetable/${sessionId}`;
 
         if (classId) url += `/${classId}`;
         if (sectionId) url += `/${sectionId}`;
@@ -80,7 +80,7 @@ export const classApi = createApi({
       }
     >({
       query: ({ sessionId, ...body }) => ({
-        url: `/class/assign-faculty/${sessionId}`,
+        url: `/admin/class/assign-faculty/${sessionId}`,
         method: "PATCH",
         body,
       }),

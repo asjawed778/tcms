@@ -1,7 +1,7 @@
 import { Route, Routes, Navigate, useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 
-const Login = lazy(() => import("./pages/Login"));
+const Login = lazy(() => import("./pages/Auth"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Faculty = lazy(() => import("./pages/Faculty"));
@@ -12,7 +12,7 @@ const Section = lazy(() => import("./pages/Classes/Section"));
 const TimeTable = lazy(() => import("./pages/Classes/TimeTable"));
 const Student = lazy(() => import("./pages/Student"));
 const AddStudent = lazy(() => import("./pages/Student/AddStudent"));
-const ForgotPassword = lazy(() => import("./pages/Login/ForgotPassword"));
+const ForgotPassword = lazy(() => import("./pages/Auth/ForgotPassword"));
 const CreateTimeTable = lazy(
   () => import("./pages/Classes/TimeTable/CreateTimeTable")
 );

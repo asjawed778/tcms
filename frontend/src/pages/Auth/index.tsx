@@ -4,7 +4,7 @@ import LoginForm from './LoginForm';
 import LoginVisuals from './LoginVisuals';
 import ForgotPassword from './ForgotPassword';
 
-const Login: React.FC = () => {
+const Auth: React.FC = () => {
   const theme = useTheme();
   const isMdUp = useMediaQuery(theme.breakpoints.up('md'));
   const [isForgotPassword, setIsForgotPassword] = useState(false);
@@ -70,4 +70,4 @@ const Login: React.FC = () => {
     </Box>
   );
 }
-export default Login;
+export default Auth;

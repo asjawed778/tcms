@@ -7,7 +7,7 @@ export const dropdownApi = createApi({
   endpoints: (builder) => ({
     getDropdownOptions: builder.query<any[], string | void>({
       query: (search = "") => ({
-        url: `/dropdown-options`,  
+        url: `/admin/dropdown-options`,  
         params: { search },        
       }),
     }),

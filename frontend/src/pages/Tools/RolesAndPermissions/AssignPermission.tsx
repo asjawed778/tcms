@@ -40,7 +40,7 @@ interface AssignPermissionProps {
   role: Role | null;
   onClose: () => void;
   refetch?: () => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 // ---------------------- Component ----------------------
@@ -173,7 +173,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                   module.name === "Dashboard" ? action === "read" : true
                 )
                 .map((action) => (
-                  <Grid item key={action} xs={6} sm={3}>
+                  <Grid key={action} size={{xs: 6, sm: 3}}>
                     <FormControlLabel
                       control={
                         <Switch
@@ -201,7 +201,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
             module.subModules.map((sub) => (
               <Box key={sub.name} sx={{ mb: 2, ml: isMobile ? 0 : 2 }}>
                 <Grid container spacing={2} ml={isMobile ? 0 : 1}>
-                  <Grid item xs={12}>
+                  {/* <Grid size={{xs: 12}}> */}
                     <Typography
                       variant="subtitle1"
                       sx={{
@@ -212,9 +212,9 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                     >
                       {sub.name}:
                     </Typography>
-                  </Grid>
+                  {/* </Grid> */}
                   {Object.keys(sub.operations).map((action) => (
-                    <Grid item key={action} xs={6} sm={3}>
+                    <Grid key={action} size={{xs: 2}}>
                       <FormControlLabel
                         control={
                           <Switch

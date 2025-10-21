@@ -31,7 +31,7 @@ router
   )
   .put(
     "/:studentId/step-4/admission-details",
-    roleAuth([Enum.UserRole.SUPER_ADMIN]),
+    roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
     StudentValidation.addStudentStep4,
     catchError,
     StudentController.addStudentStep4

@@ -9,7 +9,7 @@ export const facultyApi = createApi({
 
     getAllFaculty: builder.query< FacultyApiResponse , { page?: number, limit?: number, query?: string, active?: string }>({
       query: ({ page = 1, limit = 10, query = "", active} = {}) => {
-              let url = `/faculty/all?page=${page}&limit=${limit}`;
+              let url = `/admin/faculty/all?page=${page}&limit=${limit}`;
               if (query.trim() !== '') {
                 url += `&search=${encodeURIComponent(query.trim())}`;
               }
@@ -22,14 +22,14 @@ export const facultyApi = createApi({
   
     addFaculty: builder.mutation<FacultyApiResponse, FacultyFormData>({
       query: (body) => ({
-        url: "/faculty",
+        url: "/admin/faculty",
         method: "POST",
         body,
       }),
     }),
       unAssignFaculty: builder.mutation<UnAssingFacultyApiResponse, UnAssignFacultyFormData>({
         query: ({sessionId, ...rest}) => ({
-          url: `/faculty/unassigned/${sessionId}`,
+          url: `/admin/faculty/unassigned/${sessionId}`,
           method: "POST",
           body: rest,
         }), 

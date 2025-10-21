@@ -128,7 +128,7 @@ const RolesAndPermissions = () => {
 
   // ------------------ JSX ------------------
   return (
-    <Box mx={1}>
+    <Box mx={1} mt={1}>
       <Box
         display="flex"
         justifyContent="space-between"

@@ -178,7 +178,7 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
     // });
     const formattedData = excelData.map((row) => {
       const nestedRow = unflattenObject(row);
-
+      nestedRow.session = selectedSession?._id;
       // Convert DOB to ISO
       if (nestedRow.dob) {
         nestedRow.dob = convertExcelDOBToISO(nestedRow.dob);
@@ -193,7 +193,8 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
 
       return nestedRow;
     });
-
+    console.log("Ford date: ", formattedData);
+    
     try {
       const res = await uploadBulkData({
         students: formattedData,

@@ -100,7 +100,7 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   ) => (
     <Box>
       {labelPosition === "outside" && (
-        <Label htmlFor={name} error={!!error}>
+        <Label htmlFor={name} error={!!error} sx={{fontSize: "15px"}}>
           {label}{" "}
           {required && (
             <Box component="span" sx={{ color: theme.palette.error.main }}>

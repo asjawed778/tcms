@@ -197,3 +197,36 @@ export enum ClassTabs {
 export enum ToolsTabs {
   ROLES_AND_PERMISSIONS= "roles-and-permissions"
 }
+
+
+// roles permissions and modules enums
+// Operatioin,  Module and SubModule Names for Role-Based Access Control
+
+export enum Operation {
+  CREATE = "create",
+  READ = "read",
+  UPDATE = "update",
+  DELETE = "delete",
+}
+
+export enum ModuleName {
+  DASHBOARD = "Dashboard",
+  SESSION = "Session",
+  STUDENTS = "Students",
+  CLASSES = "Classes",
+  Employee = "Employee",
+  TOOLS = "Tools",
+}
+
+export enum SubModuleName {
+
+  // Classes
+  CLASS = "Class",
+  SECTION = "Section",
+  TIMETABLE = "Timetable",
+  SUBJECTS = "Subjects",
+
+  // Tools
+  ROLES = "Roles",
+  PERMISSIONS = "Permissions",
+}
