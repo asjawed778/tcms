@@ -45,6 +45,13 @@ export const addStudentStep1 = [
         .isIn(Object.values(Enum.BloodGroup)).withMessage("Invalid blood group"),
 ];
 
+export const updateStudentStep1 = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+    ...addStudentStep1,
+];
+
 // address details validation
 export const addStudentStep2 = [
     param("studentId")

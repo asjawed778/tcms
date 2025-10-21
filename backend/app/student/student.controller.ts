@@ -22,6 +22,16 @@ export const addStudentStep1 = asyncHandler(async (req: Request, res: Response) 
   res.send(createResponse({ student }, "Student add Step-1 completed successfully"));
 });
 
+export const updateStudentStep1 = asyncHandler(async (req: Request, res: Response) => {
+  const data = req.body;
+  const { studentId } = req.params;
+  const student = await StudentService.updateStudent(studentId, data);
+  if (!student) {
+    throw createHttpError(500, "Failed to Update student step-1");
+  }
+  res.send(createResponse({ student }, "Student Updated Step-1 completed successfully"));
+});
+
 // Adress details - step 2
 export const addStudentStep2 = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
@@ -73,7 +83,6 @@ export const addStudentStep5 = asyncHandler(async (req: Request, res: Response) 
   const student = await StudentService.updateStudent(studentId, { documents, status: Enum.StudentStatus.ACTIVE });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
-
 
 export const bulkUploadStudents = asyncHandler(async (req: Request, res: Response) => {
   const { students } = req.body;

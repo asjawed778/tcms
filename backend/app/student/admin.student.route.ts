@@ -16,6 +16,13 @@ router
     StudentController.addStudentStep1
   )
   .put(
+    "/:studentId/step-1/personal-details",
+    roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.UPDATE }),
+    StudentValidation.updateStudentStep1,
+    catchError,
+    StudentController.updateStudentStep1
+  )
+  .put(
     "/:studentId/step-2/address",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
     StudentValidation.addStudentStep2,
