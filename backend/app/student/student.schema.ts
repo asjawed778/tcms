@@ -38,7 +38,8 @@ const Document = {
 const studentSchema = new mongoose.Schema<IStudent>({
     enrollmentNumber: {
         type: String,
-        // unique: true,
+        unique: true,
+        required: true,
     },
     name: { type: String, required: false },
     dob: { type: Date, required: false },
