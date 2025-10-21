@@ -55,7 +55,7 @@ export const addStudentStep3 = asyncHandler(async (req: Request, res: Response) 
 
 export const addStudentStep4 = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
-  const { session, class: classId, section, admissionYear, ...prevSchoolData } = req.body;
+  const { session, class: classId, section, admissionYear, address, ...prevSchoolData } = req.body;
   const isSessionValid = await SessionService.isSessionValid(session);
   if (!isSessionValid) {
     throw createHttpError(400, "Invalid session");
