@@ -173,7 +173,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      {/* <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
           name="localGuardian.email"
           label="Email"
@@ -220,7 +220,7 @@ const ParentDetails: React.FC = () => {
           placeholder="Enter local guardian's office number"
           required={false}
         />
-      </Grid> */}
+      </Grid>
     </Grid>
   );
 };

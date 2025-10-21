@@ -54,7 +54,7 @@ const PersonalDetails: React.FC = () => {
         size={{ xs: 12, md: 6 }}
         sx={{ display: "flex", justifyContent: "center" }}
       >
-        <ImageUploader name="image" />
+        <ImageUploader name="image" required={false}/>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField

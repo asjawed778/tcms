@@ -190,7 +190,7 @@ export enum PeriodType {
 
 // Tabs..................................................................
 export enum ClassTabs {
-  STANDARD = "standard",
+  CLASS = "class",
   SECTION = "section",
   TIME_TABLE = "timetable",
 };

@@ -2,7 +2,9 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
+import { useCan } from "@/hooks/useCan";
 import { useGetAllFacultyQuery } from "@/services/facultyApi";
+import { ModuleName, Operation } from "@/utils/enum";
 import { PersonAdd } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import React, { useState } from "react";
@@ -14,15 +16,6 @@ const facultyColumns = [
   { key: "employeeId", label: "Employee Id" },
   { key: "designation", label: "Designation" },
   { key: "qualification", label: "Qualification" },
-  // {
-  //   key: "status",
-  //   label: "Status",
-  //   render: (value: string) => (
-  //     <span style={{ color: value === "active" ? "green" : "red" }}>
-  //       {value}
-  //     </span>
-  //   ),
-  // },
 ];
 const actionsList = [
   {
@@ -34,9 +27,9 @@ const Faculty: React.FC = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [query, setQuery] = useState("");
-  // const [statusFilter, setStatusFilter] = useState({label: "All", value: "All"});
   const [statusFilter, setStatusFilter] = useState("All");
   const navigate = useNavigate();
+  const can = useCan();
 
   const {
     data: facultyData,
@@ -66,7 +59,6 @@ const Faculty: React.FC = () => {
   const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
-      // alert(`Faculty ${row?.name} updated`);
     }
   };
   const handleAddFaculty = () => {
@@ -76,7 +68,7 @@ const Faculty: React.FC = () => {
   const handleChange = (val: any) => {
     setStatusFilter(val);
     setPage(0);
-  };  
+  };
   return (
     <Box sx={{ width: "100%", p: 1 }}>
       <Box
@@ -105,10 +97,6 @@ const Faculty: React.FC = () => {
             label="Status"
             required={false}
             value={statusFilter}
-            // onChange={(val) => {
-            //   setStatusFilter(val);
-            //   setPage(0);
-            // }}
             onChange={handleChange}
             options={[
               { label: "All", value: "All" },
@@ -116,18 +104,19 @@ const Faculty: React.FC = () => {
               // { label: "Inactive", value: "false" },
             ]}
           />
-
-          <CustomButton
-            variant="outlined"
-            fullWidth
-            startIcon={<PersonAdd />}
-            onClick={handleAddFaculty}
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
-            Add Faculty
-          </CustomButton>
+          {can(ModuleName.Employee, null, Operation.CREATE) && (
+            <CustomButton
+              variant="outlined"
+              fullWidth
+              startIcon={<PersonAdd />}
+              onClick={handleAddFaculty}
+              sx={{
+                whiteSpace: "nowrap",
+              }}
+            >
+              Add Faculty
+            </CustomButton>
+          )}
         </Box>
       </Box>
 

@@ -7,6 +7,8 @@ import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import ShowTimeTable from "./ShowTimeTable";
+import { useCan } from "@/hooks/useCan";
+import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 
 const timeTableColumns = [
   { key: "sno.", label: "S.No." },
@@ -33,10 +35,15 @@ const TimeTable: React.FC = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
+  const can = useCan();
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
   });
-  const { data: timeTable, isLoading, isError } = useGetTimeTableQuery(
+  const {
+    data: timeTable,
+    isLoading,
+    isError,
+  } = useGetTimeTableQuery(
     {
       sessionId: selectedSession?._id as string,
       classId: selectedClass,
@@ -46,7 +53,7 @@ const TimeTable: React.FC = () => {
       skip: !selectedSection || !selectedClass,
     }
   );
-  
+
   const classOptions =
     classData?.data?.classes?.map((item) => ({
       label: item.name,
@@ -73,12 +80,12 @@ const TimeTable: React.FC = () => {
   }, [selectedClass, classData]);
 
   const handleCreateTimeTable = () => {
-    navigate("/dashboard/classes/timetable/create");
+    navigate("/dashboard/academics/create-time-table");
   };
   const handleClassChange = (value: any) => {
     setSelectedClass(value);
     setSelectedSecton("");
-  }
+  };
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -90,7 +97,7 @@ const TimeTable: React.FC = () => {
   const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
-        // alert(`Faculty ${row?.name} updated`);
+      // alert(`Faculty ${row?.name} updated`);
     }
   };
   return (
@@ -147,17 +154,18 @@ const TimeTable: React.FC = () => {
             minWidth: "fit-content",
           }}
         >
-          <CustomButton
-            variant="outlined"
-            fullWidth={true}
-            startIcon={<Alarm />}
-            onClick={handleCreateTimeTable}
-            sx={{
-              whiteSpace: "nowrap",
-            }}
-          >
-            Create Timetable
-          </CustomButton>
+          {can(
+            ModuleName.CLASSES,
+            SubModuleName.TIMETABLE,
+            Operation.CREATE
+          ) && (
+            <CustomButton
+              label="Create Timetable"
+              variant="outlined"
+              startIcon={<Alarm />}
+              onClick={handleCreateTimeTable}
+            />
+          )}
         </Box>
       </Box>
 
@@ -168,7 +176,7 @@ const TimeTable: React.FC = () => {
         </Box>
       )} */}
 
-      <ShowTimeTable 
+      <ShowTimeTable
         columns={timeTableColumns}
         rows={timeTable?.data || []}
         totalCount={0}
@@ -183,7 +191,7 @@ const TimeTable: React.FC = () => {
         classId={selectedClass}
         sectionId={selectedSection}
       />
-    </Box>  
+    </Box>
   );
 };
 export default TimeTable;

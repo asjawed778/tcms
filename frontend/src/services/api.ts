@@ -70,7 +70,6 @@ export const baseQueryWithReauth: BaseQueryFn<
   ) {
     const state = api.getState() as RootState;
     const refreshToken = state.auth.refreshToken;
-    console.log("refreshToken: ", refreshToken);
     if (refreshToken) {
       try {
         const refreshResult = await refreshTokenBaseQuery(

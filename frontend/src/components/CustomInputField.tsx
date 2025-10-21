@@ -37,6 +37,8 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   rows?: number;
   readOnly?: boolean;
   labelPosition?: "outside" | "inside";
+  minValue?: number;
+  maxValue?: number;
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => ({
@@ -76,6 +78,8 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   minDate,
   rows,
   readOnly = false,
+  minValue,
+  maxValue,
   ...rest
 }: CustomInputFieldProps<T>) {
   const { control: contextControl } = useFormContext<T>() || {};
@@ -100,7 +104,7 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   ) => (
     <Box>
       {labelPosition === "outside" && (
-        <Label htmlFor={name} error={!!error} sx={{fontSize: "15px"}}>
+        <Label htmlFor={name} error={!!error} sx={{ fontSize: "15px" }}>
           {label}{" "}
           {required && (
             <Box component="span" sx={{ color: theme.palette.error.main }}>
@@ -171,6 +175,7 @@ function CustomInputField<T extends FieldValues = FieldValues>({
               : {},
         }}
         inputProps={{
+          ...(type === "number" ? { min: minValue, max: maxValue } : {}),
           readOnly,
           "aria-required": required,
           max:
@@ -204,6 +209,6 @@ function CustomInputField<T extends FieldValues = FieldValues>({
       null
     )
   );
-};
+}
 
 export default CustomInputField;

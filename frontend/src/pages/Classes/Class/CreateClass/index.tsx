@@ -72,7 +72,7 @@ const CreateClass = () => {
         await createClass(freshData).unwrap();
         
           toast.success("Class Created successfully!" );
-          navigate("/dashboard/classes", { state: { refetch: true } });
+          navigate("/dashboard/academics", { state: { refetch: true } });
       } catch (error: any) {
         console.error("Submission failed:", error);
         toast.error(error?.data?.message || 'Submission failed. Please try again!');

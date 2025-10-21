@@ -104,7 +104,13 @@ const StudentTable: React.FC<CustomTableProps> = ({
           {isSessionNotSelected ? (
             <TableRow>
               <TableCell colSpan={6}>
-                <Box display="flex" justifyContent="center" py={4}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ height: "60vh" }}
+                  py={4}
+                >
                   <Typography variant="subtitle1" color="text.secondary">
                     Please select or create a session to view class records.
                   </Typography>
@@ -114,9 +120,15 @@ const StudentTable: React.FC<CustomTableProps> = ({
           ) : isError ? (
             <TableRow>
               <TableCell colSpan={6}>
-                <Box display="flex" justifyContent="center" py={4}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ height: "60vh" }}
+                  py={4}
+                >
                   <Typography variant="subtitle1" color="error">
-                    Something went wrong. Please check your internet connection.
+                    Something went wrong. Please try again.
                   </Typography>
                 </Box>
               </TableCell>
@@ -124,7 +136,13 @@ const StudentTable: React.FC<CustomTableProps> = ({
           ) : isLoading ? (
             <TableRow>
               <TableCell colSpan={6}>
-                <Box display="flex" justifyContent="center" py={4}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ height: "60vh" }}
+                  py={4}
+                >
                   <CircularProgress />
                 </Box>
               </TableCell>
@@ -132,7 +150,13 @@ const StudentTable: React.FC<CustomTableProps> = ({
           ) : students.length === 0 ? (
             <TableRow>
               <TableCell colSpan={6}>
-                <Box display="flex" justifyContent="center" py={4}>
+                <Box
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="center"
+                  sx={{ height: "60vh" }}
+                  py={4}
+                >
                   <Typography variant="subtitle1" color="text.secondary">
                     No records found.
                   </Typography>

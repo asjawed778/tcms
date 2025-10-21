@@ -3,44 +3,22 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
   Button,
   Box,
   Avatar,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-// import { toggleCollapsed, toggleMobile } from "../../store/reducers/sidebarReducer";
 import { useNavigate } from "react-router-dom";
 import logo from "../../assets/logo.png";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import { useAppSelector } from "../../store/store";
 import { useAppTheme } from "@/context/ThemeContext";
 import SessionDropdown from "../Sessions";
 import ToggleThemeSwitch from "./ToggleThemeSwitch";
-import { Close } from "@mui/icons-material";
 import Profile from "./Profile";
 
 const Header: React.FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { colors } = useAppTheme(); 
   const user = useAppSelector((state) => state.auth);
-  const sidebar = useAppSelector((state) => state.sidebar)
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    // const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-  
-
-  // const handleMenuBtn = () => {
-  //   if (isSmallScreen) {
-  //     dispatch(toggleMobile());
-  //   } else {
-  //     dispatch(toggleCollapsed());
-  //   }
-  // };
-
   return (
     <AppBar
       position="fixed"

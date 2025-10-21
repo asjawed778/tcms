@@ -1,3 +1,4 @@
+import { ModuleName } from "@/utils/enum";
 import * as Icons from "@mui/icons-material";
 
 export interface SidebarItem {
@@ -5,32 +6,38 @@ export interface SidebarItem {
   icon?: React.ReactNode;
   path?: string;
   children?: SidebarItem[];
+  module: string;
 }
 
 export const sidebarItems: SidebarItem[] = [
   {
     label: "Dashboard",
+    module: ModuleName.DASHBOARD,
     icon: <Icons.Dashboard />,
     path: "/dashboard",
   },
   {
     label: "Faculty",
+    module: ModuleName.Employee,
     icon: <Icons.People />,
     path: "/dashboard/faculty",
   },
   {
-    label: "Student",
-    icon: <Icons.School />,
+    label: "Students",
+    module: ModuleName.STUDENTS,
+    icon: <Icons.Person />,
     path: "/dashboard/student",
   },
   {
-    label: "Classes",
-    icon: <Icons.AddBox />,
-    path: "/dashboard/classes",
-  },
+  label: "Academics",
+  module: ModuleName.CLASSES,
+  icon: <Icons.School />,
+  path: "/dashboard/academics",
+},
   {
-    path: "/dashboard/tools",
-    label: "Tools",
-    icon: <Icons.Build />,
-  },
+    label: "Administrator",
+    module: ModuleName.TOOLS,
+    icon: <Icons.AdminPanelSettings />,
+    path: "/dashboard/administrator",
+},
 ];

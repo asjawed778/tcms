@@ -39,7 +39,6 @@ const steps = [
     component: DocumentUpload,
     schema: documentUploadSchema,
   },
-  // { label: "Preview & Submit", component: Preview, schema: yup.object() }
 ];
 
 const AddFaculty = () => {

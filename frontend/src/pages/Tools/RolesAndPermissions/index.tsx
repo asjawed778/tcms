@@ -6,17 +6,14 @@ import DialogBoxWrapper from "@/components/DialogBoxWrapper";
 import TableWrapper from "@/components/TableWrapper.V2";
 import toast from "react-hot-toast";
 import { Add, AdminPanelSettings, Delete, Edit } from "@mui/icons-material";
-import {
-  useDeleteRoleMutation,
-  useGetAllRolesQuery,
-} from "@/services/userApi";
+import { useDeleteRoleMutation, useGetAllRolesQuery } from "@/services/userApi";
 import ModalWrapper from "@/components/ModalWrapper";
-import { ToolsTabs } from "@/utils/enum";
+import { ModuleName, Operation, SubModuleName, ToolsTabs } from "@/utils/enum";
 import { useSearchParams } from "react-router-dom";
 import CreateRole from "./CreateRole";
 import AssignPermission from "./AssignPermission";
+import { useCan } from "@/hooks/useCan";
 
-// ------------------ Types ------------------
 interface Role {
   _id: string;
   name: string;
@@ -38,15 +35,16 @@ const RolesAndPermissions = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPage = parseInt(searchParams.get("page") || "1", 10);
   const initialLimit = parseInt(searchParams.get("limit") || "10", 10);
-
   const [page, setPage] = useState<number>(initialPage);
-  const [limit, setLimit] = useState<number>(initialLimit);
+  const limit = initialLimit;
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [openAddRole, setOpenAddRole] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
   const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
   const [selectedRole, setSelectedRole] = useState<Role | null>(null);
-  const [openAssignPermission, setOpenAssignPermission] = useState<boolean>(false);
+  const [openAssignPermission, setOpenAssignPermission] =
+    useState<boolean>(false);
+  const can = useCan();
 
   useEffect(() => {
     setSearchParams({
@@ -69,7 +67,6 @@ const RolesAndPermissions = () => {
 
   const [deleteRole] = useDeleteRoleMutation();
 
-  // ------------------ Handlers ------------------
   const handlePageChange = (newPage: number) => setPage(newPage);
 
   const handleDelete = async () => {
@@ -103,30 +100,53 @@ const RolesAndPermissions = () => {
         break;
     }
   };
+  const actionsList = () => {
+    const ACTIONS = [
+      {
+        action: "assignPermission",
+        label: "Assign Permission",
+        icon: <AdminPanelSettings />,
+        color: "secondary.main",
+        permission: {
+          module: ModuleName.TOOLS,
+          subModule: SubModuleName.PERMISSIONS,
+          operation: Operation.UPDATE,
+        },
+      },
+      {
+        action: "editRole",
+        label: "Update",
+        icon: <Edit />,
+        color: "info.main",
+        permission: {
+          module: ModuleName.TOOLS,
+          subModule: SubModuleName.ROLES,
+          operation: Operation.UPDATE,
+        },
+      },
+      {
+        action: "deleteRole",
+        label: "Delete",
+        icon: <Delete />,
+        color: "error.main",
+        permission: {
+          module: ModuleName.TOOLS,
+          subModule: SubModuleName.ROLES,
+          operation: Operation.DELETE,
+        },
+      },
+    ];
 
-  // ------------------ Actions ------------------
-  const actionsList = () => [
-    {
-      action: "assignPermission",
-      label: "Assign Permission",
-      icon: <AdminPanelSettings />,
-      color: "secondary.main",
-    },
-    {
-      action: "editRole",
-      label: "Update",
-      icon: <Edit />,
-      color: "info.main",
-    },
-    {
-      action: "deleteRole",
-      label: "Delete",
-      icon: <Delete />,
-      color: "error.main",
-    },
-  ];
-
-  // ------------------ JSX ------------------
+    return ACTIONS.filter(
+      (action) =>
+        !action.permission ||
+        can(
+          action.permission.module,
+          action.permission.subModule,
+          action.permission.operation
+        )
+    );
+  };
   return (
     <Box mx={1} mt={1}>
       <Box
@@ -141,14 +161,14 @@ const RolesAndPermissions = () => {
           onSearch={setSearchQuery}
           value={searchQuery}
         />
-
-        <CustomButton
-          label="Create Role"
-          startIcon={<Add />}
-          onClick={() => setOpenAddRole(true)}
-        />
+        {can(ModuleName.TOOLS, SubModuleName.ROLES, Operation.CREATE) && (
+          <CustomButton
+            label="Create Role"
+            startIcon={<Add />}
+            onClick={() => setOpenAddRole(true)}
+          />
+        )}
       </Box>
-
       <TableWrapper
         columns={roleColumns}
         rows={rolesData?.data || []}
@@ -161,7 +181,6 @@ const RolesAndPermissions = () => {
         isError={isError}
         actions={actionsList}
       />
-
       {openAddRole && (
         <CreateRole
           open={openAddRole}
@@ -169,7 +188,6 @@ const RolesAndPermissions = () => {
           refetch={refetch}
         />
       )}
-
       {openEditModal && (
         <CreateRole
           open={openEditModal}
@@ -178,7 +196,6 @@ const RolesAndPermissions = () => {
           refetch={refetch}
         />
       )}
-
       {openDeleteModal && (
         <DialogBoxWrapper
           title="Delete Role"
@@ -194,7 +211,6 @@ const RolesAndPermissions = () => {
           }
         />
       )}
-
       <ModalWrapper
         open={openAssignPermission}
         onClose={() => {

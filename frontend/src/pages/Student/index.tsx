@@ -11,6 +11,8 @@ import ViewDetails from "./ViewDetails";
 import AddRemark from "./AddRemark";
 import { useGetAllStudentQuery } from "@/services/studentApi";
 import BulkUpload from "./BulkUpload";
+import { useCan } from "@/hooks/useCan";
+import { ModuleName, Operation } from "@/utils/enum";
 
 const actionsList = [
   {
@@ -35,6 +37,7 @@ const Student: React.FC = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
+  const can = useCan();
   const {
     data: studentData,
     isLoading,
@@ -51,7 +54,6 @@ const Student: React.FC = () => {
       skip: !selectedSession?._id,
     }
   );
-  console.log("Student data: ", studentData);
   
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -115,7 +117,8 @@ const Student: React.FC = () => {
               options={[{ label: "All", value: "All" }]}
             />
           </Box>
-          <Box >
+          {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
+            <Box sx={{ display: "flex", gap: 1}}>
             <CustomButton
               variant="outlined"
               fullWidth
@@ -125,9 +128,6 @@ const Student: React.FC = () => {
             >
               Add Student
             </CustomButton>
-          </Box>
-
-          <Box >
             <CustomButton
               variant="outlined"
               fullWidth
@@ -138,6 +138,7 @@ const Student: React.FC = () => {
               Upload Bulk
             </CustomButton>
           </Box>
+          )}
         </Box>
       </Box>
 

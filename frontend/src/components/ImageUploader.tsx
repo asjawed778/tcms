@@ -14,6 +14,7 @@ interface ImageUploaderProps {
   minWidth?: number;
   minHeight?: number;
   acceptedTypes?: string[];
+  required?: boolean
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -23,6 +24,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   maxSizeMB = 2,
   minWidth = 300,
   minHeight = 300,
+  required = true,
   acceptedTypes = ["image/jpeg", "image/png", "image/jpg"],
 }) => {
   const { control: contextControl } = useFormContext();
@@ -118,13 +120,15 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
     <Controller
       name={name}
       control={activeControl}
-      defaultValue=""
+      defaultValue={undefined}
       render={({ field: { onChange }, fieldState: { error: fieldError } }) => (
         <Box display="flex" flexDirection="column" alignItems="center">
           {label && (
             <Typography variant="subtitle1">
               {label}
-              <span style={{ color: colors.error }}>*</span>
+              {required && (
+                <span style={{ color: colors.error }}>*</span>
+              )}
             </Typography>
           )}
           <input

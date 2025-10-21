@@ -1,16 +1,18 @@
-import React from "react";
-import { Navigate, Outlet } from "react-router-dom";
-
+import { ReactNode } from "react";
+import { Navigate } from "react-router-dom";
+import { RootState, useAppSelector } from "@/store/store"; 
 interface PublicRouteProps {
-  isAuthenticated: boolean;
-  redirectPath?: string;
+  children: ReactNode;
 }
 
-const PublicRoute: React.FC<PublicRouteProps> = ({
-  isAuthenticated,
-  redirectPath = "/",
-}) => {
-  return isAuthenticated ? <Navigate to={redirectPath} replace /> : <Outlet />;
+const PublicRoute: React.FC<PublicRouteProps> = ({ children }) => {
+  const accessToken = useAppSelector((state: RootState) => state.auth.accessToken);
+
+  if (!accessToken) {
+    return <>{children}</>;
+  }
+
+  return <Navigate to="/dashboard" replace />;
 };
 
 export default PublicRoute;

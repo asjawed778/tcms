@@ -15,7 +15,6 @@ import FailedRecordsModal from "./FailedRecordsModal";
 import { convertExcelDOBToISO, unflattenObject } from "@/utils/helper";
 
 const STUDENT_COLUMNS = [
-  // Basic Info
   "name",
   "dob",
   "gender",
@@ -193,8 +192,7 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
 
       return nestedRow;
     });
-    console.log("Ford date: ", formattedData);
-    
+
     try {
       const res = await uploadBulkData({
         students: formattedData,
@@ -356,15 +354,15 @@ const BulkUpload: React.FC<StudentsBulkUploadProps> = ({
             </Box>
           )}
 
-          <CustomButton
-            variant="contained"
-            type="submit"
-            loading={isLoading}
-            disabled={validationErrors.length > 0}
-            fullWidth
-          >
-            Submit Bulk Student Data
-          </CustomButton>
+          <Box sx={{ display: "flex", justifyContent: "end" }}>
+            <CustomButton
+              label="Upload Data"
+              variant="contained"
+              type="submit"
+              loading={isLoading}
+              disabled={validationErrors.length > 0}
+            />
+          </Box>
         </Stack>
       </form>
       {showFailedModal && (

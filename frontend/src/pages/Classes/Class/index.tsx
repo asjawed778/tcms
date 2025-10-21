@@ -1,8 +1,10 @@
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
+import { useCan } from "@/hooks/useCan";
 import { useGetAllClassQuery } from "@/services/classApi";
 import { useAppSelector } from "@/store/store";
+import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import { Add } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -34,6 +36,7 @@ const Class = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
+  const can = useCan();
 
   const {
     data: classData,
@@ -72,7 +75,7 @@ const Class = () => {
 
   const handleAddFaculty = () => {
     refetch();
-    navigate("/dashboard/classes/createClass", {
+    navigate("/dashboard/academics/create-class", {
       state: { fromClassPage: true },
     });
   };
@@ -99,7 +102,7 @@ const Class = () => {
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             gap: 2,
-            mb: 1
+            mb: 1,
           }}
         >
           {/* <CustomSearchField onSearch={setQuery} /> */}
@@ -115,7 +118,6 @@ const Class = () => {
             </Typography>
 
             <CustomDropdownField
-              name="status"
               label="Status"
               required={false}
               value={status}
@@ -126,18 +128,14 @@ const Class = () => {
                 // { label: "Inactive", value: "false" },
               ]}
             />
-
-            <CustomButton
-              variant="outlined"
-              fullWidth
-              startIcon={<Add />}
-              onClick={handleAddFaculty}
-              sx={{
-                whiteSpace: "nowrap",
-              }}
-            >
-              Create Class
-            </CustomButton>
+            {can(ModuleName.CLASSES, SubModuleName.CLASS, Operation.CREATE) && (
+              <CustomButton
+                label="Create Class"
+                variant="outlined"
+                startIcon={<Add />}
+                onClick={handleAddFaculty}
+              />
+            )}
           </Box>
         </Box>
 

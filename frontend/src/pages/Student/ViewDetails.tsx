@@ -18,9 +18,11 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
       open={open}
       onClose={onClose}
       title="View Student Details"
-      width={{ xs: 500, md: 800 }}
+      width="70%"
+      allowOutsideClickDesktop={true}
+      allowOutsideClickMobile={true}
     >
-      <Box>
+      <Box px={2}>
         <Grid container spacing={2} textAlign={"left"}>
           <Grid
             size={{ xs: 12 }}

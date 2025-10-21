@@ -13,7 +13,6 @@ import {
 } from "@/services/userApi";
 import { createRoleSchema } from "../../../../yup";
 
-// ---------------------- Types ----------------------
 interface Role {
   _id?: string;
   name: string;
@@ -44,7 +43,6 @@ const CreateRole: React.FC<AddRoleProps> = ({ open, onClose, role, refetch }) =>
   const [createRole, { isLoading: isCreating }] = useCreateRoleMutation();
   const [updateRole, { isLoading: isUpdating }] = useUpdateRolePermissionsMutation();
 
-  // ---------------------- Effects ----------------------
   useEffect(() => {
     if (role) {
       reset({ name: role.name, description: role.description });
@@ -53,7 +51,6 @@ const CreateRole: React.FC<AddRoleProps> = ({ open, onClose, role, refetch }) =>
     }
   }, [role, reset]);
 
-  // ---------------------- Handlers ----------------------
   const handleSaveRole: SubmitHandler<AddRoleFormValues> = async (data) => {
     try {
       let res;
@@ -71,8 +68,6 @@ const CreateRole: React.FC<AddRoleProps> = ({ open, onClose, role, refetch }) =>
       toast.error(error?.data?.message || "Something went wrong. Please try again!");
     }
   };
-
-  // ---------------------- Render ----------------------
   return (
     <ModalWrapper open={open} onClose={onClose} width="70%">
       {activeStep === 0 ? (

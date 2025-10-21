@@ -14,28 +14,23 @@ import CustomButton from "@/components/CustomButton";
 import { toast } from "react-hot-toast";
 import { useUpdateRolePermissionsMutation } from "@/services/userApi";
 
-// ---------------------- Types ----------------------
 interface Operations {
   [key: string]: boolean;
 }
-
 interface SubModule {
   name: string;
   operations: Operations;
 }
-
 interface PermissionModule {
   name: string;
   operations: Operations;
   subModules: SubModule[];
 }
-
 interface Role {
   _id?: string;
   name: string;
   permissions?: PermissionModule[];
 }
-
 interface AssignPermissionProps {
   role: Role | null;
   onClose: () => void;
@@ -43,7 +38,6 @@ interface AssignPermissionProps {
   onBack?: () => void;
 }
 
-// ---------------------- Component ----------------------
 const AssignPermission: React.FC<AssignPermissionProps> = ({
   role,
   onClose,
@@ -55,7 +49,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
 
   const [updateRolePermissions, { isLoading }] = useUpdateRolePermissionsMutation();
 
-  // ---------------------- Load role permissions ----------------------
   useEffect(() => {
     if (role?.permissions?.length) {
       setPermissions(role.permissions);
@@ -64,7 +57,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
     }
   }, [role]);
 
-  // ---------------------- Toggle action ----------------------
   const toggleAction = (
     moduleName: string,
     subName: string | null,
@@ -124,7 +116,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
     );
   };
 
-  // ---------------------- Save permissions ----------------------
   const handleSave = async () => {
     if (!role?._id) return;
     try {
@@ -143,7 +134,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
     }
   };
 
-  // ---------------------- JSX ----------------------
   return (
     <Box display="flex" flexDirection="column" gap={3}>
       <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
@@ -165,7 +155,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
           </Typography>
           <Divider sx={{ mb: 2 }} />
 
-          {/* Render module-level operations */}
           {module.subModules.length === 0 && (
             <Grid container spacing={isMobile ? 1 : 2} ml={isMobile ? 0 : 4}>
               {Object.keys(module.operations)
@@ -195,13 +184,10 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                 ))}
             </Grid>
           )}
-
-          {/* Render submodule operations */}
           {module.subModules.length > 0 &&
             module.subModules.map((sub) => (
               <Box key={sub.name} sx={{ mb: 2, ml: isMobile ? 0 : 2 }}>
                 <Grid container spacing={2} ml={isMobile ? 0 : 1}>
-                  {/* <Grid size={{xs: 12}}> */}
                     <Typography
                       variant="subtitle1"
                       sx={{
@@ -212,7 +198,6 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                     >
                       {sub.name}:
                     </Typography>
-                  {/* </Grid> */}
                   {Object.keys(sub.operations).map((action) => (
                     <Grid key={action} size={{xs: 2}}>
                       <FormControlLabel

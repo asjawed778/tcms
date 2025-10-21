@@ -3,7 +3,6 @@ import {
   AddRemarkFormData,
   ApiResponse,
   StudentApiResponse,
-  StudentFormData,
 } from "../../type";
 import { baseQueryWithReauth } from "./api";
 

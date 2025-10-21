@@ -1,32 +1,32 @@
-import { createSlice } from "@reduxjs/toolkit";
-import type { PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { Permission, User } from "../../../type";
 
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  role: string;
-  profilePic: string;
-}
 interface AuthTokens {
   accessToken: string;
   refreshToken: string;
 }
+
 interface AuthState {
   user: User | null;
-  accessToken: string;
-  refreshToken: string;
+  accessToken: string | null;
+  refreshToken: string | null;
   isAuthenticated: boolean;
   loading: boolean;
+  permissions: Permission[];
 }
 
+const storedUser = localStorage.getItem("user");
+const initialUser: User | null = storedUser ? JSON.parse(storedUser) : null;
+
 const initialState: AuthState = {
-  user: JSON.parse(localStorage.getItem("user") || "null"),
+  user: initialUser,
   accessToken: localStorage.getItem("accessToken") || "",
   refreshToken: localStorage.getItem("refreshToken") || "",
   isAuthenticated: localStorage.getItem("isAuthenticated") === "true" || false,
   loading: false,
+  permissions: initialUser?.role?.permissions || [],
 };
+
 export const authSlice = createSlice({
   name: "auth",
   initialState,
@@ -57,6 +57,7 @@ export const authSlice = createSlice({
       state.accessToken = accessToken;
       state.refreshToken = refreshToken;
       state.isAuthenticated = true;
+      state.permissions = user.role?.permissions || [];
 
       localStorage.setItem("user", JSON.stringify(user));
       localStorage.setItem("accessToken", accessToken);
@@ -68,6 +69,7 @@ export const authSlice = createSlice({
       state.accessToken = "";
       state.refreshToken = "";
       state.isAuthenticated = false;
+      state.permissions = [];
 
       localStorage.removeItem("user");
       localStorage.removeItem("accessToken");

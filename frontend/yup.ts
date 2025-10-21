@@ -448,6 +448,7 @@ export const previousSchoolSchema = yup.object({
     //   url: validateGroupFields("url-required", "Certificate is required", groupedFields),
     // }),
   }),
+  session: yup.string().required("Session is required"),
   class: yup.string().required("Class Name is required"),
   section: yup.string().when("class", (classValue, schema) => {
     if (!classValue) {

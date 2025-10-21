@@ -118,14 +118,20 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
       )}
 
       {title && (
-        <DialogTitle id="dialog-title" sx={{ py: 1, textAlign: "center" }}>
-          <Typography fontWeight="bold" variant="h6">
+        <DialogTitle
+          id="dialog-title"
+          sx={{ py: 1, textAlign: "center" }}
+          component="div"
+        >
+          <Typography fontWeight="bold" variant="h6" component="h2">
             {title}
           </Typography>
         </DialogTitle>
       )}
       <DialogContent id="dialog-description" sx={{ overflowY: "auto", p: 0 }}>
-        <Box px={2} my={1.5}>{open && children}</Box>
+        <Box px={2} my={1.5}>
+          {open && children}
+        </Box>
       </DialogContent>
     </Dialog>
   );

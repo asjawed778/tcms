@@ -66,7 +66,10 @@ function TableWrapper<T extends { _id?: string | number }>({
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuRowIndex, setMenuRowIndex] = useState<number | null>(null);
 
-  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>, index: number) => {
+  const handleMenuOpen = (
+    event: React.MouseEvent<HTMLButtonElement>,
+    index: number
+  ) => {
     setAnchorEl(event.currentTarget);
     setMenuRowIndex(index);
   };
@@ -128,7 +131,9 @@ function TableWrapper<T extends { _id?: string | number }>({
                 {actionDisplayType === "icon" ? (
                   currentActions.map((action, actionIndex) => (
                     <Tooltip
-                      key={`${row._id ?? index}-${action.action}-${actionIndex}`}
+                      key={`${row._id ?? index}-${
+                        action.action
+                      }-${actionIndex}`}
                       title={action.label}
                     >
                       <IconButton
@@ -142,7 +147,9 @@ function TableWrapper<T extends { _id?: string | number }>({
                   ))
                 ) : (
                   <>
-                    <IconButton onClick={(event) => handleMenuOpen(event, index)}>
+                    <IconButton
+                      onClick={(event) => handleMenuOpen(event, index)}
+                    >
                       <MoreVert fontSize="small" color="primary" />
                     </IconButton>
 
@@ -162,7 +169,9 @@ function TableWrapper<T extends { _id?: string | number }>({
                       >
                         {currentActions.map((action, actionIndex) => (
                           <MenuItem
-                            key={`menu-${row._id ?? index}-${action.action}-${actionIndex}`}
+                            key={`menu-${row._id ?? index}-${
+                              action.action
+                            }-${actionIndex}`}
                             onClick={async () => {
                               await onActionClick?.(action.action, row);
                               handleMenuClose();
@@ -277,7 +286,8 @@ function TableWrapper<T extends { _id?: string | number }>({
             py={1.5}
           >
             <Typography variant="body2">
-              Showing {Math.min(page * rowsPerPage, totalCount)} out of {totalCount}
+              Showing {Math.min(page * rowsPerPage, totalCount)} out of{" "}
+              {totalCount}
             </Typography>
             <Pagination
               count={Math.ceil(totalCount / rowsPerPage)}

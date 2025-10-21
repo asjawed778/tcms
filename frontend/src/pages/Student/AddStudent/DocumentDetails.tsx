@@ -66,7 +66,7 @@ const DocumentDetails: React.FC = () => {
                   label="Document Name: "
                   placeholder="Enter Document Name"
                   control={control}
-                  // margin="normal"
+                  margin="normal"
                   required={false}
                 />
 

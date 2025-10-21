@@ -135,6 +135,30 @@ export const unflattenObject = (data: Record<string, any>) => {
   return result;
 };
 
+/**
+ * Utility to convert array of objects into dropdown-friendly { label, value } pairs
+ */
+interface MapToDropdownOptionsParams<T> {
+  data?: T[];
+  labelKey?: keyof T;
+  valueKey?: keyof T;
+}
+export interface DropdownOption {
+  label: string;
+  value: string;
+}
+export function mapToDropdownOptions<T extends Record<string, any>>({
+  data = [],
+  labelKey = "name" as keyof T,
+  valueKey = "_id" as keyof T,
+}: MapToDropdownOptionsParams<T>): DropdownOption[] {
+  return data.map((item) => ({
+    label: String(item[labelKey]),
+    value: String(item[valueKey]),
+  }));
+}
+
+export default mapToDropdownOptions;
 
 
 

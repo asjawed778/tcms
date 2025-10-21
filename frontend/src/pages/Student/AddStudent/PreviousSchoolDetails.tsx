@@ -2,16 +2,20 @@ import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
 import { useGetAllClassQuery } from "@/services/classApi";
+import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
+import mapToDropdownOptions from "@/utils/helper";
 import { Divider, Grid, Typography } from "@mui/material";
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 const PreviousSchoolDetails: React.FC = () => {
+  const [selectedSessionId, setSelectedSessionId] = useState<string | string[] | null>(null);
   const { setValue, control } = useFormContext();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
+
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
   });
@@ -24,6 +28,26 @@ const PreviousSchoolDetails: React.FC = () => {
     control,
     name: "class",
   });
+  const { data: allSessions } = useGetSessionsQuery();
+  const sessionsOptions = useMemo(
+    () =>
+      mapToDropdownOptions({
+        data: allSessions?.data,
+        labelKey: "session",
+        valueKey: "_id",
+      }),
+    [allSessions]
+  );
+  useEffect(() => {
+    if (selectedSession?._id) {
+      setSelectedSessionId(selectedSession._id);
+      setValue("session", selectedSession._id);
+    }
+  }, [selectedSession]);
+  const handleSessionChange = (value: string | string[] | null) => {
+    setSelectedSessionId(value);
+  };
+
   const sectionOptions = useMemo(() => {
     const foundClass = classData?.data.classes.find(
       (cls) => cls._id === selectedClassId
@@ -47,6 +71,44 @@ const PreviousSchoolDetails: React.FC = () => {
     <Grid container spacing={2}>
       <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={600}>
+          Addmission Details
+        </Typography>
+        <Divider />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
+          name="class"
+          label="Select Class"
+          options={className}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
+          name="section"
+          label="Select section"
+          options={sectionOptions}
+          disabled={!selectedClassId}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
+          label="Session"
+          name="session"
+          value={selectedSessionId}
+          onChange={handleSessionChange}
+          options={sessionsOptions}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomInputField
+          name="admissionYear"
+          label="Admission Year"
+          type="number"
+          placeholder="Enter admission year"
+        />
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        <Typography variant="h6">
           Previous School Details (if applicable)
         </Typography>
         <Divider />
@@ -154,35 +216,6 @@ const PreviousSchoolDetails: React.FC = () => {
             label="Transfer Certificate"
           />
         </Grid>
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={500}>
-          Addmission Details
-        </Typography>
-        <Divider />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomDropdownField
-          name="class"
-          label="Select Class"
-          options={className}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomDropdownField
-          name="section"
-          label="Select section"
-          options={sectionOptions}
-          disabled={!selectedClassId}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="admissionYear"
-          label="Admission Year"
-          type="number"
-          placeholder="Enter admission year"
-        />
       </Grid>
     </Grid>
   );

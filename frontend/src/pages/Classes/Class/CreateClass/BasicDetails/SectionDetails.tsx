@@ -1,11 +1,14 @@
-import CustomDropdownField, { DropdownOption } from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import { useGetAllFacultyQuery } from "@/services/facultyApi";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-
+interface DropdownOption {
+  label: string;
+  value: string;
+}
 const SectionDetails: React.FC = () => {
   const {data: facultyData, isLoading} = useGetAllFacultyQuery({
     page: 1,
