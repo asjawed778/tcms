@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import * as Enum from "../common/utils/enum";
 
 // Personal Details
@@ -228,6 +228,48 @@ export const bulkAddStudents = [
     ]),
 ];
 
+export const getStudents = [
+    // Query parameters
+    query("sessionId")
+        .optional()
+        .isMongoId().withMessage("Invalid Session ID"),
+
+    query("page")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Page must be a positive integer"),
+
+    query("limit")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
+
+    query("search")
+        .optional()
+        .isString().withMessage("Search must be a string"),
+
+    query("classId")
+        .optional()
+        .isMongoId().withMessage("Invalid Standard ID"),
+
+    query("sectionId")
+        .optional()
+        .isMongoId().withMessage("Invalid Section ID"),
+
+    query("gender")
+        .optional()
+        .isIn(Object.values(Enum.Gender)).withMessage("Invalid Gender"),
+
+    query("studentStatus")
+        .optional()
+        .isIn(Object.values(Enum.StudentStatus)).withMessage("Invalid Student Status"),
+
+    query("admissionStatus")
+        .optional()
+        .isIn(Object.values(Enum.AdmissionStatus)).withMessage("Invalid Student Status"),
+
+    query("bloodGroup")
+        .optional()
+        .isIn(Object.values(Enum.BloodGroup)).withMessage("Invalid Blood Group"),
+];
 
 
 // old student addition validation code
@@ -403,32 +445,7 @@ export const addStudent = [
         .isInt({ min: 2000, max: 2100 }).withMessage("Admission year must be between 2000 and 2100"),
 ];
 
-export const getStudents = [
-    param("sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Invalid Session ID"),
 
-    // Query parameters
-    body("page")
-        .optional()
-        .isInt({ min: 1 }).withMessage("Page must be a positive integer"),
-
-    body("limit")
-        .optional()
-        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
-
-    body("search")
-        .optional()
-        .isString().withMessage("Search must be a string"),
-
-    body("standard")
-        .optional()
-        .isMongoId().withMessage("Invalid Standard ID"),
-
-    body("section")
-        .optional()
-        .isMongoId().withMessage("Invalid Section ID"),
-];
 
 export const getStudentById = [
     param("studentId")

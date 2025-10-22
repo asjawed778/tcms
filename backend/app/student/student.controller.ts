@@ -143,20 +143,28 @@ export const bulkUploadStudents = asyncHandler(async (req: Request, res: Respons
 // old student addition function
 
 export const getStudents = asyncHandler(async (req: Request, res: Response) => {
-  const { sessionId } = req.params;
+  const sessionId = (req.query.sessionId as string) || "";;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = (req.query.search as string) || "";
-  const standard = (req.query.standard as string) || "";
-  const section = (req.query.section as string) || "";
+  const classId = (req.query.class as string) || "";
+  const sectionId = (req.query.section as string) || "";
+  const gender = (req.query.gender as Enum.Gender) || "";
+  const studentStatus = (req.query.status as Enum.StudentStatus) || "";
+  const admissionStatus = (req.query.status as Enum.AdmissionStatus) || "";
+  const bloodGroup = (req.query.bloodGroup as Enum.BloodGroup) || "";
 
-  const result = await StudentService.getStudents(
+  const result = await StudentService.getAllStudents(
     sessionId,
     page,
     limit,
     search,
-    standard,
-    section
+    classId,
+    sectionId,
+    gender,
+    studentStatus,
+    admissionStatus,
+    bloodGroup,
   );
   res.send(createResponse(result, "Students fetched successfully"));
 });

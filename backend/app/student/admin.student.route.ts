@@ -58,7 +58,7 @@ router
     StudentController.bulkUploadStudents
   )
   .get(
-    "/all/:sessionId",
+    "/all",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.READ }),
     StudentValidation.getStudents,
     catchError,
