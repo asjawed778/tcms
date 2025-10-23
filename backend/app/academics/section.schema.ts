@@ -1,4 +1,3 @@
-
 import mongoose from "mongoose";
 import { ISection } from "./class.dto";
 
@@ -13,6 +12,16 @@ const sectionSchema = new mongoose.Schema<ISection>({
         unique: true,
         required: true
     },
+    sessionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Session",
+        required: true,
+    },
+    classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
+        required: true,
+    },
     classTeacher: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
@@ -20,10 +29,6 @@ const sectionSchema = new mongoose.Schema<ISection>({
     capacity: {
         type: Number,
         required: false
-    },
-    deleted: {
-        type: Boolean,
-        default: false
     },
 });
 

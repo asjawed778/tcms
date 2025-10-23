@@ -6,9 +6,10 @@ import { createResponse } from "../common/helper/response.hepler";
 import * as Enum from "../common/utils/enum";
 import * as StudentService from "./student.service";
 import * as StudentDto from "./student.dto";
-import * as classService from "../class/class.service";
+import * as classService from "../academics/academic.service";
 import * as addressService from "../common/services/address.service";
-import * as ClassService from "../class/class.service";
+import * as ClassService from "../academics/academic.service";
+import * as AcademicUtils from "../academics/academic.utils";
 import mongoose from "mongoose";
 
 
@@ -60,7 +61,7 @@ export const addStudentStep4 = asyncHandler(async (req: Request, res: Response) 
   if (!isSessionValid) {
     throw createHttpError(400, "Invalid session");
   }
-  const isClassValid = await classService.isClassAndSectionValid(
+  const isClassValid = await AcademicUtils.isClassAndSectionValid(
     session,
     classId,
     section

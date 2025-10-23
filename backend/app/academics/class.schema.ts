@@ -18,10 +18,6 @@ const classSchema = new mongoose.Schema<IClass>({
         ref: "Session",
         required: true
     },
-    sections : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Section"
-    }],
     subjects: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Subject'

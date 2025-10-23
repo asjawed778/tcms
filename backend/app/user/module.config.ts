@@ -18,7 +18,7 @@ export const MODULES_CONFIG: IModule[] = [
         subModules: []
     },
     {
-        name: ModuleName.CLASSES,
+        name: ModuleName.ACADEMICS,
         subModules: [
             { name: SubModuleName.CLASS },
             { name: SubModuleName.SECTION },
@@ -35,7 +35,7 @@ export const MODULES_CONFIG: IModule[] = [
         subModules: []
     },
     {
-        name: ModuleName.TOOLS,
+        name: ModuleName.ADMINISTRATION,
         subModules: [
             { name: SubModuleName.ROLES },
             { name: SubModuleName.PERMISSIONS }

@@ -6,72 +6,141 @@ import sectionSchema from "./section.schema";
 import classTimetableSchema from "./class.timetable.schema";
 import * as Enum from "../common/utils/enum";
 import mongoose, { PipelineStage } from "mongoose";
+import * as AcademicUtils from "./academic.utils";
+import admissionSchema from "../student/admission.schema";
 
-export const isClassAlreadyExists = async (name: string, session: string) => {
-  const existingClass = await classSchema.findOne({ name, session, deleted: false });
-  return !!existingClass;
+
+// subjects service functions
+export const createSubject = async (data: ClassDto.ICreateSubject) => {
+  const subjectId = await AcademicUtils.generateUniqueSubjectId(data.name);
+  const newSubject = await subjectSchema.create({ ...data, subjectId });
+  if (!newSubject) {
+    throw createHttpError(500, "Failed to create subject");
+  }
+  return newSubject;
+};
+
+export const editSubject = async (subjectId: string, data: Partial<ClassDto.ISubject>) => {
+  const subject = await subjectSchema.findByIdAndUpdate(subjectId, data, { new: true });
+  if (!subject) {
+    throw createHttpError(404, "Subject not found");
+  }
+  return subject;
+};
+
+export const deleteSubject = async (subjectId: string) => {
+  const subject = await subjectSchema.findByIdAndDelete(subjectId);
+  if (!subject) throw createHttpError(404, "Subject not found");
+
+  await classSchema.updateMany(
+    { subjects: subjectId },
+    { $pull: { subjects: subjectId } }
+  );
+
+  await classTimetableSchema.updateMany(
+    { "weeklySchedule.periods.subject": subjectId },
+    { $pull: { "weeklySchedule.$[].periods": { subject: subjectId } } }
+  );
+
+  return subject;
+};
+
+export const getAllSubjects = async (sessionId: string, page?: number, limit?: number, search?: string, classId?: string) => {
+  const query: any = {};
+  if (sessionId) {
+    query.sessionId = sessionId;
+  }
+  if (classId) {
+    const classDoc = await classSchema.findOne({ classId });
+    if (!classDoc) {
+      throw createHttpError(404, "Class not found");
+    }
+    query._id = { $in: classDoc.subjects };
+  }
+  if (search) {
+    query.name = { $regex: search, $options: "i" };
+  }
+  const subjects = await subjectSchema.find(query)
+    .skip(page && limit ? (page - 1) * limit : 0)
+    .limit(limit || 0);
+  const total = await subjectSchema.countDocuments(query);
+  return { subjects, totalDoc: total, currentPage: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
+};
+
+// section service functions
+export const createSection = async (data: ClassDto.ICreateSection) => {
+  const classDoc = await classSchema.findById(data.classId);
+  if (!classDoc) {
+    throw createHttpError(404, "Class not found");
+  }
+  const sectionId = await AcademicUtils.generateSectionId(classDoc.name, data.name);
+  const newSection = await sectionSchema.create({ ...data, sectionId });
+  if (!newSection) {
+    throw createHttpError(500, "Failed to create section");
+  }
+  return newSection;
+};
+
+export const editSection = async (sectionId: string, data: Partial<ClassDto.ISection>) => {
+  const section = await sectionSchema.findByIdAndUpdate(sectionId, data, { new: true });
+  if (!section) {
+    throw createHttpError(404, "Section not found");
+  }
+  return section;
+};
+
+export const deleteSection = async (sectionId: string) => {
+  const section = await sectionSchema.findById(sectionId);
+  if (!section) throw createHttpError(404, "Section not found");
+
+  const activeAdmissions = await admissionSchema.findOne({
+    section: sectionId,
+    session: section.sessionId,
+    deleted: false,
+  });
+
+  if (activeAdmissions) {
+    throw createHttpError(
+      400,
+      "Cannot delete section: active student admissions exist in this section"
+    );
+  }
+  await sectionSchema.findByIdAndDelete(sectionId);
+  await classTimetableSchema.deleteMany({ section: sectionId });
+  return section;
+};
+
+export const getAllSections = async (sessionId: string, classId?: string) => {
+  const query: any = {};
+  if (sessionId) query.sessionId = sessionId;
+  if (classId) query.classId = classId;
+
+  const sections = await sectionSchema.find(query).lean();
+
+  const result = await Promise.all(
+    sections.map(async (sec) => {
+      const classDoc = await classSchema.findById(sec.classId).select("_id classId name").lean();
+      const totalAdmissions = await admissionSchema.countDocuments({
+        section: sec._id,
+        session: sec.sessionId,
+        admissionStatus: "ACTIVE",
+        deleted: false,
+      });
+
+      return {
+        ...sec,
+        class: classDoc ? { id: classDoc.classId, name: classDoc.name } : null,
+        totalAdmissions,
+        classTeacher: sec.classTeacher || null,
+      };
+    })
+  );
+
+  return { sections: result };
 };
 
 
-const getFixedClassCode = (className: string): string => {
-  const name = className.toLowerCase();
-
-  if (name.includes("nursery")) return "NR";
-  if (name.includes("lkg")) return "LK";
-  if (name.includes("ukg")) return "UK";
-
-  const numberMatch = className.match(/\d+/);
-  if (numberMatch) {
-    const num = parseInt(numberMatch[0], 10);
-    return num < 10 ? `0${num}` : `${num}`;
-  }
-  return className.replace(/\s+/g, "").substring(0, 2).toUpperCase();
-};
-
-export const generateClassId = async (className: string): Promise<string> => {
-  const classCode = getFixedClassCode(className);
-  const year = new Date().getFullYear().toString().slice(-2);
-  let classId: string;
-  let exists = true;
-  while (exists) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 digits
-    classId = `C${classCode}${year}${randomNum}`; // e.g. C01254567
-    exists = !!(await classSchema.exists({ classId }));
-  }
-  return classId!;
-};
-
-export const generateSectionId = async (className: string, sectionName: string): Promise<string> => {
-  const classCode = getFixedClassCode(className);
-  const sectionCode = sectionName.replace(/\s+/g, "").substring(0, 1).toUpperCase(); // single letter (A, B, C)
-  const year = new Date().getFullYear().toString().slice(-2);
-
-  let sectionId: string;
-  let exists = true;
-  while (exists) {
-    const randomNum = Math.floor(1000 + Math.random() * 9000); // 4 digits
-    sectionId = `S${classCode}${sectionCode}${year}${randomNum}`; // e.g. S12A254321
-    exists = !!(await sectionSchema.exists({ sectionId }));
-  }
-  return sectionId!;
-};
-
-
-
-export const isClassAndSectionValid = async (sessionId: string, classId: string, sectionId?: string) => {
-  const result = await classSchema.findOne({ _id: classId, session: sessionId, deleted: false });
-  if (!result) {
-    return false;
-  }
-  if (sectionId) {
-    const section = result.sections.find((sec) => {
-      return sec.toString() === sectionId
-    });
-    return !!section;
-  }
-  return true;
-};
-
+// old class service functions
 export const assignFaculty = async (sectionId: string, facultyId: string) => {
   const section = await sectionSchema.findById(sectionId);
 
@@ -113,6 +182,7 @@ export const removeAssignedTeacher = async (sectionId: string) => {
   return result;
 };
 
+// old class service functions
 export const createClass = async (data: ClassDto.ICreateClass) => {
   const { subjects: subjectInputs = [], sections: sectionInputs = [], ...classData } = data;
 
@@ -127,7 +197,7 @@ export const createClass = async (data: ClassDto.ICreateClass) => {
   const sectionsWithIds = await Promise.all(
     sectionInputs.map(async (section) => ({
       ...section,
-      sectionId: await generateSectionId(classData.name, section.name)
+      sectionId: await AcademicUtils.generateSectionId(classData.name, section.name)
     }))
   );
 
@@ -136,7 +206,7 @@ export const createClass = async (data: ClassDto.ICreateClass) => {
     throw createHttpError(500, "Failed to create some or all sections");
   }
   const sectionIds = createdSections.map((section) => section._id);
-  const classId = await generateClassId(classData.name);
+  const classId = await AcademicUtils.generateClassId(classData.name);
   classData.classId = classId;
   const newClass = await classSchema.create({
     ...classData,
@@ -150,6 +220,9 @@ export const createClass = async (data: ClassDto.ICreateClass) => {
 
   return newClass;
 };
+
+export const editClass = async (classId: string, data: any) => {
+}
 
 export const getAllClass = async (sessionId: string) => {
   const classOrder = Object.values(Enum.ClassName);

@@ -200,20 +200,20 @@ export enum ModuleName {
   DASHBOARD = "Dashboard",
   SESSION = "Session",
   STUDENTS = "Students",
-  CLASSES = "Classes",
+  ACADEMICS = "Academics",
   Employee = "Employee",
-  TOOLS = "Tools",
+  ADMINISTRATION = "Administration",
 }
 
 export enum SubModuleName {
 
-  // Classes
+  // Academics
   CLASS = "Class",
   SECTION = "Section",
   TIMETABLE = "Timetable",
   SUBJECTS = "Subjects",
 
-  // Tools
+  // Administration
   ROLES = "Roles",
   PERMISSIONS = "Permissions",
 }

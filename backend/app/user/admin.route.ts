@@ -42,31 +42,31 @@ router
 
         // roles and permissions routes
         .post('/role',
-                roleAuth({ module: ModuleName.TOOLS, subModule: SubModuleName.ROLES, operation: Operation.CREATE }),
+                roleAuth({ module: ModuleName.ADMINISTRATION, subModule: SubModuleName.ROLES, operation: Operation.CREATE }),
                 userValidator.createRole,
                 catchError,
                 userController.createRole
         )
         .put('/role/:roleId/permission',
-                roleAuth({ module: ModuleName.TOOLS, subModule: SubModuleName.ROLES, operation: Operation.UPDATE }),
+                roleAuth({ module: ModuleName.ADMINISTRATION, subModule: SubModuleName.ROLES, operation: Operation.UPDATE }),
                 userValidator.updateRole,
                 catchError,
                 userController.updateRole
         )
         .delete('/role/:roleId',
-                roleAuth({ module: ModuleName.TOOLS, subModule: SubModuleName.ROLES, operation: Operation.DELETE }),
+                roleAuth({ module: ModuleName.ADMINISTRATION, subModule: SubModuleName.ROLES, operation: Operation.DELETE }),
                 userValidator.deleteRole,
                 catchError,
                 userController.deleteRole
         )
         .get('/role/all',
-                roleAuth({ module: ModuleName.TOOLS, subModule: SubModuleName.ROLES, operation: Operation.READ }),
+                roleAuth({ module: ModuleName.ADMINISTRATION, subModule: SubModuleName.ROLES, operation: Operation.READ }),
                 userValidator.getAllRoles,
                 catchError,
                 userController.getAllRoles
         )
         .get('/role/:roleId',
-                roleAuth({ module: ModuleName.TOOLS, subModule: SubModuleName.ROLES, operation: Operation.READ }),
+                roleAuth({ module: ModuleName.ADMINISTRATION, subModule: SubModuleName.ROLES, operation: Operation.READ }),
                 userValidator.getRoleById,
                 catchError,
                 userController.getRoleById

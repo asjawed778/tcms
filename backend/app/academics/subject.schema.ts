@@ -7,6 +7,16 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         type: String,
         required: true
     },
+    subjectId: {
+        type: String,
+        unique: true,
+        required: true
+    },
+    sessionId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Session",
+        required: true
+    },
     publication: {
         type: String,
         required: false
@@ -32,10 +42,6 @@ const subjectSchema = new mongoose.Schema<ISubject>({
     syllabus: {
         type: String,
         required: false
-    },
-    deleted: {
-        type: Boolean,
-        default: false
     },
 });
 

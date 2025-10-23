@@ -12,9 +12,10 @@ export interface FeeStructure {
 export interface ISection extends BaseSchema {
     name: string;
     sectionId: string;
+    classId: Types.ObjectId;
+    sessionId: Types.ObjectId;
     classTeacher?: Types.ObjectId;
     capacity?: number;
-    students?: Types.ObjectId[];
     deleted: boolean;
 }
 export interface ICreateSection extends Omit<ISection, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
@@ -23,7 +24,6 @@ export interface IClass extends BaseSchema {
     name: string;
     classId: string;
     session: Types.ObjectId;
-    sections: Types.ObjectId[];
     subjects: Types.ObjectId[];
     courseStream?: Enum.CourseStream;
     feeStructure: FeeStructure;
@@ -33,13 +33,14 @@ export interface IClass extends BaseSchema {
 
 export interface ISubject extends BaseSchema {
     name: string;
+    subjectId: string;
+    sessionId: Types.ObjectId;
     publication?: string;
     writer?: string;
     ISBN?: string;
     subjectType: Enum.SubjectType;
     subjectCategory: Enum.SubjectCategory;
     syllabus?: string;
-    deleted: boolean;
 }
 
 export interface ICreateSubject extends Omit<ISubject, "_id" | "deleted" | "createdAt" | "updatedAt"> { }

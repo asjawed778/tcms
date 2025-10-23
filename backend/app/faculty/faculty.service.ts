@@ -3,7 +3,7 @@ import * as FacultyDTO from "./faculty.dto";
 import facultySchema from "./faculty.schema"
 import * as Enum from "../common/utils/enum";
 import * as UserService from "../user/user.service";
-import { getAssignedFaculyIds } from "../class/class.service";
+import { getAssignedFaculyIds } from "../academics/academic.service";
 
 export const createFaculty = async (data: FacultyDTO.ICreateFaculty, session?: ClientSession) => {
     const [result] = await facultySchema.create([data], { session });
