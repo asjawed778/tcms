@@ -39,7 +39,7 @@ router
         ClassControler.deleteSubject
     )
     .get(
-        "/subjects/all",
+        "/subject/all",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.READ }),
         AcademicValidation.getAllSubjects,
         catchError,
@@ -76,7 +76,7 @@ router
         ClassControler.deleteSection
     )
     .get(
-        "/sections/all",
+        "/section/all",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.READ }),
         AcademicValidation.getAllSections,
         catchError,
