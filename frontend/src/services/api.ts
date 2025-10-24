@@ -7,7 +7,7 @@ import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import { RootState } from "../store/store";
 import { logout, resetTokens, setTokens } from "../store/reducers/authReducer";
 
-const baseURL = import.meta.env.VITE_API_URL;
+const baseURL = `${import.meta.env.VITE_BE_API_URL}/api`;
 
 interface RefreshTokenResponse {
   _id: string;
