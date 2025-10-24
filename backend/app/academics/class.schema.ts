@@ -25,47 +25,47 @@ const classSchema = new mongoose.Schema<IClass>({
     courseStream: {
         type: String,
         enum: Object.values(Enum.CourseStream),
-        required: false
+        default: Enum.CourseStream.GENERAL
     },
     feeStructure: {
         monthly: {
             amount: {
                 type: Number,
-                required: true
+                required: false
             },
             total: {
                 type: Number,
-                required: true
+                required: false
             }
         },
         quarterly: {
             amount: {
                 type: Number,
-                required: true
+                required: false
             },
             total: {
                 type: Number,
-                required: true
+                required: false
             }
         },
         halfYearly: {
             amount: {
                 type: Number,
-                required: true
+                required: false
             },
             total: {
                 type: Number,
-                required: true
+                required: false
             }
         },
         yearly: {
             amount: {
                 type: Number,
-                required: true
+                required: false
             },
             total: {
                 type: Number,
-                required: true
+                required: false
             }
         }
     },

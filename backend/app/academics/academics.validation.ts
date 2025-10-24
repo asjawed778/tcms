@@ -226,7 +226,7 @@ export const getAllSections = [
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 ];
 
-// Create Class Validation
+// Class Validation
 export const createClass = [
     body("name")
         .notEmpty().withMessage("Name is required")
@@ -249,38 +249,38 @@ export const createClass = [
         .isIn(Object.values(Enum.CourseStream)).withMessage(`Course stream must be one of: ${Object.values(Enum.CourseStream).join(", ")}`),
 
     body("feeStructure")
-        .notEmpty().withMessage("Fee structure is required"),
+        .optional(),
 
     body("feeStructure.monthly.amount")
-        .notEmpty().withMessage("Monthly amount is required")
+        .optional()
         .isNumeric().withMessage("Monthly amount must be a number"),
 
     body("feeStructure.monthly.total")
-        .notEmpty().withMessage("Monthly total is required")
+        .optional()
         .isNumeric().withMessage("Monthly total must be a number"),
 
     body("feeStructure.quarterly.amount")
-        .notEmpty().withMessage("Quarterly amount is required")
+        .optional()
         .isNumeric().withMessage("Quarterly amount must be a number"),
 
     body("feeStructure.quarterly.total")
-        .notEmpty().withMessage("Quarterly total is required")
+        .optional()
         .isNumeric().withMessage("Quarterly total must be a number"),
 
     body("feeStructure.halfYearly.amount")
-        .notEmpty().withMessage("Half-yearly amount is required")
+        .optional()
         .isNumeric().withMessage("Half-yearly amount must be a number"),
 
     body("feeStructure.halfYearly.total")
-        .notEmpty().withMessage("Half-yearly total is required")
+        .optional()
         .isNumeric().withMessage("Half-yearly total must be a number"),
 
     body("feeStructure.yearly.amount")
-        .notEmpty().withMessage("Yearly amount is required")
+        .optional()
         .isNumeric().withMessage("Yearly amount must be a number"),
 
     body("feeStructure.yearly.total")
-        .notEmpty().withMessage("Yearly total is required")
+        .optional()
         .isNumeric().withMessage("Yearly total must be a number"),
 ];
 
@@ -293,40 +293,14 @@ export const editClass = [
         .optional()
         .isArray().withMessage("Subjects must be an array")
         .custom((subjects) => {
-            return subjects.every((subject: any) => {
-                return (
-                    typeof subject.name === "string" &&
-                    subject.name.trim() !== "" &&
-                    (!subject.publication || typeof subject.publication === "string") &&
-                    (!subject.writer || typeof subject.writer === "string") &&
-                    (!subject.ISBN || typeof subject.ISBN === "string") &&
-                    Object.values(Enum.SubjectType).includes(subject.subjectType) &&
-                    Object.values(Enum.SubjectCategory).includes(subject.subjectCategory)
-                );
-            });
+            return subjects.every((id: string) => mongoose.Types.ObjectId.isValid(id));
         })
-        .withMessage("Each subject must be a valid subject object with required fields"),
+        .withMessage("Each subject must be a valid MongoDB ObjectId"),
 
     body("courseStream")
         .optional()
         .isIn(Object.values(Enum.CourseStream))
         .withMessage(`Course stream must be one of: ${Object.values(Enum.CourseStream).join(", ")}`),
-
-    body("sections")
-        .optional()
-        .isArray().withMessage("Sections must be an array"),
-
-    body("sections.*.name")
-        .optional()
-        .isString().withMessage("Section name must be a string"),
-
-    body("sections.*.classTeacher")
-        .optional()
-        .isMongoId().withMessage("Class Teacher must be a valid Mongo ID"),
-
-    body("sections.*.capacity")
-        .optional()
-        .isNumeric().withMessage("Section Capacity must be a number"),
 
     body("feeStructure")
         .optional()
@@ -365,6 +339,8 @@ export const editClass = [
         .isNumeric().withMessage("Yearly total must be a number"),
 ];
 
+
+// old class validation
 export const getAllClass = [
     param("sessionId")
         .notEmpty().withMessage("Session ID is required")
