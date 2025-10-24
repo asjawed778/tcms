@@ -20,7 +20,7 @@ import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import FeeStructure from "./FeeStructure";
-import { useCreateClassMutation } from "@/services/classApi";
+import { useCreateClassMutation } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { cleanData } from "@/utils/helper";
 import BasicDetails from "./BasicDetails";

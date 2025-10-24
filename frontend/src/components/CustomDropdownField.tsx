@@ -28,7 +28,7 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
-  control?: Control<T>;
+  control?: Control<any>;
   value?: string | string[] | Option | null;
   onChange?: (value: string | string[] | null) => void;
   options?: (Option | string)[];
@@ -165,9 +165,9 @@ const CustomDropdownField = <T extends FieldValues>({
       <Controller
         name={name}
         control={control}
-        render={({ field }) =>
-          renderAutocompleteField(field.value, field.onChange, errorMsg)
-        }
+        render={({ field, fieldState }) =>
+        renderAutocompleteField(field.value, field.onChange, fieldState.error?.message)
+      }
       />
     );
   }

@@ -16,7 +16,7 @@ router
         AcademicValidation.createSubject,
         catchError,
         ClassControler.createSubject
-    )
+    ) 
     .post(
         "/subject/bulk",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
@@ -101,7 +101,7 @@ router
         ClassControler.editClass
     )
     .get(
-        "class/all/:sessionId",
+        "/class/all/:sessionId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
         AcademicValidation.getAllClass,
         catchError,

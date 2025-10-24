@@ -1,7 +1,7 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
-import { useGetAllClassQuery } from "@/services/classApi";
+import { useGetAllClassQuery } from "@/services/academicsApi";
 import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
 import mapToDropdownOptions from "@/utils/helper";
@@ -10,15 +10,23 @@ import React, { useEffect, useMemo, useState } from "react";
 import { useFormContext, useWatch } from "react-hook-form";
 
 const PreviousSchoolDetails: React.FC = () => {
-  const [selectedSessionId, setSelectedSessionId] = useState<string | string[] | null>(null);
+  const [selectedSessionId, setSelectedSessionId] = useState<
+    string | string[] | null
+  >(null);
   const { setValue, control } = useFormContext();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
 
-  const { data: classData } = useGetAllClassQuery({
-    sessionId: selectedSession?._id as string,
-  });
+  const { data: classData } = useGetAllClassQuery(
+    {
+      sessionId: selectedSessionId as string,
+    },
+    {
+      skip: !selectedSessionId,
+    }
+  );
+
   const className =
     classData?.data.classes.map((items) => ({
       label: items.name,
@@ -45,7 +53,9 @@ const PreviousSchoolDetails: React.FC = () => {
     }
   }, [selectedSession]);
   const handleSessionChange = (value: string | string[] | null) => {
+    console.log("Value: ", value);
     setSelectedSessionId(value);
+    setValue("session", value);
   };
 
   const sectionOptions = useMemo(() => {
@@ -77,6 +87,14 @@ const PreviousSchoolDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
+          label="Session"
+          value={selectedSessionId}
+          onChange={handleSessionChange}
+          options={sessionsOptions}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 6 }}>
+        <CustomDropdownField
           name="class"
           label="Select Class"
           options={className}
@@ -88,15 +106,6 @@ const PreviousSchoolDetails: React.FC = () => {
           label="Select section"
           options={sectionOptions}
           disabled={!selectedClassId}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomDropdownField
-          label="Session"
-          name="session"
-          value={selectedSessionId}
-          onChange={handleSessionChange}
-          options={sessionsOptions}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -198,7 +207,6 @@ const PreviousSchoolDetails: React.FC = () => {
           <CustomInputField
             name="previousSchool.transferCertificate.name"
             label="Document Name"
-            defaultValue="Transfer Certificate"
             disabled
             required={false}
           />

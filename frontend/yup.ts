@@ -717,3 +717,19 @@ export const createRoleSchema = yup.object({
   //   )
   //   .optional(),
 });
+
+export const subjectSchema = yup.object({
+  name: yup.string().required("Subject name is required"),
+  publication: yup.string().optional(),
+  writer: yup.string().optional(),
+  ISBN: yup.string().optional(),
+  subjectType: yup
+    .mixed<Enum.SubjectType>()
+    .oneOf(Object.values(Enum.SubjectType))
+    .required("Subject type is required"),
+  subjectCategory: yup
+    .mixed<Enum.SubjectCategory>()
+    .oneOf(Object.values(Enum.SubjectCategory))
+    .required("Subject category is required"),
+  syllabus: yup.string().optional(),
+}); 

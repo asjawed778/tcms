@@ -14,9 +14,9 @@ const Faculty = lazy(() => import("@/pages/Faculty"));
 const AddFaculty = lazy(() => import("@/pages/Faculty/AddFaculty"));
 const Student = lazy(() => import("@/pages/Student"));
 const AddStudent = lazy(() => import("@/pages/Student/AddStudent"));
-const Classes = lazy(() => import("@/pages/Classes"));
-const CreateClass = lazy(() => import("@/pages/Classes/Class/CreateClass"));
-const CreateTimeTable = lazy(() => import("@/pages/Classes/TimeTable/CreateTimeTable"));
+const Classes = lazy(() => import("@/pages/Academics"));
+const CreateClass = lazy(() => import("@/pages/Academics/Class/CreateClass"));
+const CreateTimeTable = lazy(() => import("@/pages/Academics/TimeTable/CreateTimeTable"));
 const Tools = lazy(() => import("@/pages/Tools"));
 
 const AppRoutes = () => {
@@ -142,7 +142,7 @@ const AppRoutes = () => {
                 <RoleAuthRoute
                   permissions={[
                     {
-                      module: ModuleName.CLASSES,
+                      module: ModuleName.ACADEMICS,
                       operation: Operation.READ,
                     },
                   ]}
@@ -159,7 +159,8 @@ const AppRoutes = () => {
                 <RoleAuthRoute
                   permissions={[
                     {
-                      module: ModuleName.CLASSES,
+                      module: ModuleName.ACADEMICS,
+                      subModule: SubModuleName.CLASS,
                       operation: Operation.CREATE,
                     },
                   ]}
@@ -176,7 +177,7 @@ const AppRoutes = () => {
                 <RoleAuthRoute
                   permissions={[
                     {
-                      module: ModuleName.CLASSES,
+                      module: ModuleName.ACADEMICS,
                       subModule: SubModuleName.TIMETABLE,
                       operation: Operation.CREATE,
                     },
@@ -188,13 +189,13 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="administrator"
+            path="administration"
             element={
               <ErrorBoundary>
                 <RoleAuthRoute
                   permissions={[
                     {
-                      module: ModuleName.TOOLS,
+                      module: ModuleName.ADMINISTRATION,
                       operation: Operation.READ,
                     },
                   ]}

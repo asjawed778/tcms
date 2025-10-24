@@ -2,7 +2,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import ModalWrapper from "@/components/ModalWrapper";
-import { useGetClassQuery } from "@/services/classApi";
+import { useGetClassDetailsQuery } from "@/services/academicsApi";
 import { useGetAllFacultyQuery } from "@/services/facultyApi";
 import { Stack } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
@@ -36,7 +36,7 @@ const AssignClassTeacher: React.FC<Props> = ({
     page,
     limit: 10,
   });
-  const { data: classData } = useGetClassQuery(classId);
+  const { data: classData } = useGetClassDetailsQuery(classId);
   // const [assignTeacher] = useAssignClassTeacherMutation();
 
   // When new data arrives, append to options

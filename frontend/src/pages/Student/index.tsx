@@ -2,8 +2,14 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import { useAppSelector } from "@/store/store";
-import { PersonAdd, Upload } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import {
+  Add,
+  KeyboardArrowDown,
+  PersonAdd,
+  Upload,
+  Visibility,
+} from "@mui/icons-material";
+import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import StudentTable from "./StudentTable";
@@ -18,10 +24,14 @@ const actionsList = [
   {
     action: "viewDetails",
     label: "View Details",
+    icon: <Visibility />,
+    color: "info.main",
   },
   {
     action: "addRemarks",
     label: "Add Remarks",
+    icon: <Add />,
+    color: "secondary.main",
   },
 ];
 const Student: React.FC = () => {
@@ -37,6 +47,7 @@ const Student: React.FC = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const can = useCan();
   const {
     data: studentData,
@@ -54,7 +65,7 @@ const Student: React.FC = () => {
       skip: !selectedSession?._id,
     }
   );
-  
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -117,27 +128,126 @@ const Student: React.FC = () => {
               options={[{ label: "All", value: "All" }]}
             />
           </Box>
+          {/* {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <CustomButton
+                variant="outlined"
+                startIcon={<PersonAdd />}
+                endIcon={<Add sx={{ transform: "rotate(90deg)" }} />} // Down arrow style
+                onClick={(event) => setAnchorEl(event.currentTarget)}
+                sx={{ whiteSpace: "nowrap" }}
+              >
+                Add Student
+              </CustomButton>
+
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    handleAddStudent();
+                  }}
+                >
+                  <PersonAdd fontSize="small" sx={{ mr: 1 }} /> Add Student
+                </MenuItem>
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    handleBulkUpload();
+                  }}
+                >
+                  <Upload fontSize="small" sx={{ mr: 1 }} /> Bulk Upload
+                </MenuItem>
+              </Menu>
+            </Box>
+          )} */}
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
-            <Box sx={{ display: "flex", gap: 1}}>
-            <CustomButton
-              variant="outlined"
-              fullWidth
-              startIcon={<PersonAdd />}
-              onClick={handleAddStudent}
-              sx={{ whiteSpace: "nowrap" }}
-            >
-              Add Student
-            </CustomButton>
-            <CustomButton
-              variant="outlined"
-              fullWidth
-              startIcon={<Upload />}
-              onClick={handleBulkUpload}
-              sx={{ whiteSpace: "nowrap" }}
-            >
-              Upload Bulk
-            </CustomButton>
-          </Box>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              {/* Split Add Student Button */}
+              <Box
+                sx={{
+                  display: "flex",
+                  // border: "1px solid",
+                  // borderColor: "divider",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                }}
+              >
+                <CustomButton
+                  // variant="outlined"
+                  startIcon={<PersonAdd />}
+                  onClick={handleAddStudent} // Direct add action
+                  sx={{
+                    // borderRight: "1px solid",
+                    // borderColor: "divider",
+                    borderRadius: 0,
+                    // whiteSpace: "nowrap",
+                  }}
+                >
+                  Add Student
+                </CustomButton>
+
+                <CustomButton
+                  // variant="outlined"
+                  onClick={(event) => setAnchorEl(event.currentTarget)} // Only this opens dropdown
+                  sx={{
+                    minWidth: "40px",
+                    borderRadius: 0,
+                    borderLeft: "none",
+                    px: 1,
+                  }}
+                >
+                  <KeyboardArrowDown /> {/* Down arrow icon */}
+                </CustomButton>
+              </Box>
+
+              {/* Dropdown Menu */}
+              <Menu
+                anchorEl={anchorEl}
+                open={Boolean(anchorEl)}
+                onClose={() => setAnchorEl(null)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                PaperProps={{
+                  sx: { minWidth: 160 }, 
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    handleAddStudent();
+                  }}
+                >
+                  <PersonAdd fontSize="small" sx={{ mr: 1 }} /> Add Student
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    setAnchorEl(null);
+                    handleBulkUpload();
+                  }}
+                >
+                  <Upload fontSize="small" sx={{ mr: 1 }} /> Bulk Upload
+                </MenuItem>
+              </Menu>
+            </Box>
           )}
         </Box>
       </Box>

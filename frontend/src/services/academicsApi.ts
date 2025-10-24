@@ -1,0 +1,169 @@
+import { createApi } from "@reduxjs/toolkit/query/react";
+import { baseQueryWithReauth } from "./api";
+
+export const academicsApi = createApi({
+  reducerPath: "academicsApi",
+  baseQuery: baseQueryWithReauth,
+  endpoints: (builder) => ({
+    getAllClass: builder.query({
+      query: ({ sessionId }) => {
+        // let url = `/class/all/${sessionId}?pageNo=${page}&limit=${limit}`;
+
+        let url = `/admin/academics/class/all/${sessionId}`;
+        // if (query.trim() !== '') {
+        //   url += `&search=${encodeURIComponent(query.trim())}`;
+        // }
+        // if (typeof active === 'boolean') {
+        //   url += `&active=${active}`;
+        // }
+        return { url };
+      },
+    }),
+    updateclass: builder.mutation({
+      query: (classId) => ({
+        url: `/admin/academics/class/${classId}`,
+        method: "PUT",
+      }),
+    }),
+    createClass: builder.mutation({
+      query: (data) => ({
+        url: "/admin/academics/class",
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getClassDetails: builder.query({
+      query: ({classId}) => ({
+        url: `/admin/academics/${classId}`,
+        method: "GET",
+      }),
+    }),
+    createTimeTable: builder.mutation({
+      query: ({ sessionId, classId, sectionId, ...data }) => ({
+        url: `/admin/academics/timetable/${sessionId}/${classId}/${sectionId}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getTimeTable: builder.query({
+      query: ({ sessionId, classId, sectionId }) => {
+        let url = `/admin/academics/timetable/${sessionId}`;
+        if (classId) url += `/${classId}`;
+        if (sectionId) url += `/${sectionId}`;
+        return {
+          url,
+          method: "GET",
+        };
+      },
+    }),
+    assignClassTeacher: builder.mutation({
+      query: ({ sessionId, ...body }) => ({
+        url: `/admin/academics/assign-faculty/${sessionId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    removeClassTeacher: builder.mutation({
+      query: ({ sessionId }) => ({
+        url: `/admin/academics/remove-faculty/${sessionId}`,
+        method: "PATCH",
+      }),
+    }),
+    // Section.............................................................
+    getAllSection: builder.query({
+      query: () => ({
+        url: `/admin/academics/section/all`,
+        method: "GET",
+      })
+    }),
+    addSection: builder.mutation({
+      query: (payload) => ({
+        url: `/admin/academics/section`,
+        method: "POST",
+        body: payload,
+      })
+    }),
+    addBulkSection: builder.mutation({
+      query: (payload) => ({
+        url: `/admin/academics/section/bulk`,
+        method: "POST",
+        body: payload,
+      })
+    }),
+    updateSection: builder.mutation({
+      query: ({sectionId, payload}) => ({
+        url: `/admin/academics/section/${sectionId}`,
+        method: "PUT",
+        body: payload,
+      })
+    }),
+    deleteSection: builder.mutation({
+      query: ({ sectionId }) => ({
+        url: `/admin/academics/section/${sectionId}`,
+        method: "DELETE",
+      })
+    }),
+    // Subject.............................................................
+    getAllSubject: builder.query({
+      query: ({ sessionId, classId, page = 1, limit = 10, search = ""}) => ({
+        url: `/admin/academics/subject/all`,
+        params: {
+          sessionId,
+          page,
+          limit,
+          ...(classId && { classId}),
+          ...( search && { search}),
+        },
+        method: "GET",
+      })
+    }),
+    addSubject: builder.mutation({
+      query: ({payload}) => ({
+        url: `/admin/academics/subject`,
+        method: "POST",
+        body: payload,
+      })
+    }),
+    addBulkSubject: builder.mutation({
+      query: (payload) => ({
+        url: `/admin/academics/subject/bulk`,
+        method: "POST",
+        body: payload,
+      })
+    }),
+    updateSubject: builder.mutation({
+      query: ({subjectId, payload}) => ({
+        url: `/admin/academics/subject/${subjectId}`,
+        method: "PUT",
+        body: payload,
+      })
+    }),
+    deleteSubject: builder.mutation({
+      query: ({ subjectId }) => ({
+        url: `/admin/academics/subject/${subjectId}`,
+        method: "DELETE",
+      })
+    }),
+  }),
+});
+
+export const {
+  useGetAllClassQuery,
+  useCreateClassMutation,
+  useCreateTimeTableMutation,
+  useGetTimeTableQuery,
+  useGetClassDetailsQuery,
+  useUpdateclassMutation,
+  useAssignClassTeacherMutation,
+  useRemoveClassTeacherMutation,
+  useGetAllSectionQuery,
+  useAddSectionMutation,
+  useAddBulkSectionMutation,
+  useUpdateSectionMutation,
+  useDeleteSectionMutation,
+  useAddBulkSubjectMutation,
+  useAddSubjectMutation,
+  useDeleteSubjectMutation,
+  useGetAllSubjectQuery,
+  useUpdateSubjectMutation,
+} = academicsApi;

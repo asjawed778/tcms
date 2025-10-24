@@ -2,7 +2,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllClassQuery } from "@/services/classApi";
+import { useGetAllClassQuery } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import { Add } from "@mui/icons-material";
@@ -92,7 +92,7 @@ const Class = () => {
     ...cls,
     totalSections: cls.sections?.length || 0,
     totalSubjects: cls.subjects?.length || 0,
-  }));
+  })) || [];
   return (
     <>
       <Box sx={{ width: "100%", p: 1, mt: 1 }}>
@@ -124,11 +124,11 @@ const Class = () => {
               onChange={handleChange}
               options={[
                 { label: "All", value: "All" },
-                // { label: "Active", value: "true" },
-                // { label: "Inactive", value: "false" },
+                { label: "Active", value: "true" },
+                { label: "Inactive", value: "false" },
               ]}
             />
-            {can(ModuleName.CLASSES, SubModuleName.CLASS, Operation.CREATE) && (
+            {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (
               <CustomButton
                 label="Create Class"
                 variant="outlined"
@@ -142,7 +142,7 @@ const Class = () => {
         <TableWrapper
           columns={facultyColumns}
           rows={updatedClasses || []}
-          totalCount={0}
+          totalCount={updatedClasses.length || 0}
           page={page}
           rowsPerPage={rowsPerPage}
           onPageChange={handlePageChange}

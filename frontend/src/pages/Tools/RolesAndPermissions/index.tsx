@@ -108,7 +108,7 @@ const RolesAndPermissions = () => {
         icon: <AdminPanelSettings />,
         color: "secondary.main",
         permission: {
-          module: ModuleName.TOOLS,
+          module: ModuleName.ADMINISTRATION,
           subModule: SubModuleName.PERMISSIONS,
           operation: Operation.UPDATE,
         },
@@ -119,7 +119,7 @@ const RolesAndPermissions = () => {
         icon: <Edit />,
         color: "info.main",
         permission: {
-          module: ModuleName.TOOLS,
+          module: ModuleName.ADMINISTRATION,
           subModule: SubModuleName.ROLES,
           operation: Operation.UPDATE,
         },
@@ -130,7 +130,7 @@ const RolesAndPermissions = () => {
         icon: <Delete />,
         color: "error.main",
         permission: {
-          module: ModuleName.TOOLS,
+          module: ModuleName.ADMINISTRATION,
           subModule: SubModuleName.ROLES,
           operation: Operation.DELETE,
         },
@@ -161,7 +161,7 @@ const RolesAndPermissions = () => {
           onSearch={setSearchQuery}
           value={searchQuery}
         />
-        {can(ModuleName.TOOLS, SubModuleName.ROLES, Operation.CREATE) && (
+        {can(ModuleName.ADMINISTRATION, SubModuleName.ROLES, Operation.CREATE) && (
           <CustomButton
             label="Create Role"
             startIcon={<Add />}

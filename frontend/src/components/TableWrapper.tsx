@@ -1,4 +1,4 @@
-import React, { useState, MouseEvent, useMemo } from "react";
+import React, { useState, useMemo, MouseEvent } from "react";
 import {
   Table,
   TableHead,
@@ -32,6 +32,8 @@ interface Row {
 interface ActionsList {
   action: string;
   label: string;
+  color?: string;
+  icon?: React.ReactNode;
 }
 
 interface CustomTableProps {
@@ -42,9 +44,10 @@ interface CustomTableProps {
   rowsPerPage?: number;
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (rowsPerPage: number) => void;
-  onActionClick?: (action: string, row: Row | null) => void;
-  actionsList?: ActionsList[];
+  onActionClick?: (action: string, row: Row) => void;
+  actionsList?: ActionsList[] | ((row: Row) => ActionsList[]);
   isLoading?: boolean;
+  isFetching?: boolean;
   isError?: boolean;
   isSessionNotSelected?: boolean;
 }
@@ -58,63 +61,69 @@ const TableWrapper: React.FC<CustomTableProps> = ({
   onPageChange,
   onRowsPerPageChange,
   onActionClick,
-  isLoading = false,
-  isError = false,
   actionsList,
+  isLoading = false,
+  isFetching = false,
+  isError = false,
   isSessionNotSelected,
 }) => {
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [menuActions, setMenuActions] = useState<ActionsList[]>([]);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
+    // Compute actions for this row
+    const currentActions =
+      typeof actionsList === "function" ? actionsList(row) : actionsList || [];
+    setMenuActions(currentActions);
   };
 
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setSelectedRow(null);
+    setMenuActions([]);
   };
 
   const handleAction = (action: string) => {
-    onActionClick?.(action, selectedRow);
+    if (selectedRow) onActionClick?.(action, selectedRow);
     handleCloseMenu();
   };
 
-  const renderedRows = useMemo(() => {
-    return rows.map((row, index) => (
-      <TableRow
-        key={row.id ?? index}
-        sx={{
-          "& td": { py: 0, fontSize: "0.85rem" },
-        }}
-      >
-        {columns.map((col) => (
-          <TableCell key={col.key} align={col.align || "left"}>
-            {col.key === "sno."
-              ? index + 1 + page * rowsPerPage
-              : row[col.key] !== undefined && row[col.key] !== null
-              ? row[col.key]
-              : "N/A"}
-          </TableCell>
-        ))}
-        {actionsList && (
-          <TableCell>
-            <IconButton
-              aria-label="row actions"
-              aria-controls={anchorEl ? "actions-menu" : undefined}
-              aria-haspopup="true"
-              onClick={(e) => handleOpenMenu(e, row)}
-              sx={{ color: colors.primary }}
-            >
-              <MoreVertIcon />
-            </IconButton>
-          </TableCell>
-        )}
-      </TableRow>
-    ));
-  }, [rows, columns, actionsList, page, rowsPerPage, colors.primary, anchorEl]);
+  const renderedRows = useMemo(
+    () =>
+      rows.map((row, index) => {
+        const hasActions =
+          (typeof actionsList === "function"
+            ? actionsList(row)
+            : actionsList
+          )?.length;
+
+        return (
+          <TableRow key={row.id ?? index} sx={{ "& td": { py: 0.7 } }}>
+            {columns.map((col) => (
+              <TableCell key={col.key} align={col.align || "left"}>
+                {col.key === "sno." ? index + 1 + page * rowsPerPage : row[col.key] ?? "N/A"}
+              </TableCell>
+            ))}
+
+            {hasActions && (
+              <TableCell>
+                <IconButton
+                  onClick={(e) => handleOpenMenu(e, row)}
+                  sx={{ color: colors.primary }}
+                >
+                  <MoreVertIcon />
+                </IconButton>
+              </TableCell>
+            )}
+          </TableRow>
+        );
+      }),
+    [rows, columns, actionsList, page, rowsPerPage, colors.primary]
+  );
 
   return (
     <TableContainer component={Paper}>
@@ -122,17 +131,11 @@ const TableWrapper: React.FC<CustomTableProps> = ({
         <TableHead>
           <TableRow sx={{ backgroundColor: "#f0f0f0" }}>
             {columns.map((col) => (
-              <TableCell
-                key={col.key}
-                sx={{ py: 1.5, fontWeight: 600 }}
-                align={col.align || "left"}
-              >
+              <TableCell key={col.key} sx={{ fontWeight: 600 }} align={col.align || "left"}>
                 {col.label}
               </TableCell>
             ))}
-            {actionsList && (
-              <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
-            )}
+            {actionsList && <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>}
           </TableRow>
         </TableHead>
 
@@ -140,45 +143,23 @@ const TableWrapper: React.FC<CustomTableProps> = ({
           {isSessionNotSelected ? (
             <TableRow>
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "60vh" }}
-                  py={4}
-                >
-                  <Typography variant="subtitle1" color="text.secondary">
-                    Please select or create a session to view records.
-                  </Typography>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "60vh" }}>
+                  <Typography>Please select or create a session to view records.</Typography>
                 </Box>
               </TableCell>
             </TableRow>
           ) : isError ? (
             <TableRow>
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "60vh" }}
-                  py={4}
-                >
-                  <Typography variant="subtitle1" color="error">
-                    Something went wrong. Please check your internet connection.
-                  </Typography>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "60vh" }}>
+                  <Typography color="error">Something went wrong. Please try again.</Typography>
                 </Box>
               </TableCell>
             </TableRow>
-          ) : isLoading ? (
+          ) : isLoading || isFetching ? (
             <TableRow>
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "60vh" }}
-                  py={4}
-                >
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "60vh" }}>
                   <CircularProgress />
                 </Box>
               </TableCell>
@@ -186,16 +167,8 @@ const TableWrapper: React.FC<CustomTableProps> = ({
           ) : rows.length === 0 ? (
             <TableRow>
               <TableCell colSpan={columns.length + (actionsList ? 1 : 0)}>
-                <Box
-                  display="flex"
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "60vh" }}
-                  py={4}
-                >
-                  <Typography variant="subtitle1" color="text.secondary">
-                    No records found.
-                  </Typography>
+                <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "60vh" }}>
+                  <Typography>No records found.</Typography>
                 </Box>
               </TableCell>
             </TableRow>
@@ -209,30 +182,30 @@ const TableWrapper: React.FC<CustomTableProps> = ({
         component="div"
         count={totalCount}
         page={page}
-        onPageChange={(_, newPage) => onPageChange?.(newPage)}
         rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={(e) =>
-          onRowsPerPageChange?.(parseInt(e.target.value, 10))
-        }
+        onPageChange={(_, newPage) => onPageChange?.(newPage)}
+        onRowsPerPageChange={(e) => onRowsPerPageChange?.(parseInt(e.target.value, 10))}
         rowsPerPageOptions={[10, 25, 50]}
       />
 
-      {actionsList && (
-        <Menu
-          id="actions-menu"
-          anchorEl={anchorEl}
-          open={Boolean(anchorEl)}
-          onClose={handleCloseMenu}
-          anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-          transformOrigin={{ vertical: "top", horizontal: "right" }}
-        >
-          {actionsList.map((list, index) => (
-            <MenuItem key={index} onClick={() => handleAction(list.action)}>
-              {list.label}
-            </MenuItem>
-          ))}
-        </Menu>
-      )}
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleCloseMenu}
+        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+        transformOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        {menuActions.map((action, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => handleAction(action.action)}
+            sx={{ display: "flex", alignItems: "center", gap: 1, color: action.color || "inherit" }}
+          >
+            {action.icon && <Box>{action.icon}</Box>}
+            <Typography variant="body1">{action.label}</Typography>
+          </MenuItem>
+        ))}
+      </Menu>
     </TableContainer>
   );
 };

@@ -24,7 +24,7 @@ const DialogBoxWrapper: React.FC<DialogBoxWrapperProps> = ({
   message,
 }) => (
   <Dialog open={open} onClose={onClose}>
-    <DialogTitle>{title}</DialogTitle>
+    <DialogTitle sx={{fontWeight: 600}}>{title}</DialogTitle>
     <DialogContent>
       <Typography>{message}</Typography>
     </DialogContent>

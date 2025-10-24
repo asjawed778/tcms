@@ -11,22 +11,17 @@ export const studentApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getAllStudent: builder.query<StudentApiResponse, { page?: number;        limit?: number; searchQuery?: string; active?: string; sessionId: string; }>({
-      query: ({
-        page = 1,
-        limit = 10,
-        searchQuery = "",
-        active,
-        sessionId,
-      }) => {
-        let url = `/admin/student/all/${sessionId}?page=${page}&limit=${limit}`;
-        if (searchQuery.trim() !== "") {
-          url += `&search=${encodeURIComponent(searchQuery.trim())}`;
-        }
-        if (typeof active === "boolean") {
-          url += `&active=${active}`;
-        }
-        return { url };
-      },
+      query: ({page = 1, limit = 10, searchQuery = "", active, sessionId, })  => ({
+        url: `/admin/student/all`,
+        params: {
+          page,
+          limit,
+          ...(sessionId && { sessionId }),
+          ...(searchQuery && { searchQuery }),
+          ...(active && { active }),
+        },
+        method: "GET"
+      }),
     }),
     addStudent: builder.mutation({
       query: (payload) => ({

@@ -9,7 +9,7 @@ import { facultyApi } from "@/services/facultyApi";
 import { dropdownApi } from "@/services/dropdownApi";
 import { commonApi } from "@/services/commonApi";
 import sessionReducer from "./reducers/sessionSlice"
-import { classApi } from "@/services/classApi";
+import { academicsApi } from "@/services/academicsApi";
 import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({
@@ -23,7 +23,7 @@ export const store = configureStore({
     [facultyApi.reducerPath]: facultyApi.reducer,
     [dropdownApi.reducerPath]: dropdownApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
-    [classApi.reducerPath]: classApi.reducer,
+    [academicsApi.reducerPath]: academicsApi.reducer,
     [studentApi.reducerPath]: studentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
@@ -34,7 +34,7 @@ export const store = configureStore({
       facultyApi.middleware,
       dropdownApi.middleware, 
       commonApi.middleware,
-      classApi.middleware,
+      academicsApi.middleware,
       studentApi.middleware,
     ),
 });
