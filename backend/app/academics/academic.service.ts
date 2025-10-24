@@ -51,7 +51,7 @@ export const getAllSubjects = async (sessionId: string, page?: number, limit?: n
     query.sessionId = sessionId;
   }
   if (classId) {
-    const classDoc = await classSchema.findOne({ classId });
+    const classDoc = await classSchema.findById(classId);
     if (!classDoc) {
       throw createHttpError(404, "Class not found");
     }

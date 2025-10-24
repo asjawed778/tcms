@@ -40,12 +40,12 @@ export const deleteSubject = asyncHandler(async (req: Request, res: Response) =>
 });
 
 export const getAllSubjects = asyncHandler(async (req: Request, res: Response) => {
-    const sesstionId = req.query.sessionId as string;
+    const sessionId = req.query.sessionId as string;
     const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
     const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
     const search = req.query.search ? (req.query.search as string) : "";
     const classId = req.query.classId ? (req.query.classId as string) : undefined;
-    const result = await AcademicService.getAllSubjects(sesstionId, page, limit, search, classId);
+    const result = await AcademicService.getAllSubjects(sessionId, page, limit, search, classId);
     res.send(createResponse(result, "Subjects fetched successfully"));
 });
 

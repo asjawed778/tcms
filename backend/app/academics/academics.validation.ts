@@ -339,13 +339,14 @@ export const editClass = [
         .isNumeric().withMessage("Yearly total must be a number"),
 ];
 
-
-// old class validation
 export const getAllClass = [
     param("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
 ];
+
+// old class validation
+
 
 export const getClassById = [
     param("classId")
