@@ -26,6 +26,7 @@ const LoginForm: React.FC<Props> = ({onForgotPassword }) => {
   const onSubmit = async (data: LoginFormValues) => {
     try {
       const response = await loginUser(data).unwrap();
+      console.log("login response: ", response);
       
       const { user, accessToken, refreshToken } = response.data;
       if (response.success) {

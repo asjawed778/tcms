@@ -49,7 +49,7 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
     }
   }, [fields, append]);
 
-  const [addremark, {isLoading}] = useAddRemarkMutation();
+  const [addremark, { isLoading }] = useAddRemarkMutation();
   const navigate = useNavigate();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
@@ -81,6 +81,7 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
       open={open}
       onClose={onClose}
       title={`Add Remarks for ${student?.student.name}`}
+      width="50%"
     >
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
@@ -171,13 +172,14 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
                 </Button>
               </Grid>
             </Grid>
-            <CustomButton 
-              variant="contained" 
-              type="submit"
-              loading={isLoading}
-            >
-              Submit
-            </CustomButton>
+            <Box sx={{ display: "flex", justifyContent: "end" }}>
+              <CustomButton
+                label="Submit"
+                variant="contained"
+                type="submit"
+                loading={isLoading}
+              />
+            </Box>
           </Stack>
         </form>
       </FormProvider>

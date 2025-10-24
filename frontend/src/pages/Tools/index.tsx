@@ -12,7 +12,7 @@ function Tools() {
       value: ToolsTabs.ROLES_AND_PERMISSIONS,
       component: <RolesAndPermission />,
       permission: {
-        module: ModuleName.TOOLS,        
+        module: ModuleName.ADMINISTRATION,        
         subModule: SubModuleName.ROLES,  
         action: Operation.READ,           
       },

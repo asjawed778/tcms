@@ -189,9 +189,10 @@ export enum PeriodType {
 };
 
 // Tabs..................................................................
-export enum ClassTabs {
+export enum AcademicsTabs {
   CLASS = "class",
   SECTION = "section",
+  SUBJECT = "Subject",
   TIME_TABLE = "timetable",
 };
 export enum ToolsTabs {
@@ -213,20 +214,20 @@ export enum ModuleName {
   DASHBOARD = "Dashboard",
   SESSION = "Session",
   STUDENTS = "Students",
-  CLASSES = "Classes",
   Employee = "Employee",
-  TOOLS = "Tools",
+  ACADEMICS = "Academics",
+  ADMINISTRATION = "Administration",
 }
 
 export enum SubModuleName {
 
-  // Classes
+  // Academics
   CLASS = "Class",
   SECTION = "Section",
   TIMETABLE = "Timetable",
   SUBJECTS = "Subjects",
 
-  // Tools
+  // Administration
   ROLES = "Roles",
   PERMISSIONS = "Permissions",
 }

@@ -431,3 +431,17 @@ interface AddRemarkFormData {
   actionTaken?: Enum.ActionTaken;
   supportingDocuments?: Document[];
 }
+
+// Subject...................................................................
+export interface SubjectRequest {
+  name: string;
+  sessionId: string;
+  publication?: string;
+  writer?: string;
+  ISBN?: string;
+  subjectType: Enum.SubjectType;
+  subjectCategory: Enum.SubjectCategory;
+  syllabus?: string;
+}
+export interface SubjectResponse extends BaseSchema , SubjectRequest {}
+

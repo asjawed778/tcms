@@ -1,10 +1,11 @@
 import React from "react";
 import GenericTabs from "@/components/GenericTabs";
-import { ClassTabs, ModuleName, SubModuleName, Operation } from "@/utils/enum";
+import { ModuleName, SubModuleName, Operation, AcademicsTabs } from "@/utils/enum";
 import Section from "./Section";
 import TimeTable from "./TimeTable";
 import Class from "./Class";
 import { useCan } from "@/hooks/useCan";
+import Subject from "./Subject";
 
 interface TabItem {
   label: string;
@@ -23,30 +24,40 @@ const Classes: React.FC = () => {
   const allTabs: TabItem[] = [
     {
       label: "Classes",
-      value: ClassTabs.CLASS,
+      value: AcademicsTabs.CLASS,
       component: <Class />,
       permission: {
-        module: ModuleName.CLASSES,
+        module: ModuleName.ACADEMICS,
         subModule: SubModuleName.CLASS,
         action: Operation.READ,
       },
     },
     {
       label: "Section",
-      value: ClassTabs.SECTION,
+      value: AcademicsTabs.SECTION,
       component: <Section />,
       permission: {
-        module: ModuleName.CLASSES,
+        module: ModuleName.ACADEMICS,
         subModule: SubModuleName.SECTION,
         action: Operation.READ,
       },
     },
     {
+      label: "Subject",
+      value: AcademicsTabs.SUBJECT,
+      component: <Subject />,
+      permission: {
+        module: ModuleName.ACADEMICS,
+        subModule: SubModuleName.SUBJECTS,
+        action: Operation.READ,
+      },
+    },
+    {
       label: "Time Table",
-      value: ClassTabs.TIME_TABLE,
+      value: AcademicsTabs.TIME_TABLE,
       component: <TimeTable />,
       permission: {
-        module: ModuleName.CLASSES,
+        module: ModuleName.ACADEMICS,
         subModule: SubModuleName.TIMETABLE,
         action: Operation.READ,
       },

@@ -165,13 +165,13 @@ const FileUploader: React.FC<FileUploaderProps> = ({
                   </Typography>
                 </Box>
 
-                <Box sx={{ display: "flex", gap: 1 }}>
+                <Box >
                   <Button
                     variant="outlined"
                     size="small"
                     onClick={() => window.open(value, "_blank")}
                   >
-                    Preview PDF
+                    Preview
                   </Button>
                   <IconButton
                     onClick={handleRemove}

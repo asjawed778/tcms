@@ -21,20 +21,24 @@ const AddressDetails: React.FC = () => {
     []
   );
 
+  // Load countries
   useEffect(() => {
     const countries = Country.getAllCountries().map((c) => ({
       label: c.name,
-      value: c.isoCode,
+      value: c.name,
     }));
     setCountryList(countries);
-    setValue("address.country", "IN");
+    setValue("address.country", "India");
   }, [setValue]);
 
   useEffect(() => {
     if (selectedCountry) {
-      const states = State.getStatesOfCountry(selectedCountry).map((s) => ({
+      const states = State.getStatesOfCountry(
+        Country.getAllCountries().find((c) => c.name === selectedCountry)
+          ?.isoCode || ""
+      ).map((s) => ({
         label: s.name,
-        value: s.isoCode,
+        value: s.name,
       }));
       setStateList(states);
     } else {
@@ -44,20 +48,29 @@ const AddressDetails: React.FC = () => {
 
   useEffect(() => {
     if (selectedCountry && selectedState) {
-      const cities = City.getCitiesOfState(selectedCountry, selectedState).map(
-        (c) => ({
-          label: c.name,
-          value: c.name,
-        })
-      );
+      const countryIso = Country.getAllCountries().find(
+        (c) => c.name === selectedCountry
+      )?.isoCode;
+      const stateIso = State.getStatesOfCountry(countryIso || "").find(
+        (s) => s.name === selectedState
+      )?.isoCode;
+
+      const cities = City.getCitiesOfState(
+        countryIso || "",
+        stateIso || ""
+      ).map((c) => ({
+        label: c.name,
+        value: c.name,
+      }));
       setCityList(cities);
     } else {
       setCityList([]);
     }
   }, [selectedCountry, selectedState]);
+
   return (
     <Grid container spacing={2}>
-      <Grid size={{xs:12}}>
+      <Grid size={{ xs: 12 }}>
         <Typography variant="h6" gutterBottom fontWeight={500}>
           Address Details
         </Typography>
@@ -67,8 +80,7 @@ const AddressDetails: React.FC = () => {
         <CustomInputField
           name="address.addressLine1"
           label="Address Line1"
-          placeholder="Enter Line1  details"
-          labelPosition="outside"
+          placeholder="Enter Line1 details"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -77,16 +89,13 @@ const AddressDetails: React.FC = () => {
           label="Address Line2"
           placeholder="Enter Line2 Details"
           required={false}
-          labelPosition="outside"
         />
       </Grid>
-
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="address.country"
           label="Country"
           options={countryList}
-          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -96,7 +105,6 @@ const AddressDetails: React.FC = () => {
           control={control}
           options={stateList}
           disabled={!selectedCountry}
-          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -106,7 +114,6 @@ const AddressDetails: React.FC = () => {
           control={control}
           options={cityList}
           disabled={!selectedState}
-          labelPosition="outside"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
@@ -114,10 +121,10 @@ const AddressDetails: React.FC = () => {
           name="address.pincode"
           label="Pincode"
           placeholder="Enter Pincode number"
-          labelPosition="outside"
         />
       </Grid>
     </Grid>
   );
 };
+
 export default AddressDetails;

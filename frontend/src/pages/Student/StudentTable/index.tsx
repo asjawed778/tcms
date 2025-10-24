@@ -19,16 +19,19 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAppTheme } from "@/context/ThemeContext";
 import { Students } from "../../../../type";
+import ViewDetails from "../ViewDetails";
 
 interface Row {
   key?: string | number;
   [key: string]: any;
 }
-
 interface ActionsList {
   action: string;
   label: string;
+  icon?: React.ReactNode; 
+  color?: string;       
 }
+
 
 interface CustomTableProps {
   students: Students[];
@@ -60,20 +63,23 @@ const StudentTable: React.FC<CustomTableProps> = ({
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedRow, setSelectedRow] = useState<Row | null>(null);
+  const [openModal, setOpenModal] = useState(false);
 
   const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
   };
-
   const handleCloseMenu = () => {
     setAnchorEl(null);
     setSelectedRow(null);
   };
-
   const handleAction = (action: string) => {
     onActionClick(action, selectedRow);
     handleCloseMenu();
+  };
+  const handleRowClick = (student: Students) => {
+    setSelectedRow(student);
+    setOpenModal(true);
   };
 
   return (
@@ -94,7 +100,7 @@ const StudentTable: React.FC<CustomTableProps> = ({
               <strong>Gender</strong>
             </TableCell>
             <TableCell>
-              <strong>Class and Section</strong>
+              <strong>Class & Section</strong>
             </TableCell>
             <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>
           </TableRow>
@@ -167,10 +173,16 @@ const StudentTable: React.FC<CustomTableProps> = ({
             students.map((student, index) => (
               <TableRow
                 key={index}
+                onClick={() => handleRowClick(student)}
                 sx={{
                   "& td": {
                     py: 0,
                     fontSize: "0.85rem",
+                    // "&:hover": {
+                    //   backgroundColor: "#f0f0f0 !important",
+                    //   transition: "background-color 0.2s ease",
+                    // },
+                    cursor: "pointer",
                   },
                 }}
               >
@@ -200,7 +212,10 @@ const StudentTable: React.FC<CustomTableProps> = ({
                 <TableCell>
                   <IconButton
                     aria-label="row actions"
-                    onClick={(e) => handleOpenMenu(e, student)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleOpenMenu(e, student);
+                    }}
                     sx={{ color: colors.primary }}
                   >
                     <MoreVertIcon />
@@ -231,12 +246,42 @@ const StudentTable: React.FC<CustomTableProps> = ({
         anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
         transformOrigin={{ vertical: "top", horizontal: "right" }}
       >
-        {actionsList.map((list, index) => (
+        {/* {actionsList.map((list, index) => (
           <MenuItem key={index} onClick={() => handleAction(list.action)}>
+            {list.label}
+          </MenuItem>
+        ))} */}
+        {actionsList.map((list, index) => (
+          <MenuItem
+            key={index}
+            onClick={() => handleAction(list.action)}
+            sx={{
+              color: list.color || "inherit",
+              gap: 1,
+              "&:hover": {
+                bgcolor: "#f5f5f5",
+              },
+            }}
+          >
+            {list.icon && (
+              <Box
+                component="span"
+                sx={{ display: "flex", alignItems: "center" }}
+              >
+                {list.icon}
+              </Box>
+            )}
             {list.label}
           </MenuItem>
         ))}
       </Menu>
+      {openModal && (
+        <ViewDetails
+          open={openModal}
+          onClose={() => setOpenModal(false)}
+          student={selectedRow}
+        />
+      )}
     </TableContainer>
   );
 };

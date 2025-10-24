@@ -30,7 +30,7 @@ const Faculty: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const navigate = useNavigate();
   const can = useCan();
-
+  
   const {
     data: facultyData,
     isLoading,

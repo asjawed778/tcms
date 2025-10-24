@@ -30,14 +30,14 @@ export const sidebarItems: SidebarItem[] = [
   },
   {
   label: "Academics",
-  module: ModuleName.CLASSES,
+  module: ModuleName.ACADEMICS,
   icon: <Icons.School />,
   path: "/dashboard/academics",
 },
   {
-    label: "Administrator",
-    module: ModuleName.TOOLS,
+    label: "Administration",
+    module: ModuleName.ADMINISTRATION,
     icon: <Icons.AdminPanelSettings />,
-    path: "/dashboard/administrator",
+    path: "/dashboard/administration",
 },
 ];

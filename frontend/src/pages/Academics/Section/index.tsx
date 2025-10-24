@@ -1,6 +1,6 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import TableWrapper from "@/components/TableWrapper";
-import { useGetAllClassQuery } from "@/services/classApi";
+import { useGetAllClassQuery } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
