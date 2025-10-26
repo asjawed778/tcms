@@ -4,7 +4,7 @@ import * as AcademicService from "./academic.service";
 import * as SessionService from "../session/session.service";
 import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
-import { ICreateTimeTable } from "./class.dto";
+import { ICreateTimeTable } from "./academic.dto";
 import mongoose from "mongoose";
 import * as UserService from "../user/user.service";
 import * as AcademicUtils from "./academic.utils";
@@ -87,39 +87,43 @@ export const getAllSections = asyncHandler(async (req: Request, res: Response) =
 });
 
 
-
-
-
-
-
 // class controllers
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
+    const {name, session, subjects, courseStream} = req.body;
 
-    const isSessionCurrentOrFuture = await SessionService.isSessionCurrentOrFuture(data.session);
+    const isSessionCurrentOrFuture = await SessionService.isSessionCurrentOrFuture(session);
     if (!isSessionCurrentOrFuture) {
         throw createHttpError(400, "Class can create for only current and future sessions");
     }
 
-    const isClassAlreadyExists = await AcademicUtils.isClassAlreadyExists(data.name, data.session);
+    const isClassAlreadyExists = await AcademicUtils.isClassAlreadyExists(name, session);
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
+    }
+    const data = {
+        name,
+        session,
+        subjects,
+        courseStream
     }
 
     const result = await AcademicService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));
 });
 
-export const editClass = asyncHandler(async (req: Request, res: Response) => {
+export const updateClass = asyncHandler(async (req: Request, res: Response) => {
     const { classId } = req.params;
     const data = req.body;
 
-    const result = await AcademicService.editClass(classId, data);
+    const result = await AcademicService.updateClass(classId, data);
     res.send(createResponse(result, "Class edited successfully"));
 });
 
+// olda class controllers
+
+
 export const getAllClass = asyncHandler(async (req: Request, res: Response) => {
-    const { sessionId } = req.params;
+    const sessionId = req.query.sessionId as string;
     const result = await AcademicService.getAllClass(sessionId);
     res.send(createResponse(result, "Class fetched successfully"));
 });

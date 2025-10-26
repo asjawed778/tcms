@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ISection } from "./class.dto";
+import { ISection } from "./academic.dto";
 
 const sectionSchema = new mongoose.Schema<ISection>({
     name: {

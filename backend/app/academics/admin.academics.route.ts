@@ -96,12 +96,12 @@ router
     .put(
         "/class/:classId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
-        AcademicValidation.editClass,
+        AcademicValidation.updateClass,
         catchError,
-        ClassControler.editClass
+        ClassControler.updateClass
     )
     .get(
-        "/class/all/:sessionId",
+        "/class/all",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
         AcademicValidation.getAllClass,
         catchError,

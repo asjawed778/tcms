@@ -79,4 +79,29 @@ export interface ITimeTable extends BaseSchema {
     weeklySchedule: IDaySchedule[];
 }
 
-export interface ICreateTimeTable extends Omit<ITimeTable, "_id" | "createdAt" | "updatedAt"> {}
+export interface ICreateTimeTable extends Omit<ITimeTable, "_id" | "createdAt" | "updatedAt"> { }
+
+// class fee structure dto
+export interface IFeeDetails {
+    feeType: Enum.FeeType;
+    otherFeeType?: string;
+    amount: number;
+    isOptional?: boolean;
+    applicableType?: Enum.FeeApplicableType;
+    applicableFrequency?: Enum.FeeFrequency;
+}
+
+export interface IFrequencyWiseStructure {
+    frequency: Enum.FeeFrequency;
+    feeDetails: IFeeDetails[];
+    totalAmount: number;
+}
+
+export interface IFeeStructure extends BaseSchema {
+    classId: Types.ObjectId;
+    academicSession: Types.ObjectId;
+    effectiveFrom: Date;
+    structures: IFrequencyWiseStructure[];
+    remarks?: string;
+    status?: Enum.ActiveStatus;
+}

@@ -284,7 +284,7 @@ export const createClass = [
         .isNumeric().withMessage("Yearly total must be a number"),
 ];
 
-export const editClass = [
+export const updateClass = [
     param("classId")
         .notEmpty().withMessage("Class ID is required")
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
@@ -340,7 +340,7 @@ export const editClass = [
 ];
 
 export const getAllClass = [
-    param("sessionId")
+    query("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
 ];

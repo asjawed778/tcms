@@ -1,4 +1,4 @@
-import * as ClassDto from "./class.dto";
+import * as ClassDto from "./academic.dto";
 import subjectSchema from "./subject.schema";
 import classSchema from "./class.schema";
 import createHttpError from "http-errors";
@@ -139,90 +139,27 @@ export const getAllSections = async (sessionId: string, classId?: string) => {
   return { sections: result };
 };
 
-
-// old class service functions
-export const assignFaculty = async (sectionId: string, facultyId: string) => {
-  const section = await sectionSchema.findById(sectionId);
-
-  if (!section) {
-    throw createHttpError(404, "Section not found");
-  }
-
-  if (section.classTeacher && section.classTeacher.toString() === facultyId) {
-    throw createHttpError(400, "This faculty is already assigned to this Class - section");
-  }
-
-  if (section.classTeacher) {
-    throw createHttpError(400, "This section already has an assigned faculty");
-  }
-  const result = await sectionSchema.findByIdAndUpdate(
-    sectionId,
-    { classTeacher: facultyId },
-    { new: true }
-  );
-
-  return result;
-};
-
-export const removeAssignedTeacher = async (sectionId: string) => {
-  const section = await sectionSchema.findById(sectionId);
-
-  if (!section) {
-    throw createHttpError(404, "Section not found");
-  }
-  if (!section.classTeacher) {
-    throw createHttpError(400, "This section doesn't have an assigned teacher");
-  }
-  const result = await sectionSchema.findByIdAndUpdate(
-    sectionId,
-    { $unset: { classTeacher: 1 } },
-    { new: true }
-  );
-
-  return result;
-};
-
-// old class service functions
-export const createClass = async (data: ClassDto.ICreateClass) => {
-  const { subjects: subjectInputs = [], sections: sectionInputs = [], ...classData } = data;
-
-  let subjectIds: string[] = [];
-  if (subjectInputs.length > 0) {
-    const createdSubjects = await subjectSchema.insertMany(subjectInputs);
-    if (!createdSubjects || createdSubjects.length !== subjectInputs.length) {
-      throw createHttpError(400, "Failed to create some or all subjects");
-    }
-    subjectIds = createdSubjects.map((subject) => subject._id);
-  }
-  const sectionsWithIds = await Promise.all(
-    sectionInputs.map(async (section) => ({
-      ...section,
-      sectionId: await AcademicUtils.generateSectionId(classData.name, section.name)
-    }))
-  );
-
-  const createdSections = await sectionSchema.insertMany(sectionsWithIds);
-  if (!createdSections || createdSections.length !== sectionsWithIds.length) {
-    throw createHttpError(500, "Failed to create some or all sections");
-  }
-  const sectionIds = createdSections.map((section) => section._id);
-  const classId = await AcademicUtils.generateClassId(classData.name);
-  classData.classId = classId;
-  const newClass = await classSchema.create({
-    ...classData,
-    subjects: subjectIds,
-    sections: sectionIds
-  });
-
-  if (!newClass) {
+// class service functions
+export const createClass = async (data: Partial<ClassDto.IClass>) => {
+  const result = await classSchema.create(data);
+  if (!result) {
     throw createHttpError(500, "Failed to create class");
   }
-
-  return newClass;
+  return result;
 };
 
-export const editClass = async (classId: string, data: any) => {
-}
+export const updateClass = async (classId: string, data: Partial<ClassDto.IClass>) => {
+  const classDoc = await classSchema.findByIdAndUpdate(classId, data, { new: true });
+  if (!classDoc) {
+    throw createHttpError(404, "Class not found");
+  }
+  return classDoc;
+};
+
+
+// old class service functions
+
+
 
 export const getAllClass = async (sessionId: string) => {
   const classOrder = Object.values(Enum.ClassName);
@@ -573,6 +510,48 @@ export const getAssignedFaculyIds = async (sessionId: mongoose.Types.ObjectId,
   })
   return Array.from(assignedFacultyIds);
 
+};
+
+// old class service functions
+export const assignFaculty = async (sectionId: string, facultyId: string) => {
+  const section = await sectionSchema.findById(sectionId);
+
+  if (!section) {
+    throw createHttpError(404, "Section not found");
+  }
+
+  if (section.classTeacher && section.classTeacher.toString() === facultyId) {
+    throw createHttpError(400, "This faculty is already assigned to this Class - section");
+  }
+
+  if (section.classTeacher) {
+    throw createHttpError(400, "This section already has an assigned faculty");
+  }
+  const result = await sectionSchema.findByIdAndUpdate(
+    sectionId,
+    { classTeacher: facultyId },
+    { new: true }
+  );
+
+  return result;
+};
+
+export const removeAssignedTeacher = async (sectionId: string) => {
+  const section = await sectionSchema.findById(sectionId);
+
+  if (!section) {
+    throw createHttpError(404, "Section not found");
+  }
+  if (!section.classTeacher) {
+    throw createHttpError(400, "This section doesn't have an assigned teacher");
+  }
+  const result = await sectionSchema.findByIdAndUpdate(
+    sectionId,
+    { $unset: { classTeacher: 1 } },
+    { new: true }
+  );
+
+  return result;
 };
 
 export const createTimeTable = async (timeTableData: ClassDto.ICreateTimeTable) => {

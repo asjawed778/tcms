@@ -115,10 +115,14 @@ export enum FacultyDesignation {
   LAB_ASSISTANT = "Lab Assistant",
 };
 
-export enum FacultyStatus {
+export enum EmployeeStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive"
+  RESIGNED = "Resigned",
+  RETIRED = "Retired",
+  TERMINATED = "Terminated",
+  TRANSFERRED = "Transferred",
 }
+
 
 //  class
 
@@ -185,6 +189,36 @@ export enum PeriodType {
   MEETING = "Meeting",
   OTHER = "Other"
 };
+// classes fee structure enum
+export enum FeeType {
+  TUITION_FEE = "Tuition Fee",
+  ADMISSION_FEE = "Admission Fee",
+  REGISTRATION_FEE = "Registration Fee",
+  EXAM_FEE = "Exam Fee",
+  TRANSPORT_FEE = "Transport Fee",
+  LAB_FEE = "Lab Fee",
+  LIBRARY_FEE = "Library Fee",
+  HOSTEL_FEE = "Hostel Fee",
+  UNIFORM_FEE = "Uniform Fee",
+  OTHER = "Other"
+}
+
+export enum FeeApplicableType {
+  RECURRING = "Recurring",
+  ONE_TIME = "One-Time"
+}
+
+export enum FeeFrequency {
+  MONTHLY = "Monthly",
+  QUARTERLY = "Quarterly",
+  HALF_YEARLY = "Half-Yearly",
+  YEARLY = "Yearly"
+}
+
+export enum ActiveStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive"
+}
 
 // roles permissions and modules enums
 // Operatioin,  Module and SubModule Names for Role-Based Access Control

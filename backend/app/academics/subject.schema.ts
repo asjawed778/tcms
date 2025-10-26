@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { ISubject } from "./class.dto";
+import { ISubject } from "./academic.dto";
 import * as Enum from "../common/utils/enum";
 
 const subjectSchema = new mongoose.Schema<ISubject>({
