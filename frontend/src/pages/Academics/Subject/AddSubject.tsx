@@ -11,7 +11,7 @@ import {
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { subjectSchema } from "../../../../yup";
-import { SubjectRequest } from "../../../../type";
+import { SubjectRequest, SubjectResponse } from "../../../../type";
 import toast from "react-hot-toast";
 import { Box, Grid } from "@mui/material";
 import { useAppSelector } from "@/store/store";
@@ -20,9 +20,8 @@ interface AddSubjectProps {
   open: boolean;
   onClose: () => void;
   refetch?: () => void;
-  subject?: any;
+  subject?: SubjectResponse | null;
 }
-
 const AddSubject: React.FC<AddSubjectProps> = ({
   open,
   onClose,
@@ -36,18 +35,18 @@ const AddSubject: React.FC<AddSubjectProps> = ({
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
 
-  const methods = useForm({
-    resolver: yupResolver(subjectSchema),
+  const methods = useForm<SubjectRequest>({
+    resolver: yupResolver(subjectSchema) as Resolver<SubjectRequest>,
     defaultValues: {
+      sessionId: selectedSession?._id || "",
       name: subject?.name || "",
-      publication: subject?.publication || "",
-      writer: subject?.writer || "",
-      ISBN: subject?.ISBN || "",
+      publication: subject?.publication,
+      writer: subject?.writer,
+      ISBN: subject?.ISBN,
       subjectType: subject?.subjectType ?? undefined,
       subjectCategory: subject?.subjectCategory ?? undefined,
-      syllabus: subject?.syllabus || "",
+      syllabus: subject?.syllabus,
     },
-    // mode: "onChange",
   });
 
   const { handleSubmit, control, reset } = methods;
@@ -56,12 +55,11 @@ const AddSubject: React.FC<AddSubjectProps> = ({
     try {
       const payload = cleanData({
         ...data,
-        sessionId: selectedSession?._id,
-        // ...(isEditMode && { id: subject?._id }),
-      });
+        sessionId: selectedSession?._id as string,
+      }) as SubjectRequest;
       console.log("Subject data: ", payload);
 
-      if (isEditMode) {
+      if (isEditMode && subject) {
         await updateSubject({ payload, subjectId: subject._id }).unwrap();
         toast.success("Subject updated successfully!");
         refetch?.();
@@ -98,21 +96,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-
-          {/* Session */}
-          {/* <Grid item xs={12}>
-            <CustomDropdownField
-              name="sessionId"
-              label="Session"
-              options={sessionOptions}
-              control={control}
-              required
-              error={!!errors.sessionId}
-              helperText={errors.sessionId?.message}
-            />
-          </Grid> */}
-
-          {/* Publication */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <CustomInputField
               name="publication"
@@ -121,8 +104,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               required={false}
             />
           </Grid>
-
-          {/* Writer */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <CustomInputField
               name="writer"
@@ -131,8 +112,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               required={false}
             />
           </Grid>
-
-          {/* ISBN */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <CustomInputField
               name="ISBN"
@@ -141,8 +120,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               required={false}
             />
           </Grid>
-
-          {/* Subject Type */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <CustomDropdownField
               name="subjectType"
@@ -154,8 +131,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-
-          {/* Subject Category */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <CustomDropdownField
               name="subjectCategory"
@@ -167,8 +142,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-
-          {/* Syllabus */}
           <Grid size={{ xs: 12 }}>
             <CustomInputField
               name="syllabus"
@@ -180,7 +153,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
             />
           </Grid>
         </Grid>
-
         <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
           <CustomButton variant="outlined" onClick={onClose}>
             Cancel

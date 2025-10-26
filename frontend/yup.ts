@@ -344,11 +344,7 @@ export const personalDetailsSchema = yup.object({
 export const addressdetailsSchema = yup.object({
   address: yup.object().shape({
     addressLine1: yup.string().required("addressLine1 is required in address"),
-    addressLine2: yup
-      .string()
-      .trim()
-      .optional()
-      .nullable(),
+    addressLine2: yup.string().trim().optional().nullable(),
     city: yup.string().required("City is required "),
     state: yup.string().required("State is required "),
     country: yup.string().required("State is required "),
@@ -679,7 +675,6 @@ export const weeklySchema = yup.object().shape({
 //   });
 // };
 
-
 //  Role and Permission ......................................
 export const createRoleSchema = yup.object({
   name: yup
@@ -719,6 +714,7 @@ export const createRoleSchema = yup.object({
 });
 
 export const subjectSchema = yup.object({
+  sessionId: yup.string().required("Session is required"),
   name: yup.string().required("Subject name is required"),
   publication: yup.string().optional(),
   writer: yup.string().optional(),
@@ -732,4 +728,18 @@ export const subjectSchema = yup.object({
     .oneOf(Object.values(Enum.SubjectCategory))
     .required("Subject category is required"),
   syllabus: yup.string().optional(),
-}); 
+});
+export const addSectionSchema = yup.object({
+  name: yup.string().required("Section name is required").trim(),
+  classId: yup.string().required("Class is required").trim(),
+  classTeacher: yup.string().nullable().notRequired().trim(),
+  capacity: yup
+    .number()
+    .typeError("Capacity must be a number")
+    .positive("Capacity must be positive")
+    .integer("Capacity must be an integer")
+    .nullable()
+    .notRequired(),
+  sessionId: yup.string().required(),
+});
+

@@ -24,11 +24,6 @@ interface Column {
   align?: "left" | "center" | "right";
 }
 
-interface Row {
-  key?: string | number;
-  [key: string]: any;
-}
-
 interface ActionsList {
   action: string;
   label: string;
@@ -36,46 +31,45 @@ interface ActionsList {
   icon?: React.ReactNode;
 }
 
-interface CustomTableProps {
+interface CustomTableProps<T> {
   columns: Column[];
-  rows: Row[];
+  rows: T[];
+  onActionClick?: (action: string, row: T) => void;
+  actionsList?: ActionsList[] | ((row: T) => ActionsList[]);
   totalCount?: number;
   page?: number;
   rowsPerPage?: number;
   onPageChange?: (newPage: number) => void;
   onRowsPerPageChange?: (rowsPerPage: number) => void;
-  onActionClick?: (action: string, row: Row) => void;
-  actionsList?: ActionsList[] | ((row: Row) => ActionsList[]);
   isLoading?: boolean;
   isFetching?: boolean;
   isError?: boolean;
   isSessionNotSelected?: boolean;
 }
 
-const TableWrapper: React.FC<CustomTableProps> = ({
+const TableWrapper = <T extends { [key: string]: any }>({
   columns,
   rows,
+  onActionClick,
+  actionsList,
   totalCount = 0,
   page = 0,
   rowsPerPage = 10,
   onPageChange,
   onRowsPerPageChange,
-  onActionClick,
-  actionsList,
   isLoading = false,
   isFetching = false,
   isError = false,
   isSessionNotSelected,
-}) => {
+}: CustomTableProps<T>) => {
   const { colors } = useAppTheme();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuActions, setMenuActions] = useState<ActionsList[]>([]);
-  const [selectedRow, setSelectedRow] = useState<Row | null>(null);
+  const [selectedRow, setSelectedRow] = useState<T | null>(null);
 
-  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: Row) => {
+  const handleOpenMenu = (event: MouseEvent<HTMLElement>, row: T) => {
     setAnchorEl(event.currentTarget);
     setSelectedRow(row);
-    // Compute actions for this row
     const currentActions =
       typeof actionsList === "function" ? actionsList(row) : actionsList || [];
     setMenuActions(currentActions);
@@ -96,10 +90,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
     () =>
       rows.map((row, index) => {
         const hasActions =
-          (typeof actionsList === "function"
-            ? actionsList(row)
-            : actionsList
-          )?.length;
+          (typeof actionsList === "function" ? actionsList(row) : actionsList)?.length;
 
         return (
           <TableRow key={row.id ?? index} sx={{ "& td": { py: 0.7 } }}>
@@ -110,7 +101,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
             ))}
 
             {hasActions && (
-              <TableCell>
+              <TableCell align="right">
                 <IconButton
                   onClick={(e) => handleOpenMenu(e, row)}
                   sx={{ color: colors.primary }}
@@ -135,7 +126,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
                 {col.label}
               </TableCell>
             ))}
-            {actionsList && <TableCell sx={{ fontWeight: 600 }}>Actions</TableCell>}
+            {actionsList && <TableCell sx={{ fontWeight: 600 }} align="right">Actions</TableCell>}
           </TableRow>
         </TableHead>
 
@@ -202,7 +193,7 @@ const TableWrapper: React.FC<CustomTableProps> = ({
             sx={{ display: "flex", alignItems: "center", gap: 1, color: action.color || "inherit" }}
           >
             {action.icon && <Box>{action.icon}</Box>}
-            <Typography variant="body1">{action.label}</Typography>
+            <Typography variant="body1" align="right">{action.label}</Typography>
           </MenuItem>
         ))}
       </Menu>
