@@ -8,6 +8,7 @@ import * as Enum from "../common/utils/enum";
 import mongoose, { PipelineStage } from "mongoose";
 import * as AcademicUtils from "./academic.utils";
 import admissionSchema from "../student/admission.schema";
+import classFeeStructureSchema from "./feeStructure.schema";
 
 
 // subjects service functions
@@ -156,10 +157,37 @@ export const updateClass = async (classId: string, data: Partial<ClassDto.IClass
   return classDoc;
 };
 
+export const getClassFeeStructure = async (classId: string) => {
+  const result = await classFeeStructureSchema.findOne({ classId, status: Enum.ActiveStatus.ACTIVE });
+  return result;
+};
+
+export const addClassFeeStructure = async (classId: string, data: ClassDto.ICreateClassFeeStructure) => {
+  const classDoc = await classSchema.findById(classId);
+  if (!classDoc) {
+    throw createHttpError(404, "Class Not found");
+  }
+  const result = await classFeeStructureSchema.create({ ...data, session: classDoc.session, classId });
+  if (!result) {
+    throw createHttpError(500, "Something went wrong, try again");
+  }
+  return result;
+};
+
+export const updateClassFeeStructure = async (classId: string, data: Partial<ClassDto.IClassFeeStructure>) => {
+  const classDoc = await classSchema.findById(classId);
+  if (!classDoc) {
+    throw createHttpError(404, "Class Not found");
+  }
+  const result = await classFeeStructureSchema.findOneAndUpdate({ classId }, data, { new: true });
+  if (!result) {
+    throw createHttpError(500, "Something went wrong, try again");
+  }
+  return result;
+};
+
 
 // old class service functions
-
-
 
 export const getAllClass = async (sessionId: string) => {
   const classOrder = Object.values(Enum.ClassName);

@@ -46,13 +46,13 @@ const frequencyWiseSchema = new mongoose.Schema<AcademicDto.IFrequencyWiseStruct
     }
 }, { _id: false });
 
-const feeStructureSchema = new mongoose.Schema<AcademicDto.IFeeStructure>({
+const classFeeStructureSchema = new mongoose.Schema<AcademicDto.IClassFeeStructure>({
     classId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Class",
         required: true,
     },
-    academicSession: {
+    session: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Session",
         required: true,
@@ -72,4 +72,4 @@ const feeStructureSchema = new mongoose.Schema<AcademicDto.IFeeStructure>({
     },
 }, { timestamps: true });
 
-export default mongoose.model<AcademicDto.IFeeStructure>("FeeStructure", feeStructureSchema);
+export default mongoose.model<AcademicDto.IClassFeeStructure>("ClassFeeStructure", classFeeStructureSchema);

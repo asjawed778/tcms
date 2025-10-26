@@ -227,6 +227,7 @@ export const getAllSections = [
 ];
 
 // Class Validation
+// create class : step - 1
 export const createClass = [
     body("name")
         .notEmpty().withMessage("Name is required")
@@ -236,52 +237,62 @@ export const createClass = [
         .notEmpty().withMessage("Session is required")
         .isMongoId().withMessage("Session must be a valid Mongo ID"),
 
-    body("subjects")
-        .optional()
-        .isArray().withMessage("Subjects must be an array")
-        .custom((subjects) => {
-            return subjects.every((id: string) => mongoose.Types.ObjectId.isValid(id));
-        })
-        .withMessage("Each subject must be a valid MongoDB ObjectId"),
-
     body("courseStream")
         .optional()
         .isIn(Object.values(Enum.CourseStream)).withMessage(`Course stream must be one of: ${Object.values(Enum.CourseStream).join(", ")}`),
+];
 
-    body("feeStructure")
-        .optional(),
+// create class : step - 3
+export const addClassFeeStructure = [
+    body("classId")
+        .notEmpty().withMessage("Class ID is required")
+        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 
-    body("feeStructure.monthly.amount")
+    body("session")
+        .notEmpty().withMessage("Academic Session ID is required")
+        .isMongoId().withMessage("Academic Session ID must be a valid Mongo ID"),
+
+    body("effectiveFrom")
+        .notEmpty().withMessage("Effective From date is required")
+        .isISO8601().withMessage("Effective From must be a valid date"),
+
+    body("structures")
+        .isArray({ min: 1 }).withMessage("At least one structure is required"),
+
+    body("structures.*.frequency")
+        .notEmpty().withMessage("Frequency is required")
+        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Frequency type"),
+
+    body("structures.*.totalAmount")
+        .notEmpty().withMessage("Total amount is required")
+        .isNumeric().withMessage("Total amount must be a number"),
+
+    body("structures.*.feeDetails")
+        .isArray({ min: 1 }).withMessage("Fee details must be an array with at least one item"),
+
+    body("structures.*.feeDetails.*.feeType")
+        .notEmpty().withMessage("Fee type is required")
+        .isIn(Object.values(Enum.FeeType)).withMessage("Invalid Fee type"),
+
+    body("structures.*.feeDetails.*.amount")
+        .notEmpty().withMessage("Amount is required")
+        .isNumeric().withMessage("Amount must be a number"),
+
+    body("structures.*.feeDetails.*.isOptional")
         .optional()
-        .isNumeric().withMessage("Monthly amount must be a number"),
+        .isBoolean().withMessage("isOptional must be a boolean value"),
 
-    body("feeStructure.monthly.total")
+    body("structures.*.feeDetails.*.applicableType")
         .optional()
-        .isNumeric().withMessage("Monthly total must be a number"),
+        .isIn(Object.values(Enum.FeeApplicableType)).withMessage("Invalid Applicable Type"),
 
-    body("feeStructure.quarterly.amount")
+    body("structures.*.feeDetails.*.applicableFrequency")
         .optional()
-        .isNumeric().withMessage("Quarterly amount must be a number"),
+        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Applicable Frequency"),
 
-    body("feeStructure.quarterly.total")
+    body("remarks")
         .optional()
-        .isNumeric().withMessage("Quarterly total must be a number"),
-
-    body("feeStructure.halfYearly.amount")
-        .optional()
-        .isNumeric().withMessage("Half-yearly amount must be a number"),
-
-    body("feeStructure.halfYearly.total")
-        .optional()
-        .isNumeric().withMessage("Half-yearly total must be a number"),
-
-    body("feeStructure.yearly.amount")
-        .optional()
-        .isNumeric().withMessage("Yearly amount must be a number"),
-
-    body("feeStructure.yearly.total")
-        .optional()
-        .isNumeric().withMessage("Yearly total must be a number"),
+        .isString().withMessage("Remarks must be a string"),
 ];
 
 export const updateClass = [
@@ -301,48 +312,66 @@ export const updateClass = [
         .optional()
         .isIn(Object.values(Enum.CourseStream))
         .withMessage(`Course stream must be one of: ${Object.values(Enum.CourseStream).join(", ")}`),
-
-    body("feeStructure")
-        .optional()
-        .isObject().withMessage("Fee structure must be an object"),
-
-    body("feeStructure.monthly.amount")
-        .optional()
-        .isNumeric().withMessage("Monthly amount must be a number"),
-
-    body("feeStructure.monthly.total")
-        .optional()
-        .isNumeric().withMessage("Monthly total must be a number"),
-
-    body("feeStructure.quarterly.amount")
-        .optional()
-        .isNumeric().withMessage("Quarterly amount must be a number"),
-
-    body("feeStructure.quarterly.total")
-        .optional()
-        .isNumeric().withMessage("Quarterly total must be a number"),
-
-    body("feeStructure.halfYearly.amount")
-        .optional()
-        .isNumeric().withMessage("Half-yearly amount must be a number"),
-
-    body("feeStructure.halfYearly.total")
-        .optional()
-        .isNumeric().withMessage("Half-yearly total must be a number"),
-
-    body("feeStructure.yearly.amount")
-        .optional()
-        .isNumeric().withMessage("Yearly amount must be a number"),
-
-    body("feeStructure.yearly.total")
-        .optional()
-        .isNumeric().withMessage("Yearly total must be a number"),
 ];
 
 export const getAllClass = [
     query("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
+];
+
+export const updateClassFeeStructure = [
+    param("classId")
+        .notEmpty().withMessage("Class id required for updating")
+        .isMongoId().withMessage("ClassId must be a valid mongo Id"),
+
+    body("effectiveFrom")
+        .optional()
+        .isISO8601().withMessage("Effective From must be a valid date"),
+
+    body("structures")
+        .optional()
+        .isArray({ min: 1 }).withMessage("Structures must be a non-empty array if provided"),
+
+    body("structures.*.frequency")
+        .optional()
+        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Frequency type"),
+
+    body("structures.*.totalAmount")
+        .optional()
+        .isNumeric().withMessage("Total amount must be a number"),
+
+    body("structures.*.feeDetails")
+        .optional()
+        .isArray({ min: 1 }).withMessage("Fee details must be an array with at least one item"),
+
+    body("structures.*.feeDetails.*.feeType")
+        .optional()
+        .isIn(Object.values(Enum.FeeType)).withMessage("Invalid Fee type"),
+
+    body("structures.*.feeDetails.*.amount")
+        .optional()
+        .isNumeric().withMessage("Amount must be a number"),
+
+    body("structures.*.feeDetails.*.isOptional")
+        .optional()
+        .isBoolean().withMessage("isOptional must be a boolean value"),
+
+    body("structures.*.feeDetails.*.applicableType")
+        .optional()
+        .isIn(Object.values(Enum.FeeApplicableType)).withMessage("Invalid Applicable Type"),
+
+    body("structures.*.feeDetails.*.applicableFrequency")
+        .optional()
+        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Applicable Frequency"),
+
+    body("remarks")
+        .optional()
+        .isString().withMessage("Remarks must be a string"),
+
+    body("status")
+        .optional()
+        .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid Status value"),
 ];
 
 // old class validation

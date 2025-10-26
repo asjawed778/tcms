@@ -16,7 +16,7 @@ router
         AcademicValidation.createSubject,
         catchError,
         ClassControler.createSubject
-    ) 
+    )
     .post(
         "/subject/bulk",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
@@ -83,8 +83,6 @@ router
         ClassControler.getAllSections
     )
 
-
-
     // class routes
     .post(
         "/class",
@@ -100,6 +98,18 @@ router
         catchError,
         ClassControler.updateClass
     )
+    .post("/class/:classId/fee-structure",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
+        AcademicValidation.addClassFeeStructure,
+        catchError,
+        ClassControler.addClassFeeStructure
+    )
+    .put("/class/:classId/fee-structure",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
+        AcademicValidation.updateClassFeeStructure,
+        catchError,
+        ClassControler.updateClassFeeStructure
+    )
     .get(
         "/class/all",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
@@ -114,6 +124,15 @@ router
         catchError,
         ClassControler.getClassById
     )
+
+
+
+
+
+
+
+
+    // old 
     .patch(
         "/assign-faculty/:sessionId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),

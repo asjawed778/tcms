@@ -89,13 +89,11 @@ export const getAllSections = asyncHandler(async (req: Request, res: Response) =
 
 // class controllers
 export const createClass = asyncHandler(async (req: Request, res: Response) => {
-    const {name, session, subjects, courseStream} = req.body;
-
+    const { name, session, courseStream } = req.body;
     const isSessionCurrentOrFuture = await SessionService.isSessionCurrentOrFuture(session);
     if (!isSessionCurrentOrFuture) {
         throw createHttpError(400, "Class can create for only current and future sessions");
     }
-
     const isClassAlreadyExists = await AcademicUtils.isClassAlreadyExists(name, session);
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
@@ -103,20 +101,42 @@ export const createClass = asyncHandler(async (req: Request, res: Response) => {
     const data = {
         name,
         session,
-        subjects,
         courseStream
     }
-
     const result = await AcademicService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));
 });
 
 export const updateClass = asyncHandler(async (req: Request, res: Response) => {
     const { classId } = req.params;
-    const data = req.body;
-
+    const { name, session, subjects, courseStream } = req.body;
+    const data = {
+        name, session, subjects, courseStream
+    };
     const result = await AcademicService.updateClass(classId, data);
-    res.send(createResponse(result, "Class edited successfully"));
+    res.send(createResponse(result, "Class Updated successfully"));
+});
+
+export const addClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body;
+    const classId = req.params.classId;
+    const feeStr = await AcademicService.getClassFeeStructure(classId);
+    if (feeStr) {
+        throw createHttpError(409, "This Class have already Active Fee Structure");
+    }
+    const result = await AcademicService.addClassFeeStructure(classId, data);
+    res.send(createResponse(result, "Fee Structure Added successfully"));
+});
+
+export const updateClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body;
+    const classId = req.params.classId;
+    const feeStr = await AcademicService.getClassFeeStructure(classId);
+    if (!feeStr) {
+        throw createHttpError(409, "This Class have not Active Fee Structure");
+    }
+    const result = await AcademicService.updateClassFeeStructure(classId, data);
+    res.send(createResponse(result, "Fee Structure Updated successfully"));
 });
 
 // olda class controllers

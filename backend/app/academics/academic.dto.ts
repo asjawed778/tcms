@@ -2,13 +2,6 @@ import { BaseSchema } from "../common/dto/base.dto";
 import * as Enum from "../common/utils/enum";
 import { Types } from "mongoose";
 
-export interface FeeStructure {
-    monthly: { amount: number; total: number };
-    quarterly: { amount: number; total: number };
-    halfYearly: { amount: number; total: number };
-    yearly: { amount: number; total: number };
-}
-
 export interface ISection extends BaseSchema {
     name: string;
     sectionId: string;
@@ -41,7 +34,6 @@ export interface IClass extends BaseSchema {
     session: Types.ObjectId;
     subjects: Types.ObjectId[];
     courseStream?: Enum.CourseStream;
-    feeStructure: FeeStructure;
     deleted: boolean;
 }
 export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "deleted" | "_id" | "createdAt" | "updatedAt"> {
@@ -96,11 +88,13 @@ export interface IFrequencyWiseStructure {
     totalAmount: number;
 }
 
-export interface IFeeStructure extends BaseSchema {
+export interface IClassFeeStructure extends BaseSchema {
     classId: Types.ObjectId;
-    academicSession: Types.ObjectId;
+    session: Types.ObjectId;
     effectiveFrom: Date;
     structures: IFrequencyWiseStructure[];
     remarks?: string;
     status?: Enum.ActiveStatus;
 }
+
+export interface ICreateClassFeeStructure extends Omit<IClassFeeStructure, "_id" | "createdAt" | "updatedAt"> { }
