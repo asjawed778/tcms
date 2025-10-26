@@ -18,6 +18,7 @@ import {
   FieldValues,
   Path,
 } from "react-hook-form";
+import { Colors } from "@/theme/colors";
 
 interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   extends Omit<TextFieldProps, "name" | "label" | "onChange" | "value"> {
@@ -41,21 +42,48 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   maxValue?: number;
 }
 
-const StyledTextField = styled(TextField)(({ theme }) => ({
-  "& .MuiOutlinedInput-root": {
-    borderRadius: "8px",
-    "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      borderColor: theme.palette.primary.main,
-      borderWidth: 1.5,
+const StyledTextField = styled(TextField)(({ theme }) => {
+  const palette = Colors[theme.palette.mode];
+  return {
+    "& .MuiOutlinedInput-root": {
+      backgroundColor: palette.inputBackground,
+      borderRadius: "8px",
+      transition: "all 0.2s ease-in-out",
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder,
+      },
+       "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder, 
+      },
+      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputFocusBorder,
+        borderWidth: "1.5px",
+      },
+      "&.Mui-focused": {
+        boxShadow: `0 0 6px ${theme.palette.primary.main}`,
+      },
+      "& input": {
+        borderRadius: "8px",
+        color: palette.inputText,
+        backgroundColor: palette.inputBackground,
+        fontSize: "15px",
+        padding: "10px 12px",
+        "::placeholder": {
+          color: palette.inputPlaceholder,
+          opacity: 1,
+        },
+      },
     },
-    "& input": {
-      padding: "8px 10px",
-      fontSize: "15px",
+    "& .MuiInputLabel-root": {
+      color: palette.inputLabel,
     },
-  },
-}));
+    "& .MuiInputLabel-root.Mui-focused": {
+      color: palette.inputFocus,
+    },
+  };
+});
 const Label = styled("label")<{ error?: boolean }>(({ theme, error }) => ({
-  fontSize: "0.875rem",
+  fontSize: "14px",
   marginBottom: 1,
   display: "inline-block",
   color: error ? theme.palette.error.main : theme.palette.text.primary,
@@ -64,7 +92,7 @@ const Label = styled("label")<{ error?: boolean }>(({ theme, error }) => ({
 function CustomInputField<T extends FieldValues = FieldValues>({
   name,
   label,
-  labelPosition = "inside",
+  labelPosition = "outside",
   placeholder,
   type = "text",
   size = "small",
@@ -104,7 +132,7 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   ) => (
     <Box>
       {labelPosition === "outside" && (
-        <Label htmlFor={name} error={!!error} sx={{ fontSize: "15px" }}>
+        <Label htmlFor={name} error={!!error} sx={{ fontSize: "14px", pb: "4px" }}>
           {label}{" "}
           {required && (
             <Box component="span" sx={{ color: theme.palette.error.main }}>

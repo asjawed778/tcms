@@ -84,12 +84,12 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     buttonHover: "#68809c", 
 
     // Input & forms
-    inputBackground: "#FFFFFF",
+    inputBackground: "#F7F7F7",
     inputText: "#6a6c6e",
-    inputBorder: "#e6e9ed",
+    inputBorder: "#E0E0E0",
     inputFocusBorder: "#0173f5",
-    inputLabel: "#0173f5", 
-    inputPlaceholder: "#898d8f",
+    inputLabel: "#1C1C1C", 
+    inputPlaceholder: "#6E6E6E",
     inputHover: "#1976d2",
     inputFocus: "#1976d2",
 
@@ -143,12 +143,12 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     buttonHover: "#1364bf", 
 
     // Input & Forms
-    inputBackground: "#051217",
+    inputBackground: "#F7F7F7",
     inputText: "#d6ced2",
-    inputBorder: "#d6ced2",
+    inputBorder: "#E0E0E0",
     inputFocusBorder: "#0173f5",
-    inputLabel: "#d6ced2", 
-    inputPlaceholder: "#d6ced2",
+    inputLabel: "#1C1C1C", 
+    inputPlaceholder: "#6E6E6E",
     inputHover: "#1976d2",
     inputFocus: "#d6ced2",
 

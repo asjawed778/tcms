@@ -31,6 +31,7 @@ const PersonalDetails: React.FC = () => {
               name="name"
               label="Student Name"
               placeholder="Enter student full name"
+              labelPosition="outside"
             />
           </Grid>
           <Grid size={{ xs: 12 }}>

@@ -32,7 +32,7 @@ const createAppTheme = (mode: 'light' | 'dark') => {
       },
     },
     typography: {
-      fontFamily: 'Inter, sans-serif',
+      fontFamily: 'MyCustomFont,  Arial, sans-serif',
     },
     components: {
       MuiButton: {
