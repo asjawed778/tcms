@@ -20,16 +20,6 @@ export interface ISection extends BaseSchema {
 }
 export interface ICreateSection extends Omit<ISection, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
 
-export interface IClass extends BaseSchema {
-    name: string;
-    classId: string;
-    session: Types.ObjectId;
-    subjects: Types.ObjectId[];
-    courseStream?: Enum.CourseStream;
-    feeStructure: FeeStructure;
-    deleted: boolean;
-}
-
 
 export interface ISubject extends BaseSchema {
     name: string;
@@ -45,6 +35,15 @@ export interface ISubject extends BaseSchema {
 
 export interface ICreateSubject extends Omit<ISubject, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
 
+export interface IClass extends BaseSchema {
+    name: string;
+    classId: string;
+    session: Types.ObjectId;
+    subjects: Types.ObjectId[];
+    courseStream?: Enum.CourseStream;
+    feeStructure: FeeStructure;
+    deleted: boolean;
+}
 export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "deleted" | "_id" | "createdAt" | "updatedAt"> {
     subjects?: ICreateSubject[];
     sections?: ICreateSection[];
