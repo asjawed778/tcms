@@ -1,5 +1,4 @@
 import asyncHandler from "express-async-handler";
-import * as UserService from "../user/user.service";
 import { type Request, type Response } from "express";
 import createHttpError from "http-errors";
 import * as FacultyService from "./employee.service";
@@ -8,6 +7,33 @@ import * as EmployeeService from "../employee1/employee.service";
 import * as AddressService from "../common/services/address.service";
 import mongoose, { Types } from "mongoose";
 import * as Enum from "../common/utils/enum";
+
+// new controllers
+export const createEmployee = asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body;
+    const empData = {
+        name: data.name,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        email: data.email,
+        phoneNumber: data.phoneNumber,
+        gender: data.gender,
+        dob: data.dob,
+        address: {
+            addressLine1: data.address?.addressLine1,
+            addressLine2: data.address?.addressLine2,
+            city: data.address?.city,
+            state: data.address?.state,
+            pincode: data.address?.pincode,
+        },
+        photo: data.photo,
+        aadhaarNumber: data.aadhaarNumber,
+    };
+
+});
+
+// old controllers
+
 
 // export const createFaculty = asyncHandler(async (req: Request, res: Response) => {
 //     const session = await mongoose.startSession();
@@ -80,7 +106,7 @@ export const getAllFaculty = asyncHandler(async (req: Request, res: Response) =>
 });
 
 export const getFacultyById = asyncHandler(async (req: Request, res: Response) => {
-    const {facultyId} = req.params;
+    const { facultyId } = req.params;
     const faculty = await FacultyService.getFacultyById(facultyId);
     if (!faculty) {
         throw createHttpError(404, "Faculty not found");
@@ -90,7 +116,7 @@ export const getFacultyById = asyncHandler(async (req: Request, res: Response) =
 
 export const getUnassignedFaculty = asyncHandler(async (req: Request, res: Response) => {
     const { sessionId } = req.params;
-    const {day, startTime, endTime} = req.body;
+    const { day, startTime, endTime } = req.body;
 
     const unassignedFaculty = await FacultyService.getUnassignedFaculty(new Types.ObjectId(sessionId), day, startTime, endTime);
     res.send(createResponse(unassignedFaculty, "Unassigned faculty fetched successfully"));

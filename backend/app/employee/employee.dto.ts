@@ -15,23 +15,23 @@ export interface IEmployee extends BaseSchema {
     fatherName?: string;
     motherName?: string;
 
-    designation: Enum.FacultyDesignation;
-    expertise: string[];
-    qualification: string;
+    designation?: Enum.FacultyDesignation;
+    expertise?: string[];
+    qualification?: string;
     certification?: string;
 
-    phoneNumber: string;
-    gender: Enum.Gender;
-    dob: Date;
+    phoneNumber?: string;
+    gender?: Enum.Gender;
+    dob?: Date;
     photo?: string;
     aadhaarNumber?: number;
-    address: Types.ObjectId
-    dateOfJoining: Date;
+    address?: Types.ObjectId
+    dateOfJoining?: Date;
     experience?: WorkExperience[];
-    documents: IDocument[];
+    documents?: IDocument[];
 
     // Job Details
-    status: Enum.EmployeeStatus;
+    status?: Enum.EmployeeStatus;
 };
 
 export interface ICreateFaculty extends Omit<IEmployee, "createdAt" | "updatedAt" | "_id"> { };

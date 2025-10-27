@@ -2,7 +2,6 @@
 export enum UserRole {
   ADMIN = "Admin",
   FACULTY = "Faculty",
-  ADMINISTRATOR = "Administrator",
   USER = "User",
 }
 
@@ -121,6 +120,7 @@ export enum EmployeeStatus {
   RETIRED = "Retired",
   TERMINATED = "Terminated",
   TRANSFERRED = "Transferred",
+  DRAFT = "Draft",
 }
 
 

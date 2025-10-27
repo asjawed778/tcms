@@ -25,16 +25,15 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
     },
     designation: {
         type: String,
-        enum: Object.values(Enum.FacultyDesignation),
-        required: true,
+        required: false,
     },
     expertise: {
         type: [String],
-        required: true,
+        required: false,
     },
     qualification: {
         type: String,
-        required: true,
+        required: false,
     },
     certification: {
         type: String,
@@ -42,16 +41,16 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
     },
     phoneNumber: {
         type: String,
-        required: true
+        required: false
     },
     address: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Address",
-        required: true,
+        required: false,
     },
     dateOfJoining: {
         type: Date,
-        required: true
+        required: false
     },
     experience: [{
         organisationName: {
@@ -73,7 +72,7 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
     },
     dob: {
         type: Date,
-        required: true
+        required: false
     },
     photo: {
         type: String,
@@ -101,7 +100,7 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
     status: {
         type: String,
         enum: Object.values(Enum.EmployeeStatus),
-        default: Enum.EmployeeStatus.ACTIVE,
+        default: Enum.EmployeeStatus.DRAFT,
     }
 }, { timestamps: true });
 
