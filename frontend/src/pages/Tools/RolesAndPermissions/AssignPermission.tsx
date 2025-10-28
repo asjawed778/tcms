@@ -36,9 +36,11 @@ interface AssignPermissionProps {
   onClose: () => void;
   refetch?: () => void;
   onBack?: () => void;
+  title?: string;
 }
 
 const AssignPermission: React.FC<AssignPermissionProps> = ({
+  title,
   role,
   onClose,
   refetch,
@@ -136,10 +138,11 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
 
   return (
     <Box display="flex" flexDirection="column" gap={3}>
-      <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
-        Update Permissions - {role?.name}
+      {/* {title && (
+        <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
+        {title}
       </Typography>
-
+      )} */}
       {permissions.map((module) => (
         <Paper
           key={module.name}

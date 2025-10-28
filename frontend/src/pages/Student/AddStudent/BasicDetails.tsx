@@ -19,10 +19,9 @@ const PersonalDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={600}>
+        <Typography fontWeight={600} sx={{fontSize: "18px"}}>
           Basic Details
         </Typography>
-      <Divider  />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <Grid container spacing={3}>

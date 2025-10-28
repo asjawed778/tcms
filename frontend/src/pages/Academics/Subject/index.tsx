@@ -29,7 +29,7 @@ const subjectColumns = [
 ];
 const Subject = () => {
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(50);
+  const [limit, setLimit] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [classId, setClassId] = useState();
   const [openAddSubject, setOpenAddSubject] = useState(false);
@@ -164,17 +164,16 @@ const Subject = () => {
   };
   return (
     <>
-      <Box sx={{ width: "100%", p: 1, mt: 1 }}>
+      <Box sx={{ width: "100%", mt: "24px"}}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             gap: 2,
-            mb: 1,
           }}
         >
-          <CustomSearchField onSearch={setSearchQuery} />
+          <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}} />
           <Box
             sx={{
               display: "flex",
@@ -192,6 +191,7 @@ const Subject = () => {
               value={classId}
               onChange={handleChange}
               options={classOptions}
+              labelPosition="inside"
             />
             {can(
               ModuleName.ACADEMICS,
@@ -200,7 +200,6 @@ const Subject = () => {
             ) && (
               <CustomButton
                 label="Add Subject"
-                variant="outlined"
                 startIcon={<Add />}
                 onClick={handleAddSubject}
               />
@@ -238,18 +237,20 @@ const Subject = () => {
             columns={subjectColumns}
             rows={subjectData?.data?.subjects || []}
             totalCount={subjectData?.data?.totalDoc || 0}
-            page={page - 1}
+            page={page}
             rowsPerPage={limit}
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
             onActionClick={handleActionClick}
-            actionsList={actionsList}
+            // actionsList={actionsList}
+            actions={actionsList}
             isFetching={subjectFetching}
             isError={subjectError}
-            isSessionNotSelected={!selectedSession?._id}
+            paginationType="table"
+            // isSessionNotSelected={!selectedSession?._id}
           />
         ) : (
-          <Grid container spacing={2}>
+          <Grid container spacing={2} mt="24px">
             {subjectData?.data?.subjects?.map((subject) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={subject._id}>
                 <SubjectCard

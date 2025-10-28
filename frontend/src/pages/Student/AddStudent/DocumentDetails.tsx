@@ -31,10 +31,9 @@ const DocumentDetails: React.FC = () => {
   return (
     <Box width="100%">
       <Grid container spacing={2}>
-        <Typography variant="h6" gutterBottom fontWeight={600}>
+        <Typography sx={{fontSize: "18px", fontWeight: 600}}>
           Upload Supporting Documents
         </Typography>
-        <Divider sx={{ mb: 3 }} />
         {fields.map((field, index) => (
           <Grid
             key={field.id}
@@ -44,7 +43,7 @@ const DocumentDetails: React.FC = () => {
               borderRadius: 2,
               p: 2,
               position: "relative",
-              borderColor: "grey.500",
+              borderColor: "grey.300",
             }}
           >
             {index > 0 && (
@@ -66,7 +65,6 @@ const DocumentDetails: React.FC = () => {
                   label="Document Name: "
                   placeholder="Enter Document Name"
                   control={control}
-                  margin="normal"
                   required={false}
                 />
 
@@ -75,11 +73,10 @@ const DocumentDetails: React.FC = () => {
                   label="Document Number"
                   placeholder="Enter Document Number"
                   control={control}
-                  margin="normal"
                   required={false}
                 />
               </Grid>
-              <Grid size={{ xs: 12, md: 6 }} sx={{ mt: 2 }}>
+              <Grid size={{ xs: 12, md: 6 }} sx={{ mt: 4 }}>
                 <FileUploader
                   name={`documents.${index}.url`}
                   control={control}

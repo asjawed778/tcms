@@ -1,7 +1,6 @@
 import React, { ReactNode, forwardRef } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   IconButton,
   useMediaQuery,
@@ -21,7 +20,6 @@ const SlideUpTransition = forwardRef(function SlideUpTransition(
 ) {
   return <Slide direction="up" ref={ref} {...props} timeout={400} />;
 });
-
 const ZoomTransition = forwardRef(function ZoomTransition(
   props: ZoomProps & { children?: ReactNode },
   ref: React.Ref<unknown>
@@ -46,7 +44,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   onClose,
   title,
   children,
-  width = 400,
+  width = 500,
   height = "auto",
   closeIcon = true,
   allowOutsideClickMobile = false,
@@ -80,58 +78,81 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
       slotProps={{
         paper: {
           sx: {
-            position: "relative",
             width: isMobile ? "100%" : width,
             height: isMobile ? "auto" : height,
             maxWidth: "100%",
             bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: isMobile ? "16px 16px 0 0" : 2,
-            mx: isMobile ? 0 : 2,
+            boxShadow: "0 4px 20px rgb(0,0,0,0.1)",
+            borderRadius: isMobile ? "16px 16px 0 0" : "16px",
+            p: "28px",
             alignSelf: isMobile ? "flex-end" : "center",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            maxHeight: isMobile ? "80vh" : "90vh",
+            // maxHeight: isMobile ? "80vh" : "90vh",
+            maxHeight: isMobile ? "80%" : "90%",
             transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
           },
         },
       }}
     >
-      {closeIcon && !isMobile && (
-        <IconButton
-          aria-label="Close"
-          onClick={(e) => onClose?.(e, "escapeKeyDown")}
-          sx={{
-            position: "absolute",
-            top: 2,
-            right: 2,
-            color: "text.secondary",
-            "&:hover": {
-              color: "error.main",
-            },
-            zIndex: 10,
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      )}
-
-      {title && (
-        <DialogTitle
-          id="dialog-title"
-          sx={{ py: 1, textAlign: "center" }}
-          component="div"
-        >
-          <Typography fontWeight="bold" variant="h6" component="h2">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: title ? "space-between" : "flex-end",
+          px: "4px",
+        }}
+      >
+        {title && (
+          <Typography fontWeight="bold" component="h2" fontSize="24px">
             {title}
           </Typography>
-        </DialogTitle>
-      )}
-      <DialogContent id="dialog-description" sx={{ overflowY: "auto", p: 0 }}>
-        <Box px={2} my={1.5}>
-          {open && children}
-        </Box>
+        )}
+        {closeIcon && (
+          <IconButton
+            aria-label="Close"
+            onClick={(e) => onClose?.(e, "escapeKeyDown")}
+            sx={{
+              color: "text.secondary",
+              "&:hover": {
+                color: "error.main",
+              },
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        )}
+      </Box>
+      <DialogContent
+        id="dialog-description"
+        sx={{
+          pt: "32px",
+          px: "4px",
+          pb: 0,
+          overflowY: "auto",
+          "&::-webkit-scrollbar": {
+            width: 8,
+          },
+          "&::-webkit-scrollbar-track": {
+            background: "transparent",
+            borderRadius: 4,
+          },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(0,0,0,0.2)",
+            borderRadius: 4,
+            border: "2px solid transparent",
+            backgroundClip: "content-box",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "rgba(0,0,0,0.35)",
+            backgroundClip: "content-box",
+          },
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(0,0,0,0.2) transparent",
+        }}
+      >
+        {open && children}
       </DialogContent>
     </Dialog>
   );

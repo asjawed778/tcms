@@ -177,8 +177,8 @@ const AddStudent = () => {
   };
 
   return (
-    <Box>
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ my: 2 }}>
+    <Box p={3}>
+      <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step, index) => (
           <Step key={index} onClick={() => handleStepClick(index)}>
             <StepLabel>{step.label}</StepLabel>
@@ -188,17 +188,17 @@ const AddStudent = () => {
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box p={1}>
-            <Paper sx={{ width: "100%" }}>
-              <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+          <Box>
+            <Box sx={{ width: "100%", bgcolor: "#fff", borderRadius: "8px", mt: 1 }}>
+              <CardContent>
                 <Box>
                   <StepComponent />
                 </Box>
               </CardContent>
-            </Paper>
+            </Box>
 
             <Box
-              mt={4}
+              mt={2}
               display="flex"
               justifyContent="space-between"
               gap={2}

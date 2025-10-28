@@ -13,31 +13,31 @@ export const sidebarItems: SidebarItem[] = [
   {
     label: "Dashboard",
     module: ModuleName.DASHBOARD,
-    icon: <Icons.Dashboard />,
+    icon: <Icons.DashboardOutlined />,
     path: "/dashboard",
   },
   {
     label: "Faculty",
     module: ModuleName.Employee,
-    icon: <Icons.People />,
+    icon: <Icons.PeopleOutline />,
     path: "/dashboard/faculty",
   },
   {
     label: "Students",
     module: ModuleName.STUDENTS,
-    icon: <Icons.Person />,
+    icon: <Icons.PersonOutline />,
     path: "/dashboard/student",
   },
   {
   label: "Academics",
   module: ModuleName.ACADEMICS,
-  icon: <Icons.School />,
+  icon: <Icons.SchoolOutlined />,
   path: "/dashboard/academics",
 },
   {
     label: "Administration",
     module: ModuleName.ADMINISTRATION,
-    icon: <Icons.AdminPanelSettings />,
+    icon: <Icons.AdminPanelSettingsOutlined />,
     path: "/dashboard/administration",
 },
 ];

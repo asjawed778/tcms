@@ -84,7 +84,7 @@ const StyledTextField = styled(TextField)(({ theme }) => {
 });
 const Label = styled("label")<{ error?: boolean }>(({ theme, error }) => ({
   fontSize: "14px",
-  marginBottom: 1,
+  marginBottom: "4px",
   display: "inline-block",
   color: error ? theme.palette.error.main : theme.palette.text.primary,
 }));

@@ -95,8 +95,8 @@ const Student: React.FC = () => {
     setPage(0);
   };
   return (
-    <Box p={1}>
-      <Box sx={{ width: "100%", mb: 2 }}>
+    <Box p={3}>
+      <Box sx={{ width: "100%" }}>
         <Box
           sx={{
             display: "flex",
@@ -107,7 +107,9 @@ const Student: React.FC = () => {
           }}
         >
           <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
-            <CustomSearchField onSearch={setSearchQuery} />
+            <CustomSearchField onSearch={setSearchQuery} 
+            sx={{bgcolor: "#fff"}}
+            />
           </Box>
           <Box
             sx={{
@@ -126,6 +128,7 @@ const Student: React.FC = () => {
               value={status}
               onChange={handleChange}
               options={[{ label: "All", value: "All" }]}
+              labelPosition="inside"
             />
           </Box>
           {/* {can(ModuleName.STUDENTS, null, Operation.CREATE) && (

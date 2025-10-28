@@ -80,10 +80,9 @@ const PreviousSchoolDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={600}>
+        <Typography sx={{fontSize: "18px", fontWeight: 600}}>
           Addmission Details
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
@@ -117,10 +116,9 @@ const PreviousSchoolDetails: React.FC = () => {
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6">
+        <Typography sx={{fontSize: "16px", fontWeight: 600}}>
           Previous School Details (if applicable)
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
