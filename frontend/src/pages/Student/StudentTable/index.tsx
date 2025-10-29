@@ -9,7 +9,6 @@ import {
   TablePagination,
   Menu,
   MenuItem,
-  Paper,
   CircularProgress,
   Box,
   Typography,

@@ -183,7 +183,7 @@ console.log("section: ", sectionData);
             mb: 1,
           }}
         >
-          <CustomSearchField onSearch={setSearchQuery} />
+          <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}}/>
           <Box
             sx={{
               display: "flex",

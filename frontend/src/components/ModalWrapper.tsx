@@ -7,10 +7,9 @@ import {
   useTheme,
   Slide,
   SlideProps,
-  ZoomProps,
+  Grow,
   Box,
   Typography,
-  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -20,8 +19,23 @@ const SlideUpTransition = forwardRef(function SlideUpTransition(
 ) {
   return <Slide direction="up" ref={ref} {...props} timeout={400} />;
 });
+
+const SlideRightTransition = forwardRef(function SlideRightTransition(
+  props: SlideProps & { children?: ReactNode },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="left" ref={ref} {...props} timeout={400} />;
+});
+
+const SlideLeftTransition = forwardRef(function SlideLeftTransition(
+  props: SlideProps & { children?: ReactNode },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="right" ref={ref} {...props} timeout={400} />;
+});
+
 const ZoomTransition = forwardRef(function ZoomTransition(
-  props: ZoomProps & { children?: ReactNode },
+  props: SlideProps & { children?: ReactNode },
   ref: React.Ref<unknown>
 ) {
   return <Grow ref={ref} {...props} timeout={400} />;
@@ -37,6 +51,7 @@ interface ModalWrapperProps {
   closeIcon?: boolean;
   allowOutsideClickMobile?: boolean;
   allowOutsideClickDesktop?: boolean;
+  position?: "center" | "right" | "left";
 }
 
 const ModalWrapper: React.FC<ModalWrapperProps> = ({
@@ -49,6 +64,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   closeIcon = true,
   allowOutsideClickMobile = false,
   allowOutsideClickDesktop = false,
+  position = "center",
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -64,13 +80,48 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     onClose?.(event, reason);
   };
 
+  const TransitionComponent = isMobile
+    ? SlideUpTransition
+    : position === "right"
+    ? SlideRightTransition
+    : position === "left"
+    ? SlideLeftTransition
+    : ZoomTransition;
+
+  const positionStyles = !isMobile
+    ? {
+        center: {
+          alignSelf: "center",
+          mx: "auto",
+          borderRadius: "16px",
+          height,
+        },
+        right: {
+          ml: "auto",
+          mr: 0,
+          height: "100%",
+          borderRadius: "16px 0 0 16px",
+        },
+        left: {
+          mr: "auto",
+          ml: 0,
+          height: "100%",
+          borderRadius: "0 16px 16px 0",
+        },
+      }[position]
+    : {
+        alignSelf: "flex-end",
+        borderRadius: "16px 16px 0 0",
+        height: "auto",
+      };
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       fullScreen={isMobile}
       scroll="paper"
-      TransitionComponent={isMobile ? SlideUpTransition : ZoomTransition}
+      TransitionComponent={TransitionComponent}
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       aria-modal="true"
@@ -78,20 +129,19 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
       slotProps={{
         paper: {
           sx: {
-            width: isMobile ? "100%" : width,
-            height: isMobile ? "auto" : height,
+            width: isMobile
+              ? "100%" : width,
             maxWidth: "100%",
             bgcolor: "background.paper",
             boxShadow: "0 4px 20px rgb(0,0,0,0.1)",
-            borderRadius: isMobile ? "16px 16px 0 0" : "16px",
             p: "28px",
-            alignSelf: isMobile ? "flex-end" : "center",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            // maxHeight: isMobile ? "80vh" : "90vh",
-            maxHeight: isMobile ? "80%" : "90%",
-            transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
+            maxHeight: isMobile ? "80%" : "100%",
+            transition:
+              "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
+            ...positionStyles,
           },
         },
       }}
@@ -131,13 +181,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
           px: "4px",
           pb: 0,
           overflowY: "auto",
-          "&::-webkit-scrollbar": {
-            width: 8,
-          },
-          "&::-webkit-scrollbar-track": {
-            background: "transparent",
-            borderRadius: 4,
-          },
+          "&::-webkit-scrollbar": { width: 8 },
           "&::-webkit-scrollbar-thumb": {
             background: "rgba(0,0,0,0.2)",
             borderRadius: 4,
@@ -146,7 +190,6 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
           },
           "&::-webkit-scrollbar-thumb:hover": {
             background: "rgba(0,0,0,0.35)",
-            backgroundClip: "content-box",
           },
           scrollbarWidth: "thin",
           scrollbarColor: "rgba(0,0,0,0.2) transparent",

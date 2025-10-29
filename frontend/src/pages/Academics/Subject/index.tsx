@@ -219,7 +219,7 @@ const Subject = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              minHeight: "200px",
+              height: "80vh",
             }}
           >
             <CircularProgress />

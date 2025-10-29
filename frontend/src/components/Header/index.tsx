@@ -12,7 +12,7 @@ import logo from "../../assets/logo.png";
 import { useAppSelector } from "../../store/store";
 import { useAppTheme } from "@/context/ThemeContext";
 import SessionDropdown from "../Sessions";
-import ToggleThemeSwitch from "./ToggleThemeSwitch";
+// import ToggleThemeSwitch from "./ToggleThemeSwitch";
 import Profile from "./Profile";
 
 const Header: React.FC = () => {
@@ -59,7 +59,7 @@ const Header: React.FC = () => {
         <Box display="flex" alignItems="center" gap={2}>
           
           <SessionDropdown />
-          <ToggleThemeSwitch />
+          {/* <ToggleThemeSwitch /> */}
           {user.isAuthenticated ? (
             <Profile />
           ) : (
