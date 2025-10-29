@@ -6,10 +6,13 @@ import TimeTable from "./TimeTable";
 import Class from "./Class";
 import { useCan } from "@/hooks/useCan";
 import Subject from "./Subject";
+import { CalendarMonth, Category, MenuBook, } from "@mui/icons-material";
+import { Class as ClassIcon } from "@mui/icons-material";
 
 interface TabItem {
   label: string;
   value: string;
+  icon?: React.ReactElement;
   component: React.ReactNode;
   permission?: {
     module: ModuleName;
@@ -25,6 +28,7 @@ const Classes: React.FC = () => {
     {
       label: "Classes",
       value: AcademicsTabs.CLASS,
+      icon: <ClassIcon />,
       component: <Class />,
       permission: {
         module: ModuleName.ACADEMICS,
@@ -35,6 +39,7 @@ const Classes: React.FC = () => {
     {
       label: "Section",
       value: AcademicsTabs.SECTION,
+      icon: <Category />,
       component: <Section />,
       permission: {
         module: ModuleName.ACADEMICS,
@@ -45,6 +50,7 @@ const Classes: React.FC = () => {
     {
       label: "Subject",
       value: AcademicsTabs.SUBJECT,
+      icon: <MenuBook />,
       component: <Subject />,
       permission: {
         module: ModuleName.ACADEMICS,
@@ -55,6 +61,7 @@ const Classes: React.FC = () => {
     {
       label: "Time Table",
       value: AcademicsTabs.TIME_TABLE,
+      icon: <CalendarMonth />,
       component: <TimeTable />,
       permission: {
         module: ModuleName.ACADEMICS,

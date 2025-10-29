@@ -6,6 +6,8 @@ import {
   styled,
   CircularProgress,
   useTheme,
+  SxProps,
+  Theme,
 } from "@mui/material";
 import {
   Controller,
@@ -35,6 +37,7 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   onChange?: (value: string | string[] | null) => void;
   options?: (Option | string)[];
   labelPosition?: "inside" | "outside";
+  sx?: SxProps<Theme>;
 }
 const StyledTextField = styled(TextField)(({ theme }) => {
   const palette = Colors[theme.palette.mode];
@@ -46,8 +49,8 @@ const StyledTextField = styled(TextField)(({ theme }) => {
       "& .MuiOutlinedInput-notchedOutline": {
         borderColor: palette.inputBorder,
       },
-       "&:hover .MuiOutlinedInput-notchedOutline": {
-        borderColor: palette.inputBorder, 
+      "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder,
       },
       "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         borderColor: palette.inputFocusBorder,
@@ -79,8 +82,8 @@ const StyledTextField = styled(TextField)(({ theme }) => {
 });
 const StyledLabel = styled("label")(({ theme }) => ({
   display: "block",
-  fontSize: "0.875rem",
-  marginBottom: 1,
+  fontSize: "14px",
+  marginBottom: "4px",
   "& span": { color: theme.palette.error.main },
 }));
 
@@ -114,6 +117,7 @@ const CustomDropdownField = <T extends FieldValues>({
   onChange: propOnChange,
   options = [],
   labelPosition = "outside",
+  sx = {},
 }: CustomDropdownFieldProps<T>) => {
   const formContext = useFormContext<T>();
   const control = incomingControl ?? formContext?.control;
@@ -149,7 +153,7 @@ const CustomDropdownField = <T extends FieldValues>({
       {labelPosition === "outside" && (
         <StyledLabel htmlFor={name} sx={{ fontSize: "14px", pb: "4px" }}>
           {label}
-           {required && (
+          {required && (
             <Box component="span" sx={{ color: theme.palette.error.main }}>
               *
             </Box>
@@ -172,6 +176,12 @@ const CustomDropdownField = <T extends FieldValues>({
         fullWidth={fullWidth}
         loading={loading}
         noOptionsText="No options available"
+        sx={{
+          width: fullWidth ? "100%" : "auto",
+          minWidth: 180,
+          flexShrink: 0,
+          ...sx,
+        }}
         loadingText={
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
             <CircularProgress size={20} /> Loading...
@@ -199,8 +209,12 @@ const CustomDropdownField = <T extends FieldValues>({
         name={name}
         control={control}
         render={({ field, fieldState }) =>
-        renderAutocompleteField(field.value, field.onChange, fieldState.error?.message)
-      }
+          renderAutocompleteField(
+            field.value,
+            field.onChange,
+            fieldState.error?.message
+          )
+        }
       />
     );
   }

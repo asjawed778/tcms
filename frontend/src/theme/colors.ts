@@ -57,11 +57,11 @@ export const Colors: { light: AppColors; dark: AppColors } = {
   light: {
     primary: "#0173f5",        
     secondary: "#d624ca",      
-    background: "#ffffff",    
+    background: "#F7F7F7",    
     // background: "#f5f7fb",    
     text: "#1e2329",          
     icon: "#687076",
-    tint: tintColorLight,
+    tint: tintColorLight, 
 
     // header
     headerBackground: "#0173f5",
@@ -105,8 +105,8 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     activeStatusColor: 'green',
     inactiveStatusColor: 'gray',
 
-    sidebarBg: "#FFF",
-    sidebarText: "#000",
+    sidebarBg: "#EEEEEE",
+    sidebarText: "#3C3C3C",
     sidebarActiveBg: "#0173f5",
     sidebarActiveIcon: "#FFF",
     sidebarActiveText: "#FFF"

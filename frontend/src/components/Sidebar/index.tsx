@@ -175,7 +175,7 @@ const Sidebar: React.FC = () => {
                         }
                         sx={{
                           borderRadius: "8px",
-                          fontSize: "0.875rem",
+                          fontSize: "16px",
                           color: colors.sidebarText,
                         }}
                       >
@@ -190,7 +190,7 @@ const Sidebar: React.FC = () => {
                               primary={label}
                               primaryTypographyProps={{
                                 fontSize: "16px",
-                                fontWeight: 500,
+                                fontWeight: 600,
                                 color: colors.sidebarText,
                               }}
                             />
@@ -267,7 +267,7 @@ const Sidebar: React.FC = () => {
                     selected={isRouteActive(path)}
                     onClick={() => handleNavigate(path!)}
                     sx={{
-                      fontSize: "0.875rem",
+                      fontSize: "16px",
                       fontWeight: 500,
                       color: colors.sidebarText,
                       borderRadius: "8px",

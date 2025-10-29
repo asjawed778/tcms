@@ -12,8 +12,9 @@ import {
 
 const StyledButton = styled(MuiButton)(({ theme }) => ({
   fontSize: "14px",
-  padding: theme.spacing("6px", "10px"),
-  borderRadius: 8,
+  padding: theme.spacing("10px", "16px"),
+  borderRadius: "8px",
+  height: "40px",
   minWidth: theme.spacing(9),
   textTransform: "none",
   whiteSpace: "nowrap",
@@ -99,7 +100,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
           sx={{
             display: "flex",
             alignItems: "center",
-            gap: 1,
+            gap: "8px",
             visibility: loading ? "hidden" : "visible",
           }}
         >

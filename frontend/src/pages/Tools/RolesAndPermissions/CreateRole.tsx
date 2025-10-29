@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
-import { Box, Stack, Typography } from "@mui/material";
+import { Box, Stack } from "@mui/material";
 import ModalWrapper from "@/components/ModalWrapper";
 import CustomInputField from "@/components/CustomInputField";
 import toast from "react-hot-toast";
@@ -69,13 +69,9 @@ const CreateRole: React.FC<AddRoleProps> = ({ open, onClose, role, refetch }) =>
     }
   };
   return (
-    <ModalWrapper open={open} onClose={onClose} width="70%">
+    <ModalWrapper open={open} onClose={onClose} width="70%" title={activeStep===0 ? (role ? `Update Role` : "Create Role") : `Update Permissions - ${savedRole?.name || role?.name || ""}`}>
       {activeStep === 0 ? (
         <form onSubmit={handleSubmit(handleSaveRole)} noValidate>
-          <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
-            {role ? "Update Role" : "Create Role"}
-          </Typography>
-
          <Stack spacing={2}>
           <CustomInputField 
           name="name" 

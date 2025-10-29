@@ -24,7 +24,7 @@ const actionsList = [
   },
 ];
 const Faculty: React.FC = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
@@ -37,7 +37,7 @@ const Faculty: React.FC = () => {
     isError,
   } = useGetAllFacultyQuery(
     {
-      page: page + 1,
+      page,
       limit: rowsPerPage,
       query,
       active: statusFilter,
@@ -53,7 +53,7 @@ const Faculty: React.FC = () => {
 
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
-    setPage(0);
+    setPage(1);
   };
 
   const handleActionClick = (action: string) => {
@@ -67,21 +67,20 @@ const Faculty: React.FC = () => {
 
   const handleChange = (val: any) => {
     setStatusFilter(val);
-    setPage(0);
+    setPage(1);
   };
   return (
-    <Box sx={{ width: "100%", p: 1 }}>
+    <Box sx={{ width: "100%", p: 3 }}>
       <Box
         sx={{
           display: "flex",
           flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
           gap: 2,
-          mb: 2,
         }}
       >
         {" "}
-        <CustomSearchField onSearch={setQuery} />
+        <CustomSearchField onSearch={setQuery} sx={{ bgcolor: "#fff"}} />
         <Box
           sx={{
             display: "flex",
@@ -103,10 +102,10 @@ const Faculty: React.FC = () => {
               // { label: "Active", value: "true" },
               // { label: "Inactive", value: "false" },
             ]}
+            labelPosition="inside"
           />
           {can(ModuleName.Employee, null, Operation.CREATE) && (
             <CustomButton
-              variant="outlined"
               fullWidth
               startIcon={<PersonAdd />}
               onClick={handleAddFaculty}
@@ -130,7 +129,7 @@ const Faculty: React.FC = () => {
         onRowsPerPageChange={handleRowsPerPageChange}
         onActionClick={handleActionClick}
         isLoading={isLoading}
-        actionsList={actionsList}
+        actions={actionsList}
         isError={isError}
       />
     </Box>

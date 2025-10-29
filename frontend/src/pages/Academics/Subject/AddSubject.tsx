@@ -84,7 +84,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       open={open}
       onClose={onClose}
       title="Add New Subject"
-      width="70%"
+      width="50%"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={2}>
@@ -93,31 +93,8 @@ const AddSubject: React.FC<AddSubjectProps> = ({
             <CustomInputField
               name="name"
               label="Subject Name"
+              placeholder="Enter subject name"
               control={control}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="publication"
-              label="Publication"
-              control={control}
-              required={false}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="writer"
-              label="Writer"
-              control={control}
-              required={false}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="ISBN"
-              label="ISBN"
-              control={control}
-              required={false}
             />
           </Grid>
           <Grid size={{ xs: 12, sm: 6 }}>
@@ -142,10 +119,38 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <CustomInputField
+              name="publication"
+              label="Publication"
+              placeholder="Enter publication name"
+              control={control}
+              required={false}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <CustomInputField
+              name="writer"
+              label="Writer"
+              placeholder="Enter writer name"
+              control={control}
+              required={false}
+            />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <CustomInputField
+              name="ISBN"
+              label="ISBN"
+              placeholder="Enter isbn number"
+              control={control}
+              required={false}
+            />
+          </Grid>
           <Grid size={{ xs: 12 }}>
             <CustomInputField
               name="syllabus"
-              label="Syllabus (optional)"
+              label="Syllabus"
+              placeholder="Enter full syllabus"
               control={control}
               multiline
               rows={3}

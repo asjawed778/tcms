@@ -25,7 +25,7 @@ const actionsList = [
   },
 ];
 const Class = () => {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   // const [query, setQuery] = useState("");
   const [status, setStatus] = useState("All");
@@ -46,10 +46,10 @@ const Class = () => {
   } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id as string,
-      // page: page + 1,
-      // limit: rowsPerPage,
-      // query,
-      // active: status
+      page: page + 1,
+      limit: rowsPerPage,
+      // search: query,
+      active: status
     },
     {
       skip: !selectedSession?._id,
@@ -61,7 +61,7 @@ const Class = () => {
   };
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
-    setPage(0);
+    setPage(1);
   };
 
   const handleActionClick = (action: string) => {
@@ -88,7 +88,7 @@ const Class = () => {
   const handleChange = (val: any) => {
     setStatus(val);
   };
-  const updatedClasses = classData?.data.classes?.map((cls) => ({
+  const updatedClasses = classData?.data.classes?.map((cls: any) => ({
     ...cls,
     totalSections: cls.sections?.length || 0,
     totalSubjects: cls.subjects?.length || 0,
@@ -127,11 +127,11 @@ const Class = () => {
                 { label: "Active", value: "true" },
                 { label: "Inactive", value: "false" },
               ]}
+              labelPosition="inside"
             />
             {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (
               <CustomButton
                 label="Create Class"
-                variant="outlined"
                 startIcon={<Add />}
                 onClick={handleAddFaculty}
               />
@@ -149,9 +149,8 @@ const Class = () => {
           onRowsPerPageChange={handleRowsPerPageChange}
           onActionClick={handleActionClick}
           isLoading={isLoading}
-          actionsList={actionsList}
+          actions={actionsList}
           isError={isError}
-          isSessionNotSelected={!selectedSession?._id}
         />
       </Box>
     </>

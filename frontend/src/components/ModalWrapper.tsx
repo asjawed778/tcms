@@ -1,17 +1,15 @@
 import React, { ReactNode, forwardRef } from "react";
 import {
   Dialog,
-  DialogTitle,
   DialogContent,
   IconButton,
   useMediaQuery,
   useTheme,
   Slide,
   SlideProps,
-  ZoomProps,
+  Grow,
   Box,
   Typography,
-  Grow,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 
@@ -22,8 +20,22 @@ const SlideUpTransition = forwardRef(function SlideUpTransition(
   return <Slide direction="up" ref={ref} {...props} timeout={400} />;
 });
 
+const SlideRightTransition = forwardRef(function SlideRightTransition(
+  props: SlideProps & { children?: ReactNode },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="left" ref={ref} {...props} timeout={400} />;
+});
+
+const SlideLeftTransition = forwardRef(function SlideLeftTransition(
+  props: SlideProps & { children?: ReactNode },
+  ref: React.Ref<unknown>
+) {
+  return <Slide direction="right" ref={ref} {...props} timeout={400} />;
+});
+
 const ZoomTransition = forwardRef(function ZoomTransition(
-  props: ZoomProps & { children?: ReactNode },
+  props: SlideProps & { children?: ReactNode },
   ref: React.Ref<unknown>
 ) {
   return <Grow ref={ref} {...props} timeout={400} />;
@@ -39,6 +51,7 @@ interface ModalWrapperProps {
   closeIcon?: boolean;
   allowOutsideClickMobile?: boolean;
   allowOutsideClickDesktop?: boolean;
+  position?: "center" | "right" | "left";
 }
 
 const ModalWrapper: React.FC<ModalWrapperProps> = ({
@@ -46,11 +59,12 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   onClose,
   title,
   children,
-  width = 400,
+  width = 500,
   height = "auto",
   closeIcon = true,
   allowOutsideClickMobile = false,
   allowOutsideClickDesktop = false,
+  position = "center",
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -66,13 +80,48 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     onClose?.(event, reason);
   };
 
+  const TransitionComponent = isMobile
+    ? SlideUpTransition
+    : position === "right"
+    ? SlideRightTransition
+    : position === "left"
+    ? SlideLeftTransition
+    : ZoomTransition;
+
+  const positionStyles = !isMobile
+    ? {
+        center: {
+          alignSelf: "center",
+          mx: "auto",
+          borderRadius: "16px",
+          height,
+        },
+        right: {
+          ml: "auto",
+          mr: 0,
+          height: "100%",
+          borderRadius: "16px 0 0 16px",
+        },
+        left: {
+          mr: "auto",
+          ml: 0,
+          height: "100%",
+          borderRadius: "0 16px 16px 0",
+        },
+      }[position]
+    : {
+        alignSelf: "flex-end",
+        borderRadius: "16px 16px 0 0",
+        height: "auto",
+      };
+
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       fullScreen={isMobile}
       scroll="paper"
-      TransitionComponent={isMobile ? SlideUpTransition : ZoomTransition}
+      TransitionComponent={TransitionComponent}
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       aria-modal="true"
@@ -80,58 +129,73 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
       slotProps={{
         paper: {
           sx: {
-            position: "relative",
-            width: isMobile ? "100%" : width,
-            height: isMobile ? "auto" : height,
+            width: isMobile
+              ? "100%" : width,
             maxWidth: "100%",
             bgcolor: "background.paper",
-            boxShadow: 24,
-            borderRadius: isMobile ? "16px 16px 0 0" : 2,
-            mx: isMobile ? 0 : 2,
-            alignSelf: isMobile ? "flex-end" : "center",
+            boxShadow: "0 4px 20px rgb(0,0,0,0.1)",
+            p: "28px",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            maxHeight: isMobile ? "80vh" : "90vh",
-            transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
+            maxHeight: isMobile ? "80%" : "100%",
+            transition:
+              "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
+            ...positionStyles,
           },
         },
       }}
     >
-      {closeIcon && !isMobile && (
-        <IconButton
-          aria-label="Close"
-          onClick={(e) => onClose?.(e, "escapeKeyDown")}
-          sx={{
-            position: "absolute",
-            top: 2,
-            right: 2,
-            color: "text.secondary",
-            "&:hover": {
-              color: "error.main",
-            },
-            zIndex: 10,
-          }}
-        >
-          <CloseIcon fontSize="small" />
-        </IconButton>
-      )}
-
-      {title && (
-        <DialogTitle
-          id="dialog-title"
-          sx={{ py: 1, textAlign: "center" }}
-          component="div"
-        >
-          <Typography fontWeight="bold" variant="h6" component="h2">
+      <Box
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: title ? "space-between" : "flex-end",
+          px: "4px",
+        }}
+      >
+        {title && (
+          <Typography fontWeight="bold" component="h2" fontSize="24px">
             {title}
           </Typography>
-        </DialogTitle>
-      )}
-      <DialogContent id="dialog-description" sx={{ overflowY: "auto", p: 0 }}>
-        <Box px={2} my={1.5}>
-          {open && children}
-        </Box>
+        )}
+        {closeIcon && (
+          <IconButton
+            aria-label="Close"
+            onClick={(e) => onClose?.(e, "escapeKeyDown")}
+            sx={{
+              color: "text.secondary",
+              "&:hover": {
+                color: "error.main",
+              },
+            }}
+          >
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        )}
+      </Box>
+      <DialogContent
+        id="dialog-description"
+        sx={{
+          pt: "32px",
+          px: "4px",
+          pb: 0,
+          overflowY: "auto",
+          "&::-webkit-scrollbar": { width: 8 },
+          "&::-webkit-scrollbar-thumb": {
+            background: "rgba(0,0,0,0.2)",
+            borderRadius: 4,
+            border: "2px solid transparent",
+            backgroundClip: "content-box",
+          },
+          "&::-webkit-scrollbar-thumb:hover": {
+            background: "rgba(0,0,0,0.35)",
+          },
+          scrollbarWidth: "thin",
+          scrollbarColor: "rgba(0,0,0,0.2) transparent",
+        }}
+      >
+        {open && children}
       </DialogContent>
     </Dialog>
   );

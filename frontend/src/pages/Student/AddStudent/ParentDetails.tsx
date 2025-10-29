@@ -6,16 +6,14 @@ const ParentDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={600}>
+        <Typography fontWeight={600} sx={{fontSize: "18px"}}>
           Parents Details
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={500}>
+        <Typography sx={{fontSize: "16px", fontWeight: 600}}>
           Father Details
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
@@ -81,10 +79,9 @@ const ParentDetails: React.FC = () => {
       </Grid>
 
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={500}>
+        <Typography sx={{fontSize: "16px", fontWeight: 600}}>
           Mother Details
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
@@ -152,10 +149,9 @@ const ParentDetails: React.FC = () => {
       </Grid>
 
       <Grid size={{ xs: 12 }}>
-        <Typography variant="h6" gutterBottom fontWeight={500}>
+        <Typography sx={{fontSize: "16px", fontWeight: 600}}>
           Local Guardian Details
         </Typography>
-        <Divider />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField

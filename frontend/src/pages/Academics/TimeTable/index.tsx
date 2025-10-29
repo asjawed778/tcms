@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import ShowTimeTable from "./ShowTimeTable";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
+import TableWrapper from "@/components/TableWrapper";
 
 const timeTableColumns = [
   { key: "sno.", label: "S.No." },
@@ -137,6 +138,7 @@ const TimeTable: React.FC = () => {
             value={selectedClass}
             onChange={handleClassChange}
             options={classOptions}
+            labelPosition="inside"
           />
           <CustomDropdownField
             label="Select Section"
@@ -144,6 +146,7 @@ const TimeTable: React.FC = () => {
             onChange={(val: any) => setSelectedSecton(val)}
             options={sectionOptions}
             disabled={!selectedClass}
+            labelPosition="inside"
           />
         </Box>
 
@@ -161,7 +164,6 @@ const TimeTable: React.FC = () => {
           ) && (
             <CustomButton
               label="Create Timetable"
-              variant="outlined"
               startIcon={<Alarm />}
               onClick={handleCreateTimeTable}
             />
@@ -176,7 +178,7 @@ const TimeTable: React.FC = () => {
         </Box>
       )} */}
 
-      <ShowTimeTable
+      <TableWrapper
         columns={timeTableColumns}
         rows={timeTable?.data || []}
         totalCount={0}
@@ -186,10 +188,9 @@ const TimeTable: React.FC = () => {
         onRowsPerPageChange={handleRowsPerPageChange}
         onActionClick={handleActionClick}
         isLoading={isLoading}
-        actionsList={actionsList}
+        actions={actionsList}
         isError={isError}
-        classId={selectedClass}
-        sectionId={selectedSection}
+        message={(!selectedClass || !selectedSection)? "Please select Class and Section to view timetable." : ""}
       />
     </Box>
   );

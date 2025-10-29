@@ -3,7 +3,7 @@ import { Box } from "@mui/material";
 import CustomSearchField from "@/components/CustomSearchField";
 import CustomButton from "@/components/CustomButton";
 import DialogBoxWrapper from "@/components/DialogBoxWrapper";
-import TableWrapper from "@/components/TableWrapper.V2";
+import TableWrapper from "@/components/TableWrapper";
 import toast from "react-hot-toast";
 import { Add, AdminPanelSettings, Delete, Edit } from "@mui/icons-material";
 import { useDeleteRoleMutation, useGetAllRolesQuery } from "@/services/userApi";
@@ -23,20 +23,21 @@ interface Role {
 interface RoleColumn {
   key: string;
   label: string;
+  width?: string | number;
 }
 
-const roleColumns: RoleColumn[] = [
-  { key: "sno.", label: "S.No." },
-  { key: "name", label: "Role Name" },
-  { key: "description", label: "Description" },
-];
+  const roleColumns: RoleColumn[] = [
+    { key: "sno.", label: "S.No."},
+    { key: "name", label: "Role Name",  width: "300px" },
+    { key: "description", label: "Description" },
+  ];
 
 const RolesAndPermissions = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialPage = parseInt(searchParams.get("page") || "1", 10);
   const initialLimit = parseInt(searchParams.get("limit") || "10", 10);
   const [page, setPage] = useState<number>(initialPage);
-  const limit = initialLimit;
+  const [limit, setLimit] = useState<number>(initialLimit);
   const [searchQuery, setSearchQuery] = useState<string | null>(null);
   const [openAddRole, setOpenAddRole] = useState<boolean>(false);
   const [openEditModal, setOpenEditModal] = useState<boolean>(false);
@@ -64,11 +65,15 @@ const RolesAndPermissions = () => {
     limit,
     search: searchQuery,
   });
-
+  console.log("Data: ", rolesData);
+  
   const [deleteRole] = useDeleteRoleMutation();
 
   const handlePageChange = (newPage: number) => setPage(newPage);
-
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setLimit(newRowsPerPage);
+    setPage(1);
+  };
   const handleDelete = async () => {
     try {
       await deleteRole({
@@ -148,18 +153,20 @@ const RolesAndPermissions = () => {
     );
   };
   return (
-    <Box mx={1} mt={1}>
+    <Box mt={3}>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
-        mb={2}
         gap={2}
       >
         <CustomSearchField
           placeholder="Search..."
           onSearch={setSearchQuery}
           value={searchQuery}
+          sx={{
+            bgcolor: "#fff",
+          }}
         />
         {can(ModuleName.ADMINISTRATION, SubModuleName.ROLES, Operation.CREATE) && (
           <CustomButton
@@ -176,10 +183,12 @@ const RolesAndPermissions = () => {
         page={page}
         rowsPerPage={limit}
         onPageChange={handlePageChange}
+        onRowsPerPageChange={handleRowsPerPageChange}
         onActionClick={handleActionClick}
         isLoading={isFetching}
         isError={isError}
         actions={actionsList}
+        paginationType="standalone"
       />
       {openAddRole && (
         <CreateRole
@@ -220,6 +229,7 @@ const RolesAndPermissions = () => {
         width="70%"
       >
         <AssignPermission
+        title={`Update Permission-${selectedRole?.name}`}
           role={selectedRole}
           onClose={() => {
             setOpenAssignPermission(false);

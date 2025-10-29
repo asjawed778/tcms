@@ -183,7 +183,7 @@ console.log("section: ", sectionData);
             mb: 1,
           }}
         >
-          <CustomSearchField onSearch={setSearchQuery} />
+          <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}}/>
           <Box
             sx={{
               display: "flex",
@@ -201,6 +201,7 @@ console.log("section: ", sectionData);
               value={selectedClassId}
               onChange={handleChange}
               options={classOptions}
+              labelPosition="inside"
             />
             {can(
               ModuleName.ACADEMICS,
@@ -209,7 +210,6 @@ console.log("section: ", sectionData);
             ) && (
               <CustomButton
                 label="Add Section"
-                variant="outlined"
                 startIcon={<Add />}
                 onClick={() => setOpenAddSection(true)}
               />
@@ -220,12 +220,12 @@ console.log("section: ", sectionData);
           columns={sectionColumns}
           rows={sectionData?.data?.sections || []}
           totalCount={sectionData?.data?.sections.length || 0}
-          page={page - 1}
+          page={page}
           rowsPerPage={limit}
           onPageChange={handlePageChange}
           onRowsPerPageChange={handleRowsPerPageChange}
           onActionClick={handleActionClick}
-          actionsList={actionsList}
+          actions={actionsList}
           isFetching={sectionFetching}
           isError={sectionError}
         />
