@@ -1,4 +1,5 @@
 import ModalWrapper from "@/components/ModalWrapper";
+import SideSheetWrapper from "@/components/SideSheetWrapper";
 import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 
@@ -14,14 +15,12 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
   onClose,
 }) => {
   return (
-    <ModalWrapper
+    <SideSheetWrapper
       open={open}
-      onClose={onClose}
-      position="right"
-      title="View Student Details"
-      width="70%"
-      allowOutsideClickDesktop={true}
-      allowOutsideClickMobile={true}
+      onClose={()=>onClose()}
+      header="View Student Details"
+      width="80%"
+      anchor="right"
     >
       <Box>
         <Grid container spacing={2} textAlign={"left"}>
@@ -250,7 +249,7 @@ const ViewDetails: React.FC<ViewDetailsProps> = ({
           </Grid>
         </Grid>
       </Box>
-    </ModalWrapper>
+    </SideSheetWrapper>
   );
 };
 
