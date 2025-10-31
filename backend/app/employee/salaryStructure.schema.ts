@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
+import { ISalaryStructure } from "./employee.dto";
 
-const salaryStructureSchema = new mongoose.Schema({
+const salaryStructureSchema = new mongoose.Schema<ISalaryStructure>({
     employee: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Employee",
@@ -34,4 +35,4 @@ const salaryStructureSchema = new mongoose.Schema({
     }
 }, { timestamps: true });
 
-export default mongoose.model("SalaryStructure", salaryStructureSchema);
+export default mongoose.model<ISalaryStructure>("SalaryStructure", salaryStructureSchema);

@@ -4,12 +4,60 @@ import facultySchema from "./employee.schema"
 import * as Enum from "../common/utils/enum";
 import * as UserService from "../user/user.service";
 import { getAssignedFaculyIds } from "../academics/academic.service";
+import employeeSchema from "./employee.schema";
+import createHttpError from "http-errors";
+import salaryStructureSchema from "./salaryStructure.schema";
 
-export const createFaculty = async (data: EmployeeDto.ICreateFaculty, session?: ClientSession) => {
-    const [result] = await facultySchema.create([data], { session });
-    return result as EmployeeDto.IEmployee;
+
+export const createEmployee = async (data: Partial<EmployeeDto.ICreateEmployee>) => {
+    const result = await employeeSchema.create(data);
+    if (!result) {
+        throw createHttpError(500, "Something went wrong")
+    }
+    return result;
 };
 
+export const updateEmployee = async (employeeId: string, data: Partial<EmployeeDto.IEmployee>) => {
+    const result = await employeeSchema.findByIdAndUpdate(employeeId, data, { new: true });
+    if (!result) {
+        throw createHttpError(404, "Employee not found");
+    }
+    return result;
+};
+
+export const upsertSalaryStructure = async (employeeId: string, data: Partial<EmployeeDto.ISalaryStructure>) => {
+    const existing = await salaryStructureSchema.findOne({ employee: employeeId });
+    if (existing) {
+        const updated = await salaryStructureSchema.findByIdAndUpdate(
+            existing._id,
+            data,
+            { new: true }
+        );
+        return updated;
+    }
+    const created = await salaryStructureSchema.create({
+        employee: employeeId,
+        ...data
+    });
+    return created;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// old empl services
 export const getAllFaculty = async (
     page = 1,
     limit = 10,

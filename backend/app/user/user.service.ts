@@ -17,16 +17,7 @@ loadConfig();
 
 
 // old ones
-export const createUserByAdmin = async (data: { name: string, email: string, role: Enum.UserRole }, session?: ClientSession): Promise<Omit<IUser, "password">> => {
-    const isUserExists = await UserSchema.findOne({ email: data.email });
-    if (isUserExists) {
-        throw createHttpError(409, "User already exists");
-    }
-    const password = `TCMS@12345`;
-    const hashedPass = await hashPassword(password);
-    const [user] = await UserSchema.create([{ ...data, password: hashedPass }], { session });
-    return omit(user.toObject() as IUser, ["password"]);
-};
+
 
 
 export const updateResetToken = async (userId: string, token: string) => {
@@ -151,6 +142,33 @@ export const resetPassword = async (userId: string, token: string, newPassword: 
         }, { new: true }
     );
     return newUser;
+};
+
+export const createUserByAdmin = async (data: { name: string, email: string, role?: string }): Promise<Omit<IUser, "password">> => {
+    const isUserExists = await UserSchema.findOne({ email: data.email });
+    if (isUserExists) {
+        throw createHttpError(409, "User already exists");
+    }
+    let roleId;
+    const userRole = await roleSchema.findOne({ name: Enum.UserRole.USER });
+    if (!userRole) {
+        throw createHttpError(404, "Default User Role not exits");
+    }
+    if (data.role) {
+        const roleDoc = await roleSchema.findById(data.role);
+        if (!roleDoc) {
+            roleId = userRole?._id;
+        } else if (roleDoc && roleDoc.name === Enum.UserRole.ADMIN) {
+            roleId = userRole?._id;
+        } else {
+            roleId = roleDoc._id;
+        }
+    }
+    const randomDigits = Math.floor(10000 + Math.random() * 90000);
+    const password = `TCMS@${randomDigits}`;
+    const hashedPass = await hashPassword(password);
+    const user = await UserSchema.create({ ...data, role: roleId, password: hashedPass });
+    return user;
 };
 
 // user roles and permissions

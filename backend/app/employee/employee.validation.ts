@@ -1,8 +1,9 @@
 import { body, param } from "express-validator";
 import * as Enum from "../common/utils/enum";
 
-
-export const createFaculty = [
+// create employee validation
+// step - 1
+export const createEmployee = [
     body("name")
         .notEmpty().withMessage("Name is required"),
 
@@ -18,6 +19,10 @@ export const createFaculty = [
         .notEmpty().withMessage("Email is required")
         .isEmail().withMessage("Email must be valid"),
 
+    body('role')
+        .optional()
+        .isMongoId().withMessage("Role id must be a valid mongo Id"),
+
     body("phoneNumber")
         .notEmpty().withMessage("Phone number is required")
         .isMobilePhone("en-IN").withMessage("Enter a valid Indian phone number"),
@@ -30,18 +35,6 @@ export const createFaculty = [
         .notEmpty().withMessage("Date of birth is required")
         .isISO8601().withMessage("DOB must be a valid date"),
 
-    body("address")
-        .notEmpty().withMessage("Address is required"),
-    body("address.addressLine1")
-        .notEmpty().withMessage("addressLine1 is required in address"),
-    body("address.city")
-        .notEmpty().withMessage("City is required in address"),
-    body("address.state")
-        .notEmpty().withMessage("State is required in address"),
-    body("address.pincode")
-        .notEmpty().withMessage("Pincode is required in address")
-        .isPostalCode("IN").withMessage("Enter a valid Indian pincode"),
-
     body("photo")
         .optional().isURL().withMessage("Photo URL must be valid"),
 
@@ -49,8 +42,38 @@ export const createFaculty = [
         .optional()
         .isNumeric().withMessage("Aadhaar number must be numeric"),
 ];
+// step - 2
+export const employeeAddress = [
+    param("employeeId")
+        .isEmpty().withMessage("Employee Id is required")
+        .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
+    body("addressId")
+        .optional()
+        .isMongoId().withMessage("Address id must be a valid Mongo Id"),
+
+    body("address")
+        .notEmpty().withMessage("Address is required"),
+
+    body("address.addressLine1")
+        .notEmpty().withMessage("addressLine1 is required in address"),
+
+    body("address.city")
+        .notEmpty().withMessage("City is required in address"),
+
+    body("address.state")
+        .notEmpty().withMessage("State is required in address"),
+
+    body("address.pincode")
+        .notEmpty().withMessage("Pincode is required in address")
+        .isPostalCode("IN").withMessage("Enter a valid Indian pincode"),
+]
+// step - 3
 export const professionalDetails = [
+    param("employeeId")
+        .isEmpty().withMessage("Employee Id is required")
+        .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
+
     body("designation")
         .notEmpty().withMessage("Designation is required")
         .isString().withMessage(`Designation must be String`),
@@ -61,8 +84,7 @@ export const professionalDetails = [
 
     body("experience")
         .optional()
-        .isArray({ min: 1 })
-        .withMessage("Experience must be a non-empty array"),
+        .isArray({ min: 1 }).withMessage("Experience must be a non-empty array"),
 
     body("experience.*.organisationName")
         .optional({ nullable: true })
@@ -77,7 +99,7 @@ export const professionalDetails = [
         .optional({ nullable: true })
         .notEmpty().withMessage("Designation is required in experience"),
 
-    body("expertiseSubjects")
+    body("expertise")
         .optional()
         .isArray({ min: 1 }).withMessage("At least one subject is required in expertiseSubjects"),
 
@@ -88,8 +110,12 @@ export const professionalDetails = [
         .optional()
         .isString().withMessage("Certification must be a string"),
 ];
-
+// step - 4
 export const salaryStructure = [
+    param("employeeId")
+        .isEmpty().withMessage("Employee Id is required")
+        .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
+
     body("basicPay")
         .notEmpty().withMessage("Basic pay is required")
         .isNumeric().withMessage("Basic pay must be a number")
@@ -128,8 +154,12 @@ export const salaryStructure = [
         .optional()
         .isString().withMessage("Remarks must be a string")
 ];
-
+// step - 5
 export const additionalDocuments = [
+    param("employeeId")
+        .isEmpty().withMessage("Employee Id is required")
+        .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
+
     body("documents")
         .optional()
         .isArray().withMessage("Documents must be an array"),

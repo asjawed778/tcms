@@ -14,12 +14,10 @@ export interface IEmployee extends BaseSchema {
     user: Types.ObjectId;
     fatherName?: string;
     motherName?: string;
-
     designation?: Enum.FacultyDesignation;
     expertise?: string[];
     qualification?: string;
     certification?: string;
-
     phoneNumber?: string;
     gender?: Enum.Gender;
     dob?: Date;
@@ -29,9 +27,38 @@ export interface IEmployee extends BaseSchema {
     dateOfJoining?: Date;
     experience?: WorkExperience[];
     documents?: IDocument[];
-
-    // Job Details
     status?: Enum.EmployeeStatus;
 };
 
-export interface ICreateFaculty extends Omit<IEmployee, "createdAt" | "updatedAt" | "_id"> { };
+export interface ICreateEmployee {
+    name: string;
+    fatherName?: string;
+    motherName?: string;
+    email: string;
+    role?: string;
+    phoneNumber: string;
+    gender: Enum.Gender;
+    dob: Date;
+    photo?: string;
+    aadhaarNumber?: number;
+};
+
+export interface ISalaryStructure extends BaseSchema {
+    employee: Types.ObjectId;
+    basicPay: number;
+    hra?: number;
+    allowances?: number;
+    deductions?: number;
+    effectiveFrom: Date;
+    effectiveTo?: Date;
+    remarks?: string;
+};
+
+export interface IAdditionalDocumentsRequest {
+    documents?: {
+        name: string;
+        url: string;
+        documentNumber?: string;
+    }[];
+};
+
