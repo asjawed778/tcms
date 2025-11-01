@@ -1,11 +1,11 @@
-import { Router } from "express";
+import express from "express";
 import { catchError } from "../common/middleware/cath-error.middleware";
+import { roleAuth } from "../common/middleware/role-auth.middleware";
 import * as EmployeeController from "./employee.controller";
 import * as EmployeeValidation from "./employee.validation";
 import * as Enum from "../common/utils/enum";
-import { roleAuth } from "../common/middleware/role-auth.middleware";
 
-const router = Router();
+const router = express.Router();
 
 router
     .post(

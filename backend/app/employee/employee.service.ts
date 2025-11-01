@@ -3,7 +3,6 @@ import * as EmployeeDto from "./employee.dto";
 import facultySchema from "./employee.schema"
 import * as Enum from "../common/utils/enum";
 import * as UserService from "../user/user.service";
-import { getAssignedFaculyIds } from "../academics/academic.service";
 import employeeSchema from "./employee.schema";
 import createHttpError from "http-errors";
 import salaryStructureSchema from "./salaryStructure.schema";
@@ -309,9 +308,9 @@ export const getUnassignedFaculty = async (
     endTime: { hour: number; minute: number }
 ) => {
 
-    const assignedFacultyIds = await getAssignedFaculyIds(sessionId, day, startTime, endTime);
+    // const assignedFacultyIds = await getAssignedFaculyIds(sessionId, day, startTime, endTime);
 
-    const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
-    return result || [];
+    // const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
+    return [];
 };
 

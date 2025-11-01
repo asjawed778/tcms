@@ -3,14 +3,14 @@ export enum UserRole {
   ADMIN = "Admin",
   FACULTY = "Faculty",
   USER = "User",
-}
+};
 
 // enum for session
 export enum SessionStatus {
   CURRENT = 'Current',
   PAST = 'Past',
   UPCOMING = 'Upcoming'
-}
+};
 
 export enum Gender {
   Male = "Male",
@@ -29,7 +29,6 @@ export enum Religion {
 };
 
 // enum for students
-
 export enum RemarkType {
   POSITIVE = 'Positive',
   NEGATIVE = 'Negative',
@@ -121,11 +120,10 @@ export enum EmployeeStatus {
   TERMINATED = "Terminated",
   TRANSFERRED = "Transferred",
   DRAFT = "Draft",
-}
+};
 
 
 //  class
-
 export enum ClassName {
   NURSERY = "Nursery",
   LKG = "LKG",
@@ -142,7 +140,7 @@ export enum ClassName {
   STANDARD_10 = "Standard 10",
   STANDARD_11 = "Standard 11",
   STANDARD_12 = "Standard 12"
-}
+};
 
 export enum CourseStream {
   SCIENCE = "Science",
@@ -178,7 +176,7 @@ export enum WeekDay {
   FRIDAY = "Friday",
   SATURDAY = "Saturday",
   SUNDAY = "Sunday"
-}
+};
 
 export enum PeriodType {
   LECTURE = "Lecture",
@@ -189,6 +187,13 @@ export enum PeriodType {
   MEETING = "Meeting",
   OTHER = "Other"
 };
+
+export enum TimeTableStatus {
+  ACTIVE = "Active",
+  DRAFT = "Draft",
+  ARCHIVED = "Archived"
+};
+
 // classes fee structure enum
 export enum FeeType {
   TUITION_FEE = "Tuition Fee",
@@ -201,24 +206,24 @@ export enum FeeType {
   HOSTEL_FEE = "Hostel Fee",
   UNIFORM_FEE = "Uniform Fee",
   OTHER = "Other"
-}
+};
 
 export enum FeeApplicableType {
   RECURRING = "Recurring",
   ONE_TIME = "One-Time"
-}
+};
 
 export enum FeeFrequency {
   MONTHLY = "Monthly",
   QUARTERLY = "Quarterly",
   HALF_YEARLY = "Half-Yearly",
   YEARLY = "Yearly"
-}
+};
 
 export enum ActiveStatus {
   ACTIVE = "Active",
   INACTIVE = "Inactive"
-}
+};
 
 // roles permissions and modules enums
 // Operatioin,  Module and SubModule Names for Role-Based Access Control
@@ -228,7 +233,7 @@ export enum Operation {
   READ = "read",
   UPDATE = "update",
   DELETE = "delete",
-}
+};
 
 export enum ModuleName {
   DASHBOARD = "Dashboard",
@@ -237,7 +242,7 @@ export enum ModuleName {
   ACADEMICS = "Academics",
   Employee = "Employee",
   ADMINISTRATION = "Administration",
-}
+};
 
 export enum SubModuleName {
 
@@ -250,6 +255,6 @@ export enum SubModuleName {
   // Administration
   ROLES = "Roles",
   PERMISSIONS = "Permissions",
-}
+};
 
 

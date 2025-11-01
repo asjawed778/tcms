@@ -42,9 +42,9 @@ export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "de
 }
 
 export interface ITimeSlot {
-    start: { hour: number; minute: number };
-    end: { hour: number; minute: number };
-    durationMinutes?: number;
+    startTime: string;
+    endTime: string;
+    duration?: string;
 }
 
 export interface IPeriod {
@@ -68,6 +68,9 @@ export interface ITimeTable extends BaseSchema {
     class: Types.ObjectId;
     section: Types.ObjectId;
     weeklySchedule: IDaySchedule[];
+    status: Enum.TimeTableStatus;
+    effectiveFrom: Date;
+    effectiveTo: Date;
 }
 
 export interface ICreateTimeTable extends Omit<ITimeTable, "_id" | "createdAt" | "updatedAt"> { }

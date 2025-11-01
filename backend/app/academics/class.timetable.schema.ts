@@ -8,14 +8,14 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
         ref: "Session",
         required: true,
     },
-    section: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Section",
-        required: true,
-    },
     class: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Class",
+        required: true,
+    },
+    section: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Section",
         required: true,
     },
     weeklySchedule: [{
@@ -29,7 +29,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             periodType: {
                 type: String,
                 enum: Object.values(Enum.PeriodType),
-                required: true,
+                required: false,
             },
             periodNumber: {
                 type: Number,
@@ -42,7 +42,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             },
             faculty: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "User",
+                ref: "Employee",
                 required: false,
             },
             room: {
@@ -50,15 +50,21 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
                 required: false,
             },
             timeSlot: {
-                start: {
-                    hour: { type: Number, required: true },
-                    minute: { type: Number, required: true }
+                startTime: {
+                    type: String,
+                    required: true,
+                    match: /^([01]\d|2[0-3]):([0-5]\d)$/
                 },
-                end: {
-                    hour: { type: Number, required: true },
-                    minute: { type: Number, required: true }
+                endTime: {
+                    type: String,
+                    required: true,
+                    match: /^([01]\d|2[0-3]):([0-5]\d)$/
                 },
-                durationMinutes: { type: Number, required: false }
+                duration: {
+                    type: String,
+                    required: true,
+                    match: /^PT(\d+H)?(\d+M)?$/
+                },
             }
         }],
         isHoliday: {
@@ -70,29 +76,20 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             required: false,
             trim: true,
         },
-    }]
-});
-
-timeTableSchema.pre("save", function (next) {
-    const doc = this as ITimeTable;
-
-    doc.weeklySchedule.forEach(schedule => {
-        if (Array.isArray(schedule.periods)) {
-            schedule.periods.forEach(period => {
-                const startHour = period.timeSlot.start.hour;
-                const startMinute = period.timeSlot.start.minute;
-                const endHour = period.timeSlot.end.hour;
-                const endMinute = period.timeSlot.end.minute;
-
-                const startTotalMinutes = startHour * 60 + startMinute;
-                const endTotalMinutes = endHour * 60 + endMinute;
-                const duration = endTotalMinutes - startTotalMinutes;
-
-                period.timeSlot.durationMinutes = Math.max(0, duration);
-            });
-        }
-    });
-    next();
+    }],
+    status: {
+        type: String,
+        enum: Object.values(Enum.TimeTableStatus),
+        default: Enum.TimeTableStatus.DRAFT
+    },
+    effectiveFrom: {
+        type: Date,
+        default: Date.now,
+    },
+    effectiveTo: {
+        type: Date,
+        default: null
+    }
 });
 
 export default mongoose.model<ITimeTable>("TimeTable", timeTableSchema);

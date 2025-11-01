@@ -96,3 +96,23 @@ export const generateUniqueSubjectId = async (subjectName: string): Promise<stri
     }
     return subjectId;
 };
+
+export const calculateDuration = (startTime: string, endTime: string): string => {
+    const [sh, sm] = startTime.split(":").map(Number);
+    const [eh, em] = endTime.split(":").map(Number);
+
+    const start = sh * 60 + sm;
+    const end = eh * 60 + em;
+    const diffMin = Math.max(0, end - start);
+
+    const hours = Math.floor(diffMin / 60);
+    const minutes = diffMin % 60;
+
+    let iso = "PT";
+    if (hours > 0) iso += `${hours}H`;
+    if (minutes > 0) iso += `${minutes}M`;
+    if (iso === "PT") iso = "PT0M";
+
+    return iso;
+};
+
