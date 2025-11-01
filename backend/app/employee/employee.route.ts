@@ -9,11 +9,18 @@ const router = Router();
 
 router
     .post(
-        "/add",
+        "/basic-details",
         roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.CREATE }),
         EmployeeValidation.createEmployee,
         catchError,
         EmployeeController.createEmployee
+    )
+    .put(
+        "/:employeeId/basic-details",
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.UPDATE }),
+        EmployeeValidation.updateEmployeeBasicDetails,
+        catchError,
+        EmployeeController.updateEmployeeBasicDetails
     )
     .put(
         "/:employeeId/address",
@@ -43,22 +50,31 @@ router
         catchError,
         EmployeeController.upsertEmpDocuments
     )
-
-
-    // old routes
     .get(
         "/all",
         roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
+        EmployeeValidation.getAllEmployee,
         catchError,
-        EmployeeController.getAllFaculty
+        EmployeeController.getAllEmployee
     )
     .get(
-        "/:facultyId",
+        "/:employeeId",
         roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
-        EmployeeValidation.getFacultyById,
+        EmployeeValidation.getEmployeeById,
         catchError,
-        EmployeeController.getFacultyById
+        EmployeeController.getEmployeeById
     )
+    .get(
+        "/:employeeId/salary-structure",
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
+        EmployeeValidation.getEmployeeById,
+        catchError,
+        EmployeeController.getEmpSalaryStructure
+    )
+
+    // old routes
+
+
     .post(
         "/unassigned/:sessionId",
         roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),

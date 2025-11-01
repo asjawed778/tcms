@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, query } from "express-validator";
 import * as Enum from "../common/utils/enum";
 
 // create employee validation
@@ -177,12 +177,90 @@ export const additionalDocuments = [
         .isString().withMessage("Document number must be a string"),
 ];
 
-// old validations
-export const getFacultyById = [
-    param("facultyId")
-        .notEmpty().withMessage("Faculty ID is required")
-        .isMongoId().withMessage("Faculty ID must be a valid MongoDB ObjectId"),
+// update employee basic details
+export const updateEmployeeBasicDetails = [
+    param("employeeId")
+        .isEmpty().withMessage("Employee Id is required")
+        .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
+
+    body("name")
+        .optional()
+        .notEmpty().withMessage("Name cannot be empty"),
+
+    body("fatherName")
+        .optional()
+        .isString().withMessage("Father name must be a string"),
+
+    body("motherName")
+        .optional()
+        .isString().withMessage("Mother name must be a string"),
+
+    body("email")
+        .optional()
+        .isEmail().withMessage("Email must be valid"),
+
+    body("role")
+        .optional()
+        .isMongoId().withMessage("Role id must be a valid mongo Id"),
+
+    body("phoneNumber")
+        .optional()
+        .isMobilePhone("en-IN").withMessage("Enter a valid Indian phone number"),
+
+    body("gender")
+        .optional()
+        .isIn(Object.values(Enum.Gender)).withMessage(`Gender must be one of: ${Object.values(Enum.Gender).join(", ")}`),
+
+    body("dob")
+        .optional()
+        .isISO8601().withMessage("DOB must be a valid date"),
+
+    body("photo")
+        .optional()
+        .isURL().withMessage("Photo URL must be valid"),
+
+    body("aadhaarNumber")
+        .optional()
+        .isNumeric().withMessage("Aadhaar number must be numeric"),
 ];
+
+
+export const getAllEmployee = [
+    query("page")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Page must be a number greater than 0"),
+
+    query("limit")
+        .optional()
+        .isInt({ min: 1 }).withMessage("Limit must be a number greater than 0"),
+
+    query("search")
+        .optional()
+        .isString().withMessage("Search must be a string"),
+
+    query("role")
+        .optional()
+        .isMongoId().withMessage("Role must be a valid MongoDB ID"),
+
+    query("gender")
+        .optional()
+        .isIn(Object.values(Enum.Gender))
+        .withMessage(`Gender must be one of: ${Object.values(Enum.Gender).join(", ")}`),
+
+    query("status")
+        .optional()
+        .isIn(Object.values(Enum.EmployeeStatus))
+        .withMessage(`Status must be one of: ${Object.values(Enum.EmployeeStatus).join(", ")}`)
+];
+
+export const getEmployeeById = [
+    param("employeeId")
+        .notEmpty().withMessage("Employee ID is required")
+        .isMongoId().withMessage("Employee ID must be a valid MongoDB ObjectId"),
+];
+
+// old validations
+
 
 export const getUnassignedFaculty = [
     param("sessionId")

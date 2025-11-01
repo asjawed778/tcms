@@ -8,6 +8,7 @@ import * as EmployeeDto from "./employee.dto";
 import * as UserService from "../user/user.service";
 import * as EmplyoeeUtils from "./employee.utils";
 import { Types } from "mongoose";
+import * as Enum from "../common/utils/enum";
 
 // new controllers
 export const createEmployee = asyncHandler(async (req: Request, res: Response) => {
@@ -34,6 +35,34 @@ export const createEmployee = asyncHandler(async (req: Request, res: Response) =
     };
     const empDoc = await EmployeeService.createEmployee(empData);
     res.send(createResponse(empDoc, "Employee Created successfully"));
+});
+
+export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res: Response) => {
+    const { employeeId } = req.params;
+    const data = req.body;
+
+    const empDoc = await EmployeeService.getEmployeeById(employeeId);
+    if (!empDoc) {
+        throw createHttpError(404, "Employee not found");
+    }
+    if (data.email || data.name || data.role) {
+        await UserService.updateUserByAdmin(empDoc.user, {
+            ...(data.name && { name: data.name }),
+            ...(data.email && { email: data.email }),
+            ...(data.role && { role: data.role }),
+        });
+    }
+    const updateData: Partial<EmployeeDto.ICreateEmployee> = {
+        ...(data.fatherName && { fatherName: data.fatherName }),
+        ...(data.motherName && { motherName: data.motherName }),
+        ...(data.phoneNumber && { phoneNumber: data.phoneNumber }),
+        ...(data.gender && { gender: data.gender }),
+        ...(data.dob && { dob: data.dob }),
+        ...(data.photo && { photo: data.photo }),
+        ...(data.aadhaarNumber && { aadhaarNumber: data.aadhaarNumber }),
+    };
+    const updatedEmp = await EmployeeService.updateEmployee(employeeId, updateData);
+    res.send(createResponse(updatedEmp, "Employee updated successfully"));
 });
 
 export const upsertEmpAddress = asyncHandler(async (req: Request, res: Response) => {
@@ -82,27 +111,41 @@ export const upsertEmpDocuments = asyncHandler(async (req: Request, res: Respons
     res.send(createResponse(result, "Employee Documents Updated successfully"));
 });
 
-// old controllers
-
-export const getAllFaculty = asyncHandler(async (req: Request, res: Response) => {
+export const getAllEmployee = asyncHandler(async (req: Request, res: Response) => {
     const page = parseInt(req.query.page as string) || 1;
     const limit = parseInt(req.query.limit as string) || 10;
     const search = req.query.search as string || "";
-    const faculty = await EmployeeService.getAllFaculty(page, limit, search);
-    if (!faculty) {
-        throw createHttpError(404, "Faculty not found");
-    }
-    res.send(createResponse(faculty, "Faculty fetched successfully"));
+    const role = req.query.role as string || "";
+    const gender = req.query.gender as Enum.Gender || "";
+    const status = req.query.status as Enum.EmployeeStatus || "";
+    const employee = await EmployeeService.getAllEmployee(page, limit, search, role, gender, status);
+    res.send(createResponse(employee, "Employee fetched successfully"));
 });
 
-export const getFacultyById = asyncHandler(async (req: Request, res: Response) => {
-    const { facultyId } = req.params;
-    const faculty = await EmployeeService.getFacultyById(facultyId);
-    if (!faculty) {
-        throw createHttpError(404, "Faculty not found");
+export const getEmployeeById = asyncHandler(async (req: Request, res: Response) => {
+    const { employeeId } = req.params;
+    const employee = await EmployeeService.getEmployeeById(employeeId);
+    if (!employee) {
+        throw createHttpError(404, "Employee not found");
     }
-    res.send(createResponse(faculty, "Faculty fetched successfully"));
+    res.send(createResponse(employee, "Employee detail fetched successfully"));
 });
+
+export const getEmpSalaryStructure = asyncHandler(async (req, res) => {
+    const { employeeId } = req.params;
+    const salary = await EmployeeService.getSalaryStructureByEmployeeId(employeeId);
+    res.send(
+        createResponse(
+            salary,
+            salary.length ? "Salary structure fetched successfully" : "No salary structure found"
+        )
+    );
+});
+
+// old controllers
+
+
+
 
 export const getUnassignedFaculty = asyncHandler(async (req: Request, res: Response) => {
     const { sessionId } = req.params;

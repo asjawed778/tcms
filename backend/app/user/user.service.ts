@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import createHttpError from "http-errors";
 import { omit } from "lodash";
 import { loadConfig } from "../common/helper/config.hepler";
-import { ClientSession } from "mongoose";
+import { ClientSession, Types } from "mongoose";
 import * as Enum from "../common/utils/enum";
 import * as UserDto from "./user.dto";
 import roleSchema from "./role.schema";
@@ -170,6 +170,56 @@ export const createUserByAdmin = async (data: { name: string, email: string, rol
     const user = await UserSchema.create({ ...data, role: roleId, password: hashedPass });
     return user;
 };
+
+export const updateUserByAdmin = async (
+    userId: string,
+    data: { name?: string; email?: string; role?: string }
+): Promise<Omit<IUser, "password">> => {
+
+    const user = await UserSchema.findById(userId);
+    if (!user) {
+        throw createHttpError(404, "User not found");
+    }
+    if (data.email && data.email !== user.email) {
+        const emailExists = await UserSchema.findOne({ email: data.email });
+        if (emailExists) {
+            throw createHttpError(409, "User with this email already exists");
+        }
+    }
+    let roleId = user.role;
+    const defaultUserRole = await roleSchema.findOne({ name: Enum.UserRole.USER });
+
+    if (!defaultUserRole) {
+        throw createHttpError(404, "Default User Role not exists");
+    }
+    if (data.role) {
+        const roleDoc = await roleSchema.findById(data.role);
+
+        if (!roleDoc) {
+            roleId = new Types.ObjectId(defaultUserRole._id);
+        } else if (roleDoc.name === Enum.UserRole.ADMIN) {
+            roleId = new Types.ObjectId(defaultUserRole._id);
+        } else {
+            roleId = new Types.ObjectId(roleDoc._id);
+        }
+    }
+    const updateData: any = {
+        ...(data.name && { name: data.name }),
+        ...(data.email && { email: data.email }),
+        ...(data.role && { role: roleId }),
+    };
+    const updatedUser = await UserSchema.findByIdAndUpdate(
+        userId,
+        updateData,
+        { new: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+        throw createHttpError(500, "Error updating user");
+    }
+    return updatedUser;
+};
+
 
 // user roles and permissions
 export const createRole = async (name: string, description?: string) => {
