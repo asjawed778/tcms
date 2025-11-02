@@ -90,7 +90,7 @@ const AddStudent = () => {
         },
       }).unwrap();
       console.log("class res: ", classResponse);
-      
+
       if (!classResponse.success) {
         toast.error(classResponse.message);
         return classResponse;
@@ -136,9 +136,9 @@ const AddStudent = () => {
         toast.error("No subjects to assign. Please add atleast one subject.");
         return { success: true };
       }
-      const res = await updateClass({classId, payload: allIds });
+      const res = await updateClass({ classId, payload: allIds });
       console.log("Update class Res: ", res);
-      
+
     },
     async (data: any) =>
       addFeeStructure({ classId, payload: cleanData(data) }).unwrap(),
@@ -166,35 +166,25 @@ const AddStudent = () => {
 
   const onStepSubmit = async (data: any) => {
     console.log("Form Data: ", data);
-
     const isValid = await methods.trigger();
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
       return;
     }
-
     try {
       // if (activeStep > 0 && !classId) {
       //   toast.error("Please complete the first step before continuing.");
       //   return;
       // }
       const response = await stepApis[activeStep](data);
-      if (response?.success) {
-        // toast.success(`Step ${activeStep + 1} saved successfully!`);
-        setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
+      setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
 
-        if (activeStep < steps.length - 1) {
-          setActiveStep((prev) => prev + 1);
-        } else {
-          toast.success("Student details added successfully!");
-          navigate("/dashboard/academics");
-        }
-      } 
-      // else {
-      //   toast.error(response?.message || "Something went wrong.");
-      //   console.log("Error2: ", response);
-        
-      // }
+      if (activeStep < steps.length - 1) {
+        setActiveStep((prev) => prev + 1);
+      } else {
+        toast.success("Student details added successfully!");
+        navigate("/dashboard/academics");
+      }
     } catch (error: any) {
       console.error("Error: ", error);
       toast.error(error?.data?.message || "Step submission failed!");
