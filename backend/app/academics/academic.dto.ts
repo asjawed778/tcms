@@ -77,7 +77,7 @@ export interface ICreateTimeTable extends Omit<ITimeTable, "_id" | "createdAt" |
 
 // class fee structure dto
 export interface IFeeDetails {
-    feeType: Enum.FeeType;
+    feeType: string;
     otherFeeType?: string;
     amount: number;
     isOptional?: boolean;
