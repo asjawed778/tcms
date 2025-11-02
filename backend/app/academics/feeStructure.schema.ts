@@ -5,12 +5,7 @@ import * as Enum from "../common/utils/enum";
 const feeDetailsSchema = new mongoose.Schema<AcademicDto.IFeeDetails>({
     feeType: {
         type: String,
-        enum: Object.values(Enum.FeeType),
         required: true,
-    },
-    otherFeeType: {
-        type: String,
-        required: false,
     },
     amount: {
         type: Number,

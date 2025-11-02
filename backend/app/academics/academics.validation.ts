@@ -243,8 +243,8 @@ export const createClass = [
 ];
 
 // create class : step - 3
-export const addClassFeeStructure = [
-    body("classId")
+export const upsertClassFeeStructure = [
+    param("classId")
         .notEmpty().withMessage("Class ID is required")
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 
@@ -272,7 +272,7 @@ export const addClassFeeStructure = [
 
     body("structures.*.feeDetails.*.feeType")
         .notEmpty().withMessage("Fee type is required")
-        .isIn(Object.values(Enum.FeeType)).withMessage("Invalid Fee type"),
+        .isString().withMessage("Fee Type Must be sring"),
 
     body("structures.*.feeDetails.*.amount")
         .notEmpty().withMessage("Amount is required")
@@ -293,6 +293,10 @@ export const addClassFeeStructure = [
     body("remarks")
         .optional()
         .isString().withMessage("Remarks must be a string"),
+
+    body("status")
+        .optional()
+        .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid Status value"),
 ];
 
 export const updateClass = [
@@ -320,63 +324,7 @@ export const getAllClass = [
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
 ];
 
-export const updateClassFeeStructure = [
-    param("classId")
-        .notEmpty().withMessage("Class id required for updating")
-        .isMongoId().withMessage("ClassId must be a valid mongo Id"),
-
-    body("effectiveFrom")
-        .optional()
-        .isISO8601().withMessage("Effective From must be a valid date"),
-
-    body("structures")
-        .optional()
-        .isArray({ min: 1 }).withMessage("Structures must be a non-empty array if provided"),
-
-    body("structures.*.frequency")
-        .optional()
-        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Frequency type"),
-
-    body("structures.*.totalAmount")
-        .optional()
-        .isNumeric().withMessage("Total amount must be a number"),
-
-    body("structures.*.feeDetails")
-        .optional()
-        .isArray({ min: 1 }).withMessage("Fee details must be an array with at least one item"),
-
-    body("structures.*.feeDetails.*.feeType")
-        .optional()
-        .isIn(Object.values(Enum.FeeType)).withMessage("Invalid Fee type"),
-
-    body("structures.*.feeDetails.*.amount")
-        .optional()
-        .isNumeric().withMessage("Amount must be a number"),
-
-    body("structures.*.feeDetails.*.isOptional")
-        .optional()
-        .isBoolean().withMessage("isOptional must be a boolean value"),
-
-    body("structures.*.feeDetails.*.applicableType")
-        .optional()
-        .isIn(Object.values(Enum.FeeApplicableType)).withMessage("Invalid Applicable Type"),
-
-    body("structures.*.feeDetails.*.applicableFrequency")
-        .optional()
-        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Applicable Frequency"),
-
-    body("remarks")
-        .optional()
-        .isString().withMessage("Remarks must be a string"),
-
-    body("status")
-        .optional()
-        .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid Status value"),
-];
-
 // old class validation
-
-
 export const getClassById = [
     param("classId")
         .notEmpty().withMessage("Class ID is required")

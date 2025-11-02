@@ -118,25 +118,17 @@ export const updateClass = asyncHandler(async (req: Request, res: Response) => {
     res.send(createResponse(result, "Class Updated successfully"));
 });
 
-export const addClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
+export const upsertClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const classId = req.params.classId;
     const feeStr = await AcademicService.getClassFeeStructure(classId);
+    let result;
     if (feeStr) {
-        throw createHttpError(409, "This Class have already Active Fee Structure");
-    }
-    const result = await AcademicService.addClassFeeStructure(classId, data);
-    res.send(createResponse(result, "Fee Structure Added successfully"));
-});
+        result = await AcademicService.updateClassFeeStructure(classId, data);
+    } else {
+        result = await AcademicService.addClassFeeStructure(classId, data);
 
-export const updateClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const classId = req.params.classId;
-    const feeStr = await AcademicService.getClassFeeStructure(classId);
-    if (!feeStr) {
-        throw createHttpError(409, "This Class have not Active Fee Structure");
     }
-    const result = await AcademicService.updateClassFeeStructure(classId, data);
     res.send(createResponse(result, "Fee Structure Updated successfully"));
 });
 

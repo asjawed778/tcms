@@ -98,17 +98,11 @@ router
         catchError,
         ClassControler.updateClass
     )
-    .post("/class/:classId/fee-structure",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
-        AcademicValidation.addClassFeeStructure,
-        catchError,
-        ClassControler.addClassFeeStructure
-    )
     .put("/class/:classId/fee-structure",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
-        AcademicValidation.updateClassFeeStructure,
+        AcademicValidation.upsertClassFeeStructure,
         catchError,
-        ClassControler.updateClassFeeStructure
+        ClassControler.upsertClassFeeStructure
     )
     .get(
         "/class/all",
