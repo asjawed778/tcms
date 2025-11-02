@@ -77,11 +77,6 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             trim: true,
         },
     }],
-    status: {
-        type: String,
-        enum: Object.values(Enum.TimeTableStatus),
-        default: Enum.TimeTableStatus.DRAFT
-    },
     effectiveFrom: {
         type: Date,
         default: Date.now,
@@ -89,7 +84,12 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
     effectiveTo: {
         type: Date,
         default: null
-    }
+    },
+    status: {
+        type: String,
+        enum: Object.values(Enum.TimeTableStatus),
+        default: Enum.TimeTableStatus.DRAFT
+    },
 });
 
 export default mongoose.model<ITimeTable>("TimeTable", timeTableSchema);

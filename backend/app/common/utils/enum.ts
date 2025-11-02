@@ -195,18 +195,6 @@ export enum TimeTableStatus {
 };
 
 // classes fee structure enum
-export enum FeeType {
-  TUITION_FEE = "Tuition Fee",
-  ADMISSION_FEE = "Admission Fee",
-  REGISTRATION_FEE = "Registration Fee",
-  EXAM_FEE = "Exam Fee",
-  TRANSPORT_FEE = "Transport Fee",
-  LAB_FEE = "Lab Fee",
-  LIBRARY_FEE = "Library Fee",
-  HOSTEL_FEE = "Hostel Fee",
-  UNIFORM_FEE = "Uniform Fee",
-  OTHER = "Other"
-};
 
 export enum FeeApplicableType {
   RECURRING = "Recurring",

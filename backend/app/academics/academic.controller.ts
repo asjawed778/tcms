@@ -99,10 +99,12 @@ export const createClass = asyncHandler(async (req: Request, res: Response) => {
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
     }
+    const uniqueClassId = await AcademicUtils.generateClassId(name);
     const data = {
         name,
         session,
-        courseStream
+        courseStream,
+        classId: uniqueClassId
     }
     const result = await AcademicService.createClass(data);
     res.send(createResponse(result, "Class created successfully"));

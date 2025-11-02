@@ -1,8 +1,7 @@
-import mongoose, { ClientSession } from "mongoose";
+import mongoose from "mongoose";
 import * as EmployeeDto from "./employee.dto";
 import facultySchema from "./employee.schema"
 import * as Enum from "../common/utils/enum";
-import * as UserService from "../user/user.service";
 import employeeSchema from "./employee.schema";
 import createHttpError from "http-errors";
 import salaryStructureSchema from "./salaryStructure.schema";
