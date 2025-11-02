@@ -2,6 +2,7 @@ import GenericTabs from "@/components/GenericTabs";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName, ToolsTabs } from "@/utils/enum";
 import RolesAndPermission from "./RolesAndPermissions";
+import { Badge } from "@mui/material";
 
 function Tools() {
   const can = useCan();
@@ -10,6 +11,7 @@ function Tools() {
     {
       label: "Roles & Permissions",
       value: ToolsTabs.ROLES_AND_PERMISSIONS,
+      icon: <Badge />,
       component: <RolesAndPermission />,
       permission: {
         module: ModuleName.ADMINISTRATION,        

@@ -1,8 +1,10 @@
+import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
+import { useAppTheme } from "@/context/ThemeContext";
 import { useGetAllFacultyQuery } from "@/services/facultyApi";
 import { AddCircleOutline, Close } from "@mui/icons-material";
-import { Box, Button, Grid, IconButton, Typography } from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 interface DropdownOption {
@@ -10,18 +12,18 @@ interface DropdownOption {
   value: string;
 }
 const SectionDetails: React.FC = () => {
-  const {data: facultyData, isLoading} = useGetAllFacultyQuery({
-    page: 1,
-    limit: 10
-  });
-  const facultyName: DropdownOption[] = facultyData?.data.faculty.map(items => ({
-    label: items.name,
-    value: items._id as string,
-  })) || [];  
+  const { colors } = useAppTheme();
+  // const { data: facultyData, isLoading } = useGetAllFacultyQuery({
+  //   page: 1,
+  //   limit: 10,
+  // });
+  // const facultyName: DropdownOption[] =
+  //   facultyData?.data.faculty.map((items) => ({
+  //     label: items.name,
+  //     value: items._id as string,
+  //   })) || [];
 
-  const {
-    control,
-  } = useFormContext();
+  const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: "sections",
@@ -38,7 +40,17 @@ const SectionDetails: React.FC = () => {
     }
   }, [fields, append]);
   return (
-    <Grid container spacing={2}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        width: "100%",
+        bgcolor: "#fff",
+        borderRadius: "8px",
+        minHeight: "20px",
+        p: 1,
+      }}
+    >
       {fields.map((field, index) => (
         <Grid
           key={field.id}
@@ -46,9 +58,9 @@ const SectionDetails: React.FC = () => {
           sx={{
             border: 1,
             borderRadius: 2,
-            p: 2,
+            p: 1,
             position: "relative",
-            borderColor: "grey.500",
+            borderColor: colors.inputBorder,
           }}
         >
           {index > 0 && (
@@ -62,18 +74,18 @@ const SectionDetails: React.FC = () => {
               </IconButton>
             </Box>
           )}
-          <Grid container spacing={2}>
+          <Grid container spacing={1}>
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6">Section {index + 1}</Typography>
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CustomInputField
                 name={`sections.${index}.name`}
                 label="Section Name"
                 placeholder="Enter Section Name"
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid size={{ xs: 12, md: 4 }}>
               <CustomInputField
                 name={`sections.${index}.capacity`}
                 label="Total Capacity"
@@ -82,12 +94,12 @@ const SectionDetails: React.FC = () => {
                 required={false}
               />
             </Grid>
-            <Grid size={{xs: 12, md: 6}}>
-              <CustomDropdownField 
+            <Grid size={{ xs: 12, md: 4 }}>
+              <CustomDropdownField
                 name={`sections.${index}.facultyName`}
                 label="Select Class Teacher"
-                options={facultyName}
-                loading={isLoading}
+                options={[]}
+                // loading={isLoading}
                 required={false}
               />
             </Grid>
@@ -95,13 +107,12 @@ const SectionDetails: React.FC = () => {
         </Grid>
       ))}
       <Grid size={{ xs: 12 }}>
-        <Button
+        <CustomButton
+          label="Add More Section"
           variant="outlined"
           startIcon={<AddCircleOutline />}
           onClick={() => append({ name: "", capacity: "", facultyName: null })}
-        >
-          Add More Section
-        </Button>
+        />
       </Grid>
     </Grid>
   );

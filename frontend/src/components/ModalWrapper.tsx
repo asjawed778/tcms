@@ -19,21 +19,6 @@ const SlideUpTransition = forwardRef(function SlideUpTransition(
 ) {
   return <Slide direction="up" ref={ref} {...props} timeout={400} />;
 });
-
-const SlideRightTransition = forwardRef(function SlideRightTransition(
-  props: SlideProps & { children?: ReactNode },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="left" ref={ref} {...props} timeout={400} />;
-});
-
-const SlideLeftTransition = forwardRef(function SlideLeftTransition(
-  props: SlideProps & { children?: ReactNode },
-  ref: React.Ref<unknown>
-) {
-  return <Slide direction="right" ref={ref} {...props} timeout={400} />;
-});
-
 const ZoomTransition = forwardRef(function ZoomTransition(
   props: SlideProps & { children?: ReactNode },
   ref: React.Ref<unknown>
@@ -51,7 +36,6 @@ interface ModalWrapperProps {
   closeIcon?: boolean;
   allowOutsideClickMobile?: boolean;
   allowOutsideClickDesktop?: boolean;
-  position?: "center" | "right" | "left";
 }
 
 const ModalWrapper: React.FC<ModalWrapperProps> = ({
@@ -64,7 +48,6 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
   closeIcon = true,
   allowOutsideClickMobile = false,
   allowOutsideClickDesktop = false,
-  position = "center",
 }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -79,49 +62,13 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
     }
     onClose?.(event, reason);
   };
-
-  const TransitionComponent = isMobile
-    ? SlideUpTransition
-    : position === "right"
-    ? SlideRightTransition
-    : position === "left"
-    ? SlideLeftTransition
-    : ZoomTransition;
-
-  const positionStyles = !isMobile
-    ? {
-        center: {
-          alignSelf: "center",
-          mx: "auto",
-          borderRadius: "16px",
-          height,
-        },
-        right: {
-          ml: "auto",
-          mr: 0,
-          height: "100%",
-          borderRadius: "16px 0 0 16px",
-        },
-        left: {
-          mr: "auto",
-          ml: 0,
-          height: "100%",
-          borderRadius: "0 16px 16px 0",
-        },
-      }[position]
-    : {
-        alignSelf: "flex-end",
-        borderRadius: "16px 16px 0 0",
-        height: "auto",
-      };
-
   return (
     <Dialog
       open={open}
       onClose={handleClose}
       fullScreen={isMobile}
       scroll="paper"
-      TransitionComponent={TransitionComponent}
+      TransitionComponent={isMobile ? SlideUpTransition : ZoomTransition}
       aria-labelledby="dialog-title"
       aria-describedby="dialog-description"
       aria-modal="true"
@@ -129,19 +76,20 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
       slotProps={{
         paper: {
           sx: {
-            width: isMobile
-              ? "100%" : width,
+            position: "relative",
+            width: isMobile ? "100%" : width,
+            height: isMobile ? "auto" : height,
             maxWidth: "100%",
             bgcolor: "background.paper",
-            boxShadow: "0 4px 20px rgb(0,0,0,0.1)",
+            boxShadow: 24,
+            borderRadius: isMobile ? "16px 16px 0 0" : "16px",
             p: "28px",
+            alignSelf: isMobile ? "flex-end" : "center",
             overflow: "hidden",
             display: "flex",
             flexDirection: "column",
-            maxHeight: isMobile ? "80%" : "100%",
-            transition:
-              "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
-            ...positionStyles,
+            maxHeight: isMobile ? "80%" : "90vh",
+            transition: "transform 0.3s ease-in-out, opacity 0.3s ease-in-out",
           },
         },
       }}

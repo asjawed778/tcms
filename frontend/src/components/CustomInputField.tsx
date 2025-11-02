@@ -5,7 +5,6 @@ import {
   IconButton,
   Box,
   TextFieldProps,
-  useTheme,
   styled,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -46,14 +45,15 @@ const StyledTextField = styled(TextField)(({ theme }) => {
   const palette = Colors[theme.palette.mode];
   return {
     "& .MuiOutlinedInput-root": {
+      minHeight: "40px",
       backgroundColor: palette.inputBackground,
       borderRadius: "8px",
       transition: "all 0.2s ease-in-out",
       "& .MuiOutlinedInput-notchedOutline": {
         borderColor: palette.inputBorder,
       },
-       "&:hover .MuiOutlinedInput-notchedOutline": {
-        borderColor: palette.inputBorder, 
+      "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder,
       },
       "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
         borderColor: palette.inputFocusBorder,
@@ -63,9 +63,7 @@ const StyledTextField = styled(TextField)(({ theme }) => {
         boxShadow: `0 0 6px ${theme.palette.primary.main}`,
       },
       "& input": {
-        borderRadius: "8px",
         color: palette.inputText,
-        backgroundColor: palette.inputBackground,
         fontSize: "15px",
         padding: "10px 12px",
         "::placeholder": {
@@ -73,20 +71,28 @@ const StyledTextField = styled(TextField)(({ theme }) => {
           opacity: 1,
         },
       },
+      "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
+        {
+          WebkitAppearance: "textfield",
+          margin: 0,
+        },
+      "& input[type=number]": {
+        MozAppearance: "textfield",
+      },
     },
     "& .MuiInputLabel-root": {
       color: palette.inputLabel,
-    },
-    "& .MuiInputLabel-root.Mui-focused": {
-      color: palette.inputFocus,
+      "&.Mui-focused": { color: palette.inputFocus },
     },
   };
 });
-const Label = styled("label")<{ error?: boolean }>(({ theme, error }) => ({
+
+const Label = styled("label")<{ error?: boolean }>(({ theme }) => ({
   fontSize: "14px",
   marginBottom: "4px",
   display: "inline-block",
-  color: error ? theme.palette.error.main : theme.palette.text.primary,
+  // color: error ? theme.palette.error.main : theme.palette.text.primary,
+  "& span": { color: theme.palette.error.main, marginLeft: 2 },
 }));
 
 function CustomInputField<T extends FieldValues = FieldValues>({
@@ -117,32 +123,44 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   const [uncontrolledValue, setUncontrolledValue] = useState("");
   const isPassword = type === "password";
   const isDate = type === "date";
-  const theme = useTheme();
+  const isNumber = type === "number";
 
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
+  const handleNumberChange = (
+    e: React.ChangeEvent<HTMLInputElement>,
+    onChange: (value: any) => void
+  ) => {
+    const value = e.target.value;
+    const num = Number(value);
+    if (value === "") {
+      onChange("");
+      return;
+    }
+    if (value.startsWith("-")) {
+      return;
+    }
+    if (minValue !== undefined && num < minValue) return;
+    if (maxValue !== undefined && num > maxValue) return;
+    onChange(num);
+  };
 
   const renderTextField = (
     field: {
       value: T[Path<T>] | undefined;
-      onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+      onChange: (value: any) => void;
     },
     error: FieldError | null
   ) => (
     <Box>
       {labelPosition === "outside" && (
-        <Label htmlFor={name} error={!!error} sx={{ fontSize: "14px", pb: "4px" }}>
-          {label}{" "}
-          {required && (
-            <Box component="span" sx={{ color: theme.palette.error.main }}>
-              *
-            </Box>
-          )}
+        <Label htmlFor={name} error={!!error}>
+          {label}
+          {required && <span>*</span>}
         </Label>
       )}
       <StyledTextField
-        {...field}
         id={name}
         label={labelPosition === "inside" ? label : undefined}
         multiline={!!rows}
@@ -169,9 +187,9 @@ function CustomInputField<T extends FieldValues = FieldValues>({
         error={!!error}
         helperText={error?.message}
         required={labelPosition === "inside" ? false : required}
-        aria-invalid={!!error}
-        aria-describedby={error ? `${name}-error-text` : undefined}
-        aria-label={labelPosition === "inside" ? label : undefined}
+        onChange={(e: any) =>
+          isNumber ? handleNumberChange(e, field.onChange) : field.onChange(e)
+        }
         InputProps={{
           startAdornment: startIcon && (
             <InputAdornment position="start">{startIcon}</InputAdornment>
@@ -192,20 +210,11 @@ function CustomInputField<T extends FieldValues = FieldValues>({
         }}
         InputLabelProps={{
           shrink: isDate ? true : undefined,
-          sx:
-            labelPosition === "inside" && required
-              ? {
-                  "&::after": {
-                    content: '" *"',
-                    color: theme.palette.error.main,
-                  },
-                }
-              : {},
         }}
         inputProps={{
           ...(type === "number" ? { min: minValue, max: maxValue } : {}),
+          step: "1",
           readOnly,
-          "aria-required": required,
           max:
             isDate && maxDate
               ? new Date(maxDate).toISOString().split("T")[0]
@@ -232,7 +241,7 @@ function CustomInputField<T extends FieldValues = FieldValues>({
     renderTextField(
       {
         value: uncontrolledValue as T[Path<T>] | undefined,
-        onChange: (e) => setUncontrolledValue(e.target.value),
+        onChange: (value) => setUncontrolledValue(String(value)),
       },
       null
     )

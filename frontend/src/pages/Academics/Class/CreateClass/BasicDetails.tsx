@@ -1,8 +1,8 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import { ClassName, CourseStream } from "@/utils/enum";
-import { Divider, Grid } from "@mui/material";
+import { Divider, Grid, Typography } from "@mui/material";
 import React from "react";
-import SubjectDetails from "./SubjectDetails";
+// import SubjectDetails from "./SubjectDetails";
 import SectionDetails from "./SectionDetails";
 
 const BasicDetails: React.FC = () => {
@@ -10,7 +10,6 @@ const BasicDetails: React.FC = () => {
     label: value,
     value: value,
   }));
-  
   const courseStreamOptions = Object.entries(CourseStream).map(
     ([_, value]) => ({
       label: value,
@@ -19,7 +18,18 @@ const BasicDetails: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} sx={{
+          width: "100%",
+          bgcolor: "#fff",
+          borderRadius: "8px",
+          minHeight: "20px",
+          p: 1,
+        }}>
+      <Grid size={{ md: 12 }}>
+        <Typography fontWeight={600} sx={{ fontSize: "18px" }}>
+          Basic Details
+        </Typography>
+      </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="name"
@@ -39,12 +49,12 @@ const BasicDetails: React.FC = () => {
         <SectionDetails />
       </Grid>
       
-      <Grid size={{ xs: 12 }}>
+      {/* <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }} />
       </Grid>
       <Grid size={{ xs: 12 }}>
         <SubjectDetails />
-      </Grid>
+      </Grid> */}
     </Grid>
   );
 };

@@ -10,8 +10,21 @@ import {
 } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import { Add, Delete, Edit, ViewList, ViewModule, Visibility } from "@mui/icons-material";
-import { Box, CircularProgress, Grid, IconButton, Tooltip, Typography } from "@mui/material";
+import {
+  Add,
+  Delete,
+  Edit,
+  ViewList,
+  ViewModule,
+  Visibility,
+} from "@mui/icons-material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
 import { useState } from "react";
 import AddSubject from "./AddSubject";
 import DialogBoxWrapper from "@/components/DialogBoxWrapper";
@@ -19,6 +32,7 @@ import toast from "react-hot-toast";
 import { SubjectResponse } from "../../../../type";
 import SubjectCard from "./SubjectCard";
 import SubjectDetailsModal from "./SubjectDetailsModal";
+import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
@@ -64,8 +78,7 @@ const Subject = () => {
     classId,
   });
   const [deleteSubject] = useDeleteSubjectMutation();
-  console.log("Subject Data: ", subjectData);
-  
+
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({
       label: cls.name,
@@ -164,7 +177,7 @@ const Subject = () => {
   };
   return (
     <>
-      <Box sx={{ width: "100%", mt: "24px"}}>
+      <Box sx={{ width: "100%", mt: "24px" }}>
         <Box
           sx={{
             display: "flex",
@@ -173,7 +186,10 @@ const Subject = () => {
             gap: 2,
           }}
         >
-          <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}} />
+          <CustomSearchField
+            onSearch={setSearchQuery}
+            sx={{ bgcolor: "#fff" }}
+          />
           <Box
             sx={{
               display: "flex",
@@ -214,6 +230,14 @@ const Subject = () => {
           </Box>
         </Box>
         {subjectFetching ? (
+          <Grid container spacing={2} mt="24px">
+            {Array.from({ length: 9 }).map((_, index) => (
+              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <SubjectCardSkeleton key={`skeleton-${index}`} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : subjectError ? (
           <Box
             sx={{
               display: "flex",
@@ -222,16 +246,21 @@ const Subject = () => {
               height: "80vh",
             }}
           >
-            <CircularProgress />
+            <Typography variant="body1">
+              Failed to load subjects. Please try again.
+            </Typography>
           </Box>
-        ) : subjectError ? (
-          <Typography
-            variant="body1"
-            color="error"
-            sx={{ textAlign: "center", mt: 3 }}
+        ) : subjectData?.data?.subjects?.length === 0 ? (
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              height: "80vh",
+            }}
           >
-            Failed to load subjects. Please try again.
-          </Typography>
+            <Typography variant="body1">No records found.</Typography>
+          </Box>
         ) : tableView ? (
           <TableWrapper
             columns={subjectColumns}
@@ -246,7 +275,7 @@ const Subject = () => {
             actions={actionsList}
             isFetching={subjectFetching}
             isError={subjectError}
-            paginationType="table"
+            // paginationType="table"
             // isSessionNotSelected={!selectedSession?._id}
           />
         ) : (
@@ -282,7 +311,7 @@ const Subject = () => {
         />
       )}
       {openViewSubject && (
-        <SubjectDetailsModal 
+        <SubjectDetailsModal
           open={openViewSubject}
           onClose={() => setOpenViewSubject(false)}
           subject={selectedRow}

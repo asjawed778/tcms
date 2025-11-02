@@ -17,10 +17,10 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard",
   },
   {
-    label: "Faculty",
-    module: ModuleName.Employee,
-    icon: <Icons.PeopleOutline />,
-    path: "/dashboard/faculty",
+    label: "Academics",
+    module: ModuleName.ACADEMICS,
+    icon: <Icons.SchoolOutlined />,
+    path: "/dashboard/academics",
   },
   {
     label: "Students",
@@ -29,15 +29,15 @@ export const sidebarItems: SidebarItem[] = [
     path: "/dashboard/student",
   },
   {
-  label: "Academics",
-  module: ModuleName.ACADEMICS,
-  icon: <Icons.SchoolOutlined />,
-  path: "/dashboard/academics",
-},
+    label: "Employee",
+    module: ModuleName.Employee,
+    icon: <Icons.PeopleOutline />,
+    path: "/dashboard/faculty",
+  },
   {
     label: "Administration",
     module: ModuleName.ADMINISTRATION,
     icon: <Icons.AdminPanelSettingsOutlined />,
     path: "/dashboard/administration",
-},
+  },
 ];

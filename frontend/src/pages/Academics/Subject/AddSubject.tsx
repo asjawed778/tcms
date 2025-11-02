@@ -57,7 +57,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
         ...data,
         sessionId: selectedSession?._id as string,
       }) as SubjectRequest;
-      console.log("Subject data: ", payload);
 
       if (isEditMode && subject) {
         await updateSubject({ payload, subjectId: subject._id }).unwrap();

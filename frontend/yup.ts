@@ -202,16 +202,15 @@ export const basicDetailsSchema = yup.object({
     .min(1, "At least one section is required")
     .of(
       yup.object().shape({
-        name: yup.string().required("Section name is requied"),
+        name: yup.string().required("Section name is required").trim(),
+        classTeacher: yup.string().nullable().notRequired().trim(),
         capacity: yup
           .number()
+          .nullable()
+          .notRequired()
           .transform((value, originalValue) =>
-            originalValue === "" ? undefined : value
-          )
-          .optional()
-          // .typeError("Capacity must be a number")
-          .positive("Capacity must be positive")
-          .integer("Capacity must be an integer"),
+            originalValue === "" || originalValue === null ? null : value
+          ),
       })
     ),
 });
@@ -733,13 +732,19 @@ export const addSectionSchema = yup.object({
   name: yup.string().required("Section name is required").trim(),
   classId: yup.string().required("Class is required").trim(),
   classTeacher: yup.string().nullable().notRequired().trim(),
+  // capacity: yup
+  //   .number()
+  //   .typeError("Capacity must be a number")
+  //   .positive("Capacity must be positive")
+  //   .integer("Capacity must be an integer")
+  //   .nullable()
+  //   .notRequired(),
   capacity: yup
     .number()
-    .typeError("Capacity must be a number")
-    .positive("Capacity must be positive")
-    .integer("Capacity must be an integer")
     .nullable()
-    .notRequired(),
+    .notRequired()
+    .transform((value, originalValue) =>
+      originalValue === "" || originalValue === null ? null : value
+    ),
   sessionId: yup.string().required(),
 });
-

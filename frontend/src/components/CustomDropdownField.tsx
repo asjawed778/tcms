@@ -15,6 +15,7 @@ import {
   Control,
   FieldValues,
   Path,
+  FieldError,
 } from "react-hook-form";
 import { Colors } from "@/theme/colors";
 
@@ -32,20 +33,31 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
-  control?: Control<any>;
-  value?: string | string[] | Option | null;
+  control?: Control<T>;
+  value?: string | string[] | Option | Option[] | null;
   onChange?: (value: string | string[] | null) => void;
   options?: (Option | string)[];
   labelPosition?: "inside" | "outside";
   sx?: SxProps<Theme>;
 }
+
 const StyledTextField = styled(TextField)(({ theme }) => {
   const palette = Colors[theme.palette.mode];
   return {
     "& .MuiOutlinedInput-root": {
+      height: "42px",
       backgroundColor: palette.inputBackground,
       borderRadius: "8px",
       transition: "all 0.2s ease-in-out",
+      "& .MuiOutlinedInput-input": {
+        padding: "8px 10px !important",
+        fontSize: "15px",
+        color: palette.inputText,
+        "::placeholder": {
+          color: palette.inputPlaceholder,
+          opacity: 1,
+        },
+      },
       "& .MuiOutlinedInput-notchedOutline": {
         borderColor: palette.inputBorder,
       },
@@ -59,16 +71,18 @@ const StyledTextField = styled(TextField)(({ theme }) => {
       "&.Mui-focused": {
         boxShadow: `0 0 6px ${theme.palette.primary.main}`,
       },
-      "& input": {
-        borderRadius: "8px",
-        color: palette.inputText,
-        backgroundColor: palette.inputBackground,
-        fontSize: "15px",
-        padding: "10px 12px",
-        "::placeholder": {
-          color: palette.inputPlaceholder,
-          opacity: 1,
-        },
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+      },
+      "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+      },
+      "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+        borderWidth: "1.5px",
+      },
+      "&.Mui-error.Mui-focused": {
+        boxShadow: `0 0 6px ${theme.palette.error.main}40`,
       },
     },
     "& .MuiInputLabel-root": {
@@ -77,31 +91,25 @@ const StyledTextField = styled(TextField)(({ theme }) => {
       "& .MuiFormLabel-asterisk": {
         color: theme.palette.error.main,
       },
+      "&.Mui-error": {
+        color: theme.palette.error.main,
+      },
     },
   };
 });
-const StyledLabel = styled("label")(({ theme }) => ({
-  display: "block",
-  fontSize: "14px",
-  marginBottom: "4px",
-  "& span": { color: theme.palette.error.main },
-}));
 
-// const getErrorMessage = <T extends FieldValues>(
-//   errors: Record<string, unknown>,
-//   name: Path<T>
-// ): string | undefined => {
-//   const keys = name.split(".");
-//   let error: unknown = errors;
-//   for (const key of keys) {
-//     if (error && typeof error === "object" && key in error) {
-//       error = (error as Record<string, unknown>)[key];
-//     } else {
-//       return undefined;
-//     }
-//   }
-//   return (error as { message?: string })?.message;
-// };
+const StyledLabel = styled("label")(
+  ({ theme }) => ({
+    display: "block",
+    fontSize: "14px",
+    marginBottom: "4px",
+    // color: error ? theme.palette.error.main : theme.palette.text.primary,
+    "& span": {
+      color: theme.palette.error.main,
+      marginLeft: 2,
+    },
+  })
+);
 
 const CustomDropdownField = <T extends FieldValues>({
   label,
@@ -119,13 +127,9 @@ const CustomDropdownField = <T extends FieldValues>({
   labelPosition = "outside",
   sx = {},
 }: CustomDropdownFieldProps<T>) => {
+  const theme = useTheme();
   const formContext = useFormContext<T>();
   const control = incomingControl ?? formContext?.control;
-  const theme = useTheme();
-  // const errorMsg =
-  //   name && control
-  //     ? getErrorMessage(formContext?.formState.errors ?? {}, name)
-  //     : undefined;
 
   const combinedOptions: Option[] = useMemo(
     () =>
@@ -135,90 +139,111 @@ const CustomDropdownField = <T extends FieldValues>({
     [options]
   );
 
-  const getDisplayValue = (val: string | string[] | Option | null) => {
-    if (multiple)
-      return combinedOptions.filter(
-        (opt) => Array.isArray(val) && val.includes(opt.value)
+  const getDisplayValue = (
+    val: string | string[] | Option | Option[] | null
+  ): Option | Option[] | null => {
+    if (multiple && Array.isArray(val)) {
+      return combinedOptions.filter((opt) =>
+        val.some((v) => {
+          if (typeof v === "string") return v === opt.value;
+          if (v && typeof v === "object" && "value" in v)
+            return v.value === opt.value;
+          return false;
+        })
       );
-    if (val && typeof val === "object" && "value" in val) return val as Option;
-    return combinedOptions.find((opt) => opt.value === val) || null;
+    }
+    if (!multiple && val !== null && val !== undefined) {
+      if (typeof val === "string") {
+        return combinedOptions.find((opt) => opt.value === val) || null;
+      }
+      if (typeof val === "object" && "value" in val) {
+        return (
+          combinedOptions.find((opt) => opt.value === (val as Option).value) ||
+          null
+        );
+      }
+    }
+
+    return null;
   };
 
-  const renderAutocompleteField = (
-    val: string | string[] | Option | null,
-    onChange: (v: string | string[] | null) => void,
-    err?: string
-  ) => (
-    <Box sx={{ width: fullWidth ? "100%" : "auto" }}>
-      {labelPosition === "outside" && (
-        <StyledLabel htmlFor={name} sx={{ fontSize: "14px", pb: "4px" }}>
-          {label}
-          {required && (
-            <Box component="span" sx={{ color: theme.palette.error.main }}>
-              *
-            </Box>
-          )}
-        </StyledLabel>
-      )}
-      <Autocomplete
-        multiple={multiple}
-        options={combinedOptions}
-        value={getDisplayValue(val)}
-        onChange={(_, newVal) => {
-          const selected = multiple
-            ? (newVal as Option[]).map((opt) => opt.value)
-            : (newVal as Option)?.value || null;
-          onChange(selected);
-        }}
-        getOptionLabel={(option) => option.label}
-        isOptionEqualToValue={(a, b) => a.value === b.value}
-        disabled={disabled}
-        fullWidth={fullWidth}
-        loading={loading}
-        noOptionsText="No options available"
-        sx={{
-          width: fullWidth ? "100%" : "auto",
-          minWidth: 180,
-          flexShrink: 0,
-          ...sx,
-        }}
-        loadingText={
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <CircularProgress size={20} /> Loading...
-          </Box>
-        }
-        renderInput={(params) => (
-          <StyledTextField
-            {...params}
-            id={name}
-            label={labelPosition === "inside" ? label : undefined}
-            placeholder={placeholder}
-            required={required}
-            error={!!err}
-            helperText={err}
-            size="small"
-            InputLabelProps={{ required }}
-          />
+  const renderAutocomplete = (
+    fieldValue: any,
+    onFieldChange: (v: any) => void,
+    error?: FieldError
+  ) => {
+    const hasError = !!error?.message;
+
+    return (
+      <Box sx={{ width: fullWidth ? "100%" : "auto" }}>
+        {labelPosition === "outside" && (
+          <StyledLabel htmlFor={name} >
+            {label}
+            {required && (
+              <Box component="span" sx={{ color: theme.palette.error.main }}>
+                *
+              </Box>
+            )}
+          </StyledLabel>
         )}
-      />
-    </Box>
-  );
+
+        <Autocomplete
+          multiple={multiple}
+          options={combinedOptions}
+          value={getDisplayValue(fieldValue)}
+          onChange={(_, newValue) => {
+            const selected = multiple
+              ? (newValue as Option[]).map((opt) => opt.value)
+              : (newValue as Option)?.value ?? null;
+            onFieldChange(selected);
+          }}
+          getOptionLabel={(option) => option.label}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          disabled={disabled}
+          loading={loading}
+          fullWidth={fullWidth}
+          noOptionsText="No options"
+          loadingText={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CircularProgress size={20} />
+              Loading...
+            </Box>
+          }
+          sx={{
+            ...sx,
+            minWidth: 180,
+          }}
+          renderInput={(params) => (
+            <StyledTextField
+              {...params}
+              id={name}
+              label={labelPosition === "inside" ? label : undefined}
+              placeholder={placeholder}
+              required={required}
+              error={hasError} // triggers red border
+              helperText={error?.message}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+            />
+          )}
+        />
+      </Box>
+    );
+  };
+
   if (control && name) {
     return (
       <Controller
         name={name}
         control={control}
         render={({ field, fieldState }) =>
-          renderAutocompleteField(
-            field.value,
-            field.onChange,
-            fieldState.error?.message
-          )
+          renderAutocomplete(field.value, field.onChange, fieldState.error)
         }
       />
     );
   }
-  return renderAutocompleteField(
+
+  return renderAutocomplete(
     propValue ?? null,
     propOnChange ?? (() => {}),
     undefined

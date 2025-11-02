@@ -6,31 +6,28 @@ export const academicsApi = createApi({
   reducerPath: "academicsApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
+    // Class............................................................
     getAllClass: builder.query({
-      query: ({ sessionId }) => {
-        // let url = `/class/all/${sessionId}?pageNo=${page}&limit=${limit}`;
-
-        let url = `/admin/academics/class/all/${sessionId}`;
-        // if (query.trim() !== '') {
-        //   url += `&search=${encodeURIComponent(query.trim())}`;
-        // }
-        // if (typeof active === 'boolean') {
-        //   url += `&active=${active}`;
-        // }
-        return { url };
-      },
-    }),
-    updateclass: builder.mutation({
-      query: (classId) => ({
-        url: `/admin/academics/class/${classId}`,
-        method: "PUT",
+      query: ({ sessionId }) => ({
+        url : `/admin/academics/class/all`,
+        params: {
+          ...( sessionId && { sessionId })
+        },
+        method: "GET", 
       }),
     }),
     createClass: builder.mutation({
-      query: (data) => ({
+      query: ({ payload }) => ({
         url: "/admin/academics/class",
         method: "POST",
-        body: data,
+        body: payload,
+      }),
+    }),
+    updateclass: builder.mutation({
+      query: ({classId, payload}) => ({
+        url: `/admin/academics/class/${classId}`,
+        method: "PUT",
+        body: payload,
       }),
     }),
     getClassDetails: builder.query({
@@ -39,44 +36,27 @@ export const academicsApi = createApi({
         method: "GET",
       }),
     }),
-    createTimeTable: builder.mutation({
-      query: ({ sessionId, classId, sectionId, ...data }) => ({
-        url: `/admin/academics/timetable/${sessionId}/${classId}/${sectionId}`,
+    createFeeStructure: builder.mutation({
+      query: ({classId, payload}) => ({
+        url: `/admin/academics/class/${classId}/fee-structure`,
         method: "POST",
-        body: data,
+        body: payload,
       }),
     }),
-    getTimeTable: builder.query({
-      query: ({ sessionId, classId, sectionId }) => {
-        let url = `/admin/academics/timetable/${sessionId}`;
-        if (classId) url += `/${classId}`;
-        if (sectionId) url += `/${sectionId}`;
-        return {
-          url,
-          method: "GET",
-        };
-      },
-    }),
-    assignClassTeacher: builder.mutation({
-      query: ({ sessionId, ...body }) => ({
-        url: `/admin/academics/assign-faculty/${sessionId}`,
-        method: "PATCH",
-        body,
-      }),
-    }),
-    removeClassTeacher: builder.mutation({
-      query: ({ sessionId }) => ({
-        url: `/admin/academics/remove-faculty/${sessionId}`,
-        method: "PATCH",
+    updateFeeStructure: builder.mutation({
+      query: ({classId, payload}) => ({
+        url: `/admin/academics/class/${classId}/fee-structure`,
+        method: "PUT",
+        body: payload,
       }),
     }),
     // Section.............................................................
     getAllSection: builder.query<ApiResponse<SectionResponseList>, {sessionId?: string; classId?: string; page?: number; limit?: number; search?: string;}>({
       query: ({ sessionId, classId, page = 1, limit = 10, search = "" }) => ({
         url: `/admin/academics/section/all`,
-        page,
-        limit,
         params: {
+          page,
+          limit,
           ...(search && { search }),
           ...(sessionId && { sessionId }),
           ...(classId && { classId })
@@ -133,7 +113,7 @@ export const academicsApi = createApi({
       })
     }),
     addBulkSubject: builder.mutation({
-      query: (payload) => ({
+      query: ({payload}) => ({
         url: `/admin/academics/subject/bulk`,
         method: "POST",
         body: payload,
@@ -152,16 +132,50 @@ export const academicsApi = createApi({
         method: "DELETE",
       })
     }),
+    // Time Table ......................................................
+    createTimeTable: builder.mutation({
+      query: ({ sessionId, classId, sectionId, ...data }) => ({
+        url: `/admin/academics/timetable/${sessionId}/${classId}/${sectionId}`,
+        method: "POST",
+        body: data,
+      }),
+    }),
+    getTimeTable: builder.query({
+      query: ({ sessionId, classId, sectionId }) => {
+        let url = `/admin/academics/timetable/${sessionId}`;
+        if (classId) url += `/${classId}`;
+        if (sectionId) url += `/${sectionId}`;
+        return {
+          url,
+          method: "GET",
+        };
+      },
+    }),
+    assignClassTeacher: builder.mutation({
+      query: ({ sessionId, ...body }) => ({
+        url: `/admin/academics/assign-faculty/${sessionId}`,
+        method: "PATCH",
+        body,
+      }),
+    }),
+    removeClassTeacher: builder.mutation({
+      query: ({ sessionId }) => ({
+        url: `/admin/academics/remove-faculty/${sessionId}`,
+        method: "PATCH",
+      }),
+    }),
   }),
 });
 
 export const {
   useGetAllClassQuery,
   useCreateClassMutation,
+  useUpdateclassMutation,
+  useGetClassDetailsQuery,
+  useCreateFeeStructureMutation,
+  useUpdateFeeStructureMutation,
   useCreateTimeTableMutation,
   useGetTimeTableQuery,
-  useGetClassDetailsQuery,
-  useUpdateclassMutation,
   useAssignClassTeacherMutation,
   useRemoveClassTeacherMutation,
   useGetAllSectionQuery,

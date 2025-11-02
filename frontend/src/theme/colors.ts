@@ -2,8 +2,9 @@
 const tintColorLight = '#0a7ea4';
 const tintColorDark = '#fff';
 
+export type ThemeMode = 'light' | 'dark'
 
-export interface AppColors {
+export interface ThemeColors {
   primary: string;       
   secondary: string;     
   background: string;    
@@ -53,7 +54,7 @@ export interface AppColors {
   sidebarActiveText: string;
 }
 
-export const Colors: { light: AppColors; dark: AppColors } = {
+export const Colors: Record<ThemeMode, ThemeColors> = {
   light: {
     primary: "#0173f5",        
     secondary: "#d624ca",      
@@ -109,7 +110,7 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     sidebarText: "#3C3C3C",
     sidebarActiveBg: "#0173f5",
     sidebarActiveIcon: "#FFF",
-    sidebarActiveText: "#FFF"
+    sidebarActiveText: "#FFF",
   },
 
   // >>>>>>>>>>>>>>>>>>>>>>>>>>DARK THEM>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -168,6 +169,6 @@ export const Colors: { light: AppColors; dark: AppColors } = {
     sidebarText: "#CCC",
     sidebarActiveBg: "#0173f5",
     sidebarActiveIcon: "#FFF",
-    sidebarActiveText: "#FFF"
+    sidebarActiveText: "#FFF",
   },
 };

@@ -95,7 +95,7 @@ const AddSection: React.FC<AddSectionProps> = ({
   }, [section, selectedSession?._id, reset]);
 
   const onSubmit = async (data: SectionRequest) => {
-    console.log("Form Data: ", data);
+    // console.log("Form Data: ", data);
     
     try {
       const payload = cleanData({
@@ -167,6 +167,8 @@ const AddSection: React.FC<AddSectionProps> = ({
               control={control}
               required={false}
               labelPosition="outside"
+              type="number"
+              // minValue={2}
             />
           </Grid>
         </Grid>

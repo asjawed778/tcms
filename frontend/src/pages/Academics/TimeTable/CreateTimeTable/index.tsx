@@ -177,8 +177,8 @@ const CreateTimeTable = () => {
   const StepComponent = steps[activeStep].component;
 
   return (
-    <Box px={1} mb={1}>
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ my: 2 }}>
+    <Box m="24px">
+      <Stepper activeStep={activeStep} alternativeLabel   >
         {steps.map((step, index) => (
           <Step key={index}>
             <StepLabel>{step.label}</StepLabel>
@@ -188,9 +188,9 @@ const CreateTimeTable = () => {
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <Paper sx={{ width: "100%" }}>
+          <Box sx={{ width: "100%", bgcolor: "#fff", borderRadius: "8px" }}>
             {activeStep === 0 && (
-              <Grid container spacing={2} mt={2} p={2}>
+              <Grid container spacing={2} mt={2} px={2} pt={2}>
                 <Grid size={{ xs: 12, md: 6 }}>
                   <CustomDropdownField
                     name="classId"
@@ -208,11 +208,10 @@ const CreateTimeTable = () => {
                 </Grid>
               </Grid>
             )}
-            <CardContent sx={{ p: { xs: 1, sm: 2 } }}>
+            <CardContent >
               <Typography variant="h6" gutterBottom fontWeight={600}>
                 {steps[activeStep].label}
               </Typography>
-              <Divider sx={{ mb: 3 }} />
               <Box>
                 <StepComponent
                   dayIndex={activeStep}
@@ -221,7 +220,7 @@ const CreateTimeTable = () => {
                 />
               </Box>
             </CardContent>
-          </Paper>
+          </Box>
           <Box
             mt={2}
             display="flex"

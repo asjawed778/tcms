@@ -107,7 +107,7 @@ const TimeTable: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        p: 1,
+        mt: "24px",
       }}
     >
       {/* Top Row: Filters */}

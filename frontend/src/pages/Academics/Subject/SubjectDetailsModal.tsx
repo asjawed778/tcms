@@ -21,7 +21,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
       onClose={onClose}
       title={`Subject Details - ${subject.name}`}
       width="60%"
-      allowOutsideClickDesktop={true}
+      // allowOutsideClickDesktop={true}
     >
       <Box display="flex" flexDirection="column" gap={1.5}>
         <Typography variant="body1">

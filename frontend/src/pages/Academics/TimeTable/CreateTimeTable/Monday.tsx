@@ -247,7 +247,6 @@ const Monday: React.FC<Props> = ({ dayIndex, dayName, subjectOptions }) => {
 
           <Button
             variant="outlined"
-            sx={{ mt: 1 }}
             onClick={() =>
               append({
                 periodNumber: "",

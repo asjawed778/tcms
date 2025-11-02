@@ -1,5 +1,4 @@
-import ModalWrapper from "@/components/ModalWrapper";
-import SideSheetWrapper from "@/components/SideSheetWrapper";
+import SideSheetWrapper from "@/components/SideDrawerWrapper";
 import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 

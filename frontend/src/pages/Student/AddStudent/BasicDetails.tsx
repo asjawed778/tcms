@@ -3,7 +3,7 @@ import CustomInputField from "@/components/CustomInputField";
 import CustomRadioGroup from "@/components/CustomRadioGroup";
 import ImageUploader from "@/components/ImageUploader";
 import { BloodGroup, Gender, Religion } from "@/utils/enum";
-import { Divider, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
 
 const PersonalDetails: React.FC = () => {
