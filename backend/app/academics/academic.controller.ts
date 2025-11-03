@@ -19,6 +19,8 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
 
 export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
+    console.log("Subject data: ", subjects);
+    
     const result = [];
     for (const subject of subjects) {
         const response = await AcademicService.createSubject(subject);

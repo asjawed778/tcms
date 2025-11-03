@@ -1,5 +1,5 @@
 import CustomInputField from "@/components/CustomInputField";
-import { Divider, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
 
 const ParentDetails: React.FC = () => {

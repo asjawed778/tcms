@@ -51,6 +51,7 @@ interface TableWrapperProps<T> {
   message?: string;
   actionDisplayType?: "menu" | "icon";
   paginationType?: "table" | "standalone";
+  onRowClick?: (row: T) => void;
 }
 
 function EllipsisTooltip({
@@ -149,9 +150,11 @@ function TableWrapper<T extends { _id?: string | number }>({
   message,
   actionDisplayType = "menu",
   paginationType = "table",
+  onRowClick,
 }: TableWrapperProps<T>) {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [menuRowIndex, setMenuRowIndex] = useState<number | null>(null);
+  const isMenuOpen = Boolean(anchorEl);
 
   const handleMenuOpen = (
     event: React.MouseEvent<HTMLButtonElement>,
@@ -172,7 +175,16 @@ function TableWrapper<T extends { _id?: string | number }>({
         return (
           <TableRow
             key={row._id ?? index}
+            onClick={() => {
+              if (!isMenuOpen) {
+                onRowClick?.(row);
+              }
+            }}
             sx={{
+              cursor: onRowClick ? "pointer" : "default",
+              // "&:hover": {
+              //   backgroundColor: onRowClick ? "#f0f0f0" : undefined,
+              // },
               "& td:not(:last-child)": {
                 py: 1,
                 pl: "10px",
@@ -242,7 +254,10 @@ function TableWrapper<T extends { _id?: string | number }>({
                       <IconButton
                         size="small"
                         aria-label={action.label}
-                        onClick={() => onActionClick?.(action.action, row)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onActionClick?.(action.action, row);
+                        }}
                         sx={{
                           color: action.color || "inherit",
                           p: 0,
@@ -257,7 +272,10 @@ function TableWrapper<T extends { _id?: string | number }>({
                   <>
                     <IconButton
                       size="small"
-                      onClick={(e) => handleMenuOpen(e, index)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuOpen(e, index);
+                      }}
                     >
                       <MoreVert fontSize="small" color="primary" />
                     </IconButton>
@@ -280,7 +298,8 @@ function TableWrapper<T extends { _id?: string | number }>({
                             key={`menu-${row._id ?? index}-${
                               action.action
                             }-${actionIndex}`}
-                            onClick={async () => {
+                            onClick={async (e) => {
+                              e.stopPropagation();
                               await onActionClick?.(action.action, row);
                               handleMenuClose();
                             }}
@@ -405,7 +424,12 @@ function TableWrapper<T extends { _id?: string | number }>({
                     colSpan={columns.length + 1}
                     sx={{ border: "1px solid #E0E0E0" }}
                   >
-                    <Box display="flex" justifyContent="center" alignItems= "center" sx={{ height: "40vh " }}>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{ height: "40vh " }}
+                    >
                       <Typography variant="subtitle1" color="error">
                         Something went wrong. Please try again.
                       </Typography>
@@ -418,7 +442,12 @@ function TableWrapper<T extends { _id?: string | number }>({
                     colSpan={columns.length + 1}
                     sx={{ border: "1px solid #E0E0E0" }}
                   >
-                    <Box display="flex" justifyContent="center" alignItems="center" sx={{ height: "40vh " }}>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{ height: "40vh " }}
+                    >
                       <CircularProgress />
                     </Box>
                   </TableCell>
@@ -429,7 +458,12 @@ function TableWrapper<T extends { _id?: string | number }>({
                     colSpan={columns.length + 1}
                     sx={{ border: "1px solid #E0E0E0" }}
                   >
-                    <Box display="flex" justifyContent="center" alignItems= "center" sx={{ height: "40vh " }}>
+                    <Box
+                      display="flex"
+                      justifyContent="center"
+                      alignItems="center"
+                      sx={{ height: "40vh " }}
+                    >
                       <Typography variant="subtitle1" color="text.secondary">
                         No records found.
                       </Typography>

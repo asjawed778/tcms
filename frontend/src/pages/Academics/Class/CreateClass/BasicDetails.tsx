@@ -1,6 +1,6 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import { ClassName, CourseStream } from "@/utils/enum";
-import { Divider, Grid, Typography } from "@mui/material";
+import { Grid, Typography } from "@mui/material";
 import React from "react";
 // import SubjectDetails from "./SubjectDetails";
 import SectionDetails from "./SectionDetails";
@@ -18,13 +18,17 @@ const BasicDetails: React.FC = () => {
   );
 
   return (
-    <Grid container spacing={2} sx={{
-          width: "100%",
-          bgcolor: "#fff",
-          borderRadius: "8px",
-          minHeight: "20px",
-          p: 1,
-        }}>
+    <Grid
+      container
+      spacing={2}
+      sx={{
+        width: "100%",
+        bgcolor: "#fff",
+        borderRadius: "8px",
+        minHeight: "20px",
+        p: 1,
+      }}
+    >
       <Grid size={{ md: 12 }}>
         <Typography fontWeight={600} sx={{ fontSize: "18px" }}>
           Basic Details
@@ -48,7 +52,7 @@ const BasicDetails: React.FC = () => {
       <Grid size={{ xs: 12 }}>
         <SectionDetails />
       </Grid>
-      
+
       {/* <Grid size={{ xs: 12 }}>
         <Divider sx={{ my: 1 }} />
       </Grid>

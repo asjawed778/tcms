@@ -44,7 +44,6 @@ const Class = () => {
       skip: !selectedSession?._id,
     }
   );
-  console.log("Class Data: ", classData);
 
   const handleActionClick = (action: string) => {
     switch (action) {
@@ -79,7 +78,7 @@ const Class = () => {
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          mt: "24px"
+          mt: "24px",
         }}
       >
         {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (

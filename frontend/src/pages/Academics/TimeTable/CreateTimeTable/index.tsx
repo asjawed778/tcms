@@ -9,8 +9,6 @@ import {
   Button,
   Typography,
   CardContent,
-  Divider,
-  Paper,
   Grid,
 } from "@mui/material";
 import toast from "react-hot-toast";

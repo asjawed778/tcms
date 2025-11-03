@@ -58,7 +58,6 @@ const Section = () => {
     skip: !selectedSession?._id || !selectedClassId,
   }
 );
-console.log("section: ", sectionData);
 
   const [deleteSection] = useDeleteSectionMutation();
 
@@ -125,7 +124,10 @@ console.log("section: ", sectionData);
     setLimit(newRowsPerPage);
     setPage(1);
   };
-
+  const handleRowClick = (row: any) =>{
+    setSelectedRow(row);
+    setOpenViewSection(true);
+  }
   const handleActionClick = (action: string, row: SectionResponse) => {
     setSelectedRow(row);
     switch (action) {
@@ -228,6 +230,7 @@ console.log("section: ", sectionData);
           actions={actionsList}
           isFetching={sectionFetching}
           isError={sectionError}
+          onRowClick={handleRowClick}
         />
       </Box>
       {openAddSection && (

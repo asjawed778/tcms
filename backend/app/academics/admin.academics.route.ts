@@ -22,7 +22,7 @@ router
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
         AcademicValidation.createSubjectBulk,
         catchError,
-        ClassControler.createSubject
+        ClassControler.createSubjectBulk
     )
     .put(
         "/subject/:subjectId",

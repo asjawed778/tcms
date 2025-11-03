@@ -49,6 +49,21 @@ const SubjectDetails = () => {
   const dynamicSubjects = useMemo(() => {
     return subjectData?.data?.subjects || [];
   }, [subjectData]);
+  // useEffect(() => {
+  //   if (subjects.length === 0) {
+  //     append({
+  //       name: "",
+  //       subjectType: "",
+  //       subjectCategory: "",
+  //       publication: "",
+  //       writer: "",
+  //       ISBN: "",
+  //       syllabus: "",
+  //     });
+  //     setSubjectSources(["manual"]);
+  //     setExpandedIdx(0);
+  //   }
+  // }, []);
   const isAdded = (id: string) =>
     subjects.some((s: any) => s.preDefinedId === id);
   const toggleSelection = (id: string) => {

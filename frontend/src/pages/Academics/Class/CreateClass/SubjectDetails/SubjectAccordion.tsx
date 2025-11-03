@@ -40,13 +40,11 @@ export const SubjectAccordion = ({
   onToggle,
   onRemove,
   isDragOver,
-  // totalFields,
   source,
 }: Props) => {
   
   const { colors } = useAppTheme();
   const isReadOnly = source === "drag";
-  
   return (
     <Accordion
       expanded={expanded}

@@ -52,7 +52,6 @@ export const SubjectLibrary = ({
   onRetry,
 }: Props) => {
   const { colors } = useAppTheme();
-  console.log("Filter data: ", filtered);
   
   return (
     <Paper

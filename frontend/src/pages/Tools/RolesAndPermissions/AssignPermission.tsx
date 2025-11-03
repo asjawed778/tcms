@@ -40,7 +40,7 @@ interface AssignPermissionProps {
 }
 
 const AssignPermission: React.FC<AssignPermissionProps> = ({
-  title,
+  // title,
   role,
   onClose,
   refetch,

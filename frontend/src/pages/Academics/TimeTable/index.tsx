@@ -6,7 +6,6 @@ import { Alarm } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import ShowTimeTable from "./ShowTimeTable";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import TableWrapper from "@/components/TableWrapper";

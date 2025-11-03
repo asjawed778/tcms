@@ -188,6 +188,23 @@ export enum PeriodType {
   OTHER = "Other"
 };
 
+export enum FeeApplicableType {
+  RECURRING = "Recurring",
+  ONE_TIME = "One-Time"
+};
+
+export enum FeeFrequency {
+  MONTHLY = "Monthly",
+  QUARTERLY = "Quarterly",
+  HALF_YEARLY = "Half-Yearly",
+  YEARLY = "Yearly"
+};
+
+export enum ActiveStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive"
+};
+
 // Tabs..................................................................
 export enum AcademicsTabs {
   CLASS = "class",

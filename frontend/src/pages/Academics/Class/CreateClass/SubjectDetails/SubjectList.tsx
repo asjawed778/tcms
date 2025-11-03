@@ -3,6 +3,7 @@ import { DragIndicator } from "@mui/icons-material";
 import CustomButton from "@/components/CustomButton";
 import { AddCircleOutline } from "@mui/icons-material";
 import { SubjectAccordion } from "./SubjectAccordion";
+import { useFormContext } from "react-hook-form";
 
 interface Props {
   fields: any[];
@@ -31,34 +32,42 @@ export const SubjectList = ({
   addManual,
   subjectSources,
 }: Props) => {
-  
+  const {
+    formState: { errors },
+  } = useFormContext();
   return (
     <>
-      {fields.map((field, idx) => (
-        <Box
-          key={field.id}
-          onDragOver={(e) => {
-            e.preventDefault();
-            setDragOverIdx(idx);
-          }}
-          onDragLeave={() => setDragOverIdx(null)}
-          onDrop={(e) => handleDrop(e, idx)}
-        >
-          <SubjectAccordion
-            index={idx}
-            subject={subjects[idx]}
-            source={subjectSources[idx]}
-            expanded={expandedIdx === idx}
-            onToggle={() => toggleExpand(idx)}
-            onRemove={() => {
-              remove(idx);
-              if (expandedIdx === idx) setDragOverIdx(null);
+      {fields.map((field, idx) => {
+        const subjectErrors = errors?.subjects as
+          | Record<number, any>
+          | undefined;
+        const hasError = subjectErrors?.[idx];
+        return (
+          <Box
+            key={field.id}
+            onDragOver={(e) => {
+              e.preventDefault();
+              setDragOverIdx(idx);
             }}
-            isDragOver={dragOverIdx === idx}
-            totalFields={fields.length}
-          />
-        </Box>
-      ))}
+            onDragLeave={() => setDragOverIdx(null)}
+            onDrop={(e) => handleDrop(e, idx)}
+          >
+            <SubjectAccordion
+              index={idx}
+              subject={subjects[idx]}
+              source={subjectSources[idx]}
+              expanded={expandedIdx === idx || !!hasError}
+              onToggle={() => toggleExpand(idx)}
+              onRemove={() => {
+                remove(idx);
+                if (expandedIdx === idx) setDragOverIdx(null);
+              }}
+              isDragOver={dragOverIdx === idx}
+              totalFields={fields.length}
+            />
+          </Box>
+        );
+      })}
       <Box
         onDragOver={(e) => {
           e.preventDefault();
@@ -80,7 +89,10 @@ export const SubjectList = ({
           }}
         >
           <DragIndicator sx={{ fontSize: 40, mb: 1 }} />
-          <Typography variant="h6" color={dragOverIdx === -1 ? "primary" : "text.secondary"}>
+          <Typography
+            variant="h6"
+            color={dragOverIdx === -1 ? "primary" : "text.secondary"}
+          >
             {dragOverIdx === -1 ? "Drop Here!" : "Drop Zone"}
           </Typography>
         </Paper>

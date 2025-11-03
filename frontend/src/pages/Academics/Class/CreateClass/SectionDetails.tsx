@@ -2,15 +2,14 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import { useAppTheme } from "@/context/ThemeContext";
-import { useGetAllFacultyQuery } from "@/services/facultyApi";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-interface DropdownOption {
-  label: string;
-  value: string;
-}
+// interface DropdownOption {
+//   label: string;
+//   value: string;
+// }
 const SectionDetails: React.FC = () => {
   const { colors } = useAppTheme();
   // const { data: facultyData, isLoading } = useGetAllFacultyQuery({

@@ -14,7 +14,6 @@ import {
   StepLabel,
   Box,
   CardContent,
-  Paper,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -61,7 +60,7 @@ const steps = [
 const AddStudent = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [studentId, setStudentId] = useState<string | null>(null);
-  const [addressId, setAddressId] = useState<string | null>(null);
+  // const [addressId, setAddressId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
   const { id: editStudentId } = useParams();
@@ -81,7 +80,6 @@ const AddStudent = () => {
     resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
     mode: "onChange",
   });
-
   useEffect(() => {
     if (editStudentId) {
       setStudentId(editStudentId);

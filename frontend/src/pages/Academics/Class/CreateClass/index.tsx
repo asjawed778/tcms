@@ -9,25 +9,20 @@ import { cleanData } from "@/utils/helper";
 import CustomButton from "@/components/CustomButton";
 import BasicDetails from "./BasicDetails";
 import {
-  addSectionSchema,
   basicDetailsSchema,
-  subjectSchema,
+  bulkSubjectSchema,
+  feeStructureSchema,
 } from "../../../../../yup";
-import SectionDetails from "./SectionDetails";
-// import SubjectDetails from "./SubjectDetails";
 import {
   useAddBulkSectionMutation,
   useAddBulkSubjectMutation,
-  useAddSectionMutation,
-  useAddSubjectMutation,
   useCreateClassMutation,
   useUpdateclassMutation,
+  useUpdateFeeStructureMutation,
 } from "@/services/academicsApi";
-import { useAddFacultyMutation } from "@/services/facultyApi";
 import { useAppSelector } from "@/store/store";
 import SubjectDetails from "./SubjectDetails";
-import { useUpdateAddressMutation } from "@/services/studentApi";
-// import SubjectDetails from "./SubjectDetails";
+import FeeStructure from "./FeeStructure";
 
 const steps = [
   {
@@ -35,23 +30,21 @@ const steps = [
     component: BasicDetails,
     schema: basicDetailsSchema,
   },
-  // { label: "Section", component: SectionDetails, schema: addSectionSchema },
   {
     label: "Subject",
     component: SubjectDetails,
-    schema: subjectSchema,
+    schema: bulkSubjectSchema,
   },
   {
     label: "Fee Structure",
-    component: SubjectDetails,
-    schema: subjectSchema,
+    component: FeeStructure,
+    schema: feeStructureSchema,
   },
 ];
 
-const AddStudent = () => {
+const CreateClass = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [classId, setClassId] = useState<string | null>(null);
-  const [addressId, setAddressId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
@@ -65,7 +58,8 @@ const AddStudent = () => {
   const [addBulkSubject, { isLoading: addingSubject }] =
     useAddBulkSubjectMutation();
   const [updateClass, { isLoading: updatingClass }] = useUpdateclassMutation();
-  const [addFeeStructure, { isLoading: addingFee }] = useAddFacultyMutation();
+  const [updateFeeStructure, { isLoading: addingFee }] =
+    useUpdateFeeStructureMutation();
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
@@ -89,7 +83,6 @@ const AddStudent = () => {
           session: selectedSession?._id,
         },
       }).unwrap();
-      console.log("class res: ", classResponse);
 
       if (!classResponse.success) {
         toast.error(classResponse.message);
@@ -119,64 +112,42 @@ const AddStudent = () => {
           ...sub,
           sessionId: selectedSession?._id,
         }));
+
         bulkResponse = await addBulkSubject({
           payload: { subjects: cleanData(bulkPayload) },
         }).unwrap();
+        manualIds = bulkResponse?.data?.map((s: any) => s._id);
       }
-      // if (!bulkResponse.success) {
-      //   toast.error("Failed to add manual subjects");
-      //   throw new Error("Bulk subject failed");
-      // }
-      manualIds = bulkResponse.data.map((s: any) => s._id);
-      const predefinedSubjectsId = predefinedSubjects.filter(
-        (s: any) => s.preDefinedId
-      );
+      const predefinedSubjectsId = predefinedSubjects
+        .filter((s: any) => s.preDefinedId)
+        .map((s: any) => s.preDefinedId);
       const allIds = [...manualIds, ...predefinedSubjectsId];
+
       if (allIds.length === 0) {
         toast.error("No subjects to assign. Please add atleast one subject.");
         return { success: true };
       }
-      const res = await updateClass({ classId, payload: allIds });
-      console.log("Update class Res: ", res);
-
+      await updateClass({ classId, payload: allIds });
     },
-    async (data: any) =>
-      addFeeStructure({ classId, payload: cleanData(data) }).unwrap(),
+    async (data: any) => {
+      const { effectiveFrom, remarks, structures } = data;
+      const payload = {
+        effectiveFrom,
+        remarks,
+        structures,
+        session: selectedSession?._id,
+      };
+      await updateFeeStructure({ classId, payload: cleanData(payload) });
+    },
   ];
-
-  // const stepApis = [
-  //   async (data: any) => {
-  //     console.log("Mock Step 1 Data:", data);
-  //     // simulate API delay
-  //     await new Promise((res) => setTimeout(res, 800));
-  //     setClassId("mock-class-id");
-  //     return { success: true, message: "Mock class created!" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Mock Step 2 Data:", data);
-  //     await new Promise((res) => setTimeout(res, 500));
-  //     return { success: true, message: "Mock section added!" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Mock Step 3 Data:", data);
-  //     await new Promise((res) => setTimeout(res, 500));
-  //     return { success: true, message: "Mock subject added!" };
-  //   },
-  // ];
-
   const onStepSubmit = async (data: any) => {
-    console.log("Form Data: ", data);
     const isValid = await methods.trigger();
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
       return;
     }
     try {
-      // if (activeStep > 0 && !classId) {
-      //   toast.error("Please complete the first step before continuing.");
-      //   return;
-      // }
-      const response = await stepApis[activeStep](data);
+      await stepApis[activeStep](data);
       setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
 
       if (activeStep < steps.length - 1) {
@@ -193,27 +164,21 @@ const AddStudent = () => {
 
   const StepComponent = steps[activeStep].component;
   const isLoading =
-    creatingClass || addingSection || addingSubject || addingFee;
+    creatingClass ||
+    addingSection ||
+    addingSubject ||
+    addingFee ||
+    updatingClass;
 
   const handleStepClick = (index: number) => {
     if (classId || completedSteps.includes(index) || index === activeStep) {
       setActiveStep(index);
     }
-    // else {
-    //   toast.error("Please complete basic details first!");
-    // }
   };
 
   return (
     <Box>
       <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index} onClick={() => handleStepClick(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-      {/* <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step, index) => (
           <Step key={index}>
             <StepLabel
@@ -229,19 +194,12 @@ const AddStudent = () => {
             </StepLabel>
           </Step>
         ))}
-      </Stepper> */}
+      </Stepper>
 
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
           <Box>
-            <Box
-            // sx={{
-            //   width: "100%",
-            //   bgcolor: "#fff",
-            //   borderRadius: "8px",
-            //   mt: 1,
-            // }}
-            >
+            <Box>
               <CardContent>
                 <Box>
                   <StepComponent />
@@ -282,4 +240,4 @@ const AddStudent = () => {
   );
 };
 
-export default AddStudent;
+export default CreateClass;

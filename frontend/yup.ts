@@ -192,7 +192,7 @@ export const documentUploadSchema = yup.object({
     .min(1, "At least one document is required"),
 });
 
-// ClassSchema.........................................................
+// Academics Schema.........................................................
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
 
@@ -214,69 +214,74 @@ export const basicDetailsSchema = yup.object({
       })
     ),
 });
+export const subjectSchema = yup.object({
+  sessionId: yup.string().required("Session is required"),
+  name: yup.string().required("Subject name is required"),
+  publication: yup.string().optional(),
+  writer: yup.string().optional(),
+  ISBN: yup.string().optional(),
+  subjectType: yup
+    .mixed<Enum.SubjectType>()
+    .oneOf(Object.values(Enum.SubjectType))
+    .required("Subject type is required"),
+  subjectCategory: yup
+    .mixed<Enum.SubjectCategory>()
+    .oneOf(Object.values(Enum.SubjectCategory))
+    .required("Subject category is required"),
+  syllabus: yup.string().optional(),
+});
+export const bulkSubjectSchema = yup.object({
+  subjects: yup
+    .array()
+    .of(
+      yup.object({
+        name: yup.string().required("Subject name is required"),
+        subjectType: yup.string().required("Subject type is required"),
+        subjectCategory: yup.string().required("Subject category is required"),
+        publication: yup.string().optional(),
+        writer: yup.string().optional(),
+        ISBN: yup.string().optional(),
+        syllabus: yup.string().optional(),
+      })
+    )
+    .min(1, "At least one subject is required"),
+});
 export const feeStructureSchema = yup.object({
-  feeStructure: yup.object().shape({
-    monthly: yup.object().shape({
-      amount: yup
-        .number()
-        .typeError("Amount must be a number")
-        .required("Monthly amount is required")
-        .positive("Amount must be positive")
-        .integer("Amount must be an integer"),
-
-      total: yup
-        .number()
-        .typeError("Amount must be a number")
-        .required("Monthly amount is required")
-        .positive("Amount must be positive")
-        .integer("Amount must be an integer"),
-    }),
-    quarterly: yup.object().shape({
-      amount: yup
-        .number()
-        .required("Monthly amount is required")
-        .typeError("Amount must be a number")
-        .positive("Amount must be positive")
-        .integer("Amount must be an integer"),
-
-      total: yup
-        .number()
-        .typeError("Total amount must be a number")
-        .required("Total amount is required")
-        .positive("Total amount must be positive")
-        .integer("Total amount must be an integer"),
-    }),
-    halfYearly: yup.object().shape({
-      amount: yup
-        .number()
-        .required("Monthly amount is required")
-        .typeError("Amount must be a number")
-        .positive("Amount must be positive")
-        .integer("Amount must be an integer"),
-
-      total: yup
-        .number()
-        .typeError("Total amount must be a number")
-        .required("Total amount is required")
-        .positive("Total amount must be positive")
-        .integer("Total amount must be an integer"),
-    }),
-    yearly: yup.object().shape({
-      amount: yup
-        .number()
-        .typeError("Amount must be a number")
-        .required("Monthly amount is required")
-        .positive("Amount must be positive")
-        .integer("Amount must be an integer"),
-
-      total: yup
-        .number()
-        .typeError("Total amount must be a number")
-        .required("Total amount is required")
-        .positive("Total amount must be positive")
-        .integer("Total amount must be an integer"),
-    }),
-  }),
+  effectiveFrom: yup.date().required("Effective date is required"),
+  structures: yup
+    .array()
+    .of(
+      yup.object({
+        frequency: yup.string().required("Frequency is required"),
+        feeDetails: yup
+          .array()
+          .of(
+            yup.object({
+              feeType: yup.string().required("Fee type is required"),
+              amount: yup.string().required("Amount is required"),
+              isOptional: yup.boolean().default(false),
+              applicableType: yup.string().nullable(),
+              applicableFrequency: yup.string().nullable(),
+            })
+          )
+          .min(1, "At least one fee detail is required"),
+      })
+    )
+    .min(1, "At least one structure is required"),
+  remarks: yup.string().optional(),
+});
+export const addSectionSchema = yup.object({
+  name: yup.string().required("Section name is required").trim(),
+  classId: yup.string().required("Class is required").trim(),
+  classTeacher: yup.string().nullable().notRequired().trim(),
+  capacity: yup
+    .number()
+    .nullable()
+    .notRequired()
+    .transform((value, originalValue) =>
+      originalValue === "" || originalValue === null ? null : value
+    ),
+  sessionId: yup.string().required(),
 });
 
 // Addmission Schema.....................................................
@@ -710,41 +715,4 @@ export const createRoleSchema = yup.object({
   //     })
   //   )
   //   .optional(),
-});
-
-export const subjectSchema = yup.object({
-  sessionId: yup.string().required("Session is required"),
-  name: yup.string().required("Subject name is required"),
-  publication: yup.string().optional(),
-  writer: yup.string().optional(),
-  ISBN: yup.string().optional(),
-  subjectType: yup
-    .mixed<Enum.SubjectType>()
-    .oneOf(Object.values(Enum.SubjectType))
-    .required("Subject type is required"),
-  subjectCategory: yup
-    .mixed<Enum.SubjectCategory>()
-    .oneOf(Object.values(Enum.SubjectCategory))
-    .required("Subject category is required"),
-  syllabus: yup.string().optional(),
-});
-export const addSectionSchema = yup.object({
-  name: yup.string().required("Section name is required").trim(),
-  classId: yup.string().required("Class is required").trim(),
-  classTeacher: yup.string().nullable().notRequired().trim(),
-  // capacity: yup
-  //   .number()
-  //   .typeError("Capacity must be a number")
-  //   .positive("Capacity must be positive")
-  //   .integer("Capacity must be an integer")
-  //   .nullable()
-  //   .notRequired(),
-  capacity: yup
-    .number()
-    .nullable()
-    .notRequired()
-    .transform((value, originalValue) =>
-      originalValue === "" || originalValue === null ? null : value
-    ),
-  sessionId: yup.string().required(),
 });
