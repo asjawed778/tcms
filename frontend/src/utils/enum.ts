@@ -117,13 +117,16 @@ export enum FacultyDesignation {
   LAB_ASSISTANT = "Lab Assistant",
 }
 
-export enum FacultyStatus {
+export enum EmployeeStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive",
-}
+  DRAFT = "Draft",
+  RESIGNED = "Resigned",
+  RETIRED = "Retired",
+  TERMINATED = "Terminated",
+  TRANSFERRED = "Transferred",
+};
 
 //  class
-
 export enum ClassName {
   NURSERY = "Nursery",
   LKG = "LKG",
@@ -224,7 +227,6 @@ export enum Operation {
   UPDATE = "update",
   DELETE = "delete",
 }
-
 export enum ModuleName {
   DASHBOARD = "Dashboard",
   SESSION = "Session",
@@ -233,7 +235,6 @@ export enum ModuleName {
   ACADEMICS = "Academics",
   ADMINISTRATION = "Administration",
 }
-
 export enum SubModuleName {
   // Academics
   CLASS = "Class",

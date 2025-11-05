@@ -18,7 +18,7 @@ import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
 import { addSectionSchema } from "../../../../yup";
 import { SectionRequest, SectionResponse } from "../../../../type";
-import { useGetAllFacultyQuery } from "@/services/employee.Api";
+import { useGetAllEmployeeQuery } from "@/services/employee.Api";
 
 interface AddSectionProps {
   open: boolean;
@@ -47,7 +47,7 @@ const AddSection: React.FC<AddSectionProps> = ({
   );
 
   // Fetch Faculty for class teacher dropdown
-  const { data: facultyData } = useGetAllFacultyQuery({ page: 1, limit: 10 });
+  const { data: employeeData } = useGetAllEmployeeQuery({ page: 1, limit: 10 });
 
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({
@@ -56,9 +56,9 @@ const AddSection: React.FC<AddSectionProps> = ({
     })) || [];
 
   const facultyOptions =
-    facultyData?.data?.faculty?.map((f: any) => ({
-      label: f.name,
-      value: f._id,
+    employeeData?.data?.employees?.map((emp: any) => ({
+      label: emp.name,
+      value: emp._id,
     })) || [];
 
   const isEditMode = Boolean(section);
@@ -95,7 +95,6 @@ const AddSection: React.FC<AddSectionProps> = ({
   }, [section, selectedSession?._id, reset]);
 
   const onSubmit = async (data: SectionRequest) => {
-    // console.log("Form Data: ", data);
     
     try {
       const payload = cleanData({
@@ -168,7 +167,6 @@ const AddSection: React.FC<AddSectionProps> = ({
               required={false}
               labelPosition="outside"
               type="number"
-              // minValue={2}
             />
           </Grid>
         </Grid>

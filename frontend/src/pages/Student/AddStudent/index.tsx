@@ -8,13 +8,7 @@ import {
   personalDetailsSchema,
   previousSchoolSchema,
 } from "../../../../yup";
-import {
-  Stepper,
-  Step,
-  StepLabel,
-  Box,
-  CardContent,
-} from "@mui/material";
+import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -60,7 +54,6 @@ const steps = [
 const AddStudent = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [studentId, setStudentId] = useState<string | null>(null);
-  // const [addressId, setAddressId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
   const { id: editStudentId } = useParams();
@@ -90,30 +83,11 @@ const AddStudent = () => {
     async (data: any) => {
       const payload = cleanData(data);
       const response = await addStudent(payload).unwrap();
-
-      if (response.success) setStudentId(response.data.student._id);
-      return response;
+      setStudentId(response.data.student._id);
     },
-    // async (data: any) => updateAddress({ studentId, payload: cleanData(data) }).unwrap(),
     async (data: any) => {
       const addressPayload = cleanData(data);
-       console.log("address data: ", addressPayload);
-      if (data.address._id) {
-        return updateAddress({ studentId, payload: addressPayload }).unwrap();
-      } else {
-        const response = await updateAddress({
-          studentId,
-          payload: addressPayload,
-        }).unwrap();
-        console.log("addres Res: ",response);
-        
-        if (response?.data?.address?._id) {
-          console.log("update Address");
-          
-          methods.setValue("addressId", response.data.address._id);
-        }
-        return response;
-      }
+      updateAddress({ studentId, payload: addressPayload }).unwrap();
     },
     async (data: any) =>
       updateParentDetails({ studentId, payload: cleanData(data) }).unwrap(),
@@ -124,7 +98,6 @@ const AddStudent = () => {
   ];
 
   const onStepSubmit = async (data: any) => {
-    console.log("Form Data: ", data);
 
     const isValid = await methods.trigger();
     if (!isValid) {
@@ -187,7 +160,14 @@ const AddStudent = () => {
       <FormProvider {...methods}>
         <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
           <Box>
-            <Box sx={{ width: "100%", bgcolor: "#fff", borderRadius: "8px", mt: 1 }}>
+            <Box
+              sx={{
+                width: "100%",
+                bgcolor: "#fff",
+                borderRadius: "8px",
+                mt: 1,
+              }}
+            >
               <CardContent>
                 <Box>
                   <StepComponent />

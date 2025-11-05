@@ -1,7 +1,8 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
-  AddRemarkFormData,
+  AddRemarkRequest,
   ApiResponse,
+  RemarkResponse,
   StudentApiResponse,
 } from "../../type";
 import { baseQueryWithReauth } from "./api";
@@ -72,8 +73,8 @@ export const studentApi = createApi({
       })
     }),
     addRemark: builder.mutation<
-      ApiResponse,
-      { sessionId: string; studentId: string; body: AddRemarkFormData }
+      ApiResponse<RemarkResponse>,
+      { sessionId: string; studentId: string; body: AddRemarkRequest }
     >({
       query: ({ sessionId, studentId, body }) => ({
         url: `/admin/student/remark/${sessionId}/${studentId}`,

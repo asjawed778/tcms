@@ -219,7 +219,7 @@ interface Students {}
 interface ClassTeacher {
   name: string;
   designation: string;
-  status: Enum.FacultyStatus;
+  status: Enum.EmployeeStatus;
   employeedId: string;
   _id: string;
 }
@@ -419,7 +419,7 @@ interface StudentApiResponse {
 }
 
 // Add Reamarks Data.........................................
-interface AddRemarkFormData {
+interface AddRemarkRequest {
   sessionId: string;
   studentId: string;
   remarkType: Enum.RemarkType;
@@ -427,7 +427,7 @@ interface AddRemarkFormData {
   actionTaken?: Enum.ActionTaken;
   supportingDocuments?: Document[];
 }
-
+export interface RemarkResponse extends AddRemarkRequest, BaseSchema {}
 // Subject...................................................................
 export interface SubjectRequest {
   name: string;
@@ -465,4 +465,63 @@ export interface SectionResponse extends SectionRequest, BaseSchema {
 }
 export interface SectionResponseList {
   sections: SectionResponse[];
+}
+
+// Employee.................................................................
+export interface EmployeeBasicDetailsRequest {
+  name: string;
+  fatherName?: string;
+  motherName?: string;
+  phoneNumber: string;
+  email: string;
+  aadhaarNumber?: string;
+  role?: string;
+  dob: string; 
+  gender: Enum.Gender;
+  photo?: string | File | null;
+}
+interface EmployeeAddress {
+  addressLine1: string;
+  addressLine2?: string;
+  city?: string;
+  state: string;
+  country: string;
+  pinCode: number;
+}
+export interface Experience {
+  organisationName: string;
+  years: number;
+  designation: string;
+}
+export interface ExpertiseSubject {
+  subject: string;
+}
+export interface ProfessionalDetailsRequest {
+  designation: string;
+  dateOfJoining: string; 
+  qualification?: string;
+  certificate?: string;
+  experience: Experience[];
+  expertiseSubjects: ExpertiseSubject[];
+}
+export interface SalaryStructureRequest {
+  basicPay: number;
+  effectiveFrom: string; 
+  effectiveTo?: string;
+  hra?: number;
+  allowances?: number;
+  deductions?: number;
+  remarks?: string;
+}
+export interface EmployeeDocuments {
+  documents: Document[];
+}
+export interface AddEmployeeRequest extends EmployeeBasicDetailsRequest, ProfessionalDetailsRequest, SalaryStructureRequest, EmployeeDocuments {
+  address: EmployeeAddress;
+};
+export interface EmployeeResponse extends BaseSchema, AddEmployeeRequest {};
+export interface EmployeeResponseList {
+  employees: EmployeeResponse[];
+  showing: number;
+  totalDocs: number;
 }

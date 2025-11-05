@@ -460,6 +460,7 @@ function TableWrapper<T extends { _id?: string | number }>({
                   >
                     <Box
                       display="flex"
+                      flexDirection="column"
                       justifyContent="center"
                       alignItems="center"
                       sx={{ height: "40vh " }}

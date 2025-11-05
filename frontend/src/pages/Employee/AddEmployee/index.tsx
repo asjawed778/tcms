@@ -1,171 +1,11 @@
-// import { useState } from "react";
-// import { useForm, FormProvider } from "react-hook-form";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import {
-//   personalInfoSchema,
-//   professionalInfoSchema,
-//   documentUploadSchema,
-// } from "../../../../yup";
-// import {
-//   Stepper,
-//   Step,
-//   StepLabel,
-//   Box,
-//   Button,
-//   CardContent,
-//   Paper,
-// } from "@mui/material";
-// import PersonalInfo from "./PersonalInfo";
-// import ProfessionalInfo from "./ProfessionalInfo";
-// import DocumentUpload from "./DocumentUpload";
-// import * as yup from "yup";
-// import { useAddBasicDetailsMutation } from "@/services/employee.Api";
-// import toast from "react-hot-toast";
-// import { useNavigate } from "react-router-dom";
-
-// const steps = [
-//   {
-//     label: "Personal Information",
-//     component: PersonalInfo,
-//     schema: personalInfoSchema,
-//   },
-//   {
-//     label: "Professional Information",
-//     component: ProfessionalInfo,
-//     schema: professionalInfoSchema,
-//   },
-//   {
-//     label: "Document Upload",
-//     component: DocumentUpload,
-//     schema: documentUploadSchema,
-//   },
-// ];
-
-// const AddEmployee = () => {
-//   const [activeStep, setActiveStep] = useState(0);
-//   const [faculty, { isLoading }] = useAddBasicDetailsMutation();
-//   const navigate = useNavigate();
-
-//   const currentSchema = steps[activeStep].schema;
-//   const methods = useForm({
-//     resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
-//     mode: "onChange",
-//   });
-//   // const methods = useForm();
-//   const onSubmit = async (data: any) => {
-//     const isValid = await methods.trigger();
-
-//     if (!isValid) {
-//       toast.error("Please fill all required fields correctly.");
-//       return;
-//     }
-
-//     if (activeStep < steps.length - 1) {
-//       setActiveStep((prev) => prev + 1);
-//     } else {
-//       try {
-//         const payload = {
-//           ...data,
-//           expertiseSubjects:
-//             data?.expertiseSubjects?.map((s: any) => s.subject) || [],
-//         };
-//         const hasValidExperience = data?.experience?.some((item: any) => {
-//           return (
-//             item.organisationName?.trim() !== "" ||
-//             item.years > 0 ||
-//             item.designation?.trim() !== ""
-//           );
-//         });
-
-//         if (!hasValidExperience) {
-//           delete payload.experience;
-//         }
-//         const response = await faculty(payload).unwrap();
-//         if (response.success) {
-//           toast.success(
-//              "Faculty added successfully!"
-//           );
-//           navigate("/dashboard/faculty");
-//         } else {
-//           toast.error(response.message || "Something went wrong. Please try again!");
-//         }
-//       } catch (error: any) {
-//         console.error("Submission failed:", error);
-//         toast.error(error?.data?.message || "Submission failed. Please try again!");
-//       }
-//     }
-//   };
-
-//   const StepComponent = steps[activeStep].component;
-
-//   return (
-//     <Box>
-//       <Stepper activeStep={activeStep} alternativeLabel sx={{ my: 2 }}>
-//         {steps.map((step, index) => (
-//           <Step key={index}>
-//             <StepLabel>{step.label}</StepLabel>
-//           </Step>
-//         ))}
-//       </Stepper>
-
-//       <FormProvider {...methods}>
-//         <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-//           <Box p={1}>
-//             <Paper sx={{ width: "100%", }}>
-//             <CardContent sx={{ p: { xs: 1, sm: 2 }, }}>
-//               <Box>
-//                 <StepComponent />
-//               </Box>
-//             </CardContent>
-//           </Paper>
-
-//           <Box
-//             mt={2}
-//             display="flex"
-//             justifyContent="space-between"
-//             gap={2}
-//             flexWrap="wrap"
-//           >
-//             {activeStep > 0 && (
-//               <Button
-//                 variant="contained"
-//                 onClick={() => setActiveStep((s) => s - 1)}
-//               >
-//                 Back
-//               </Button>
-//             )}
-//             <Box flexGrow={1}/>
-//             <Button
-//               type="submit"
-//               variant="contained"
-//               color="primary"
-//               loading={isLoading}
-//               disabled={isLoading}
-//             >
-//               {activeStep === steps.length - 1 ? "Submit" : "Next"}
-//             </Button>
-//           </Box>
-//           </Box>
-//         </form>
-//       </FormProvider>
-//     </Box>
-//   );
-// };
-
-// export default AddEmployee;
-
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  addressdetailsSchema,
-  documentDetailsSchema,
+  employeeAddressDetailsSchema,
   employeeBasicDetailsSchema,
   employeeProfessionalDetailsSchema,
   employeeSalaryStructureSchema,
-  parentDetailsSchema,
-  personalDetailsSchema,
-  previousSchoolSchema,
 } from "../../../../yup";
 import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
 import * as yup from "yup";
@@ -178,7 +18,14 @@ import DocumentDetails from "./DocumentDetails";
 import AddressDetails from "./AddressDetails";
 import ProfessionalDetails from "./ProfessionalDetails";
 import SalaryStructure from "./SalaryStructure";
-import { useAddBasicDetailsMutation, useUpdateAddressMutation, useUpdateDocumentsMutation, useUpdateProfessionalDetailsMutation, useUpdateSalaryStructureMutation } from "@/services/employee.Api";
+import {
+  useAddBasicDetailsMutation,
+  useUpdateAddressMutation,
+  useUpdateBasicDetailsMutation,
+  useUpdateDocumentsMutation,
+  useUpdateProfessionalDetailsMutation,
+  useUpdateSalaryStructureMutation,
+} from "@/services/employee.Api";
 
 const steps = [
   {
@@ -186,7 +33,11 @@ const steps = [
     component: BasicDetails,
     schema: employeeBasicDetailsSchema,
   },
-  { label: "Address", component: AddressDetails, schema: addressdetailsSchema },
+  {
+    label: "Address",
+    component: AddressDetails,
+    schema: employeeAddressDetailsSchema,
+  },
   {
     label: "Professional Details",
     component: ProfessionalDetails,
@@ -207,16 +58,20 @@ const steps = [
 const AddEmployee = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [employeeId, setEmployeeId] = useState<string | null>(null);
-  // const [addressId, setAddressId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
   const { id: editEmployeeId } = useParams();
 
-  const [addBasicDetails, { isLoading: addingEmployee }] = useAddBasicDetailsMutation();
+  const [addBasicDetails, { isLoading: addingBasicDetails }] =
+    useAddBasicDetailsMutation();
+  const [updateBasicDetails, { isLoading: updatingBasicDetails }] =
+    useUpdateBasicDetailsMutation();
   const [updateAddress, { isLoading: updatingAddress }] =
     useUpdateAddressMutation();
-  const [updateProfessionalDetails, { isLoading: updatingProfessionalDetails }] =
-    useUpdateProfessionalDetailsMutation();
+  const [
+    updateProfessionalDetails,
+    { isLoading: updatingProfessionalDetails },
+  ] = useUpdateProfessionalDetailsMutation();
   const [updateSalaryStructure, { isLoading: updatingSalaryStructure }] =
     useUpdateSalaryStructureMutation();
   const [updateDocuments, { isLoading: updatingDocuments }] =
@@ -232,81 +87,50 @@ const AddEmployee = () => {
       setEmployeeId(editEmployeeId);
     }
   }, [editEmployeeId]);
-console.log("Employee ID: ", employeeId);
 
   const stepApis = [
     async (data: any) => {
       const payload = cleanData(data);
-      const response = await addBasicDetails({payload}).unwrap();
-      console.log("response: ", response);
-      
-      if (response.success) setEmployeeId(response.data._id);
-      console.log("Id: ", response.data._id);
-      // return response;
-    },
-    // async (data: any) => updateAddress({ studentId, payload: cleanData(data) }).unwrap(),
-    async (data: any) => {
-      const addressPayload = cleanData(data);
-       console.log("address data: ", addressPayload);
-      if (data.address._id) {
-        return updateAddress({ employeeId, payload: addressPayload }).unwrap();
+      if (employeeId) {
+        await updateBasicDetails({ employeeId, payload }).unwrap();
       } else {
-        const response = await updateAddress({
-          employeeId,
-          payload: addressPayload,
-        }).unwrap();
-        console.log("addres Res: ",response);
-
-        if (response?.data?.address?._id) {
-
-          setEmployeeId(response.data.address._id);
-        }
-        return response;
+        const response = await addBasicDetails({ payload }).unwrap();
+        setEmployeeId(response.data._id);
       }
     },
+    async (data: any) => {
+      const addressPayload = cleanData(data);
+      await updateAddress({
+        employeeId: employeeId!,
+        payload: addressPayload,
+      }).unwrap();
+    },
     async (data: any) =>
-      updateProfessionalDetails({ employeeId, payload: cleanData(data) }).unwrap(),
+      updateProfessionalDetails({
+        employeeId: employeeId!,
+        payload: cleanData(data),
+      }).unwrap(),
     async (data: any) =>
-      updateSalaryStructure({ employeeId, payload: cleanData(data) }).unwrap(),
+      updateSalaryStructure({
+        employeeId: employeeId!,
+        payload: cleanData(data),
+      }).unwrap(),
     async (data: any) =>
-      updateDocuments({ employeeId, payload: cleanData(data) }).unwrap(),
+      updateDocuments({
+        employeeId: employeeId!,
+        payload: cleanData(data),
+      }).unwrap(),
   ];
-
-  // const stepApis = [
-  //   async (data: any) => {
-  //     console.log("Step 1 - Student Data:", data);
-  //     return { success: true, message: "Mock step 1 complete" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Step 2 - Address Data:", data);
-  //     return { success: true, message: "Mock step 2 complete" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Step 3 - Parent Details:", data);
-  //     return { success: true, message: "Mock step 3 complete" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Step 4 - Admission Details:", data);
-  //     return { success: true, message: "Mock step 4 complete" };
-  //   },
-  //   async (data: any) => {
-  //     console.log("Step 5 - Documents Data:", data);
-  //     return { success: true, message: "Mock step 5 complete" };
-  //   },
-  // ];
 
   const handleExitClick = () => {
     navigate("/dashboard/employee");
   };
   const onStepSubmit = async (data: any) => {
-    console.log("Form Data: ", data);
-
     const isValid = await methods.trigger();
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
       return;
     }
-
     try {
       await stepApis[activeStep](data);
       setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
@@ -327,7 +151,8 @@ console.log("Employee ID: ", employeeId);
 
   const StepComponent = steps[activeStep].component;
   const isLoading =
-    addingEmployee ||
+    addingBasicDetails ||
+    updatingBasicDetails ||
     updatingAddress ||
     updatingProfessionalDetails ||
     updatingSalaryStructure ||
@@ -337,9 +162,6 @@ console.log("Employee ID: ", employeeId);
     if (employeeId || completedSteps.includes(index) || index === activeStep) {
       setActiveStep(index);
     }
-    // else {
-    //   toast.error("Please complete basic details first!");
-    // }
   };
 
   return (

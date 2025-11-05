@@ -1,10 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, IconButton, Typography } from "@mui/material";
 import CustomInputField from "@/components/CustomInputField";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Add, Delete } from "@mui/icons-material";
@@ -86,23 +81,23 @@ const ProfessionalDetails: React.FC = () => {
               />
             </Grid>
             <Grid size={{ xs: 1 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "flex-start",
-                    height: "100%",
-                    mt: 4,
-                  }}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "flex-start",
+                  height: "100%",
+                  mt: 4,
+                }}
+              >
+                <IconButton
+                  onClick={() => remove(index)}
+                  size="small"
+                  color="error"
+                  disabled={fields.length === 1}
                 >
-                  <IconButton
-                    onClick={() => remove(index)}
-                    size="small"
-                    color="error"
-                    disabled={fields.length === 1}
-                  >
-                    <Delete fontSize="small" />
-                  </IconButton>
-                </Box>
+                  <Delete fontSize="small" />
+                </IconButton>
+              </Box>
             </Grid>
           </Grid>
         ))}

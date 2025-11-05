@@ -1,14 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Button,
-  Typography,
-  Divider,
-} from "@mui/material";
-import { Add, AddCircleOutline, Close, Delete } from "@mui/icons-material";
+import { Box, Grid, IconButton, Typography, Divider } from "@mui/material";
+import { Add, Delete } from "@mui/icons-material";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
 import CustomButton from "@/components/CustomButton";
@@ -39,25 +32,20 @@ const DocumentDetails: React.FC = () => {
             key={field.id}
             size={{ xs: 12 }}
             sx={{
-              // border: 1,
               borderRadius: 2,
-              // p: 2,
               position: "relative",
-              // borderColor: "grey.500",
             }}
           >
-            {/* {index > 0 && ( */}
-              <Box sx={{ position: "absolute", top: -10, right: -10, p: 1 }}>
-                <IconButton
-                  onClick={() => remove(index)}
-                  size="small"
-                  color="error"
-                  disabled={fields.length === 1}
-                >
-                  <Delete />
-                </IconButton>
-              </Box>
-            {/* )} */}
+            <Box sx={{ position: "absolute", top: -10, right: -10, p: 1 }}>
+              <IconButton
+                onClick={() => remove(index)}
+                size="small"
+                color="error"
+                disabled={fields.length === 1}
+              >
+                <Delete />
+              </IconButton>
+            </Box>
 
             <Grid container spacing={3}>
               <Grid size={{ xs: 12, md: 6 }}>
@@ -65,14 +53,12 @@ const DocumentDetails: React.FC = () => {
                   name={`documents.${index}.name`}
                   label="Document Name"
                   placeholder="Enter Document Name"
-                  // {...control.register(`documents.${index}.name` as const)}
                   required={false}
                 />
                 <CustomInputField
                   name={`documents.${index}.documentNumber`}
                   label="Document Number"
                   placeholder="Enter Document Number"
-                  // name={`documents.${index}.documentNumber`}
                   required={false}
                 />
               </Grid>

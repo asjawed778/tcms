@@ -20,8 +20,6 @@ const AddressDetails: React.FC = () => {
   const [cityList, setCityList] = useState<{ label: string; value: string }[]>(
     []
   );
-
-  // Load countries
   useEffect(() => {
     const countries = Country.getAllCountries().map((c) => ({
       label: c.name,
@@ -71,7 +69,7 @@ const AddressDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12 }}>
-        <Typography fontWeight={600} sx={{fontSize: "18px"}}>
+        <Typography fontWeight={600} sx={{ fontSize: "18px" }}>
           Address Details
         </Typography>
       </Grid>

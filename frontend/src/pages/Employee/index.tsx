@@ -4,7 +4,7 @@ import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllEmployeeQuery } from "@/services/employee.Api";
-import { ModuleName, Operation } from "@/utils/enum";
+import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
 import { formatDate } from "@/utils/helper";
 import { PersonAdd } from "@mui/icons-material";
 import { Avatar, Box, Typography } from "@mui/material";
@@ -14,16 +14,23 @@ import { useNavigate } from "react-router-dom";
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
   { key: "employeeId", label: "Employee Id" },
-  { key: "name", label: "Full Name",
+  {
+    key: "name",
+    label: "Full Name",
     render: (row: any) => (
-      <Avatar 
-        src={row.photo || undefined}
+      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+        <Avatar
+          src={row.photo || undefined}
           alt={row.name}
-          sx={{ width: 32, height: 32,  }}
-      />
-      {row.name}
-    )
-   },
+          sx={{
+            width: 28,
+            height: 28,
+          }}
+        />
+        {row.name}
+      </Box>
+    ),
+  },
   { key: "gender", label: "Gender" },
   { key: "designation", label: "Designation" },
   { key: "role", label: "Role" },
@@ -42,37 +49,34 @@ const actionsList = [
 const Faculty: React.FC = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [query, setQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
   const navigate = useNavigate();
   const can = useCan();
 
   const {
     data: employeeData,
-    isLoading,
+    isFetching,
     isError,
   } = useGetAllEmployeeQuery(
     {
       page,
       limit: rowsPerPage,
-      query,
-      active: statusFilter,
+      status: statusFilter,
+      search: searchQuery,
     },
     {
       refetchOnMountOrArgChange: true,
     }
   );
-  console.log("Employe data: ", employeeData);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
-
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setPage(1);
   };
-
   const handleActionClick = (action: string) => {
     switch (action) {
       case "update":
@@ -81,7 +85,6 @@ const Faculty: React.FC = () => {
   const handleAddFaculty = () => {
     navigate("/dashboard/employee/add");
   };
-
   const handleChange = (val: any) => {
     setStatusFilter(val);
     setPage(1);
@@ -97,7 +100,7 @@ const Faculty: React.FC = () => {
         }}
       >
         {" "}
-        <CustomSearchField onSearch={setQuery} sx={{ bgcolor: "#fff" }} />
+        <CustomSearchField onSearch={setSearchQuery} sx={{ bgcolor: "#fff" }} />
         <Box
           sx={{
             display: "flex",
@@ -114,11 +117,7 @@ const Faculty: React.FC = () => {
             required={false}
             value={statusFilter}
             onChange={handleChange}
-            options={[
-              { label: "All", value: "All" },
-              // { label: "Active", value: "true" },
-              // { label: "Inactive", value: "false" },
-            ]}
+            options={Object.values(EmployeeStatus)}
             labelPosition="inside"
           />
           {can(ModuleName.Employee, null, Operation.CREATE) && (
@@ -130,7 +129,6 @@ const Faculty: React.FC = () => {
           )}
         </Box>
       </Box>
-
       <TableWrapper
         columns={facultyColumns}
         rows={employeeData?.data?.employees || []}
@@ -140,7 +138,7 @@ const Faculty: React.FC = () => {
         onPageChange={handlePageChange}
         onRowsPerPageChange={handleRowsPerPageChange}
         onActionClick={handleActionClick}
-        isLoading={isLoading}
+        isFetching={isFetching}
         actions={actionsList}
         isError={isError}
       />

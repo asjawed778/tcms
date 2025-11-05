@@ -742,7 +742,6 @@ export const employeeAddressDetailsSchema = yup.object({
     addressLine1: yup.string().required("Address Line 1 is required").trim(),
     country: yup.string().required("Country is required"),
     state: yup.string().required("State is required"),
-
     pincode: yup
       .string()
       .required("Pincode is required")

@@ -9,11 +9,11 @@ import { Role } from "../../../../type";
 import CustomDropdownField from "@/components/CustomDropdownField";
 
 const BasicDetails: React.FC = () => {
-  const {data: roleData} = useGetAllRolesQuery({ page: 1, limit: 20})
+  const { data: roleData } = useGetAllRolesQuery({ page: 1, limit: 20 });
   const roleOptions = roleData?.data?.map((role: Role) => ({
     label: role.name,
-    value: role._id
-  }))
+    value: role._id,
+  }));
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 12 }}>
@@ -57,10 +57,7 @@ const BasicDetails: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Grid
-        size={{ xs: 12, md: 4 }}
-        // sx={{ display: "flex", justifyContent: "center" }}
-      >
+      <Grid size={{ xs: 12, md: 4 }}>
         <ImageUploader name="photo" required={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>

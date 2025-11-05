@@ -55,7 +55,7 @@ const TimeTable: React.FC = () => {
   );
 
   const classOptions =
-    classData?.data?.classes?.map((item) => ({
+    classData?.data?.classes?.map((item: any) => ({
       label: item.name,
       value: item._id as string,
     })) || [];
@@ -63,11 +63,11 @@ const TimeTable: React.FC = () => {
   useEffect(() => {
     if (selectedClass && classData?.data?.classes) {
       const matchedClass = classData.data.classes.find(
-        (cls) => cls._id === selectedClass
+        (cls: any) => cls._id === selectedClass
       );
 
       if (matchedClass?.sections) {
-        const options = matchedClass.sections.map((section) => ({
+        const options = matchedClass.sections.map((section:any) => ({
           label: section.name,
           value: section._id as string,
         }));

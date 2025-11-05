@@ -102,7 +102,7 @@ const CreateTimeTable = () => {
     sessionId: selectedSession?._id as string,
   });
   const classOptions =
-    classData?.data.classes.map((items) => ({
+    classData?.data.classes.map((items: any) => ({
       label: items.name,
       value: items._id as string,
     })) || [];
@@ -113,10 +113,10 @@ const CreateTimeTable = () => {
   });
   const sectionOptions = useMemo(() => {
     const foundClass = classData?.data.classes?.find(
-      (cls) => cls._id === selectedClassId
+      (cls: any) => cls._id === selectedClassId
     );
     return (
-      foundClass?.sections?.map((section) => ({
+      foundClass?.sections?.map((section: any) => ({
         label: section.name,
         value: section._id as string,
       })) || []
@@ -125,10 +125,10 @@ const CreateTimeTable = () => {
 
   const subjectOptions = useMemo(() => {
     const foundClass = classData?.data.classes.find(
-      (cls) => cls._id === selectedClassId
+      (cls: any) => cls._id === selectedClassId
     );
     return (
-      foundClass?.subjects?.map((subject) => ({
+      foundClass?.subjects?.map((subject: any) => ({
         label: subject.name,
         value: subject._id as string,
       })) || []

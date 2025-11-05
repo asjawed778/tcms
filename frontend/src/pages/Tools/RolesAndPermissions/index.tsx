@@ -65,7 +65,6 @@ const RolesAndPermissions = () => {
     limit,
     search: searchQuery,
   });
-  console.log("Data: ", rolesData);
   
   const [deleteRole] = useDeleteRoleMutation();
 
