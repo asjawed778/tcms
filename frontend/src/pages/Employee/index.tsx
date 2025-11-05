@@ -3,19 +3,35 @@ import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllFacultyQuery } from "@/services/facultyApi";
+import { useGetAllEmployeeQuery } from "@/services/employee.Api";
 import { ModuleName, Operation } from "@/utils/enum";
+import { formatDate } from "@/utils/helper";
 import { PersonAdd } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import { Avatar, Box, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const facultyColumns = [
   { key: "sno.", label: "S.No." },
-  { key: "name", label: "Name" },
   { key: "employeeId", label: "Employee Id" },
+  { key: "name", label: "Full Name",
+    render: (row: any) => (
+      <Avatar 
+        src={row.photo || undefined}
+          alt={row.name}
+          sx={{ width: 32, height: 32,  }}
+      />
+      {row.name}
+    )
+   },
+  { key: "gender", label: "Gender" },
   { key: "designation", label: "Designation" },
-  { key: "qualification", label: "Qualification" },
+  { key: "role", label: "Role" },
+  {
+    key: "dateOfJoining",
+    label: "Date Of Joining",
+    render: (row: any) => formatDate(row.dateOfJoining),
+  },
 ];
 const actionsList = [
   {
@@ -30,12 +46,12 @@ const Faculty: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState("All");
   const navigate = useNavigate();
   const can = useCan();
-  
+
   const {
-    data: facultyData,
+    data: employeeData,
     isLoading,
     isError,
-  } = useGetAllFacultyQuery(
+  } = useGetAllEmployeeQuery(
     {
       page,
       limit: rowsPerPage,
@@ -46,6 +62,7 @@ const Faculty: React.FC = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  console.log("Employe data: ", employeeData);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -62,7 +79,7 @@ const Faculty: React.FC = () => {
     }
   };
   const handleAddFaculty = () => {
-    navigate("/dashboard/addFaculty");
+    navigate("/dashboard/employee/add");
   };
 
   const handleChange = (val: any) => {
@@ -80,7 +97,7 @@ const Faculty: React.FC = () => {
         }}
       >
         {" "}
-        <CustomSearchField onSearch={setQuery} sx={{ bgcolor: "#fff"}} />
+        <CustomSearchField onSearch={setQuery} sx={{ bgcolor: "#fff" }} />
         <Box
           sx={{
             display: "flex",
@@ -106,23 +123,18 @@ const Faculty: React.FC = () => {
           />
           {can(ModuleName.Employee, null, Operation.CREATE) && (
             <CustomButton
-              fullWidth
+              label="Add Employee"
               startIcon={<PersonAdd />}
               onClick={handleAddFaculty}
-              sx={{
-                whiteSpace: "nowrap",
-              }}
-            >
-              Add Faculty
-            </CustomButton>
+            />
           )}
         </Box>
       </Box>
 
       <TableWrapper
         columns={facultyColumns}
-        rows={facultyData?.data?.faculty || []}
-        totalCount={facultyData?.data?.totalDocuments || 0}
+        rows={employeeData?.data?.employees || []}
+        totalCount={employeeData?.data?.totalDocs || 0}
         page={page}
         rowsPerPage={rowsPerPage}
         onPageChange={handlePageChange}

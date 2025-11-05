@@ -1,4 +1,3 @@
-
 export enum UserRole {
   ADMIN = "Super Admin",
   PRINCIPAL = "Principal",
@@ -11,16 +10,16 @@ export enum UserRole {
 
 // enum for session
 export enum SessionStatus {
-  CURRENT = 'Current',
-  PAST = 'Past',
-  UPCOMING = 'Upcoming'
+  CURRENT = "Current",
+  PAST = "Past",
+  UPCOMING = "Upcoming",
 }
 
 export enum Gender {
   Male = "Male",
   Female = "Female",
-  Other = "Other"
-};
+  Other = "Other",
+}
 
 export enum Religion {
   HINDU = "Hindu",
@@ -29,22 +28,22 @@ export enum Religion {
   CHRISTIAN = "Christian",
   BUDDHIST = "Buddhist",
   JAIN = "Jain",
-  OTHER = "Other"
-};
+  OTHER = "Other",
+}
 
 // enum for students
 
 export enum RemarkType {
-  POSITIVE = 'Positive',
-  NEGATIVE = 'Negative',
-  NEUTRAL = 'Neutral'
-};
+  POSITIVE = "Positive",
+  NEGATIVE = "Negative",
+  NEUTRAL = "Neutral",
+}
 
 export enum ActionTaken {
-  COUNSELING = 'Counseling',
-  WARNING = 'Warning',
-  SUSPENSION = 'Suspension'
-};
+  COUNSELING = "Counseling",
+  WARNING = "Warning",
+  SUSPENSION = "Suspension",
+}
 
 export enum ActivityType {
   SPORTS = "Sports",
@@ -54,7 +53,7 @@ export enum ActivityType {
   DRAMA = "Drama",
   SCIENCE_CLUB = "Science Club",
   OTHER = "Other",
-};
+}
 
 export enum ParticipationLevel {
   CLASS = "Class",
@@ -63,7 +62,7 @@ export enum ParticipationLevel {
   STATE = "State",
   NATIONAL = "National",
   INTERNATIONAL = "International",
-};
+}
 
 export enum StudentStatus {
   ACTIVE = "Active",
@@ -71,20 +70,20 @@ export enum StudentStatus {
   PASSED_OUT = "Passed Out",
   EXPELLED = "Expelled",
   TRANSFERRED = "Transferred",
-  DRAFT = "Draft"
-};
+  DRAFT = "Draft",
+}
 
 export enum ParticipationType {
   TEAM = "Team",
-  SOLO = "Solo"
-};
+  SOLO = "Solo",
+}
 
 export enum AttendanceStatus {
   PRESENT = "Present",
   ABSENT = "Absent",
   LATE = "Late",
-  EXCUSED = "Excused"
-};
+  EXCUSED = "Excused",
+}
 
 export enum BloodGroup {
   A_POSITIVE = "A+",
@@ -94,8 +93,8 @@ export enum BloodGroup {
   AB_POSITIVE = "AB+",
   AB_NEGATIVE = "AB-",
   O_POSITIVE = "O+",
-  O_NEGATIVE = "O-"
-};
+  O_NEGATIVE = "O-",
+}
 
 export enum AdmissionStatus {
   ACTIVE = "Active",
@@ -103,7 +102,7 @@ export enum AdmissionStatus {
   TRANSFERRED = "Transferred",
   EXPELLED = "Expelled",
   ALUMINI = "Alumini",
-};
+}
 
 //  enum for faculty
 export enum FacultyDesignation {
@@ -116,57 +115,57 @@ export enum FacultyDesignation {
   MUSIC_TEACHER = "Music Teacher",
   ART_TEACHER = "Art Teacher",
   LAB_ASSISTANT = "Lab Assistant",
-};
+}
 
 export enum FacultyStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive"
+  INACTIVE = "Inactive",
 }
 
 //  class
 
 export enum ClassName {
-    NURSERY = "Nursery",
-    LKG = "LKG",
-    UKG = "UKG",
-    STANDARD_1 = "Standard 1",
-    STANDARD_2 = "Standard 2",
-    STANDARD_3 = "Standard 3",
-    STANDARD_4 = "Standard 4",
-    STANDARD_5 = "Standard 5",
-    STANDARD_6 = "Standard 6",
-    STANDARD_7 = "Standard 7",
-    STANDARD_8 = "Standard 8",
-    STANDARD_9 = "Standard 9",
-    STANDARD_10 = "Standard 10",
-    STANDARD_11 = "Standard 11",
-    STANDARD_12 = "Standard 12"
+  NURSERY = "Nursery",
+  LKG = "LKG",
+  UKG = "UKG",
+  STANDARD_1 = "Standard 1",
+  STANDARD_2 = "Standard 2",
+  STANDARD_3 = "Standard 3",
+  STANDARD_4 = "Standard 4",
+  STANDARD_5 = "Standard 5",
+  STANDARD_6 = "Standard 6",
+  STANDARD_7 = "Standard 7",
+  STANDARD_8 = "Standard 8",
+  STANDARD_9 = "Standard 9",
+  STANDARD_10 = "Standard 10",
+  STANDARD_11 = "Standard 11",
+  STANDARD_12 = "Standard 12",
 }
 
 export enum CourseStream {
-    SCIENCE = "Science",
-    COMMERCE = "Commerce",
-    ARTS = "Arts",
-    VOCATIONAL = "Vocational",
-    GENERAL = "General",
-};
+  SCIENCE = "Science",
+  COMMERCE = "Commerce",
+  ARTS = "Arts",
+  VOCATIONAL = "Vocational",
+  GENERAL = "General",
+}
 
 export enum SubjectType {
-    CUMPULSARY = "Compulsary",
-    OPTIONAL = "Optional",
-};
+  CUMPULSARY = "Compulsary",
+  OPTIONAL = "Optional",
+}
 
 export enum SubjectCategory {
-    MATHEMATICS = "Mathematics",
-    NATURAL_SCIENCES = "Natural Sciences",
-    SOCIAL_SCIENCES = "Social Sciences",
-    BUSINESS_ECONOMICS = "Business & Economics",
-    LANGUAGES_LITERATURE = "Languages & Literature",
-    COMPUTER_TECHNOLOGY = "Computer & Technology",
-    CREATIVE_ARTS = "Creative & Performing Arts",
-    HEALTH_PHYSICAL_EDUCATION = "Health & Physical Education",
-    VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
-};
+  MATHEMATICS = "Mathematics",
+  SCIENCE = "Science",
+  SOCIAL_SCIENCE = "Social Science",
+  LANGUAGES = "Languages",
+  COMPUTER = "Computer",
+  ARTS = "Arts",
+  PHYSICAL_EDUCATION = "Physical Education",
+  COMMERCE = "Commerce",
+  VOCATIONAL = "Vocational",
+}
 
 export enum WeekDay {
   MONDAY = "Monday",
@@ -175,7 +174,7 @@ export enum WeekDay {
   THURSDAY = "Thursday",
   FRIDAY = "Friday",
   SATURDAY = "Saturday",
-  SUNDAY = "Sunday"
+  SUNDAY = "Sunday",
 }
 
 export enum PeriodType {
@@ -185,25 +184,25 @@ export enum PeriodType {
   RECESS = "Recess",
   ACTIVITY = "Activity",
   MEETING = "Meeting",
-  OTHER = "Other"
-};
+  OTHER = "Other",
+}
 
 export enum FeeApplicableType {
   RECURRING = "Recurring",
-  ONE_TIME = "One-Time"
-};
+  ONE_TIME = "One-Time",
+}
 
 export enum FeeFrequency {
   MONTHLY = "Monthly",
   QUARTERLY = "Quarterly",
   HALF_YEARLY = "Half-Yearly",
-  YEARLY = "Yearly"
-};
+  YEARLY = "Yearly",
+}
 
 export enum ActiveStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive"
-};
+  INACTIVE = "Inactive",
+}
 
 // Tabs..................................................................
 export enum AcademicsTabs {
@@ -211,11 +210,10 @@ export enum AcademicsTabs {
   SECTION = "section",
   SUBJECT = "Subject",
   TIME_TABLE = "timetable",
-};
-export enum ToolsTabs {
-  ROLES_AND_PERMISSIONS= "roles-and-permissions"
 }
-
+export enum ToolsTabs {
+  ROLES_AND_PERMISSIONS = "roles-and-permissions",
+}
 
 // roles permissions and modules enums
 // Operatioin,  Module and SubModule Names for Role-Based Access Control
@@ -237,7 +235,6 @@ export enum ModuleName {
 }
 
 export enum SubModuleName {
-
   // Academics
   CLASS = "Class",
   SECTION = "Section",

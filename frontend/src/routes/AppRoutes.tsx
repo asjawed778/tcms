@@ -10,8 +10,8 @@ import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
 const Auth = lazy(() => import("@/pages/Auth"));
 const ForgotPassword = lazy(() => import("@/pages/Auth/ForgotPassword"));
 const PageNotFound = lazy(() => import("@/pages/PageNotFound"));
-const Faculty = lazy(() => import("@/pages/Faculty"));
-const AddFaculty = lazy(() => import("@/pages/Faculty/AddFaculty"));
+const Employee = lazy(() => import("@/pages/Employee"));
+const AddEmployee = lazy(() => import("@/pages/Employee/AddEmployee"));
 const Student = lazy(() => import("@/pages/Student"));
 const AddStudent = lazy(() => import("@/pages/Student/AddStudent"));
 const Classes = lazy(() => import("@/pages/Academics"));
@@ -68,7 +68,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="faculty"
+            path="employee"
             element={
               <ErrorBoundary>
                 <RoleAuthRoute
@@ -79,13 +79,13 @@ const AppRoutes = () => {
                     },
                   ]}
                 >
-                  <Faculty />
+                  <Employee />
                 </RoleAuthRoute>
               </ErrorBoundary>
             }
           />
           <Route
-            path="addFaculty"
+            path="employee/add"
             element={
               <ErrorBoundary>
                 <RoleAuthRoute
@@ -96,7 +96,7 @@ const AppRoutes = () => {
                     },
                   ]}
                 >
-                  <AddFaculty />
+                  <AddEmployee />
                 </RoleAuthRoute>
               </ErrorBoundary>
             }

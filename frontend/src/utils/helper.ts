@@ -161,7 +161,50 @@ export function mapToDropdownOptions<T extends Record<string, any>>({
 export default mapToDropdownOptions;
 
 
+// utils/formatDate.ts
+import { format, parseISO, isValid } from "date-fns";
 
+/**
+ * Converts ISO date string (or any valid date) to custom format
+ * @param dateStr - ISO string like "2025-06-15T10:30:00Z" or "2025-06-15"
+ * @param formatStr - Desired format (e.g. "dd MMM yyyy", "MM/dd/yyyy")
+ * @param fallback - What to return if date is invalid (default: "--")
+ * @returns Formatted date string
+ */
+export const formatDate = (
+  dateStr: string | Date | null | undefined,
+  formatStr: string = "dd MMM yyyy",
+  fallback: string = "--"
+): string => {
+  if (!dateStr) return fallback;
 
+  let date: Date;
 
+  // Handle string input
+  if (typeof dateStr === "string") {
+    // Try parsing ISO string
+    try {
+      date = parseISO(dateStr);
+    } catch {
+      // Fallback: try direct Date parsing
+      date = new Date(dateStr);
+    }
+  } 
+  // Handle Date object
+  else if (dateStr instanceof Date) {
+    date = dateStr;
+  } 
+  // Invalid type
+  else {
+    return fallback;
+  }
 
+  // Check if date is valid
+  if (!isValid(date)) return fallback;
+
+  try {
+    return format(date, formatStr);
+  } catch {
+    return fallback;
+  }
+};

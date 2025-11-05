@@ -32,7 +32,7 @@ export const sidebarItems: SidebarItem[] = [
     label: "Employee",
     module: ModuleName.Employee,
     icon: <Icons.PeopleOutline />,
-    path: "/dashboard/faculty",
+    path: "/dashboard/employee",
   },
   {
     label: "Administration",

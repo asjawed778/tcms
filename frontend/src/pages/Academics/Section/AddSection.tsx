@@ -18,7 +18,7 @@ import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
 import { addSectionSchema } from "../../../../yup";
 import { SectionRequest, SectionResponse } from "../../../../type";
-import { useGetAllFacultyQuery } from "@/services/facultyApi";
+import { useGetAllFacultyQuery } from "@/services/employee.Api";
 
 interface AddSectionProps {
   open: boolean;

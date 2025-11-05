@@ -3,7 +3,7 @@ import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import ModalWrapper from "@/components/ModalWrapper";
 import { useGetClassDetailsQuery } from "@/services/academicsApi";
-import { useGetAllFacultyQuery } from "@/services/facultyApi";
+import { useGetAllFacultyQuery } from "@/services/employee.Api";
 import { Stack } from "@mui/material";
 import React, { useCallback, useEffect, useState } from "react";
 import { DropdownOptions } from "../../../../type";

@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import { Control, useFieldArray, useFormContext } from "react-hook-form";
-import { Box, Grid, IconButton, Typography, Button } from "@mui/material";
-import { AddCircleOutline, Close } from "@mui/icons-material";
+import {
+  Box,
+  Grid,
+  IconButton,
+  Typography,
+  Button,
+  Divider,
+} from "@mui/material";
+import { AddCircleOutline, Delete } from "@mui/icons-material";
 import CustomInputField from "./CustomInputField";
 
 export interface FieldConfig {
@@ -26,7 +33,6 @@ const CustomFieldArray: React.FC<CustomFieldArrayProps> = ({
   required = true,
   control,
 }) => {
-
   const { control: contextControl } = useFormContext();
   const activeControl = control || contextControl;
 
@@ -53,25 +59,17 @@ const CustomFieldArray: React.FC<CustomFieldArrayProps> = ({
 
   return (
     <Box sx={{ width: "100%" }}>
+      <Typography variant="h6">
+        {title}
+        {required && <span style={{ color: "red" }}>*</span>}
+      </Typography>
       <Grid container spacing={2} sx={{ width: "100%" }}>
-        <Grid sx={{ width: "100%" }}>
-          <Typography variant="h6">
-            {title}
-            {required && <span style={{ color: "red" }}>*</span>}
-          </Typography>
-        </Grid>
-
         {fields.map((field, index) => (
           <Box
             key={field.id}
             sx={{
               width: "100%",
-              border: 1,
-              borderRadius: 2,
-              p: 2,
               position: "relative",
-              borderColor: "grey.500",
-              boxSizing: "border-box",
             }}
           >
             {index > 0 && (
@@ -81,7 +79,7 @@ const CustomFieldArray: React.FC<CustomFieldArrayProps> = ({
                   size="small"
                   color="error"
                 >
-                  <Close />
+                  <Delete />
                 </IconButton>
               </Box>
             )}
@@ -103,10 +101,12 @@ const CustomFieldArray: React.FC<CustomFieldArrayProps> = ({
                   />
                 </Grid>
               ))}
+              <Grid size={{ xs: 12 }}>
+                <Divider />
+              </Grid>
             </Grid>
           </Box>
         ))}
-
         <Box sx={{ width: "100%" }}>
           <Button
             variant="outlined"

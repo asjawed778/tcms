@@ -37,7 +37,7 @@ const CustomRadioGroup = ({
     <Box textAlign="left" width="100%">
       <Typography variant="body2" mb={1}>
         {label}
-        <span style={{ color: "error.main" }}>{" *"}</span>
+        <span style={{ color: "red" }}>{" *"}</span>
       </Typography>
 
       <Controller

@@ -201,7 +201,7 @@ function TableWrapper<T extends { _id?: string | number }>({
               } else if (col.render) {
                 value = col.render(row);
               } else {
-                value = (row as any)[col.key] ?? "N/A";
+                value = (row as any)[col.key] ?? "--";
               }
               const cellWidth =
                 col.key === "sno." && col.width == null ? "61px" : col.width;

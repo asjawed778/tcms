@@ -5,7 +5,7 @@ import { authApi } from "../services/authApi";
 import { userApi } from "../services/userApi"; 
 import sidebarReducer from "./reducers/sidebarReducer"; 
 import { sessionApi } from "@/services/sessionApi";
-import { facultyApi } from "@/services/facultyApi";
+import { facultyApi } from "@/services/employee.Api";
 import { dropdownApi } from "@/services/dropdownApi";
 import { commonApi } from "@/services/commonApi";
 import sessionReducer from "./reducers/sessionSlice"
