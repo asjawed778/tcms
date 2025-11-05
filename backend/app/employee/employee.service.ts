@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import * as EmployeeDto from "./employee.dto";
 import facultySchema from "./employee.schema"
 import * as Enum from "../common/utils/enum";
+import * as AddressService from "../common/services/address.service";
 import employeeSchema from "./employee.schema";
 import createHttpError from "http-errors";
 import salaryStructureSchema from "./salaryStructure.schema";
@@ -210,6 +211,19 @@ export const getSalaryStructureByEmployeeId = async (employeeId: string) => {
     return await salaryStructureSchema.find({
         employee: new mongoose.Types.ObjectId(employeeId)
     }).sort({ effectiveFrom: -1 });
+};
+
+export const getEmployeeAddress = async(employeeId: string) => {
+    const empDoc = await employeeSchema.findById(employeeId);
+    if(!empDoc) {
+        throw createHttpError(404, "Employee Not found");
+    }
+    if (!empDoc.address) {
+        throw createHttpError(404, "Address not found for employee");
+    }
+    const addressId = typeof empDoc.address === "string" ? empDoc.address : empDoc.address.toString();
+    const addressDoc = await AddressService.getAddressById(addressId);
+    return addressDoc;
 };
 
 

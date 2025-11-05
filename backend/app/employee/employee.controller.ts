@@ -68,7 +68,8 @@ export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res:
 export const upsertEmpAddress = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const { employeeId } = req.params;
-    const address = await AddressService.saveAddress(data.address);
+    const addressDoc = await EmployeeService.getEmployeeAddress(employeeId);
+    const address = await AddressService.saveAddress(data.address, addressDoc._id);
     const result = await EmployeeService.updateEmployee(employeeId, { address: new Types.ObjectId(address._id) })
     res.send(createResponse(result, "Employee Address Updated successfully"));
 });

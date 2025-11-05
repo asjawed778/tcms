@@ -48,10 +48,6 @@ export const employeeAddress = [
         .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
-    body("addressId")
-        .optional()
-        .isMongoId().withMessage("Address id must be a valid Mongo Id"),
-
     body("address")
         .notEmpty().withMessage("Address is required"),
 
