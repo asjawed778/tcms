@@ -163,6 +163,8 @@ export const createUserByAdmin = async (data: { name: string, email: string, rol
         } else {
             roleId = roleDoc._id;
         }
+    } else {
+        roleId = userRole._id;
     }
     const randomDigits = Math.floor(10000 + Math.random() * 90000);
     const password = `TCMS@${randomDigits}`;

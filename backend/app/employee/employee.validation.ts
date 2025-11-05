@@ -45,12 +45,8 @@ export const createEmployee = [
 // step - 2
 export const employeeAddress = [
     param("employeeId")
-        .isEmpty().withMessage("Employee Id is required")
+        .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
-
-    body("addressId")
-        .optional()
-        .isMongoId().withMessage("Address id must be a valid Mongo Id"),
 
     body("address")
         .notEmpty().withMessage("Address is required"),
@@ -71,7 +67,7 @@ export const employeeAddress = [
 // step - 3
 export const professionalDetails = [
     param("employeeId")
-        .isEmpty().withMessage("Employee Id is required")
+        .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
     body("designation")
@@ -113,7 +109,7 @@ export const professionalDetails = [
 // step - 4
 export const salaryStructure = [
     param("employeeId")
-        .isEmpty().withMessage("Employee Id is required")
+        .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
     body("basicPay")
@@ -157,7 +153,7 @@ export const salaryStructure = [
 // step - 5
 export const additionalDocuments = [
     param("employeeId")
-        .isEmpty().withMessage("Employee Id is required")
+        .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
     body("documents")
@@ -180,7 +176,7 @@ export const additionalDocuments = [
 // update employee basic details
 export const updateEmployeeBasicDetails = [
     param("employeeId")
-        .isEmpty().withMessage("Employee Id is required")
+        .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
     body("name")

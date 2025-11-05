@@ -157,14 +157,14 @@ export enum SubjectType {
 
 export enum SubjectCategory {
   MATHEMATICS = "Mathematics",
-  NATURAL_SCIENCES = "Natural Sciences",
-  SOCIAL_SCIENCES = "Social Sciences",
-  BUSINESS_ECONOMICS = "Business & Economics",
-  LANGUAGES_LITERATURE = "Languages & Literature",
-  COMPUTER_TECHNOLOGY = "Computer & Technology",
-  CREATIVE_ARTS = "Creative & Performing Arts",
-  HEALTH_PHYSICAL_EDUCATION = "Health & Physical Education",
-  VOCATIONAL_SKILL_BASED = "Vocational & Skill-Based",
+  SCIENCE = "Science",
+  SOCIAL_SCIENCE = "Social Science",
+  LANGUAGES = "Languages",
+  COMPUTER = "Computer",
+  ARTS = "Arts",
+  PHYSICAL_EDUCATION = "Physical Education",
+  COMMERCE = "Commerce",
+  VOCATIONAL = "Vocational"
 };
 
 

@@ -20,7 +20,7 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
 export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
     console.log("Subject data: ", subjects);
-    
+
     const result = [];
     for (const subject of subjects) {
         const response = await AcademicService.createSubject(subject);
@@ -101,7 +101,11 @@ export const createClass = asyncHandler(async (req: Request, res: Response) => {
     if (isClassAlreadyExists) {
         throw createHttpError(400, "Class already exists for this session");
     }
-    const uniqueClassId = await AcademicUtils.generateClassId(name);
+    const sessionDoc = await SessionService.getSessionById(session);
+    if (!sessionDoc) {
+        throw createHttpError(404, "Invalid Session, Not found");
+    }
+    const uniqueClassId = await AcademicUtils.generateClassId(name, sessionDoc.startDate.getFullYear().toString());
     const data = {
         name,
         session,

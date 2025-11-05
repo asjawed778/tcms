@@ -48,14 +48,13 @@ const getFixedClassCode = (className: string): string => {
     return className.replace(/\s+/g, "").substring(0, 2).toUpperCase();
 };
 
-export const generateClassId = async (className: string): Promise<string> => {
+export const generateClassId = async (className: string, year: string): Promise<string> => {
     const classCode = getFixedClassCode(className);
-    const year = new Date().getFullYear().toString().slice(-2);
     let classId: string;
     let exists = true;
     while (exists) {
-        const randomNum = Math.floor(1000 + Math.random() * 9000);
-        classId = `C${classCode}${year}${randomNum}`;
+        // const randomNum = Math.floor(1000 + Math.random() * 9000);
+        classId = `C${classCode}${year}`;
         exists = !!(await classSchema.exists({ classId }));
     }
     return classId!;
