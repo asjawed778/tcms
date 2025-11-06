@@ -18,6 +18,7 @@ export interface ThemeColors {
   tabIconDefault: string; 
   tabIconSelected: string; 
   tint: string
+  light: string;
 
   // Buttons & Interactive Elements
   buttonBackground: string;     
@@ -59,10 +60,10 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     primary: "#0173f5",        
     secondary: "#d624ca",      
     background: "#F7F7F7",    
-    // background: "#f5f7fb",    
     text: "#1e2329",          
     icon: "#687076",
     tint: tintColorLight, 
+    light: "#FFFFFF",
 
     // header
     headerBackground: "#0173f5",
@@ -122,6 +123,7 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     text: "#909499",            
     icon: "#3d3d3b",   
     tint: tintColorDark, 
+    light: "#000000",
     
     // header
     headerBackground: "#0173f5",

@@ -719,7 +719,7 @@ export const createRoleSchema = yup.object({
 
 // Employee Schema..................................................................
 export const employeeBasicDetailsSchema = yup.object({
-  name: yup.string().required("Full Name is required").trim(),
+  firstName: yup.string().required("First Name is required").trim(),
   phoneNumber: yup
     .string()
     .required("Phone Number is required")

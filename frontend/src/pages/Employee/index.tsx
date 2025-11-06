@@ -2,58 +2,33 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
+import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllEmployeeQuery } from "@/services/employee.Api";
 import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
-import { formatDate } from "@/utils/helper";
 import { PersonAdd } from "@mui/icons-material";
-import { Avatar, Box, Typography } from "@mui/material";
+import { Box, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getEmployeeColumns } from "./employeeUtils";
 
-const facultyColumns = [
-  { key: "sno.", label: "S.No." },
-  { key: "employeeId", label: "Employee Id" },
-  {
-    key: "name",
-    label: "Full Name",
-    render: (row: any) => (
-      <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
-        <Avatar
-          src={row.photo || undefined}
-          alt={row.name}
-          sx={{
-            width: 28,
-            height: 28,
-          }}
-        />
-        {row.name}
-      </Box>
-    ),
-  },
-  { key: "gender", label: "Gender" },
-  { key: "designation", label: "Designation" },
-  { key: "role", label: "Role" },
-  {
-    key: "dateOfJoining",
-    label: "Date Of Joining",
-    render: (row: any) => formatDate(row.dateOfJoining),
-  },
-];
 const actionsList = [
   {
     action: "update",
     label: "",
   },
 ];
-const Faculty: React.FC = () => {
+const Employee: React.FC = () => {
+  const theme = useTheme();
+  const styles = getStyles(theme);
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [statusFilter, setStatusFilter] = useState("");
+  const [statusFilter, setStatusFilter] = useState(EmployeeStatus.ACTIVE);
   const navigate = useNavigate();
   const can = useCan();
-
+  const [openImagePreview, setOpenImagePreview] = useState(false);
+  const [seletedEmpImage, setSelectedEmpImage] = useState<{ url: string, type: 'image' }[]>([]);
   const {
     data: employeeData,
     isFetching,
@@ -70,6 +45,15 @@ const Faculty: React.FC = () => {
     }
   );
 
+  const handleImageClick = (url: string) => {
+    if (!url) return;
+    console.log("url: ", url)
+    setSelectedEmpImage([{ url, type: "image" }]);
+    setOpenImagePreview(true);
+  };
+
+  const employeeTableColumns = getEmployeeColumns(handleImageClick);
+
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -85,65 +69,71 @@ const Faculty: React.FC = () => {
   const handleAddFaculty = () => {
     navigate("/dashboard/employee/add");
   };
-  const handleChange = (val: any) => {
+  const handleStatusChange = (val: EmployeeStatus) => {
     setStatusFilter(val);
     setPage(1);
   };
   return (
-    <Box sx={{ width: "100%", p: 3 }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          gap: 2,
-        }}
-      >
-        {" "}
-        <CustomSearchField onSearch={setSearchQuery} sx={{ bgcolor: "#fff" }} />
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            gap: 1,
-          }}
-        >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-            Filter By:
-          </Typography>
-          <CustomDropdownField
-            // name="status"
-            label="Status"
-            required={false}
-            value={statusFilter}
-            onChange={handleChange}
-            options={Object.values(EmployeeStatus)}
-            labelPosition="inside"
-          />
-          {can(ModuleName.Employee, null, Operation.CREATE) && (
-            <CustomButton
-              label="Add Employee"
-              startIcon={<PersonAdd />}
-              onClick={handleAddFaculty}
+    <>
+      <Box sx={{ width: "100%", p: 2 }}>
+        <Box sx={styles.container}>
+          <CustomSearchField placeholder="Search Employee..." onSearch={setSearchQuery} sx={styles.searchBox} />
+          <Box sx={styles.contentBox}>
+            <CustomDropdownField
+              label="Status"
+              required={false}
+              value={statusFilter}
+              onChange={(value)=>handleStatusChange(value as EmployeeStatus)}
+              options={Object.values(EmployeeStatus)}
+              labelPosition="inside"
             />
-          )}
+            {can(ModuleName.Employee, null, Operation.CREATE) && (
+              <CustomButton
+                label="Add Employee"
+                startIcon={<PersonAdd />}
+                onClick={handleAddFaculty}
+              />
+            )}
+          </Box>
         </Box>
+        <TableWrapper
+          columns={employeeTableColumns}
+          rows={employeeData?.data?.employees || []}
+          totalCount={employeeData?.data?.totalDocs || 0}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onActionClick={handleActionClick}
+          isFetching={isFetching}
+          actions={actionsList}
+          isError={isError}
+        />
       </Box>
-      <TableWrapper
-        columns={facultyColumns}
-        rows={employeeData?.data?.employees || []}
-        totalCount={employeeData?.data?.totalDocs || 0}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        onActionClick={handleActionClick}
-        isFetching={isFetching}
-        actions={actionsList}
-        isError={isError}
-      />
-    </Box>
+      <DocumentPreviewer
+        open={openImagePreview}
+        onClose={() => setOpenImagePreview(false)}
+        files={seletedEmpImage }
+      />;
+    </>
   );
 };
 
-export default Faculty;
+const getStyles = (theme: any) => ({
+  container: {
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "center",
+    gap: 2,
+  },
+  searchBox: {
+    backgroundColor: theme.customColors.light
+  },
+  contentBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  }
+});
+
+export default Employee;

@@ -21,13 +21,21 @@ const BasicDetails: React.FC = () => {
           Personal Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 6, md: 8 }}>
+      <Grid size={{ xs: 6, md: 10 }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField
-              name="name"
-              label="Full Name"
-              placeholder="Enter full name"
+              name="firstName"
+              label="First Name"
+              placeholder="Enter First name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <CustomInputField
+              name="lastName"
+              label="Last Name"
+              placeholder="Enter Last Name"
+              required={false}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -46,18 +54,10 @@ const BasicDetails: React.FC = () => {
               required={false}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CustomInputField
-              name="phoneNumber"
-              type="number"
-              label="Phone Number"
-              placeholder="Enter Phone Number"
-            />
-          </Grid>
         </Grid>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 4 }}>
+      <Grid size={{ xs: 12, md: 2 }}>
         <ImageUploader name="photo" required={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -69,11 +69,10 @@ const BasicDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
-          name="aadhaarNumber"
+          name="phoneNumber"
           type="number"
-          label="Aadhaar Number"
-          placeholder="Enter Aadhaar Number"
-          required={false}
+          label="Phone Number"
+          placeholder="Enter Phone Number"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -86,6 +85,13 @@ const BasicDetails: React.FC = () => {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
+        <CustomRadioGroup
+          name="gender"
+          label="Gender"
+          options={Object.values(Gender)}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="dob"
           type="date"
@@ -94,10 +100,12 @@ const BasicDetails: React.FC = () => {
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
-        <CustomRadioGroup
-          name="gender"
-          label="Gender"
-          options={Object.values(Gender)}
+        <CustomInputField
+          name="aadhaarNumber"
+          type="number"
+          label="Aadhaar Number"
+          placeholder="Enter Aadhaar Number"
+          required={false}
         />
       </Grid>
     </Grid>
