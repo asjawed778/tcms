@@ -41,7 +41,8 @@ const studentSchema = new mongoose.Schema<IStudent>({
         unique: true,
         required: true,
     },
-    name: { type: String, required: false },
+    firstName: { type: String, required: false },
+    lastName: { type: String, required: false },
     dob: { type: Date, required: false },
     gender: {
         type: String,

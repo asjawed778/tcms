@@ -19,7 +19,7 @@ export const getEmployeeColumns = (
           sx={{ width: 28, height: 28, cursor: "pointer" }}
           onClick={() => onImageClick(row.photo)}
         />
-        {row.name}
+        {row.firstName} {row.lastName}
       </Box>
     ),
   },

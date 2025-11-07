@@ -31,7 +31,8 @@ export interface IEmployee extends BaseSchema {
 };
 
 export interface ICreateEmployee {
-    name: string;
+    firstName: string;
+    lastName?: string;
     fatherName?: string;
     motherName?: string;
     email: string;

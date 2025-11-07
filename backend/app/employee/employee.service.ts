@@ -87,7 +87,8 @@ export const getAllEmployee = async (
         pipeline.push({
             $match: {
                 $or: [
-                    { "userDetails.name": { $regex: search, $options: "i" } },
+                    { "userDetails.firstName": { $regex: search, $options: "i" } },
+                    { "userDetails.lastName": { $regex: search, $options: "i" } },
                     { "userDetails.email": { $regex: search, $options: "i" } },
                     { employeeId: { $regex: search, $options: "i" } },
                     { phoneNumber: { $regex: search, $options: "i" } },
@@ -112,7 +113,8 @@ export const getAllEmployee = async (
                             userId: "$userDetails._id",
                             roleId: "$roleDetails._id",
                             role: "$roleDetails.name",
-                            name: "$userDetails.name",
+                            firstName: "$userDetails.firstName",
+                            lastName: "$userDetails.lastName",
                             email: "$userDetails.email",
                             gender: 1,
                             photo: 1,
@@ -181,7 +183,8 @@ export const getEmployeeById = async (id: string) => {
                 userId: "$userDetails._id",
                 roleId: "$userDetails.role",
                 roleName: "$roleDetails.name",
-                name: "$userDetails.name",
+                firstName: "$userDetails.firstName",
+                lastName: "$userDetails.lastName",
                 email: "$userDetails.email",
                 phoneNumber: 1,
                 gender: 1,
@@ -213,9 +216,9 @@ export const getSalaryStructureByEmployeeId = async (employeeId: string) => {
     }).sort({ effectiveFrom: -1 });
 };
 
-export const getEmployeeAddress = async(employeeId: string) => {
+export const getEmployeeAddress = async (employeeId: string) => {
     const empDoc = await employeeSchema.findById(employeeId);
-    if(!empDoc) {
+    if (!empDoc) {
         throw createHttpError(404, "Employee Not found");
     }
     if (!empDoc.address) {
@@ -241,78 +244,6 @@ export const getEmployeeAddress = async(employeeId: string) => {
 
 
 // old empl services
-
-
-
-
-
-
-export const getFacultyById = async (facultyId: string) => {
-
-    const pipeline = [
-        {
-            $match: {
-                _id: new mongoose.Types.ObjectId(facultyId)
-            }
-        },
-        {
-            $lookup: {
-                from: "users",
-                localField: "user",
-                foreignField: "_id",
-                as: "userDetails",
-            },
-        },
-        {
-            $unwind: "$userDetails",
-        },
-        {
-            $lookup: {
-                from: "addresses",
-                localField: "address",
-                foreignField: "_id",
-                as: "addressDetails",
-            }
-        },
-        {
-            $unwind: { path: "$addressDetails", preserveNullAndEmptyArrays: true },
-        },
-        {
-            $project: {
-                _id: 1,
-                name: "$userDetails.name",
-                fatherName: 1,
-                motherName: 1,
-                email: "$userDetails.email",
-                phoneNumber: 1,
-                gender: 1,
-                dob: 1,
-                photo: 1,
-                aadhaarNumber: 1,
-                address: {
-                    _id: "$addressDetails._id",
-                    city: "$addressDetails.city",
-                    state: "$addressDetails.state",
-                    country: "$addressDetails.country",
-                    pinCode: "$addressDetails.pinCode",
-                    addressLine1: "$addressDetails.addressLine1",
-                    addressLine2: "$addressDetails.addressLine2"
-                },
-                designation: 1,
-                dateOfJoining: 1,
-                expertiseSubjects: 1,
-                employeeId: 1,
-                qualification: 1,
-                salery: 1,
-                certification: 1,
-                status: 1,
-                documents: 1,
-            }
-        }
-    ];
-    const result = await facultySchema.aggregate(pipeline);
-    return result.length > 0 ? result[0] : null;
-};
 
 export const getUnassignedFaculty = async (
     sessionId: mongoose.Types.ObjectId,

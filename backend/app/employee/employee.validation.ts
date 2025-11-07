@@ -4,8 +4,12 @@ import * as Enum from "../common/utils/enum";
 // create employee validation
 // step - 1
 export const createEmployee = [
-    body("name")
+    body("firstName")
         .notEmpty().withMessage("Name is required"),
+
+    body("lastName")
+        .optional()
+        .isString().withMessage("Last name must be a string"),
 
     body("fatherName")
         .optional()
@@ -179,9 +183,13 @@ export const updateEmployeeBasicDetails = [
         .notEmpty().withMessage("Employee Id is required")
         .isMongoId().withMessage("Employee Id Must be a valid Mongo Id"),
 
-    body("name")
+    body("firstName")
         .optional()
         .notEmpty().withMessage("Name cannot be empty"),
+
+    body("lastName")
+        .optional()
+        .isString().withMessage("Last name must be a string"),
 
     body("fatherName")
         .optional()

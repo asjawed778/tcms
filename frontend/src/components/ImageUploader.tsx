@@ -19,7 +19,7 @@ interface ImageUploaderProps {
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
   name,
-  label = "Upload Photo",
+  label,
   control,
   maxSizeMB = 2,
   minWidth = 300,

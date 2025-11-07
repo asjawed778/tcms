@@ -3,7 +3,8 @@ import { type BaseSchema } from "../common/dto/base.dto";
 import * as Enum from "../common/utils/enum";
 
 export interface IUser extends BaseSchema {
-        name: string;
+        firstName: string;
+        lastName?: string;
         email: string;
         role: Types.ObjectId;
         password: string;
@@ -13,7 +14,8 @@ export interface IUser extends BaseSchema {
         isLoginAllowed: boolean;
 }
 export interface IUserCreate {
-        name: string;
+        firstName: string;
+        lastName?: string;
         email: string;
         password: string;
         role: Types.ObjectId;
@@ -27,7 +29,8 @@ export interface IUserPopulated extends Omit<IUser, "role"> {
 
 export interface Payload {
         _id: string;
-        name: string;
+        firstName: string;
+        lastName?: string;
         email: string;
         role: {
                 _id: string;

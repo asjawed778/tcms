@@ -57,7 +57,7 @@ const BasicDetails: React.FC = () => {
         </Grid>
       </Grid>
 
-      <Grid size={{ xs: 12, md: 2 }}>
+      <Grid size={{ xs: 12, md: 2 }} mt={{ xs: 0, md: 2 }}>
         <ImageUploader name="photo" required={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -79,7 +79,7 @@ const BasicDetails: React.FC = () => {
         <CustomDropdownField
           name="role"
           label="Role"
-          placeholder="Select Role"
+          placeholder="-- Select Role --"
           options={roleOptions}
           required={false}
         />

@@ -20,6 +20,9 @@ export const saveAddress = async (
     }
 
     const newAddress = await addressSchema.create(data);
+    if (!newAddress) {
+        throw createHttpError(500, "Failed to create address");
+    }
     return newAddress as IAddress;
 };
 

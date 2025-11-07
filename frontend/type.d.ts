@@ -469,7 +469,8 @@ export interface SectionResponseList {
 
 // Employee.................................................................
 export interface EmployeeBasicDetailsRequest {
-  name: string;
+  firstName: string;
+  lastName?: string;
   fatherName?: string;
   motherName?: string;
   phoneNumber: string;
