@@ -175,14 +175,14 @@ const Section = () => {
 
   return (
     <>
-      <Box sx={{  m: 3  }}>
+      <Box sx={{ m: 2 }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             gap: 2,
-            mb: 3,
+            mb: 2,
           }}
         >
           <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}}/>

@@ -98,7 +98,6 @@ const AddStudent = () => {
   ];
 
   const onStepSubmit = async (data: any) => {
-
     const isValid = await methods.trigger();
     if (!isValid) {
       toast.error("Please fill all required fields correctly.");
@@ -106,23 +105,13 @@ const AddStudent = () => {
     }
 
     try {
-      if (activeStep > 0 && !studentId) {
-        toast.error("Please complete the first step before continuing.");
-        return;
-      }
-      const response = await stepApis[activeStep](data);
-      if (response?.success) {
-        // toast.success(`Step ${activeStep + 1} saved successfully!`);
-        setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
-
-        if (activeStep < steps.length - 1) {
-          setActiveStep((prev) => prev + 1);
-        } else {
-          toast.success("Student details added successfully!");
-          navigate("/dashboard/student");
-        }
+      await stepApis[activeStep](data);
+      setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
+      if (activeStep < steps.length - 1) {
+        setActiveStep((prev) => prev + 1);
       } else {
-        toast.error(response?.message || "Something went wrong.");
+        toast.success("Student details added successfully!");
+        navigate("/dashboard/student");
       }
     } catch (error: any) {
       console.error(error);
@@ -142,9 +131,6 @@ const AddStudent = () => {
     if (studentId || completedSteps.includes(index) || index === activeStep) {
       setActiveStep(index);
     }
-    // else {
-    //   toast.error("Please complete basic details first!");
-    // }
   };
 
   return (

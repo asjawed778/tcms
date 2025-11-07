@@ -44,11 +44,11 @@ const Student: React.FC = () => {
   const [openViewDetailsModal, setOpenViewDetailsModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
-  const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
-  );
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const selectedSession = useAppSelector( (state) => state.session.selectedSession);
+  const menuAnchorRef = React.useRef<HTMLElement | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const can = useCan();
+
   const {
     data: studentData,
     isLoading,
@@ -81,7 +81,6 @@ const Student: React.FC = () => {
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
-      // alert(`Faculty ${row.student.name} updated`);
     }
   };
   const handleAddStudent = () => {
@@ -95,8 +94,8 @@ const Student: React.FC = () => {
     setPage(0);
   };
   return (
-    <Box p={3}>
-      <Box sx={{ width: "100%" }}>
+    <Box p={2}>
+      <Box>
         <Box
           sx={{
             display: "flex",
@@ -107,8 +106,9 @@ const Student: React.FC = () => {
           }}
         >
           <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
-            <CustomSearchField onSearch={setSearchQuery} 
-            sx={{bgcolor: "#fff"}}
+            <CustomSearchField
+              onSearch={setSearchQuery}
+              sx={{ bgcolor: "#fff" }}
             />
           </Box>
           <Box
@@ -131,95 +131,38 @@ const Student: React.FC = () => {
               labelPosition="inside"
             />
           </Box>
-          {/* {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <CustomButton
-                variant="outlined"
-                startIcon={<PersonAdd />}
-                endIcon={<Add sx={{ transform: "rotate(90deg)" }} />} // Down arrow style
-                onClick={(event) => setAnchorEl(event.currentTarget)}
-                sx={{ whiteSpace: "nowrap" }}
-              >
-                Add Student
-              </CustomButton>
-
-              <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left",
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left",
-                }}
-              >
-                <MenuItem
-                  onClick={() => {
-                    setAnchorEl(null);
-                    handleAddStudent();
-                  }}
-                >
-                  <PersonAdd fontSize="small" sx={{ mr: 1 }} /> Add Student
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    setAnchorEl(null);
-                    handleBulkUpload();
-                  }}
-                >
-                  <Upload fontSize="small" sx={{ mr: 1 }} /> Bulk Upload
-                </MenuItem>
-              </Menu>
-            </Box>
-          )} */}
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
             <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-              {/* Split Add Student Button */}
               <Box
                 sx={{
                   display: "flex",
-                  // border: "1px solid",
-                  // borderColor: "divider",
                   borderRadius: 2,
                   overflow: "hidden",
                 }}
+                ref={menuAnchorRef}
               >
                 <CustomButton
-                  // variant="outlined"
                   startIcon={<PersonAdd />}
-                  onClick={handleAddStudent} // Direct add action
-                  sx={{
-                    // borderRight: "1px solid",
-                    // borderColor: "divider",
-                    borderRadius: 0,
-                    // whiteSpace: "nowrap",
-                  }}
+                  onClick={handleAddStudent}
+                  sx={{ borderRadius: 0 }}
                 >
                   Add Student
                 </CustomButton>
-
                 <CustomButton
-                  // variant="outlined"
-                  onClick={(event) => setAnchorEl(event.currentTarget)} // Only this opens dropdown
+                  onClick={() => setMenuOpen((prev) => !prev)} 
                   sx={{
                     minWidth: "40px",
                     borderRadius: 0,
-                    borderLeft: "none",
                     px: 1,
                   }}
                 >
-                  <KeyboardArrowDown /> {/* Down arrow icon */}
+                  <KeyboardArrowDown />
                 </CustomButton>
               </Box>
-
-              {/* Dropdown Menu */}
               <Menu
-                anchorEl={anchorEl}
-                open={Boolean(anchorEl)}
-                onClose={() => setAnchorEl(null)}
+                anchorEl={menuAnchorRef.current} 
+                open={menuOpen} 
+                onClose={() => setMenuOpen(false)}
                 anchorOrigin={{
                   vertical: "bottom",
                   horizontal: "left",
@@ -229,12 +172,11 @@ const Student: React.FC = () => {
                   horizontal: "left",
                 }}
                 PaperProps={{
-                  sx: { minWidth: 160 }, 
+                  sx: { mt: "2px", minWidth: 180 },
                 }}
               >
                 <MenuItem
                   onClick={() => {
-                    setAnchorEl(null);
                     handleAddStudent();
                   }}
                 >
@@ -243,7 +185,6 @@ const Student: React.FC = () => {
 
                 <MenuItem
                   onClick={() => {
-                    setAnchorEl(null);
                     handleBulkUpload();
                   }}
                 >

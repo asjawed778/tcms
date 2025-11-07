@@ -15,14 +15,14 @@ const ParentDetails: React.FC = () => {
           Father Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.name"
           label="Father Name"
           placeholder="Enter father's name"
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.qualification"
           label="Qualification"
@@ -30,14 +30,14 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.occupation"
           label="Occupation"
           placeholder="Enter father's occupation"
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.contactNumber"
           label="Mobile Number"
@@ -45,7 +45,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.email"
           label="Email"
@@ -53,7 +53,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.bussinessOrEmployerName"
           label="Bussiness/Employer Name"
@@ -61,7 +61,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.officeAddress"
           label="Office Address"
@@ -69,7 +69,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="father.officeNumber"
           label="Office Number"
@@ -83,7 +83,7 @@ const ParentDetails: React.FC = () => {
           Mother Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.name"
           label="Mother Name"
@@ -91,7 +91,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.qualification"
           label="Qualification"
@@ -99,7 +99,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.occupation"
           label="Occupation"
@@ -107,7 +107,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.contactNumber"
           label="Mobile Number"
@@ -115,7 +115,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.email"
           label="Email"
@@ -123,7 +123,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.bussinessOrEmployerName"
           label="Business/Employer Name"
@@ -131,7 +131,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.officeAddress"
           label="Office Address"
@@ -139,7 +139,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="mother.officeNumber"
           label="Office Number"
@@ -147,13 +147,12 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-
       <Grid size={{ xs: 12 }}>
         <Typography sx={{fontSize: "16px", fontWeight: 600}}>
           Local Guardian Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.name"
           label="Local Guardian Name"
@@ -161,7 +160,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.contactNumber"
           label="Mobile Number"
@@ -169,7 +168,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.email"
           label="Email"
@@ -177,7 +176,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.qualification"
           label="Qualification"
@@ -185,7 +184,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.occupation"
           label="Occupation"
@@ -193,7 +192,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.bussinessOrEmployerName"
           label="Business/Employer Name"
@@ -201,7 +200,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4}}>
         <CustomInputField
           name="localGuardian.officeAddress"
           label="Office Address"
@@ -209,7 +208,7 @@ const ParentDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="localGuardian.officeNumber"
           label="Office Number"

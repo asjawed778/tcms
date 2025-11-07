@@ -114,7 +114,7 @@ const Employee: React.FC = () => {
         open={openImagePreview}
         onClose={() => setOpenImagePreview(false)}
         files={seletedEmpImage }
-      />;
+      />
     </>
   );
 };
@@ -125,6 +125,7 @@ const getStyles = (theme: any) => ({
     flexDirection: { xs: "column", md: "row" },
     alignItems: "center",
     gap: 2,
+    mb: 2
   },
   searchBox: {
     backgroundColor: theme.customColors.light

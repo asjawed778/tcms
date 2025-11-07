@@ -156,11 +156,6 @@ const PreviousSchoolDetails: React.FC = () => {
         container
         spacing={2}
         sx={{
-          border: 1,
-          borderRadius: 2,
-          p: 2,
-          position: "relative",
-          borderColor: "grey.500",
           width: "100%",
         }}
       >
@@ -176,11 +171,10 @@ const PreviousSchoolDetails: React.FC = () => {
             name="previousSchool.schoolLeavingCertificate.documentNumber"
             label="Document Number"
             placeholder="Enter Document Number"
-            margin="normal"
             required={false}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }} mt={3.5}>
           <FileUploader
             name="previousSchool.schoolLeavingCertificate.url"
             label="School Leaving Certificate"
@@ -192,11 +186,6 @@ const PreviousSchoolDetails: React.FC = () => {
         container
         spacing={2}
         sx={{
-          border: 1,
-          borderRadius: 2,
-          p: 2,
-          position: "relative",
-          borderColor: "grey.500",
           width: "100%",
         }}
       >
@@ -211,11 +200,10 @@ const PreviousSchoolDetails: React.FC = () => {
             name="previousSchool.transferCertificate.number"
             label="Document Number"
             placeholder="Enter Document Number"
-            margin="normal"
             required={false}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12, md: 6 }} mt={3.5}>
           <FileUploader
             name="previousSchool.transferCertificate.url"
             label="Transfer Certificate"

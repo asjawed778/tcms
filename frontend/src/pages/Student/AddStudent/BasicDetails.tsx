@@ -19,13 +19,13 @@ const PersonalDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ md: 12 }}>
-        <Typography fontWeight={600} sx={{fontSize: "18px"}}>
+        <Typography fontWeight={600} sx={{ fontSize: "18px" }}>
           Basic Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 10 }}>
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField
               name="name"
               label="Student Name"
@@ -33,7 +33,7 @@ const PersonalDetails: React.FC = () => {
               labelPosition="outside"
             />
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField
               name="dob"
               type="date"
@@ -41,30 +41,37 @@ const PersonalDetails: React.FC = () => {
               maxDate={new Date()}
             />
           </Grid>
-          <Grid size={{ xs: 12 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CustomRadioGroup
               name="gender"
               label="Gender"
               options={Object.values(Gender)}
             />
           </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <CustomInputField
+              name="adharNumber"
+              type="number"
+              label="Aadhaar Number"
+              placeholder="Enter Aadhaar Number"
+              required={false}
+            />
+          </Grid>
         </Grid>
       </Grid>
-      <Grid
-        size={{ xs: 12, md: 6 }}
-        sx={{ display: "flex", justifyContent: "center" }}
-      >
-        <ImageUploader name="image" required={false}/>
+      <Grid size={{ xs: 12, md: 2 }}>
+        <ImageUploader name="image" required={false} />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="contactNumber"
           label="Phone Number"
           placeholder="Enter Phone Number"
+          type="number"
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="email"
           label="Email"
@@ -72,16 +79,7 @@ const PersonalDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="adharNumber"
-          type="number"
-          label="Aadhaar Number"
-          placeholder="Enter Aadhaar Number"
-          required={false}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="nationality"
           label="Nationality"
@@ -89,7 +87,15 @@ const PersonalDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CustomInputField
+          name="motherTongue"
+          label="Mother Tongue"
+          placeholder="Enter your mother tongue"
+          required={false}
+        />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomDropdownField
           name="religion"
           label="Select Religion"
@@ -98,15 +104,7 @@ const PersonalDetails: React.FC = () => {
           required={false}
         />
       </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
-        <CustomInputField
-          name="motherTongue"
-          label="Mother Tongue"
-          placeholder="Enter your mother tongue"
-          required={false}
-        />
-      </Grid>
-      <Grid size={{ xs: 12, md: 6 }}>
+      <Grid size={{ xs: 12, md: 4 }}>
         <CustomDropdownField
           name="bloodGroup"
           label="Blood Group"

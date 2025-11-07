@@ -73,12 +73,12 @@ const Class = () => {
       totalSubjects: cls.subjects?.length || 0,
     })) || [];
   return (
-    <Box m={3}>
+    <Box m={2}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          mb: 3
+          mb: 2
         }}
       >
         {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (

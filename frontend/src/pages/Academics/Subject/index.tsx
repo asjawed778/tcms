@@ -177,7 +177,7 @@ const Subject = () => {
   };
   return (
     <>
-      <Box sx={{ m: "24px" }}>
+      <Box sx={{ m: 2 }}>
         <Box
           sx={{
             display: "flex",
@@ -230,7 +230,7 @@ const Subject = () => {
           </Box>
         </Box>
         {subjectFetching ? (
-          <Grid container spacing={2} mt="24px">
+          <Grid container spacing={2} mt={2}>
             {Array.from({ length: 9 }).map((_, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
                 <SubjectCardSkeleton key={`skeleton-${index}`} />
@@ -262,7 +262,7 @@ const Subject = () => {
             <Typography variant="body1">No records found.</Typography>
           </Box>
         ) : tableView ? (
-          <Box mt={3}>
+          <Box mt={2}>
             <TableWrapper
             columns={subjectColumns}
             rows={subjectData?.data?.subjects || []}
@@ -278,7 +278,7 @@ const Subject = () => {
           />
           </Box>
         ) : (
-          <Grid container spacing={2} mt="24px">
+          <Grid container spacing={2} mt={2}>
             {subjectData?.data?.subjects?.map((subject) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={subject._id}>
                 <SubjectCard

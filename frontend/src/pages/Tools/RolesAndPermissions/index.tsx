@@ -152,13 +152,13 @@ const RolesAndPermissions = () => {
     );
   };
   return (
-    <Box m={3}>
+    <Box m={2}>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         gap={2}
-        mb={3}
+        mb={2}
       >
         <CustomSearchField
           placeholder="Search..."
