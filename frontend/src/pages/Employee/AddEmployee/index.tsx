@@ -165,7 +165,7 @@ const AddEmployee = () => {
   };
 
   return (
-    <Box p={3}>
+    <Box p={2}>
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step, index) => (
           <Step key={index} onClick={() => handleStepClick(index)}>
