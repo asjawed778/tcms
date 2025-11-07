@@ -6,10 +6,9 @@ import { userApi } from "../services/userApi";
 import sidebarReducer from "./reducers/sidebarReducer"; 
 import { sessionApi } from "@/services/sessionApi";
 import { facultyApi } from "@/services/employee.Api";
-import { dropdownApi } from "@/services/dropdownApi";
-import { commonApi } from "@/services/commonApi";
+import { commonApi } from "@/services/common.Api";
 import sessionReducer from "./reducers/sessionSlice"
-import { academicsApi } from "@/services/academicsApi";
+import { academicsApi } from "@/services/academics.Api";
 import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({
@@ -21,7 +20,6 @@ export const store = configureStore({
     [userApi.reducerPath]: userApi.reducer, 
     [sessionApi.reducerPath]: sessionApi.reducer,
     [facultyApi.reducerPath]: facultyApi.reducer,
-    [dropdownApi.reducerPath]: dropdownApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
     [academicsApi.reducerPath]: academicsApi.reducer,
     [studentApi.reducerPath]: studentApi.reducer,
@@ -32,7 +30,6 @@ export const store = configureStore({
       userApi.middleware, 
       sessionApi.middleware, 
       facultyApi.middleware,
-      dropdownApi.middleware, 
       commonApi.middleware,
       academicsApi.middleware,
       studentApi.middleware,

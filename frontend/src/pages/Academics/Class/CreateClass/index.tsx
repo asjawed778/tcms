@@ -19,7 +19,7 @@ import {
   useCreateClassMutation,
   useUpdateclassMutation,
   useUpdateFeeStructureMutation,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import SubjectDetails from "./SubjectDetails";
 import FeeStructure from "./FeeStructure";

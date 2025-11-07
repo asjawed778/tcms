@@ -7,7 +7,7 @@ import {
   useDeleteSubjectMutation,
   useGetAllClassQuery,
   useGetAllSubjectQuery,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import {
@@ -177,7 +177,7 @@ const Subject = () => {
   };
   return (
     <>
-      <Box sx={{ width: "100%", mt: "24px" }}>
+      <Box sx={{ m: "24px" }}>
         <Box
           sx={{
             display: "flex",
@@ -262,7 +262,8 @@ const Subject = () => {
             <Typography variant="body1">No records found.</Typography>
           </Box>
         ) : tableView ? (
-          <TableWrapper
+          <Box mt={3}>
+            <TableWrapper
             columns={subjectColumns}
             rows={subjectData?.data?.subjects || []}
             totalCount={subjectData?.data?.totalDoc || 0}
@@ -271,13 +272,11 @@ const Subject = () => {
             onPageChange={handlePageChange}
             onRowsPerPageChange={handleRowsPerPageChange}
             onActionClick={handleActionClick}
-            // actionsList={actionsList}
             actions={actionsList}
             isFetching={subjectFetching}
             isError={subjectError}
-            // paginationType="table"
-            // isSessionNotSelected={!selectedSession?._id}
           />
+          </Box>
         ) : (
           <Grid container spacing={2} mt="24px">
             {subjectData?.data?.subjects?.map((subject) => (

@@ -13,7 +13,7 @@ import {
   useUpdateSectionMutation,
   useGetAllClassQuery,
   useAddSectionMutation,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
 import { addSectionSchema } from "../../../../yup";

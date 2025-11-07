@@ -1,7 +1,7 @@
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomInputField from "@/components/CustomInputField";
 import FileUploader from "@/components/FileUploader";
-import { useGetAllClassQuery } from "@/services/academicsApi";
+import { useGetAllClassQuery } from "@/services/academics.Api";
 import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
 import mapToDropdownOptions from "@/utils/helper";

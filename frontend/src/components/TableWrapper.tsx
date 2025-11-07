@@ -337,7 +337,7 @@ function TableWrapper<T extends { _id?: string | number }>({
   );
 
   return (
-    <Box mt="24px">
+    <Box>
       <Box
         sx={{
           bgcolor: "#fff",

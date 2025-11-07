@@ -4,7 +4,7 @@ import {
   useDeleteSectionMutation,
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -175,14 +175,14 @@ const Section = () => {
 
   return (
     <>
-      <Box sx={{ width: "100%", p: 1, mt: 1 }}>
+      <Box sx={{  m: 3  }}>
         <Box
           sx={{
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
             alignItems: "center",
             gap: 2,
-            mb: 1,
+            mb: 3,
           }}
         >
           <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}}/>

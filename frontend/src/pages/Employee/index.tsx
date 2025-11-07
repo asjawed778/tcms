@@ -97,6 +97,7 @@ const Faculty: React.FC = () => {
           flexDirection: { xs: "column", md: "row" },
           alignItems: "center",
           gap: 2,
+          mb: 3
         }}
       >
         {" "}

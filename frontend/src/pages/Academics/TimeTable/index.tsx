@@ -1,6 +1,6 @@
 import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
-import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academicsApi";
+import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { Alarm } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
@@ -106,7 +106,7 @@ const TimeTable: React.FC = () => {
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        mt: "24px",
+        m: "24px",
       }}
     >
       {/* Top Row: Filters */}

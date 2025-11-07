@@ -34,7 +34,7 @@ const GenericTabs: React.FC<GenericTabsProps> = ({ tabs, defaultTab }) => {
   };
 
   return (
-    <Box mx="24px">
+    <Box>
       <Box
         sx={{
           position: "sticky",
@@ -43,6 +43,7 @@ const GenericTabs: React.FC<GenericTabsProps> = ({ tabs, defaultTab }) => {
           backgroundColor: "#fff",
           // borderBottom: "1px solid #E0E0E0",
           pt: 1,
+          pl: 2
         }}
       >
         <Tabs
@@ -65,6 +66,7 @@ const GenericTabs: React.FC<GenericTabsProps> = ({ tabs, defaultTab }) => {
               padding: 0,
               marginRight: "24px",
               minWidth: "auto",
+              // pl: 2
             },
             "& .Mui-selected": {
               color: "primary.main",
@@ -76,6 +78,7 @@ const GenericTabs: React.FC<GenericTabsProps> = ({ tabs, defaultTab }) => {
               display: "flex",
               justifyContent: "center",
               backgroundColor: "transparent",
+              // pl: 2
             },
             "& .MuiTabs-indicatorSpan": {
               width: "100%",

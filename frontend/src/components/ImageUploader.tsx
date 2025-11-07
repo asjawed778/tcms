@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { Box, Typography, IconButton, CircularProgress } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Controller, useFormContext, Control, useWatch } from "react-hook-form";
-import { useUploadFileMutation } from "@/services/commonApi";
+import { useUploadFileMutation } from "@/services/common.Api";
 import { useAppTheme } from "@/context/ThemeContext";
 import { CloudUploadOutlined } from "@mui/icons-material";
 

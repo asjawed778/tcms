@@ -16,7 +16,7 @@ import { useNavigate } from "react-router-dom";
 import {
   useCreateTimeTableMutation,
   useGetAllClassQuery,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import Monday from "./Monday";
 import Tuesday from "./Tuesday";

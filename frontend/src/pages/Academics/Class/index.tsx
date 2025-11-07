@@ -1,7 +1,7 @@
 import CustomButton from "@/components/CustomButton";
 import TableWrapper from "@/components/TableWrapper";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllClassQuery } from "@/services/academicsApi";
+import { useGetAllClassQuery } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import { Add } from "@mui/icons-material";
@@ -11,8 +11,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 const classColumns = [
   { key: "sno.", label: "S.No." },
-  { key: "name", label: "Class Name" },
   { key: "classId", label: "Class Id" },
+  { key: "name", label: "Class Name" },
   { key: "courseStream", label: "Stream" },
   { key: "totalSubjects", label: "Total Subject" },
   { key: "totalSections", label: "Total Section" },
@@ -73,12 +73,12 @@ const Class = () => {
       totalSubjects: cls.subjects?.length || 0,
     })) || [];
   return (
-    <>
+    <Box m={3}>
       <Box
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          mt: "24px",
+          mb: 3
         }}
       >
         {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (
@@ -99,7 +99,7 @@ const Class = () => {
         isError={isError}
         showPagination={false}
       />
-    </>
+    </Box>
   );
 };
 

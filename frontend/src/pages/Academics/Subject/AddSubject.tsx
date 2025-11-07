@@ -7,7 +7,7 @@ import { cleanData } from "@/utils/helper";
 import {
   useAddSubjectMutation,
   useUpdateSubjectMutation,
-} from "@/services/academicsApi";
+} from "@/services/academics.Api";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { subjectSchema } from "../../../../yup";

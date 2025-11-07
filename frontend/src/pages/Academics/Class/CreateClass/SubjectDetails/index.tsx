@@ -4,7 +4,7 @@ import { useAppTheme } from "@/context/ThemeContext";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { useState, useMemo } from "react";
 import { SubjectList } from "./SubjectList";
-import { useGetAllSubjectQuery } from "@/services/academicsApi";
+import { useGetAllSubjectQuery } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { SubjectLibrary } from "./SubjectLibrary";
 

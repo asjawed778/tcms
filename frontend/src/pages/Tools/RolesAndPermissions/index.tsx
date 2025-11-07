@@ -152,19 +152,20 @@ const RolesAndPermissions = () => {
     );
   };
   return (
-    <Box mt={3}>
+    <Box m={3}>
       <Box
         display="flex"
         justifyContent="space-between"
         alignItems="center"
         gap={2}
+        mb={3}
       >
         <CustomSearchField
           placeholder="Search..."
           onSearch={setSearchQuery}
           value={searchQuery}
           sx={{
-            bgcolor: "#fff",
+            bgcolor: "#FFF",
           }}
         />
         {can(ModuleName.ADMINISTRATION, SubModuleName.ROLES, Operation.CREATE) && (
