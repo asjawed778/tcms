@@ -221,7 +221,7 @@ export enum ToolsTabs {
 
 export enum EmployeeDetailsTabs {
   PERSONAL_INFORMATION = "personal-information",
-  SALARY_STRUCTURE = "salary-structure",
+  PROFESSIONAL_DETAILS = "professional-details",
 }
 
 // roles permissions and modules enums

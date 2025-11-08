@@ -5,6 +5,8 @@ import { useEffect } from 'react';
 import BasicDetails from './BasicDetails';
 import { useCan } from '@/hooks/useCan';
 import GenericTabs from "@/components/GenericTabs";
+import PersonalInfoTab from './PersonalInfoTab';
+import ProfessionalDetailsTab from './ProfessionalDetailsTab';
 
 interface EmployeeDetailsProps {
     employeeId: string;
@@ -38,16 +40,16 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
         {
             label: "Personal Info",
             value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
-            component: null,
+            component: <PersonalInfoTab />,
             permission: {
                 module: Enum.ModuleName.Employee,
                 action: Enum.Operation.READ,
             },
         },
         {
-            label: "Salry Structure",
-            value: Enum.EmployeeDetailsTabs.SALARY_STRUCTURE,
-            component: null,
+            label: "Professional Details",
+            value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
+            component: <ProfessionalDetailsTab />,
             permission: {
                 module: Enum.ModuleName.Employee,
                 action: Enum.Operation.READ,
@@ -83,7 +85,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
                     onEditPhoto={() => console.log('Edit photo clicked')}
                 />
             }
-            <GenericTabs tabs={tabs} defaultTab={tabs[0]?.value} />;
+            <GenericTabs tabs={tabs} defaultTab={tabs[0]?.value} />
         </Box>
     )
 }
