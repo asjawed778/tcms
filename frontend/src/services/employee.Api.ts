@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import {
-  ApiResponse,
   EmployeeAddress,
   EmployeeBasicDetailsRequest,
   EmployeeDocuments,
@@ -12,12 +11,14 @@ import {
   UnAssingFacultyApiResponse,
 } from "../../type";
 import { baseQueryWithReauth } from "./api";
+import { ApiResponse } from "@/types";
+import { EmployeeDetailsResponse } from "@/types/employee";
 
 export const facultyApi = createApi({
   reducerPath: "facultyApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    getAllEmployee: builder.query<ApiResponse<EmployeeResponseList>, {page?: number; limit?: number; search?: string, status?: string}>({
+    getAllEmployee: builder.query<ApiResponse<EmployeeResponseList>, { page?: number; limit?: number; search?: string, status?: string }>({
       query: ({ page = 1, limit = 10, search = "", status = "" }) => ({
         url: `/admin/employee/all`,
         params: {
@@ -29,9 +30,9 @@ export const facultyApi = createApi({
         method: "GET",
       }),
     }),
-    getEmployeeDetails: builder.query<ApiResponse<EmployeeResponse>, {employeeId: string}>({
+    getEmployeeDetails: builder.query<ApiResponse<EmployeeDetailsResponse>, { employeeId: string }>({
       query: ({ employeeId }) => ({
-        url: `/admin/employeeId/${employeeId}`,
+        url: `/admin/employee/${employeeId}`,
         method: "GET",
       }),
     }),
@@ -41,42 +42,42 @@ export const facultyApi = createApi({
         method: "GET",
       }),
     }),
-    addBasicDetails: builder.mutation<ApiResponse<EmployeeResponse>, {payload: EmployeeBasicDetailsRequest}>({
+    addBasicDetails: builder.mutation<ApiResponse<EmployeeResponse>, { payload: EmployeeBasicDetailsRequest }>({
       query: ({ payload }) => ({
         url: "/admin/employee/basic-details",
         method: "POST",
         body: payload,
       }),
     }),
-    updateBasicDetails: builder.mutation<ApiResponse<EmployeeResponse>, {employeeId: string; payload: EmployeeBasicDetailsRequest}>({
+    updateBasicDetails: builder.mutation<ApiResponse<EmployeeResponse>, { employeeId: string; payload: EmployeeBasicDetailsRequest }>({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/basic-details`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateAddress: builder.mutation<ApiResponse<EmployeeResponse>, {employeeId: string; payload: EmployeeAddress}>({
+    updateAddress: builder.mutation<ApiResponse<EmployeeResponse>, { employeeId: string; payload: EmployeeAddress }>({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/address`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateProfessionalDetails: builder.mutation<ApiResponse<EmployeeResponse>, {employeeId: string; payload: ProfessionalDetailsRequest}>({
+    updateProfessionalDetails: builder.mutation<ApiResponse<EmployeeResponse>, { employeeId: string; payload: ProfessionalDetailsRequest }>({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/professional-details`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateSalaryStructure: builder.mutation<ApiResponse<EmployeeResponse>, {employeeId: string; payload: SalaryStructureRequest}>({
+    updateSalaryStructure: builder.mutation<ApiResponse<EmployeeResponse>, { employeeId: string; payload: SalaryStructureRequest }>({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/salary-structure`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateDocuments: builder.mutation<ApiResponse<EmployeeResponse>, {employeeId: string; payload: EmployeeDocuments}>({
+    updateDocuments: builder.mutation<ApiResponse<EmployeeResponse>, { employeeId: string; payload: EmployeeDocuments }>({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/documents`,
         method: "PUT",

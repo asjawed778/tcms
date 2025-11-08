@@ -99,7 +99,7 @@ const Profile: React.FC = () => {
         <Box display="flex" alignItems="center" gap={1} px={1.5} py={1}>
           <Avatar src={user?.profilePic} />
           <Box>
-            <Typography fontWeight="bold">{user?.name}</Typography>
+            <Typography fontWeight="bold">{user?.firstName} {user?.lastName}</Typography>
             <Typography variant="body2" color="text.secondary">
               {user?.role?.name}
             </Typography>

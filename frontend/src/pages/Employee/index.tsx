@@ -2,7 +2,7 @@ import CustomButton from "@/components/CustomButton";
 import CustomDropdownField from "@/components/CustomDropdownField";
 import CustomSearchField from "@/components/CustomSearchField";
 import TableWrapper from "@/components/TableWrapper";
-import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
+import DocumentPreviewer from "@/components/common/DocumentPreviewer";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllEmployeeQuery } from "@/services/employee.Api";
 import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
@@ -11,6 +11,8 @@ import { Box, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getEmployeeColumns } from "./employeeUtils";
+import EmployeeDetails from "./EmployeeDetails";
+import SideDrawerWrapper from "@/components/SideDrawerWrapper";
 
 const actionsList = [
   {
@@ -29,6 +31,7 @@ const Employee: React.FC = () => {
   const can = useCan();
   const [openImagePreview, setOpenImagePreview] = useState(false);
   const [seletedEmpImage, setSelectedEmpImage] = useState<{ url: string, type: 'image' }[]>([]);
+  const [seletedEmployeeId, setSelectedEmployeeId] = useState<string>("");
   const {
     data: employeeData,
     isFetching,
@@ -50,6 +53,10 @@ const Employee: React.FC = () => {
     console.log("url: ", url)
     setSelectedEmpImage([{ url, type: "image" }]);
     setOpenImagePreview(true);
+  };
+  const handleEmployeeClick = (employeeId: string) => {
+    if (!employeeId) return;
+    setSelectedEmployeeId(employeeId);
   };
 
   const employeeTableColumns = getEmployeeColumns(handleImageClick);
@@ -83,7 +90,7 @@ const Employee: React.FC = () => {
               label="Status"
               required={false}
               value={statusFilter}
-              onChange={(value)=>handleStatusChange(value as EmployeeStatus)}
+              onChange={(value) => handleStatusChange(value as EmployeeStatus)}
               options={Object.values(EmployeeStatus)}
               labelPosition="inside"
             />
@@ -108,13 +115,23 @@ const Employee: React.FC = () => {
           isFetching={isFetching}
           actions={actionsList}
           isError={isError}
+          onRowClick={(employee) => handleEmployeeClick(employee._id)}
         />
       </Box>
       <DocumentPreviewer
         open={openImagePreview}
         onClose={() => setOpenImagePreview(false)}
-        files={seletedEmpImage }
+        files={seletedEmpImage}
       />
+      <SideDrawerWrapper
+        open={Boolean(seletedEmployeeId)}
+        onClose={() => setSelectedEmployeeId("")}
+        anchor="right"
+        width="60%"
+        header="Employee Details"
+      >
+        <EmployeeDetails employeeId={seletedEmployeeId} />
+      </SideDrawerWrapper>
     </>
   );
 };

@@ -29,5 +29,5 @@
     }
 
   },
-  "include": ["src", "yup.ts", "type.d.ts"]
+  "include": ["src", "yup.ts", "type.d.ts", "global.d.ts"],
 }

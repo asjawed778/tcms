@@ -10,9 +10,7 @@ interface GenderChipProps {
 const GenderChip: React.FC<GenderChipProps> = ({ gender }) => {
     const theme = useTheme();
     const styles = getStyles(theme);
-    
-    console.log("gender: ", gender);
-    
+        
     const getProps = () => {
         switch (gender) {
             case Gender.Male:

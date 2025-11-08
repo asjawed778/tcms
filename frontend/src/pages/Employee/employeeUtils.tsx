@@ -1,9 +1,9 @@
 import { Box, Avatar } from "@mui/material";
-import GenderChip from "@/components/ui/GenderChip";
+import GenderChip from "@/components/common/GenderChip";
 import { formatDate } from "@/utils/helper";
 
 export const getEmployeeColumns = (
-  onImageClick: (url: string) => void
+  onImageClick: (url: string) => void,
 ) => [
   { key: "sno.", label: "S.No.", width: '7%' },
   { key: "employeeId", label: "Employee Id", width: '15%' },
@@ -38,3 +38,5 @@ export const getEmployeeColumns = (
     render: (row: any) => formatDate(row.dateOfJoining),
   },
 ];
+
+
