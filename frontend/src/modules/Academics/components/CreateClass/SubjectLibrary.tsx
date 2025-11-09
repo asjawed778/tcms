@@ -13,8 +13,8 @@ import {
 } from "@mui/material";
 import { Search, CheckCircle, Refresh } from "@mui/icons-material";
 import { useAppTheme } from "@/context/ThemeContext";
-import CustomButton from "@/components/CustomButton";
-import CustomSearchField from "@/components/CustomSearchField";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomSearchField from "@/components/ui/CustomSearchField";
 
 interface DynamicSubject {
   _id: string;

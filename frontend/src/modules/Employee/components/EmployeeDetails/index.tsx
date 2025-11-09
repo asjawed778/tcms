@@ -1,5 +1,5 @@
 import * as Enum from "@/utils/enum";
-import { useGetEmployeeDetailsQuery } from '@/services/employee.Api';
+import { useGetEmployeeDetailsQuery } from '@/services/employeeApi';
 import { Box, useTheme } from '@mui/material';
 import { useEffect } from 'react';
 import BasicDetails from './BasicDetails';

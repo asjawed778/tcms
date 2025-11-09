@@ -9,14 +9,14 @@ import {
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CustomInputField from "@/components/CustomInputField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomButton from "@/components/ui/CustomButton";
 import { LockOutline } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 
 import { ResetPasswordFormValues } from "../../type";
-import { resetPasswordSchema } from "../../yup";
+import { resetPasswordSchema } from "../validation/yup";
 import { useResetPasswordMutation } from "@/services/authApi";
 import LoginVisuals from "./Login/LoginVisuals";
 

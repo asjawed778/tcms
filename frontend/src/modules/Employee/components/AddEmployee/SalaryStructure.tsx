@@ -1,5 +1,5 @@
 import { Box, Grid, Typography } from "@mui/material";
-import CustomInputField from "@/components/CustomInputField";
+import CustomInputField from "@/components/ui/CustomInputField";
 
 const SalaryStructure = () => {
   return (

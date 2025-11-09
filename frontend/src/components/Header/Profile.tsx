@@ -12,10 +12,10 @@ import {
 import { Dashboard, Logout } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "@/store/store";
-import { logout } from "@/store/reducers/authReducer";
+import { logout } from "@/store/reducers/authSlice";
 import toast from "react-hot-toast";
 import { useLogoutUserMutation } from "@/services/authApi";
-import CustomButton from "../CustomButton";
+import CustomButton from "../ui/CustomButton";
 import { resetSession } from "@/store/reducers/sessionSlice";
 
 const menuItems = [

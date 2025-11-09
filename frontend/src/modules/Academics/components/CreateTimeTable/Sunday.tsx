@@ -14,10 +14,10 @@ import {
   Controller,
 } from "react-hook-form";
 import CloseIcon from "@mui/icons-material/Close";
-import CustomInputField from "@/components/CustomInputField";
+import CustomInputField from "@/components/ui/CustomInputField";
 import React, { useEffect, useRef } from "react";
 import { useAppSelector } from "@/store/store";
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { PeriodType } from "@/utils/enum";
 import { useUnAssignFaculty } from "../../../../hooks/useUnAssignFaculty";
 import { DropdownOptions } from "../../../../../type";

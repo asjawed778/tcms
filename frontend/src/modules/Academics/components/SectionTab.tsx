@@ -1,5 +1,5 @@
-import CustomDropdownField from "@/components/CustomDropdownField";
-import TableWrapper from "@/components/TableWrapper";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import TableWrapper from "@/components/ui/TableWrapper";
 import {
   useDeleteSectionMutation,
   useGetAllClassQuery,
@@ -10,12 +10,12 @@ import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Add, Delete, Edit, Visibility } from "@mui/icons-material";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import DialogBoxWrapper from "@/components/DialogBoxWrapper";
+import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import { useCan } from "@/hooks/useCan";
 import toast from "react-hot-toast";
 import AddSection from "./Section/AddSection";
-import CustomSearchField from "@/components/CustomSearchField";
-import CustomButton from "@/components/CustomButton";
+import CustomSearchField from "@/components/ui/CustomSearchField";
+import CustomButton from "@/components/ui/CustomButton";
 import { SectionResponse } from "../../../../type";
 import SectionDetailsModal from "./Section/SectionDetailsModal";
 

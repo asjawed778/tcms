@@ -1,6 +1,6 @@
-import CustomButton from "@/components/CustomButton";
-import CustomInputField from "@/components/CustomInputField";
-import FileUploader from "@/components/FileUploader";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import FileUploader from "@/components/ui/FileUploader";
 import { Add, Delete } from "@mui/icons-material";
 import { Box, Divider, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";

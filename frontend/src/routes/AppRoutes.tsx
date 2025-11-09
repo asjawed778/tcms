@@ -1,27 +1,32 @@
+import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
+import { lazy, Suspense } from "react";
+import { Navigate, Route, Routes } from "react-router-dom";
+
+// components
 import PublicRoute from "@/components/Auth/PublicRoutes";
 import RoleAuthRoute from "@/components/Auth/RoleAuthRoute";
 import DashboardRedirect from "@/components/DashboardRedirect";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import SplashScreen from "@/components/SplashScreen";
+
+// layouts
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
+
+// pages
 const Login = lazy(() => import("@/pages/Login"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const PageNotFound = lazy(() => import("@/pages/PageNotFound"));
 const Employee = lazy(() => import("@/modules/Employee/pages"));
 const AddEmployee = lazy(() => import("@/modules/Employee/pages/AddEmployee"));
-const Student = lazy(() => import("@/modules/Student"));
-const AddStudent = lazy(() => import("@/modules/Student/AddStudent"));
+const Student = lazy(() => import("@/modules/Student/pages/Student"));
+const AddStudent = lazy(() => import("@/modules/Student/pages/AddStudent"));
 const Classes = lazy(() => import("@/modules/Academics/pages/Academics"));
 const CreateClass = lazy(() => import("@/modules/Academics/pages/CreateClass"));
 const CreateTimeTable = lazy(() => import("@/modules/Academics/pages/CreateTimeTable"));
-const Tools = lazy(() => import("@/modules/Tools"));
+const Tools = lazy(() => import("@/modules/Tools/pages/Tools"));
 
 const AppRoutes = () => {
-  const navigate = useNavigate();
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes>
@@ -156,7 +161,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="academics/create-class"
+            path="academics/class/create-class"
             element={
               <ErrorBoundary>
                 <RoleAuthRoute

@@ -8,8 +8,8 @@ import {
   Box,
 } from "@mui/material";
 import { ExpandMore, Close } from "@mui/icons-material";
-import CustomInputField from "@/components/CustomInputField";
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { useAppTheme } from "@/context/ThemeContext";
 import { SubjectCategory, SubjectType } from "@/utils/enum";
 

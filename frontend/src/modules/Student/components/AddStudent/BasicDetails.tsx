@@ -1,7 +1,7 @@
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomInputField from "@/components/CustomInputField";
-import CustomRadioGroup from "@/components/CustomRadioGroup";
-import ImageUploader from "@/components/ImageUploader";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomRadioGroup from "@/components/ui/CustomRadioGroup";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { BloodGroup, Gender, Religion } from "@/utils/enum";
 import { Grid, Typography } from "@mui/material";
 import React from "react";

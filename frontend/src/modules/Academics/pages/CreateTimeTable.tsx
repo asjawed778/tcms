@@ -25,9 +25,9 @@ import Thursday from "../components/CreateTimeTable/Thursday";
 import Friday from "../components/CreateTimeTable/Friday";
 import Saturday from "../components/CreateTimeTable/Saturday";
 import Sunday from "../components/CreateTimeTable/Sunday";
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { WeekDay } from "@/utils/enum";
-import { weeklySchema } from "../../../../yup";
+import { weeklySchema } from "../../../validation/yup";
 
 const steps = [
   {

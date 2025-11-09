@@ -4,8 +4,8 @@ import {
   FetchBaseQueryError,
 } from "@reduxjs/toolkit/query";
 import { fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { RootState } from "../store/store";
-import { logout, resetTokens, setTokens } from "../store/reducers/authReducer";
+import { RootState } from "@/store/store";
+import { logout, resetTokens, setTokens } from "@/store/reducers/authSlice";
 
 const baseURL = `${import.meta.env.VITE_BE_API_URL}/api`;
 

@@ -1,5 +1,5 @@
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomInputField from "@/components/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomInputField from "@/components/ui/CustomInputField";
 import { Grid, Typography } from "@mui/material";
 import { City, Country, State } from "country-state-city";
 import React, { useEffect, useState } from "react";

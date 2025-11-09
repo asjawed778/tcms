@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
-import CustomSearchField from "@/components/CustomSearchField";
-import CustomButton from "@/components/CustomButton";
-import DialogBoxWrapper from "@/components/DialogBoxWrapper";
-import TableWrapper from "@/components/TableWrapper";
+import CustomSearchField from "@/components/ui/CustomSearchField";
+import CustomButton from "@/components/ui/CustomButton";
+import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
+import TableWrapper from "@/components/ui/TableWrapper";
 import toast from "react-hot-toast";
 import { Add, AdminPanelSettings, Delete, Edit } from "@mui/icons-material";
 import { useDeleteRoleMutation, useGetAllRolesQuery } from "@/services/userApi";
-import ModalWrapper from "@/components/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 import { ModuleName, Operation, SubModuleName, ToolsTabs } from "@/utils/enum";
 import { useSearchParams } from "react-router-dom";
-import CreateRole from "./CreateRole";
-import AssignPermission from "./AssignPermission";
+import CreateRole from "./CreateRoleModal";
+import AssignPermission from "./AssignPermissionModal";
 import { useCan } from "@/hooks/useCan";
 
 interface Role {

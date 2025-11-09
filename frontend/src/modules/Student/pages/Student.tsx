@@ -1,6 +1,6 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomSearchField from "@/components/ui/CustomSearchField";
 import { useAppSelector } from "@/store/store";
 import {
   Add,
@@ -12,11 +12,11 @@ import {
 import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StudentTable from "./StudentTable";
-import ViewDetails from "./ViewDetails";
-import AddRemark from "./AddRemark";
+import StudentTable from "../components/StudentTable";
+import ViewDetails from "../components/ViewDetails";
+import AddRemark from "../components/AddRemarkModal";
 import { useGetAllStudentQuery } from "@/services/studentApi";
-import BulkUpload from "./BulkUpload";
+import BulkUpload from "../components/BulkUploadModal";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation } from "@/utils/enum";
 

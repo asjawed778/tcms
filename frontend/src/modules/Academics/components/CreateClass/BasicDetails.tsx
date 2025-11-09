@@ -1,4 +1,4 @@
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { ClassName, CourseStream } from "@/utils/enum";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
@@ -37,7 +37,7 @@ const BasicDetails: React.FC = () => {
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="name"
-          label="Select Class Name"
+          label="Class Name"
           options={classNameOptions}
         />
       </Grid>

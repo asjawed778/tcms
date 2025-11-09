@@ -22,7 +22,7 @@ import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppTheme } from "@/context/ThemeContext";
 import { useAppSelector } from "@/store/store";
-import { setMobileOpen, toggleSidebar } from "@/store/reducers/sidebarReducer";
+import { setMobileOpen, toggleSidebar } from "@/store/reducers/sidebarSlice";
 import { sidebarItems } from "./sidebarItems";
 
 const drawerWidth = 200;

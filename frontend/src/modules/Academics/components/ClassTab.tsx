@@ -1,5 +1,5 @@
-import CustomButton from "@/components/CustomButton";
-import TableWrapper from "@/components/TableWrapper";
+import CustomButton from "@/components/ui/CustomButton";
+import TableWrapper from "@/components/ui/TableWrapper";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllClassQuery } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
@@ -56,7 +56,7 @@ const ClassTab = () => {
 
   const handleAddFaculty = () => {
     refetch();
-    navigate("/dashboard/academics/create-class", {
+    navigate("/dashboard/academics/class/create-class", {
       state: { fromClassPage: true },
     });
   };

@@ -2,9 +2,9 @@ import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 import { Box, Grid, IconButton, Typography, Divider } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
-import CustomInputField from "@/components/CustomInputField";
-import FileUploader from "@/components/FileUploader";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import FileUploader from "@/components/ui/FileUploader";
+import CustomButton from "@/components/ui/CustomButton";
 
 const DocumentDetails: React.FC = () => {
   const { control } = useFormContext();

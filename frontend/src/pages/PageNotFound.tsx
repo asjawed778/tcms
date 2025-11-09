@@ -3,7 +3,7 @@ import { Box, Typography, Stack } from "@mui/material";
 import SentimentDissatisfiedIcon from "@mui/icons-material/SentimentDissatisfied";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 
 const PageNotFound: React.FC = () => {
   const navigate = useNavigate();

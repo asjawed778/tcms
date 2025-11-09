@@ -10,16 +10,16 @@ import {
 } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CustomInputField from "@/components/CustomInputField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomButton from "@/components/ui/CustomButton";
 import { MailOutline, LockOutline } from "@mui/icons-material";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { useLoginUserMutation } from "@/services/authApi";
 import { useAppDispatch } from "@/store/store";
-import { login } from "@/store/reducers/authReducer";
+import { login } from "@/store/reducers/authSlice";
 import { LoginFormValues } from "../../../type";
-import { loginSchema } from "../../../yup";
+import { loginSchema } from "../../validation/yup";
 import LoginVisuals from "./LoginVisuals";
 
 const Login: React.FC = () => {

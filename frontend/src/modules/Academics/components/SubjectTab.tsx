@@ -1,7 +1,7 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
-import TableWrapper from "@/components/TableWrapper";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomSearchField from "@/components/ui/CustomSearchField";
+import TableWrapper from "@/components/ui/TableWrapper";
 import { useCan } from "@/hooks/useCan";
 import {
   useDeleteSubjectMutation,
@@ -27,7 +27,7 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import AddSubject from "./Subject/AddSubject";
-import DialogBoxWrapper from "@/components/DialogBoxWrapper";
+import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import toast from "react-hot-toast";
 import { SubjectResponse } from "../../../../type";
 import SubjectCard from "./Subject/SubjectCard";

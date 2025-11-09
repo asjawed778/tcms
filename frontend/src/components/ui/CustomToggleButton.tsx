@@ -1,14 +1,13 @@
-// components/CustomToggleField.tsx
 import { Controller, useFormContext } from "react-hook-form";
 import { Box, Switch, FormControl, FormHelperText, Typography } from "@mui/material";
 
-interface CustomToggleFieldProps {
+interface CustomToggleButtonProps {
   name: string;
   label: string;
   disabled?: boolean;
 }
 
-const CustomToggleField = ({ name, label, disabled }: CustomToggleFieldProps) => {
+const CustomToggleButton = ({ name, label, disabled }: CustomToggleButtonProps) => {
   const { control } = useFormContext();
 
   return (
@@ -17,17 +16,11 @@ const CustomToggleField = ({ name, label, disabled }: CustomToggleFieldProps) =>
       control={control}
       render={({ field, fieldState: { error } }) => (
         <FormControl error={!!error} fullWidth>
-          {/* Row layout – Switch + text */}
           <Box
             display="flex"
             alignItems="center"
             gap={1}
-            sx={{
-              // optional: make the whole row look like a field
-            //   py: 0.5,
-            }}
           >
-            {/* ONLY the Switch is interactive */}
             <Switch
               {...field}
               checked={field.value === true}
@@ -43,8 +36,6 @@ const CustomToggleField = ({ name, label, disabled }: CustomToggleFieldProps) =>
                 },
               }}
             />
-
-            {/* Pure text – NOT clickable */}
             <Typography
               variant="body2"
               component="span"
@@ -53,14 +44,12 @@ const CustomToggleField = ({ name, label, disabled }: CustomToggleFieldProps) =>
                 color: error ? "error.main" : "text.primary",
                 cursor: "default",
                 userSelect: "none",
-                // completely disable pointer events on the text
                 pointerEvents: "none",
               }}
             >
               {label}
             </Typography>
           </Box>
-
           {error && <FormHelperText>{error.message}</FormHelperText>}
         </FormControl>
       )}
@@ -68,4 +57,4 @@ const CustomToggleField = ({ name, label, disabled }: CustomToggleFieldProps) =>
   );
 };
 
-export default CustomToggleField;
+export default CustomToggleButton;

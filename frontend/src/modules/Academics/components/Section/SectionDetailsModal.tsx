@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
 import { SectionResponse } from "../../../../../type";
-import ModalWrapper from "@/components/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 
 interface SectionDetailsModalProps {
   open: boolean;

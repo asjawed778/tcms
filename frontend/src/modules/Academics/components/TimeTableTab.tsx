@@ -1,5 +1,5 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
 import { Alarm } from "@mui/icons-material";
@@ -8,7 +8,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import TableWrapper from "@/components/TableWrapper";
+import TableWrapper from "@/components/ui/TableWrapper";
 
 const timeTableColumns = [
   { key: "sno.", label: "S.No." },

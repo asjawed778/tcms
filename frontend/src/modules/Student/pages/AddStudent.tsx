@@ -7,16 +7,16 @@ import {
   parentDetailsSchema,
   personalDetailsSchema,
   previousSchoolSchema,
-} from "../../../../yup";
+} from "../../../validation/yup";
 import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import ParentDetails from "./ParentDetails";
-import PreviousSchoolDetails from "./PreviousSchoolDetails";
-import DocumentDetails from "./DocumentDetails";
-import PersonalDetails from "./BasicDetails";
-import AddressDetails from "./AddressDetails";
+import ParentDetails from "../components/AddStudent/ParentDetails";
+import PreviousSchoolDetails from "../components/AddStudent/PreviousSchoolDetails";
+import DocumentDetails from "../components/AddStudent/DocumentDetails";
+import PersonalDetails from "../components/AddStudent/BasicDetails";
+import AddressDetails from "../components/AddStudent/AddressDetails";
 import { cleanData } from "@/utils/helper";
 import {
   useAddStudentMutation,
@@ -25,7 +25,7 @@ import {
   useUpdateDocumentsMutation,
   useUpdateParentDetailsMutation,
 } from "@/services/studentApi";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 
 const steps = [
   {

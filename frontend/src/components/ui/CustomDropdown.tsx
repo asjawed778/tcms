@@ -111,7 +111,7 @@ const StyledLabel = styled("label")(
   })
 );
 
-const CustomDropdownField = <T extends FieldValues>({
+const CustomDropdown = <T extends FieldValues>({
   label,
   name,
   placeholder = "Select",
@@ -250,4 +250,4 @@ const CustomDropdownField = <T extends FieldValues>({
   );
 };
 
-export default CustomDropdownField;
+export default CustomDropdown;

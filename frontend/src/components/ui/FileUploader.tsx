@@ -12,7 +12,7 @@ import {
 import PictureAsPdfIcon from "@mui/icons-material/PictureAsPdf";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Controller, useFormContext, Control } from "react-hook-form";
-import { useUploadFileMutation } from "@/services/common.Api";
+import { useUploadFileMutation } from "@/services/commonApi";
 import { useAppTheme } from "@/context/ThemeContext";
 
 type FileUploaderProps = {

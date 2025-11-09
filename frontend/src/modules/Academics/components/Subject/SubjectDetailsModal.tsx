@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Divider } from "@mui/material";
 import { SubjectResponse } from "../../../../../type";
-import ModalWrapper from "@/components/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 
 interface SubjectDetailsModalProps {
   open: boolean;

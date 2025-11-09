@@ -1,12 +1,12 @@
-import CustomInputField from "@/components/CustomInputField";
+import CustomInputField from "@/components/ui/CustomInputField";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
-import CustomRadioGroup from "@/components/CustomRadioGroup";
+import CustomRadioGroup from "@/components/ui/CustomRadioGroup";
 import { Gender } from "@/utils/enum";
-import ImageUploader from "@/components/ImageUploader";
+import ImageUploader from "@/components/ui/ImageUploader";
 import { useGetAllRolesQuery } from "@/services/userApi";
 import { Role } from "../../../../../type";
-import CustomDropdownField from "@/components/CustomDropdownField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
 
 const BasicDetails: React.FC = () => {
   const { data: roleData } = useGetAllRolesQuery({ page: 1, limit: 20 });

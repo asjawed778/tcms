@@ -1,6 +1,6 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomInputField from "@/components/CustomInputField";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomInputField from "@/components/ui/CustomInputField";
 import { useAppTheme } from "@/context/ThemeContext";
 import { AddCircleOutline, Close } from "@mui/icons-material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";

@@ -1,4 +1,4 @@
-import SideSheetWrapper from "@/components/SideDrawerWrapper";
+import SideSheetWrapper from "@/components/ui/SideDrawerWrapper";
 import { Avatar, Box, Divider, Grid, Typography } from "@mui/material";
 import React from "react";
 

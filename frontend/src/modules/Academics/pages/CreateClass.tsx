@@ -6,13 +6,13 @@ import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { cleanData } from "@/utils/helper";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import BasicDetails from "../components/CreateClass/BasicDetails";
 import {
   basicDetailsSchema,
   bulkSubjectSchema,
   feeStructureSchema,
-} from "../../../../yup";
+} from "../../../validation/yup";
 import {
   useAddBulkSectionMutation,
   useAddBulkSubjectMutation,

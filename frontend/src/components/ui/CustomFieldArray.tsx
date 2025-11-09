@@ -9,7 +9,7 @@ import {
   Divider,
 } from "@mui/material";
 import { AddCircleOutline, Delete } from "@mui/icons-material";
-import CustomInputField from "./CustomInputField";
+import CustomInputField from "./ui/CustomInputField";
 
 export interface FieldConfig {
   name: string;

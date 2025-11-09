@@ -1,17 +1,17 @@
 import { useEffect, useState } from "react";
 import { useForm, SubmitHandler, Resolver } from "react-hook-form";
 import { Box, Stack } from "@mui/material";
-import ModalWrapper from "@/components/ModalWrapper";
-import CustomInputField from "@/components/CustomInputField";
+import ModalWrapper from "@/components/ui/ModalWrapper";
+import CustomInputField from "@/components/ui/CustomInputField";
 import toast from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
-import CustomButton from "@/components/CustomButton";
-import AssignPermission from "./AssignPermission";
+import CustomButton from "@/components/ui/CustomButton";
+import AssignPermission from "./AssignPermissionModal";
 import {
   useCreateRoleMutation,
   useUpdateRolePermissionsMutation,
 } from "@/services/userApi";
-import { createRoleSchema } from "../../../../yup";
+import { createRoleSchema } from "@/validation/yup";
 
 interface Role {
   _id?: string;

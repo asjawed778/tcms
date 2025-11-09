@@ -1,6 +1,6 @@
 import * as yup from "yup";
 import * as Enum from "@/utils/enum";
-import { LoginFormValues } from "./type";
+import { LoginFormValues } from "../../type";
 import { validateGroupFields } from "@/utils/helper";
 
 // Login Schema.................................................

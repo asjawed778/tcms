@@ -1,10 +1,10 @@
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import { useEffect } from "react";
 import { Box, Card, IconButton, Typography, Grid } from "@mui/material";
-import CustomInputField from "@/components/CustomInputField";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomToggleField from "@/components/CustomToggleField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomToggleField from "@/components/ui/CustomToggleButton";
+import CustomButton from "@/components/ui/CustomButton";
 import { Add, Delete } from "@mui/icons-material";
 import { FeeApplicableType, FeeFrequency } from "@/utils/enum";
 

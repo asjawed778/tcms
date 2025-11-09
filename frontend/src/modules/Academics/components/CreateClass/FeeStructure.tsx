@@ -8,9 +8,9 @@ import {
   IconButton,
   Typography,
 } from "@mui/material";
-import CustomInputField from "@/components/CustomInputField";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomButton from "@/components/ui/CustomButton";
 import { Add, Delete } from "@mui/icons-material";
 import { FeeFrequency } from "@/utils/enum";
 import FeeDetails from "./FeeDetails";

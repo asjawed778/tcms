@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { Box, IconButton, Typography } from "@mui/material";
-import ModalWrapper from "@/components/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 import { Image, ArrowBackIosNew, Download, PictureAsPdf } from "@mui/icons-material";
 
 interface FileType {

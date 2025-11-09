@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography } from "@mui/material";
-import ModalWrapper from "@/components/ModalWrapper";
-import CustomButton from "@/components/CustomButton";
+import ModalWrapper from "@/components/ui/ModalWrapper";
+import CustomButton from "@/components/ui/CustomButton";
 
 interface FailedRecord {
   row: number;

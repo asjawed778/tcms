@@ -1,6 +1,6 @@
 import { Box, Paper, Typography } from "@mui/material";
 import { DragIndicator } from "@mui/icons-material";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import { AddCircleOutline } from "@mui/icons-material";
 import { SubjectAccordion } from "./SubjectAccordion";
 import { useFormContext } from "react-hook-form";

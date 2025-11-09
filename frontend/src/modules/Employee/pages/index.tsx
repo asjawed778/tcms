@@ -1,10 +1,10 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
-import TableWrapper from "@/components/TableWrapper";
-import DocumentPreviewer from "@/components/common/DocumentPreviewer";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomSearchField from "@/components/ui/CustomSearchField";
+import TableWrapper from "@/components/ui/TableWrapper";
+import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllEmployeeQuery } from "@/services/employee.Api";
+import { useGetAllEmployeeQuery } from "@/services/employeeApi";
 import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
 import { PersonAdd } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
@@ -12,7 +12,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { getEmployeeColumns } from "../employeeUtils";
 import EmployeeDetails from "../components/EmployeeDetails";
-import SideDrawerWrapper from "@/components/SideDrawerWrapper";
+import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
 
 const actionsList = [
   {

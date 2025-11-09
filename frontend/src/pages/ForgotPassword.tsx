@@ -12,10 +12,10 @@ import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-import CustomInputField from "@/components/CustomInputField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomButton from "@/components/ui/CustomButton";
 import { ForgotPasswordFormValues } from "../../type";
-import { forgotPasswordSchema } from "../../yup";
+import { forgotPasswordSchema } from "../validation/yup";
 import { useForgotPasswordMutation } from "@/services/authApi";
 import { MailOutline } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";

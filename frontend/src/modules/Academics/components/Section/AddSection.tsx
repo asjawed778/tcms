@@ -4,10 +4,10 @@ import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import toast from "react-hot-toast";
 
-import CustomModalWrapper from "@/components/ModalWrapper";
-import CustomInputField from "@/components/CustomInputField";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomButton from "@/components/CustomButton";
+import CustomModalWrapper from "@/components/ui/ModalWrapper";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomButton from "@/components/ui/CustomButton";
 
 import {
   useUpdateSectionMutation,
@@ -16,9 +16,9 @@ import {
 } from "@/services/academics.Api";
 import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
-import { addSectionSchema } from "../../../../../yup";
+import { addSectionSchema } from "../../../../validation/yup";
 import { SectionRequest, SectionResponse } from "../../../../../type";
-import { useGetAllEmployeeQuery } from "@/services/employee.Api";
+import { useGetAllEmployeeQuery } from "@/services/employeeApi";
 
 interface AddSectionProps {
   open: boolean;

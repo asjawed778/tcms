@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useUnAssignFacultyMutation } from "@/services/employee.Api";
+import { useUnAssignFacultyMutation } from "@/services/employeeApi";
 import { DropdownOptions } from "../../type";
 
 interface Time {

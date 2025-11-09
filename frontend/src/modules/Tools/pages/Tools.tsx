@@ -1,7 +1,7 @@
 import GenericTabs from "@/components/GenericTabs";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName, ToolsTabs } from "@/utils/enum";
-import RolesAndPermission from "./RolesAndPermissions";
+import RolesAndPermission from "../components/RolesAndPermissionTab";
 import { Badge } from "@mui/material";
 
 function Tools() {

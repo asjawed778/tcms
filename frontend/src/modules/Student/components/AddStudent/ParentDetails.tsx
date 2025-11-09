@@ -1,4 +1,4 @@
-import CustomInputField from "@/components/CustomInputField";
+import CustomInputField from "@/components/ui/CustomInputField";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
 

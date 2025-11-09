@@ -18,7 +18,7 @@ import {
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import { useAppTheme } from "@/context/ThemeContext";
 import { Students } from "../../../../type";
-import ViewDetails from "../ViewDetails";
+import ViewDetails from "./ViewDetails";
 
 interface Row {
   key?: string | number;
@@ -202,12 +202,12 @@ const StudentTable: React.FC<CustomTableProps> = ({
                     <TableCell>
                       <Box display="flex" alignItems="center" gap={1.5}>
                         <Avatar
-                          alt={student.student.name}
-                          src={student.student.image} // Pass image URL here
+                          alt={student.student.firstName + " " + student.student.lastName}
+                          src={student.student.image} 
                           sx={{ width: 32, height: 32 }}
                         />
                         <Typography variant="body2">
-                          {student.student.name}
+                          {student.student.firstName} {student.student.lastName}
                         </Typography>
                       </Box>
                     </TableCell>

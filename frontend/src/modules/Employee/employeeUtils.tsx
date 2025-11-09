@@ -1,5 +1,5 @@
 import { Box, Avatar } from "@mui/material";
-import GenderChip from "@/components/common/GenderChip";
+import GenderChip from "@/components/ui/GenderChip";
 import { formatDate } from "@/utils/helper";
 
 export const getEmployeeColumns = (

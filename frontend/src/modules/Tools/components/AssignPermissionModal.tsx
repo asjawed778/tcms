@@ -10,7 +10,7 @@ import {
   useTheme,
   FormControlLabel,
 } from "@mui/material";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import { toast } from "react-hot-toast";
 import { useUpdateRolePermissionsMutation } from "@/services/userApi";
 

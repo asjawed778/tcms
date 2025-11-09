@@ -1,12 +1,12 @@
 import React, { useState } from "react";
-import ModalWrapper from "@/components/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 import { Stack, Typography, Box } from "@mui/material";
 import * as XLSX from "xlsx";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import CustomButton from "@/components/CustomButton";
+import CustomButton from "@/components/ui/CustomButton";
 import toast from "react-hot-toast";
 import { CheckCircleOutline } from "@mui/icons-material";
 import { useAppSelector } from "@/store/store";

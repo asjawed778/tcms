@@ -1,7 +1,7 @@
-import CustomModalWrapper from "@/components/ModalWrapper";
-import CustomInputField from "@/components/CustomInputField";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomButton from "@/components/CustomButton";
+import CustomModalWrapper from "@/components/ui/ModalWrapper";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomButton from "@/components/ui/CustomButton";
 import * as Enum from "@/utils/enum";
 import { cleanData } from "@/utils/helper";
 import {
@@ -10,7 +10,7 @@ import {
 } from "@/services/academics.Api";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { subjectSchema } from "../../../../../yup";
+import { subjectSchema } from "../../../../validation/yup";
 import { SubjectRequest, SubjectResponse } from "../../../../../type";
 import toast from "react-hot-toast";
 import { Box, Grid } from "@mui/material";

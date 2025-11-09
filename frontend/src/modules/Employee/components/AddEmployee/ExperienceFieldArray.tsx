@@ -2,8 +2,8 @@ import { useEffect, useRef } from "react";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import { Add, Delete } from "@mui/icons-material";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import CustomInputField from "@/components/CustomInputField";
-import CustomButton from "@/components/CustomButton";
+import CustomInputField from "@/components/ui/CustomInputField";
+import CustomButton from "@/components/ui/CustomButton";
 
 const ExperienceFieldArray = () => {
   const { control } = useFormContext();
