@@ -59,7 +59,7 @@ const ProfessionalDetails: React.FC = () => {
         </Grid>
         <ExperienceFieldArray />
       </Grid>
-      <Grid container spacing={2} width="100%">
+      <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
           <Typography variant="h6" sx={{ mb: 1 }}>
             Expertise Subject
@@ -84,7 +84,8 @@ const ProfessionalDetails: React.FC = () => {
               <Box
                 sx={{
                   display: "flex",
-                  alignItems: "flex-start",
+                  alignItems: "flex-end",
+                  justifyContent: "flex-end",
                   height: "100%",
                   mt: 4,
                 }}

@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
 
-// reducers
+// slieces
 import authSlice from "./reducers/authSlice";
 import sessionSlice from "./reducers/sessionSlice"
 import sidebarSlice from "./reducers/sidebarSlice";

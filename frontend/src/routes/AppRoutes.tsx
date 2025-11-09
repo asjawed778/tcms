@@ -21,7 +21,7 @@ const Employee = lazy(() => import("@/modules/Employee/pages"));
 const AddEmployee = lazy(() => import("@/modules/Employee/pages/AddEmployee"));
 const Student = lazy(() => import("@/modules/Student/pages/Student"));
 const AddStudent = lazy(() => import("@/modules/Student/pages/AddStudent"));
-const Classes = lazy(() => import("@/modules/Academics/pages/Academics"));
+const Academics = lazy(() => import("@/modules/Academics/pages/Academics"));
 const CreateClass = lazy(() => import("@/modules/Academics/pages/CreateClass"));
 const CreateTimeTable = lazy(() => import("@/modules/Academics/pages/CreateTimeTable"));
 const Tools = lazy(() => import("@/modules/Tools/pages/Tools"));
@@ -155,7 +155,7 @@ const AppRoutes = () => {
                     },
                   ]}
                 >
-                  <Classes />
+                  <Academics />
                 </RoleAuthRoute>
               </ErrorBoundary>
             }
