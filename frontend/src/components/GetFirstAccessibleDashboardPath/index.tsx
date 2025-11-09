@@ -37,5 +37,5 @@ export const getFirstAccessibleDashboardPath = (): string => {
     }
   }
 
-  return "/auth";
+  return "/login";
 };

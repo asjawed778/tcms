@@ -21,7 +21,7 @@ const RoleAuthRoute: React.FC<RoleAuthRouteProps> = ({
   const { accessToken } = useAppSelector((state: RootState) => state.auth);
   const can = useCan();
 
-  if (!accessToken) return <Navigate to="/auth" replace />;
+  if (!accessToken) return <Navigate to="/login" replace />;
 
   for (const perm of permissions) {
     const { module, subModule = null, operation } = perm;

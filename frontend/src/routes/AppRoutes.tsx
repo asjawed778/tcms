@@ -7,30 +7,41 @@ import DashboardLayout from "@/layouts/DashboardLayout";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import { lazy, Suspense } from "react";
 import { Navigate, Route, Routes, useNavigate } from "react-router-dom";
-const Auth = lazy(() => import("@/pages/Auth"));
-const ForgotPassword = lazy(() => import("@/pages/Auth/ForgotPassword"));
+const Login = lazy(() => import("@/pages/Login"));
+const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
+const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const PageNotFound = lazy(() => import("@/pages/PageNotFound"));
-const Employee = lazy(() => import("@/pages/Employee"));
-const AddEmployee = lazy(() => import("@/pages/Employee/AddEmployee"));
-const Student = lazy(() => import("@/pages/Student"));
-const AddStudent = lazy(() => import("@/pages/Student/AddStudent"));
-const Classes = lazy(() => import("@/pages/Academics"));
-const CreateClass = lazy(() => import("@/pages/Academics/Class/CreateClass"));
-const CreateTimeTable = lazy(() => import("@/pages/Academics/TimeTable/CreateTimeTable"));
-const Tools = lazy(() => import("@/pages/Tools"));
+const Employee = lazy(() => import("@/modules/Employee/pages"));
+const AddEmployee = lazy(() => import("@/modules/Employee/pages/AddEmployee"));
+const Student = lazy(() => import("@/modules/Student"));
+const AddStudent = lazy(() => import("@/modules/Student/AddStudent"));
+const Classes = lazy(() => import("@/modules/Academics/pages/Academics"));
+const CreateClass = lazy(() => import("@/modules/Academics/pages/CreateClass"));
+const CreateTimeTable = lazy(() => import("@/modules/Academics/pages/CreateTimeTable"));
+const Tools = lazy(() => import("@/modules/Tools"));
 
 const AppRoutes = () => {
   const navigate = useNavigate();
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes>
-        <Route path="/" element={<Navigate to="/auth" replace />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route
-          path="/auth"
+          path="/login"
           element={
             <ErrorBoundary>
               <PublicRoute>
-                <Auth />
+                <Login />
+              </PublicRoute>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <ErrorBoundary>
+              <PublicRoute>
+                <ForgotPassword />
               </PublicRoute>
             </ErrorBoundary>
           }
@@ -39,15 +50,7 @@ const AppRoutes = () => {
           path="/reset-password/:token"
           element={
             <ErrorBoundary>
-              <ForgotPassword onBackToLogin={() => navigate("/auth/login")} />
-            </ErrorBoundary>
-          }
-        />
-        <Route
-          path="forgotPassword"
-          element={
-            <ErrorBoundary>
-              <ForgotPassword onBackToLogin={() => navigate("/auth/login")} />
+              <ResetPassword />
             </ErrorBoundary>
           }
         />
