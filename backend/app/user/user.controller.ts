@@ -33,7 +33,8 @@ export const adminLogin = asyncHandler(async (req: Request, res: Response) => {
 
   const payload = {
     _id: req.user._id,
-    name: req.user.name,
+    firstName: req.user.firstName,
+    lastName: req.user.lastName,
     email: req.user.email,
     role: {
       _id: req.user.role._id,
@@ -106,7 +107,8 @@ export const updateAccessToken = asyncHandler(async (req: Request, res: Response
   }
   const newPayload: UserDto.Payload = {
     _id: user._id,
-    name: user.name,
+    firstName: user.firstName,
+    lastName: user.lastName,
     email: user.email,
     role: user.role,
   };

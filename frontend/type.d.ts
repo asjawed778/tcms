@@ -51,7 +51,8 @@ export interface Role extends BaseSchema {
   permissions: Permission[];
 }
 export interface User extends BaseSchema {
-  name: string;
+  firstName: string;
+  lastName?: string;
   email: string;
   profilePic?: string;
   role: Role;
@@ -75,7 +76,7 @@ interface SignupRequest {
   email: string;
   password: string;
 }
-interface SignupResponse extends User {}
+interface SignupResponse extends User { }
 
 //  General data..................................................
 interface DropdownOptions {
@@ -163,7 +164,8 @@ interface Document {
 
 interface FacultyFormData {
   _id?: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
   fatherName: string;
   motherName: string;
   email: string;
@@ -215,7 +217,7 @@ interface Subjects {
   writer: string;
   ISBN: string;
 }
-interface Students {}
+interface Students { }
 interface ClassTeacher {
   name: string;
   designation: string;
@@ -368,7 +370,8 @@ interface AdmissionClass {
 interface StudentFormData {
   _id?: string;
   enrollmentNumber?: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
   dob: string;
   gender: string;
   gender: string;
@@ -427,7 +430,7 @@ interface AddRemarkRequest {
   actionTaken?: Enum.ActionTaken;
   supportingDocuments?: Document[];
 }
-export interface RemarkResponse extends AddRemarkRequest, BaseSchema {}
+export interface RemarkResponse extends AddRemarkRequest, BaseSchema { }
 // Subject...................................................................
 export interface SubjectRequest {
   name: string;
@@ -469,14 +472,15 @@ export interface SectionResponseList {
 
 // Employee.................................................................
 export interface EmployeeBasicDetailsRequest {
-  name: string;
+  firstName: string;
+  lastName?: string;
   fatherName?: string;
   motherName?: string;
   phoneNumber: string;
   email: string;
   aadhaarNumber?: string;
   role?: string;
-  dob: string; 
+  dob: string;
   gender: Enum.Gender;
   photo?: string | File | null;
 }
@@ -484,9 +488,9 @@ interface EmployeeAddress {
   addressLine1: string;
   addressLine2?: string;
   city?: string;
-  state: string;
+  state?: string;
   country: string;
-  pinCode: number;
+  pincode: number;
 }
 export interface Experience {
   organisationName: string;
@@ -498,7 +502,7 @@ export interface ExpertiseSubject {
 }
 export interface ProfessionalDetailsRequest {
   designation: string;
-  dateOfJoining: string; 
+  dateOfJoining: string;
   qualification?: string;
   certificate?: string;
   experience: Experience[];
@@ -506,7 +510,7 @@ export interface ProfessionalDetailsRequest {
 }
 export interface SalaryStructureRequest {
   basicPay: number;
-  effectiveFrom: string; 
+  effectiveFrom: string;
   effectiveTo?: string;
   hra?: number;
   allowances?: number;
@@ -519,9 +523,20 @@ export interface EmployeeDocuments {
 export interface AddEmployeeRequest extends EmployeeBasicDetailsRequest, ProfessionalDetailsRequest, SalaryStructureRequest, EmployeeDocuments {
   address: EmployeeAddress;
 };
-export interface EmployeeResponse extends BaseSchema, AddEmployeeRequest {};
+export interface EmployeeResponse extends BaseSchema, AddEmployeeRequest { };
 export interface EmployeeResponseList {
   employees: EmployeeResponse[];
   showing: number;
   totalDocs: number;
+}
+
+export interface EmployeeDetailsResponse extends EmployeeResponse {
+  employeeId: string;
+  userId: string;
+  roleId: string;
+  roleName: string;
+
+  experience: ExperienceResponse[];
+  documents: EmployeeDocumentResponse[];
+  address: Addre;
 }

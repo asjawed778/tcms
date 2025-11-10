@@ -14,7 +14,7 @@ import { Session } from '../../../type';
 import EditSession from '@/components/Sessions/UpdateSession';
 import CreateSession from '@/components/Sessions/CreateSession';
 import { useSession } from '@/hooks/useSession';
-import CustomButton from '../CustomButton';
+import CustomButton from '../ui/CustomButton';
 import { Replay } from '@mui/icons-material';
 import { useAppTheme } from '@/context/ThemeContext';
 

@@ -176,7 +176,8 @@ export const syncRolesAndPermissions = async () => {
 
 export const initAdmin = async () => {
     const email = process.env.NODE_ENV === "Production" ? "girish@girishganeriwala.com" : "akrtimes@gmail.com";
-
+    const firstName = process.env.NODE_ENV === "Production" ? "Girish" : "Amit";
+    const lastName = process.env.NODE_ENV === "Production" ? "Ganeriwala" : "Ranjan";
     const existingUser = await UserService.getUserByEmail(email);
     if (existingUser) {
         console.log("✅ Super Admin already exists:", existingUser.email);
@@ -189,7 +190,8 @@ export const initAdmin = async () => {
         return;
     }
     const superAdmin = await UserService.createUser({
-        name: "Super Admin",
+        firstName,
+        lastName,
         email,
         password: "Tcms@12345",
         role: new mongoose.Types.ObjectId(role._id),

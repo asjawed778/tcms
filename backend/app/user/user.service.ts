@@ -144,7 +144,7 @@ export const resetPassword = async (userId: string, token: string, newPassword: 
     return newUser;
 };
 
-export const createUserByAdmin = async (data: { name: string, email: string, role?: string }): Promise<Omit<IUser, "password">> => {
+export const createUserByAdmin = async (data: { firstName: string, lastName?: string, email: string, role?: string }): Promise<Omit<IUser, "password">> => {
     const isUserExists = await UserSchema.findOne({ email: data.email });
     if (isUserExists) {
         throw createHttpError(409, "User already exists");
@@ -175,7 +175,7 @@ export const createUserByAdmin = async (data: { name: string, email: string, rol
 
 export const updateUserByAdmin = async (
     userId: string,
-    data: { name?: string; email?: string; role?: string }
+    data: { firstName?: string; lastName?: string; email?: string; role?: string }
 ): Promise<Omit<IUser, "password">> => {
 
     const user = await UserSchema.findById(userId);
@@ -206,7 +206,8 @@ export const updateUserByAdmin = async (
         }
     }
     const updateData: any = {
-        ...(data.name && { name: data.name }),
+        ...(data.firstName && { firstName: data.firstName }),
+        ...(data.lastName && { firstName: data.lastName }),
         ...(data.email && { email: data.email }),
         ...(data.role && { role: roleId }),
     };

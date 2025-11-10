@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import { type IUser } from "./user.dto";
 
-
 const userSchema = new mongoose.Schema<IUser>({
-  name: {
+  firstName: {
     type: String,
     required: true,
     trim: true,
+  },
+  lastName: {
+    type: String,
   },
   email: {
     type: String,

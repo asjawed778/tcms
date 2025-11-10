@@ -53,6 +53,7 @@ const employeeSchema = new mongoose.Schema<IEmployee>({
         required: false
     },
     experience: [{
+        _id: false,
         organisationName: {
             type: String,
             required: true,

@@ -214,8 +214,14 @@ export enum AcademicsTabs {
   SUBJECT = "Subject",
   TIME_TABLE = "timetable",
 }
+
 export enum ToolsTabs {
   ROLES_AND_PERMISSIONS = "roles-and-permissions",
+}
+
+export enum EmployeeDetailsTabs {
+  PERSONAL_INFORMATION = "personal-information",
+  PROFESSIONAL_DETAILS = "professional-details",
 }
 
 // roles permissions and modules enums

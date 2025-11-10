@@ -62,7 +62,8 @@ export interface IStudent extends BaseSchema {
     enrollmentNumber: string;
 
     // personal details
-    name: string;
+    firstName: string;
+    lastName?: string;
     dob: Date;
     gender: Gender;
     nationality?: string;

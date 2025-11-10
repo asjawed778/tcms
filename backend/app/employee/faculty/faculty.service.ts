@@ -13,14 +13,14 @@ export const getFreeFaculty = async (day: Enum.WeekDay, startTime: string, endTi
 
     const facultyEmployees = await employeeSchema.find()
         .populate<{
-            user: { _id: string; name: string; email: string } | null;
+            user: { _id: string; firstName: string; lastName?: string; email: string } | null;
         }>({
             path: "user",
             match: { role: facultyRole._id },
-            select: "_id name email"
+            select: "_id firstName lastName email"
         });
 
-    const filteredFaculty = facultyEmployees.filter(f => f.user && f.user.name);
+    const filteredFaculty = facultyEmployees.filter(f => f.user && f.user.firstName);
     const facultyIds = filteredFaculty.map(f => f._id);
 
     const timetables = await classTimetableSchema.find({
@@ -71,7 +71,7 @@ export const getFreeFaculty = async (day: Enum.WeekDay, startTime: string, endTi
             result.push({
                 employeeId: f.employeeId,
                 userId: f.user?._id,
-                name: f.user?.name,
+                name: f.user?.firstName + (f.user?.lastName ? ` ${f.user?.lastName}` : ""),
                 designation: f.designation ?? null,
                 expertise: f.expertise ?? [],
                 status: "Busy (Draft)"
@@ -81,7 +81,7 @@ export const getFreeFaculty = async (day: Enum.WeekDay, startTime: string, endTi
         result.push({
             employeeId: f.employeeId,
             userId: f.user?._id,
-            name: f.user?.name,
+            name: f.user?.firstName + (f.user?.lastName ? ` ${f.user?.lastName}` : ""),
             designation: f.designation ?? null,
             expertise: f.expertise ?? [],
             status: "Available"

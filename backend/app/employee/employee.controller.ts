@@ -17,7 +17,7 @@ export const createEmployee = asyncHandler(async (req: Request, res: Response) =
     if (user) {
         throw createHttpError(409, "Employee With this email Alredy Exit.");
     }
-    const userDoc = await UserService.createUserByAdmin({ name: data.name, email: data.email, role: data.role });
+    const userDoc = await UserService.createUserByAdmin({ firstName: data.firstName, lastName: data.lastName, email: data.email, role: data.role });
     if (!userDoc) {
         throw createHttpError(500, "Error in Creating User, Try again")
     }
@@ -45,9 +45,10 @@ export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res:
     if (!empDoc) {
         throw createHttpError(404, "Employee not found");
     }
-    if (data.email || data.name || data.role) {
+    if (data.email || data.firstName || data.lastName || data.role) {
         await UserService.updateUserByAdmin(empDoc.user, {
-            ...(data.name && { name: data.name }),
+            ...(data.firstName && { name: data.firstName }),
+            ...(data.lastName && { name: data.lastName }),
             ...(data.email && { email: data.email }),
             ...(data.role && { role: data.role }),
         });
@@ -68,8 +69,16 @@ export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res:
 export const upsertEmpAddress = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const { employeeId } = req.params;
-    const addressDoc = await EmployeeService.getEmployeeAddress(employeeId);
-    const address = await AddressService.saveAddress(data.address, addressDoc._id);
+    const empDoc = await EmployeeService.getEmployeeById(employeeId);
+    if (!empDoc) {
+        throw createHttpError(404, "Employee not found");
+    }
+    let address;
+    if (empDoc.address) {
+        address = await AddressService.saveAddress(data.address, empDoc._id);
+    } else {
+        address = await AddressService.saveAddress(data.address);
+    }
     const result = await EmployeeService.updateEmployee(employeeId, { address: new Types.ObjectId(address._id) })
     res.send(createResponse(result, "Employee Address Updated successfully"));
 });
@@ -108,7 +117,7 @@ export const upsertSalaryStructure = asyncHandler(async (req: Request, res: Resp
 export const upsertEmpDocuments = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
     const { employeeId } = req.params;
-    const result = await EmployeeService.updateEmployee(employeeId, { documents: data.documents })
+    const result = await EmployeeService.updateEmployee(employeeId, { documents: data.documents, status: Enum.EmployeeStatus.ACTIVE })
     res.send(createResponse(result, "Employee Documents Updated successfully"));
 });
 

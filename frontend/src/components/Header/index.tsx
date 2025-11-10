@@ -8,8 +8,8 @@ import {
   Avatar,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png";
-import { useAppSelector } from "../../store/store";
+import logo from "@/assets/images/logo.png";
+import { useAppSelector } from "@/store/store";
 import { useAppTheme } from "@/context/ThemeContext";
 import SessionDropdown from "../Sessions";
 // import ToggleThemeSwitch from "./ToggleThemeSwitch";

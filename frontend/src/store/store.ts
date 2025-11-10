@@ -1,23 +1,30 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import authReducer from "./reducers/authReducer";
-import { authApi } from "../services/authApi";
-import { userApi } from "../services/userApi"; 
-import sidebarReducer from "./reducers/sidebarReducer"; 
+
+// slieces
+import authSlice from "./reducers/authSlice";
+import sessionSlice from "./reducers/sessionSlice"
+import sidebarSlice from "./reducers/sidebarSlice";
+
+// apis
+import { authApi } from "@/services/authApi";
+import { userApi } from "@/services/userApi";
 import { sessionApi } from "@/services/sessionApi";
-import { facultyApi } from "@/services/employee.Api";
-import { commonApi } from "@/services/common.Api";
-import sessionReducer from "./reducers/sessionSlice"
+import { facultyApi } from "@/services/employeeApi";
+import { commonApi } from "@/services/commonApi";
 import { academicsApi } from "@/services/academics.Api";
 import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({
   reducer: {
-    sidebar: sidebarReducer,
-    auth: authReducer,
-    session: sessionReducer,
+    // slices
+    auth: authSlice,
+    sidebar: sidebarSlice,
+    session: sessionSlice,
+
+    // apis
     [authApi.reducerPath]: authApi.reducer,
-    [userApi.reducerPath]: userApi.reducer, 
+    [userApi.reducerPath]: userApi.reducer,
     [sessionApi.reducerPath]: sessionApi.reducer,
     [facultyApi.reducerPath]: facultyApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
@@ -26,9 +33,9 @@ export const store = configureStore({
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      authApi.middleware, 
-      userApi.middleware, 
-      sessionApi.middleware, 
+      authApi.middleware,
+      userApi.middleware,
+      sessionApi.middleware,
       facultyApi.middleware,
       commonApi.middleware,
       academicsApi.middleware,

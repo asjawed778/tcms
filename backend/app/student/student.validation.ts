@@ -3,8 +3,12 @@ import * as Enum from "../common/utils/enum";
 
 // Personal Details
 export const addStudentStep1 = [
-    body("name")
+    body("firstName")
         .notEmpty().withMessage("Student name is required")
+        .isString().withMessage("Student name must be a string"),
+
+    body("lastName")
+        .optional()
         .isString().withMessage("Student name must be a string"),
 
     body("dob")
