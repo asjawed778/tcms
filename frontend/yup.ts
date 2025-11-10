@@ -192,7 +192,7 @@ export const documentUploadSchema = yup.object({
     .min(1, "At least one document is required"),
 });
 
-// Academics Schema.........................................................
+// Academics Schema....................................................
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
 

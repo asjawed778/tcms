@@ -71,7 +71,6 @@ const AddStudent = () => {
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
     resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
-    mode: "onChange",
   });
   useEffect(() => {
     if (editStudentId) {

@@ -18,13 +18,7 @@ import {
   ViewModule,
   Visibility,
 } from "@mui/icons-material";
-import {
-  Box,
-  Grid,
-  IconButton,
-  Tooltip,
-  Typography,
-} from "@mui/material";
+import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import AddSubject from "./AddSubject";
 import DialogBoxWrapper from "@/components/DialogBoxWrapper";
@@ -70,14 +64,18 @@ const Subject = () => {
     isFetching: subjectFetching,
     isError: subjectError,
     refetch,
-  } = useGetAllSubjectQuery({
-    sessionId: selectedSession?._id as string,
-    page,
-    limit,
-    search: searchQuery,
-    classId,
-  });
+  } = useGetAllSubjectQuery(
+    {
+      sessionId: selectedSession?._id as string,
+      page,
+      limit,
+      search: searchQuery,
+      classId,
+    },
+    { skip: !selectedSession?._id }
+  );
   const [deleteSubject] = useDeleteSubjectMutation();
+// console.log("selectedSession:", selectedSession);
 
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({
@@ -175,6 +173,23 @@ const Subject = () => {
   const handleChange = (val: any) => {
     setClassId(val);
   };
+  if (!selectedSession || !selectedSession._id) {
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "80vh",
+      }}
+    >
+      <Typography variant="body1" color="text.secondary">
+        No academic session found. Please create a session first.
+      </Typography>
+    </Box>
+  );
+}
+
   return (
     <>
       <Box sx={{ m: 2 }}>
@@ -246,8 +261,8 @@ const Subject = () => {
               height: "80vh",
             }}
           >
-            <Typography variant="body1">
-              Failed to load subjects. Please try again.
+            <Typography variant="body1" color="error.main">
+              Something went wrong. Please try again.
             </Typography>
           </Box>
         ) : subjectData?.data?.subjects?.length === 0 ? (
@@ -264,18 +279,18 @@ const Subject = () => {
         ) : tableView ? (
           <Box mt={2}>
             <TableWrapper
-            columns={subjectColumns}
-            rows={subjectData?.data?.subjects || []}
-            totalCount={subjectData?.data?.totalDoc || 0}
-            page={page}
-            rowsPerPage={limit}
-            onPageChange={handlePageChange}
-            onRowsPerPageChange={handleRowsPerPageChange}
-            onActionClick={handleActionClick}
-            actions={actionsList}
-            isFetching={subjectFetching}
-            isError={subjectError}
-          />
+              columns={subjectColumns}
+              rows={subjectData?.data?.subjects || []}
+              totalCount={subjectData?.data?.totalDoc || 0}
+              page={page}
+              rowsPerPage={limit}
+              onPageChange={handlePageChange}
+              onRowsPerPageChange={handleRowsPerPageChange}
+              onActionClick={handleActionClick}
+              actions={actionsList}
+              isFetching={subjectFetching}
+              isError={subjectError}
+            />
           </Box>
         ) : (
           <Grid container spacing={2} mt={2}>

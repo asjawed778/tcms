@@ -71,6 +71,7 @@ const StyledTextField = styled(TextField)(({ theme }) => {
           opacity: 1,
         },
       },
+
       "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
         {
           WebkitAppearance: "textfield",
@@ -125,6 +126,10 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   const isDate = type === "date";
   const isNumber = type === "number";
 
+  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    (e.target as HTMLInputElement).blur();
+  };
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
@@ -190,6 +195,9 @@ function CustomInputField<T extends FieldValues = FieldValues>({
         onChange={(e: any) =>
           isNumber ? handleNumberChange(e, field.onChange) : field.onChange(e)
         }
+        onWheel={(e) => {
+          if (type === "number") e.currentTarget.blur();
+        }}
         InputProps={{
           startAdornment: startIcon && (
             <InputAdornment position="start">{startIcon}</InputAdornment>
@@ -212,7 +220,14 @@ function CustomInputField<T extends FieldValues = FieldValues>({
           shrink: isDate ? true : undefined,
         }}
         inputProps={{
-          ...(type === "number" ? { min: minValue, max: maxValue } : {}),
+          ...(type === "number"
+            ? {
+                min: minValue,
+                max: maxValue,
+                onWheel: (e: React.WheelEvent<HTMLInputElement>) =>
+                  e.currentTarget.blur(),
+              }
+            : {}),
           step: "1",
           readOnly,
           max:
