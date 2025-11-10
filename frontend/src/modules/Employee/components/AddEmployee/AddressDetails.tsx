@@ -92,6 +92,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.country"
           label="Country"
+          placeholder="-- Select Country --"
           options={countryList}
         />
       </Grid>
@@ -99,7 +100,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.state"
           label="State"
-          placeholder="Select State"
+          placeholder="-- Select State --"
           control={control}
           options={stateList}
           disabled={!selectedCountry}
@@ -109,7 +110,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.city"
           label="City"
-          placeholder="Select City"
+          placeholder="-- Select City --"
           control={control}
           options={cityList}
           disabled={!selectedState}

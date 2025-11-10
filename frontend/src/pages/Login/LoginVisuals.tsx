@@ -3,9 +3,9 @@ import { Box, IconButton, Typography } from '@mui/material';
 import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import ArrowForwardIosRoundedIcon from '@mui/icons-material/ArrowForwardIosRounded';
 
-import image1 from '../../assets/imgs/slider/image1.png';
-import image2 from '../../assets/imgs/slider/image2.png';
-import image3 from '../../assets/imgs/slider/image3.png';
+import image1 from '@/assets/images/image1.png';
+import image2 from '../../assets/images/image2.png';
+import image3 from '../../assets/images/image3.png';
 
 const LoginVisuals = () => {
   const [currentIndex, setCurrentIndex] = useState(0);

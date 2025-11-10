@@ -105,11 +105,18 @@ const AddEmployee = () => {
         payload: addressPayload,
       }).unwrap();
     },
-    async (data: any) =>
-      updateProfessionalDetails({
+    async (data: any) => {
+      const payload = cleanData(data);
+      if (payload.expertise && Array.isArray(payload.expertise)) {
+        payload.expertise = payload.expertise
+          .map((item: any) => item.subject)
+          .filter(Boolean);
+      }
+      return await updateProfessionalDetails({
         employeeId: employeeId!,
-        payload: cleanData(data),
-      }).unwrap(),
+        payload,
+      }).unwrap();
+    },
     async (data: any) =>
       updateSalaryStructure({
         employeeId: employeeId!,

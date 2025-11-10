@@ -51,9 +51,9 @@ const ProfessionalDetails: React.FC = () => {
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
           <CustomInputField
-            name="certificate"
-            label="Certificate"
-            placeholder="Enter Certificate Details if any"
+            name="certification"
+            label="Certification"
+            placeholder="Enter Certification Details if any"
             required={false}
           />
         </Grid>
@@ -74,7 +74,7 @@ const ProfessionalDetails: React.FC = () => {
           >
             <Grid size={{ xs: 11 }}>
               <CustomInputField
-                name={`expertiseSubjects.${index}.subject`}
+                name={`expertise.${index}.subject`}
                 label={`Subject ${index + 1}`}
                 placeholder="Enter Expertise Subject"
                 required={false}

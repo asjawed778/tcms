@@ -59,7 +59,7 @@ const SalaryStructure = () => {
             required={false}
           />
         </Grid>
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid size={{ xs: 12 }}>
           <CustomInputField
             name="remarks"
             label="Remarks"

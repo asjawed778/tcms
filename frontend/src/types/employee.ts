@@ -25,9 +25,9 @@ export interface ProfessionalDetailsRequest {
     designation: string;
     dateOfJoining: string;
     qualification?: string;
-    certificate?: string;
+    certification?: string;
     experience: Experience[];
-    expertiseSubjects: string[];
+    expertise: string[];
 };
 
 export interface SalaryStructureRequest {
@@ -40,17 +40,17 @@ export interface SalaryStructureRequest {
     remarks?: string;
 };
 
-export interface EmployeeDetailsResponse extends CommonTypes.BaseSchema, EmployeeBasicDetailsRequest {
+export interface EmployeeDetailsResponse extends CommonTypes.BaseSchema, EmployeeBasicDetailsRequest, ProfessionalDetailsRequest {
     employeeId: string;
     userId: string;
     roleId: string;
     roleName: string;
     status: Enum.EmployeeStatus;
-    designation: string;
-    dateOfJoining: string;
-    qualification?: string;
-    expertise: string[];
+    // designation: string;
+    // dateOfJoining: string;
+    // qualification?: string;
+    // expertise: string[];
     documents: CommonTypes.Document[];
-    experience: Experience[];
+    // experience: Experience[];
     address: CommonTypes.AddressResponse;
 }
