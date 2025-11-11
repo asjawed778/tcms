@@ -1,11 +1,88 @@
 import * as Enum from "@/utils/enum";
 import { EasingModifier } from "framer-motion";
 
+// General Types........................................
+interface ApiResponse<T> {
+  data: T;
+  message: string;
+  success: boolean;
+}
+interface PaginationQueryParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  [key: string]: any;
+}
+interface BaseSchema {
+  _id: string;
+  createdAt?: string;
+  updatedAt?: string;
+  __v?: number;
+}
+interface ApiErrorResponse {
+  data: {
+    success: boolean;
+    error_code: number;
+    message: string;
+  };
+}
+
+// User...................................................................
+export interface Operation {
+  create: boolean;
+  read: boolean;
+  update: boolean;
+  delete: boolean;
+}
+
+export interface SubModule {
+  name: string;
+  operations: Operation;
+}
+
+export interface Permission {
+  name: string;
+  operations: Operation;
+  subModules: SubModule[];
+}
+export interface Role extends BaseSchema {
+  name: Enum.UserRole | string;
+  description?: string;
+  permissions: Permission[];
+}
+export interface User extends BaseSchema {
+  firstName: string;
+  lastName?: string;
+  email: string;
+  profilePic?: string;
+  role: Role;
+  isVerified?: boolean;
+  active?: boolean;
+  blocked?: boolean;
+  blockReason?: string;
+  provider?: ProviderType;
+}
+export interface LoginRequest {
+  email: string;
+  password: string;
+}
+interface LoginResponse {
+  user: User;
+  refreshToken: string;
+  accessToken: string;
+}
+interface SignupRequest {
+  name: string;
+  email: string;
+  password: string;
+}
+interface SignupResponse extends User { }
+
 //  General data..................................................
-interface DropdownOptions{
+interface DropdownOptions {
   label: string;
   value: string;
-};
+}
 
 interface ForgotPasswordFormValues {
   email: string;
@@ -58,11 +135,11 @@ interface AuthResponse {
   success: boolean;
 }
 
-interface ApiResponse {
-  data: Object;
-  message: string;
-  success: boolean;
-}
+// interface ApiResponse {
+//   data: Object;
+//   message: string;
+//   success: boolean;
+// }
 // Faculty....................
 interface Address {
   city: string;
@@ -87,7 +164,8 @@ interface Document {
 
 interface FacultyFormData {
   _id?: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
   fatherName: string;
   motherName: string;
   email: string;
@@ -138,14 +216,12 @@ interface Subjects {
   publication: string;
   writer: string;
   ISBN: string;
-};
-interface Students{
-
-};
-interface ClassTeacher{
+}
+interface Students { }
+interface ClassTeacher {
   name: string;
   designation: string;
-  status: Enum.FacultyStatus;
+  status: Enum.EmployeeStatus;
   employeedId: string;
   _id: string;
 }
@@ -181,7 +257,7 @@ interface Time {
 interface TimeSlot {
   start: Time;
   end: Time;
-};
+}
 
 interface Periods {
   periodNumber: number;
@@ -190,31 +266,31 @@ interface Periods {
   faculty: string;
   timeSlot: TimeSlot;
   room?: string;
-};
-interface WeeklyScheduleItem{
+}
+interface WeeklyScheduleItem {
   day: Enum.WeekDay;
   isHoliday?: boolean;
   holidayReason?: string;
   periods?: Periods[];
-};
+}
 interface TimeTableFormData {
   classId: string;
   sectionId: string;
   sessionId: string;
   weeklySchedule: WeeklyScheduleItem[];
-};
+}
 
 // TimeTable response.....................................
-interface TimeSlotResponse{
+interface TimeSlotResponse {
   durationMinutes: number;
   end: Time;
   start: Time;
-};
-interface FacultyRespose{
+}
+interface FacultyRespose {
   _id: string;
   name: string;
 }
-interface PeriodsResponse{
+interface PeriodsResponse {
   periodNumber: number;
   periodType: Enum.PeriodType;
   room: string;
@@ -222,30 +298,30 @@ interface PeriodsResponse{
   subject: Subjects;
   timeSlot: TimeSlotResponse;
 }
-interface weeklyScheduleResponse{
+interface weeklyScheduleResponse {
   day: string;
   isHoliday: boolean;
   periods: PeriodsResponse[];
-};
-interface SectionResponse{
+}
+interface SectionResponse {
   _id: string;
   name: string;
-};
-interface ClassResponse{
+}
+interface ClassResponse {
   _id: string;
   name: Enum.ClassName;
-};
-interface SessionResponse{
+}
+interface SessionResponse {
   _id: string;
   session: string;
-};
-interface TimeTableResponse{
+}
+interface TimeTableResponse {
   class: ClassResponse;
   section: SectionResponse;
   session: SessionResponse;
   weeklySchedule: weeklyScheduleResponse[];
 }
-interface TimeTableApiResponse{
+interface TimeTableApiResponse {
   data: TimeTableResponse[];
   message: string;
   success: boolean;
@@ -255,17 +331,17 @@ interface UnAssignFacultyFormData {
   day: string;
   startTime: Time;
   endTime: Time;
-};
+}
 interface UnAssingFaculty {
   _id: string;
   name: string;
   designation: string;
-};
+}
 interface UnAssingFacultyApiResponse {
   data: UnAssingFaculty | UnAssingFaculty[];
   message: string;
   success: boolean;
-};
+}
 
 // Student Admission Data..................................
 interface Parent {
@@ -294,7 +370,8 @@ interface AdmissionClass {
 interface StudentFormData {
   _id?: string;
   enrollmentNumber?: string;
-  name: string;
+  firstName: string;
+  lastName?: string;
   dob: string;
   gender: string;
   gender: string;
@@ -345,11 +422,121 @@ interface StudentApiResponse {
 }
 
 // Add Reamarks Data.........................................
-interface AddRemarkFormData {
+interface AddRemarkRequest {
   sessionId: string;
   studentId: string;
   remarkType: Enum.RemarkType;
   description: string;
   actionTaken?: Enum.ActionTaken;
   supportingDocuments?: Document[];
+}
+export interface RemarkResponse extends AddRemarkRequest, BaseSchema { }
+// Subject...................................................................
+export interface SubjectRequest {
+  name: string;
+  sessionId: string;
+  publication?: string;
+  writer?: string;
+  ISBN?: string;
+  subjectType: Enum.SubjectType;
+  subjectCategory: Enum.SubjectCategory;
+  syllabus?: string;
+}
+export interface SubjectResponse extends SubjectRequest, BaseSchema {
+  subjectId: string;
+}
+export interface SubjectResponseList {
+  subjects: SubjectResponse[];
+  currentPage: number;
+  totalPages: number;
+  totalDoc: number;
+}
+export interface SectionRequest {
+  name: string;
+  classId: string;
+  classTeacher?: string;
+  capacity?: number;
+  sessionId: string;
+}
+export interface SectionResponse extends SectionRequest, BaseSchema {
+  sectionId: string;
+  totalAdmissions: number;
+  class: {
+    id: string;
+    name: string;
+  };
+}
+export interface SectionResponseList {
+  sections: SectionResponse[];
+}
+
+// Employee.................................................................
+export interface EmployeeBasicDetailsRequest {
+  firstName: string;
+  lastName?: string;
+  fatherName?: string;
+  motherName?: string;
+  phoneNumber: string;
+  email: string;
+  aadhaarNumber?: string;
+  role?: string;
+  dob: string;
+  gender: Enum.Gender;
+  photo?: string | File | null;
+}
+interface EmployeeAddress {
+  addressLine1: string;
+  addressLine2?: string;
+  city?: string;
+  state?: string;
+  country: string;
+  pincode: number;
+}
+export interface Experience {
+  organisationName: string;
+  years: number;
+  designation: string;
+}
+export interface ExpertiseSubject {
+  subject: string;
+}
+export interface ProfessionalDetailsRequest {
+  designation: string;
+  dateOfJoining: string;
+  qualification?: string;
+  certificate?: string;
+  experience: Experience[];
+  expertiseSubjects: ExpertiseSubject[];
+}
+export interface SalaryStructureRequest {
+  basicPay: number;
+  effectiveFrom: string;
+  effectiveTo?: string;
+  hra?: number;
+  allowances?: number;
+  deductions?: number;
+  remarks?: string;
+}
+export interface EmployeeDocuments {
+  documents: Document[];
+}
+export interface AddEmployeeRequest extends EmployeeBasicDetailsRequest, ProfessionalDetailsRequest, SalaryStructureRequest, EmployeeDocuments {
+  address: EmployeeAddress;
+};
+export interface EmployeeResponse extends BaseSchema, AddEmployeeRequest { };
+export interface EmployeeResponseList {
+  employees: EmployeeResponse[];
+  showing: number;
+  totalDocs: number;
+}
+
+export interface EmployeeDetailsResponse extends EmployeeResponse {
+  employeeId: string;
+  userId: string;
+  roleId: string;
+  roleName: string;
+
+  experience: ExperienceResponse[];
+  documents: EmployeeDocumentResponse[];
+  address: Addre;
 }

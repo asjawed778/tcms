@@ -3,7 +3,7 @@ import { type Request, type Response } from "express";
 import * as SessionService from "./session.service";
 import createHttpError from "http-errors";
 import { createResponse } from "../common/helper/response.hepler";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 export const createSession = asyncHandler(async (req: Request, res: Response) => {
     const { startDate, endDate, sessionStatus } = req.body;

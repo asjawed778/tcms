@@ -1,6 +1,6 @@
 import React from "react";
 import { Box, CircularProgress, Typography, useTheme } from "@mui/material";
-import logo from "../assets/logo.png";
+import logo from "@/assets/images/logo.png";
 
 const SplashScreen: React.FC = () => {
   const theme = useTheme();

@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import ModalWrapper from '@/components/ModalWrapper';
-import CustomInputField from '@/components/CustomInputField';
+import ModalWrapper from '@/components/ui/ModalWrapper';
+import CustomInputField from '@/components/ui/CustomInputField';
 import { useUpdateSessionMutation } from '@/services/sessionApi';
-import CustomButton from '../CustomButton';
+import CustomButton from '../ui/CustomButton';
 import toast from 'react-hot-toast';
 import { Session, SessionFormValues } from '../../../type';
-import { sessionSchema } from '../../../yup';
+import { sessionSchema } from '../../validation/yup';
 import { Stack } from '@mui/material';
-import CustomRadioGroup from '../CustomRadioGroup';
+import CustomRadioGroup from '../ui/CustomRadioGroup';
 import { SessionStatus } from '@/utils/enum';
 
 interface EditSessionProps {

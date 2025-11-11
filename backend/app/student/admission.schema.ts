@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import { IAdmission } from "./student.dto";
 
 const admissionSchema = new mongoose.Schema<IAdmission>({

@@ -1,25 +1,37 @@
-import CustomButton from "@/components/CustomButton";
-import CustomDropdownField from "@/components/CustomDropdownField";
-import CustomSearchField from "@/components/CustomSearchField";
+import CustomButton from "@/components/ui/CustomButton";
+import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomSearchField from "@/components/ui/CustomSearchField";
 import { useAppSelector } from "@/store/store";
-import { PersonAdd, Upload } from "@mui/icons-material";
-import { Box, Typography } from "@mui/material";
+import {
+  Add,
+  KeyboardArrowDown,
+  PersonAdd,
+  Upload,
+  Visibility,
+} from "@mui/icons-material";
+import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StudentTable from "./StudentTable";
-import ViewDetails from "./ViewDetails";
-import AddRemark from "./AddRemark";
+import StudentTable from "../../components/Student/StudentTable";
+import ViewDetails from "../../components/Student/ViewDetailsModal";
+import AddRemark from "../../components/Student/AddRemarkModal";
 import { useGetAllStudentQuery } from "@/services/studentApi";
-import BulkUpload from "./BulkUpload";
+import BulkUpload from "../../components/Student/BulkUploadModal";
+import { useCan } from "@/hooks/useCan";
+import { ModuleName, Operation } from "@/utils/enum";
 
 const actionsList = [
   {
     action: "viewDetails",
     label: "View Details",
+    icon: <Visibility />,
+    color: "info.main",
   },
   {
     action: "addRemarks",
     label: "Add Remarks",
+    icon: <Add />,
+    color: "secondary.main",
   },
 ];
 const Student: React.FC = () => {
@@ -32,9 +44,11 @@ const Student: React.FC = () => {
   const [openViewDetailsModal, setOpenViewDetailsModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
-  const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
-  );
+  const selectedSession = useAppSelector( (state) => state.session.selectedSession);
+  const menuAnchorRef = React.useRef<HTMLElement | null>(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const can = useCan();
+
   const {
     data: studentData,
     isLoading,
@@ -67,7 +81,6 @@ const Student: React.FC = () => {
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
-      // alert(`Faculty ${row.student.name} updated`);
     }
   };
   const handleAddStudent = () => {
@@ -81,64 +94,106 @@ const Student: React.FC = () => {
     setPage(0);
   };
   return (
-    <Box sx={{ width: "100%" }}>
-      <Box
-        sx={{
-          display: "flex",
-          flexDirection: { xs: "column", md: "row" },
-          alignItems: "center",
-          gap: 2,
-          mb: 2,
-        }}
-      >
-        {" "}
-        <CustomSearchField onSearch={setSearchQuery} />
+    <Box p={2}>
+      <Box>
         <Box
           sx={{
             display: "flex",
-            alignItems: "center",
-            gap: 1,
+            flexDirection: { xs: "column", md: "row" },
+            alignItems: { xs: "stretch", md: "center" },
+            gap: 2,
+            flexWrap: "wrap",
           }}
         >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-            Filter By:
-          </Typography>
-          <CustomDropdownField
-            name="status"
-            label="Status"
-            required={false}
-            value={status}
-            onChange={handleChange}
-            options={[
-              { label: "All", value: "All" },
-              // { label: "Active", value: "true" },
-              // { label: "Inactive", value: "false" },
-            ]}
-          />
-
-          <CustomButton
-            variant="outlined"
-            fullWidth
-            startIcon={<PersonAdd />}
-            onClick={handleAddStudent}
+          <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
+            <CustomSearchField
+              onSearch={setSearchQuery}
+              sx={{ bgcolor: "#fff" }}
+            />
+          </Box>
+          <Box
             sx={{
-              whiteSpace: "nowrap",
+              display: "flex",
+              alignItems: "center",
+              gap: 1,
             }}
           >
-            Add Student
-          </CustomButton>
+            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+              Filter By:
+            </Typography>
+            <CustomDropdownField
+              name="status"
+              label="Status"
+              required={false}
+              value={status}
+              onChange={handleChange}
+              options={[{ label: "All", value: "All" }]}
+              labelPosition="inside"
+            />
+          </Box>
+          {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <Box
+                sx={{
+                  display: "flex",
+                  borderRadius: 2,
+                  overflow: "hidden",
+                }}
+                ref={menuAnchorRef}
+              >
+                <CustomButton
+                  startIcon={<PersonAdd />}
+                  onClick={handleAddStudent}
+                  sx={{ borderRadius: 0 }}
+                >
+                  Add Student
+                </CustomButton>
+                <CustomButton
+                  onClick={() => setMenuOpen((prev) => !prev)} 
+                  sx={{
+                    minWidth: "40px",
+                    borderRadius: 0,
+                    px: 1,
+                  }}
+                >
+                  <KeyboardArrowDown />
+                </CustomButton>
+              </Box>
+              <Menu
+                anchorEl={menuAnchorRef.current} 
+                open={menuOpen} 
+                onClose={() => setMenuOpen(false)}
+                anchorOrigin={{
+                  vertical: "bottom",
+                  horizontal: "left",
+                }}
+                transformOrigin={{
+                  vertical: "top",
+                  horizontal: "left",
+                }}
+                PaperProps={{
+                  sx: { mt: "2px", minWidth: 180 },
+                }}
+              >
+                <MenuItem
+                  onClick={() => {
+                    handleAddStudent();
+                  }}
+                >
+                  <PersonAdd fontSize="small" sx={{ mr: 1 }} /> Add Student
+                </MenuItem>
+
+                <MenuItem
+                  onClick={() => {
+                    handleBulkUpload();
+                  }}
+                >
+                  <Upload fontSize="small" sx={{ mr: 1 }} /> Bulk Upload
+                </MenuItem>
+              </Menu>
+            </Box>
+          )}
         </Box>
-        <CustomButton
-          variant="outlined"
-          fullWidth
-          startIcon={<Upload />}
-          onClick={handleBulkUpload}
-          sx={{
-            maxWidth: 150,
-          }}
-        >
-          Upload Bulk
-        </CustomButton>
       </Box>
 
       <StudentTable

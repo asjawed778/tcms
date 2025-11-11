@@ -14,7 +14,7 @@ import { Session } from '../../../type';
 import EditSession from '@/components/Sessions/UpdateSession';
 import CreateSession from '@/components/Sessions/CreateSession';
 import { useSession } from '@/hooks/useSession';
-import CustomButton from '../CustomButton';
+import CustomButton from '../ui/CustomButton';
 import { Replay } from '@mui/icons-material';
 import { useAppTheme } from '@/context/ThemeContext';
 
@@ -89,7 +89,7 @@ const SessionDropdown: React.FC = () => {
             const selectedSession = sessions.find((s) => s._id === selected);
             return selectedSession?.session ?? '';
           }}
-          sx={{ px: 3, minWidth: 50 }}
+          sx={{ px: 3, minWidth: 50, height: 36 }}
         >
           <MenuItem value="" disabled>Select Session</MenuItem>
           {sessions.map((session: Session) => (

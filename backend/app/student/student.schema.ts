@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { IStudent } from './student.dto';
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 
 // Parent details sub-schema
 const ParentDetails = {
@@ -24,12 +24,12 @@ const Document = {
 };
 
 // Previous school sub-schema
-  const PreviousSchool = {
+const PreviousSchool = {
     _id: false,
-    name: { type: String, required: false },       
+    name: { type: String, required: false },
     address: { type: String, required: false },
     reasonForLeaving: { type: String, required: false },
-    dateOfLeaving: { type: Date, required: false }, 
+    dateOfLeaving: { type: Date, required: false },
     schoolLeavingCertificate: { type: Document },
     transferCertificate: { type: Document },
 };
@@ -39,8 +39,10 @@ const studentSchema = new mongoose.Schema<IStudent>({
     enrollmentNumber: {
         type: String,
         unique: true,
+        required: true,
     },
-    name: { type: String, required: false },
+    firstName: { type: String, required: false },
+    lastName: { type: String, required: false },
     dob: { type: Date, required: false },
     gender: {
         type: String,
@@ -54,8 +56,12 @@ const studentSchema = new mongoose.Schema<IStudent>({
         required: false,
     },
     motherTongue: { type: String, required: false },
-    image: { type: String, required: false },
-    adharNumber: { type: String, required: false, unique: true, sparse: true},
+    profileImage: { type: String, required: false },
+    adharNumber: {
+        type: String, 
+        required: false,
+        unique: true,
+    },
     contactNumber: { type: String },
     email: { type: String },
     bloodGroup: {
@@ -65,7 +71,7 @@ const studentSchema = new mongoose.Schema<IStudent>({
 
     father: { type: ParentDetails, required: false },
     mother: { type: ParentDetails, required: false },
-    localGuardian: {type: ParentDetails, required: false},
+    localGuardian: { type: ParentDetails, required: false },
 
     previousSchool: PreviousSchool,
 
@@ -82,30 +88,10 @@ const studentSchema = new mongoose.Schema<IStudent>({
     status: {
         type: String,
         enum: Object.values(Enum.StudentStatus),
-        default: Enum.StudentStatus.ACTIVE,
-        required: false,
+        default: Enum.StudentStatus.DRAFT,
     },
 }, { timestamps: true, });
 
-studentSchema.pre("save", async function (next) {
-    if (!this.enrollmentNumber) {
-        const year = this.admissionYear || new Date().getFullYear();
-        let unique = false;
-        let registrationNumber = "";
-        while (!unique) {
-            const randomNumber = Math.floor(100000 + Math.random() * 900000);
-            registrationNumber = `TCMS${year}${randomNumber}`;
-            const existingStudent = await mongoose.models.Student.findOne({
-                enrollmentNumber: registrationNumber
-            });
-            if (!existingStudent) {
-                unique = true;
-            }
-        }
-        this.enrollmentNumber = registrationNumber;
-    }
-    next();
-});
 
 export default mongoose.model<IStudent>("Student", studentSchema);
 

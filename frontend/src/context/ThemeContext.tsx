@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useMemo, useState } from 'react';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import createAppTheme from '@/theme/muiTheme';
-import { AppColors, Colors } from '@/theme/colors';
+import createAppTheme from '@/theme';
+import { Colors, ThemeColors, ThemeMode } from '@/theme/colors';
 
-type ThemeMode = 'light' | 'dark';
+
 
 interface ThemeContextProps {
   mode: ThemeMode;
   toggleMode: () => void;
-  colors: AppColors;
+  colors: ThemeColors;
 }
 
 const ThemeContext = createContext<ThemeContextProps | undefined>(undefined);

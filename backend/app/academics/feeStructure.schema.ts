@@ -1,0 +1,70 @@
+import mongoose from "mongoose";
+import * as AcademicDto from "./academic.dto";
+import * as Enum from "../common/utils/enum";
+
+const feeDetailsSchema = new mongoose.Schema<AcademicDto.IFeeDetails>({
+    feeType: {
+        type: String,
+        required: true,
+    },
+    amount: {
+        type: Number,
+        required: true,
+    },
+    isOptional: {
+        type: Boolean,
+        default: false,
+    },
+    applicableType: {
+        type: String,
+        enum: Object.values(Enum.FeeApplicableType),
+        default: Enum.FeeApplicableType.RECURRING,
+    },
+    applicableFrequency: {
+        type: String,
+        enum: Object.values(Enum.FeeFrequency),
+        required: false,
+    },
+}, { _id: false });
+
+
+const frequencyWiseSchema = new mongoose.Schema<AcademicDto.IFrequencyWiseStructure>({
+    frequency: {
+        type: String,
+        enum: Object.values(Enum.FeeFrequency),
+        required: true,
+    },
+    feeDetails: [feeDetailsSchema],
+    totalAmount: {
+        type: Number,
+        required: true,
+    }
+}, { _id: false });
+
+const classFeeStructureSchema = new mongoose.Schema<AcademicDto.IClassFeeStructure>({
+    classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
+        required: true,
+    },
+    session: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Session",
+        required: true,
+    },
+    effectiveFrom: {
+        type: Date,
+        required: true,
+    },
+    structures: [frequencyWiseSchema],
+    remarks: {
+        type: String,
+    },
+    status: {
+        type: String,
+        enum: Object.values(Enum.ActiveStatus),
+        default: Enum.ActiveStatus.ACTIVE,
+    },
+}, { timestamps: true });
+
+export default mongoose.model<AcademicDto.IClassFeeStructure>("ClassFeeStructure", classFeeStructureSchema);

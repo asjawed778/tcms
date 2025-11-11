@@ -3,160 +3,169 @@ import { type Request, type Response } from "express";
 import * as SessionService from "../session/session.service";
 import createHttpError from "http-errors";
 import { createResponse } from "../common/helper/response.hepler";
-import * as Enum from "../common/constant/enum";
+import * as Enum from "../common/utils/enum";
 import * as StudentService from "./student.service";
 import * as StudentDto from "./student.dto";
-import * as classService from "../class/class.service";
+import * as classService from "../academics/academic.service";
 import * as addressService from "../common/services/address.service";
-import * as FacultyService from "../faculty/faculty.service";
-import * as ClassService from "../class/class.service";
+import * as ClassService from "../academics/academic.service";
+import * as AcademicUtils from "../academics/academic.utils";
 import mongoose from "mongoose";
-import SessionModel from "../session/session.schema";
-import ClassModel from "../class/class.schema";
-import SectionModel from "../class/section.schema";
 
-export const addStudent = asyncHandler(async (req: Request, res: Response) => {
-  const session = await mongoose.startSession();
-  session.startTransaction();
 
-  try {
-    const {
-      session: sessionId,
-      class: classId,
-      section: sectionId,
-      address,
-      ...studentData
-    } = req.body;
-    const isSessionValid = await SessionService.isSessionValid(sessionId);
-    if (!isSessionValid) {
-      throw createHttpError(400, "Invalid session");
-    }
-    const isClassValid = await classService.isClassAndSectionValid(
-      sessionId,
-      classId,
-      sectionId
-    );
-    if (!isClassValid) {
-      throw createHttpError(400, "Invalid class or section");
-    }
-    const addressData = await addressService.createAddress(address, session);
-    const student = await StudentService.addStudent(
-      { ...studentData, address: new mongoose.Types.ObjectId(addressData._id) },
-      session
-    );
-    const admission = await StudentService.admissionStudentToClass(
-      student._id,
-      sessionId,
-      classId,
-      sectionId,
-      session
-    );
-
-    await session.commitTransaction();
-    await session.endSession();
-
-    res.send(
-      createResponse({ student, admission }, "Student added successfully")
-    );
-  } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
-    throw error;
+// personal details - step 1
+export const addStudentStep1 = asyncHandler(async (req: Request, res: Response) => {
+  const data = req.body;
+  const student = await StudentService.addStudentStep1(data);
+  if (!student) {
+    throw createHttpError(500, "Failed to add student step-1");
   }
+  res.send(createResponse({ student }, "Student add Step-1 completed successfully"));
 });
 
-export const bulkUploadStudents = asyncHandler(
-  async (req: Request, res: Response) => {
-    const students = req.body.students;
-    const sessionId = req.body.sessionId;
-
-    if (!Array.isArray(students) || students.length === 0) {
-      throw createHttpError(400, "No student data provided.");
-    }
-
-    const results: {
-      success: any[];
-      failed: { row: number; name?: string; error: string; data: any }[];
-    } = { success: [], failed: [] };
-
-    for (let i = 0; i < students.length; i++) {
-      const studentData = students[i];
-      try {
-        const { classId, sectionId, address, name, ...rest } = studentData;
-
-        if (!sessionId) throw new Error("Session ID missing");
-        if (!classId) throw new Error("Class ID missing");
-        if (!sectionId) throw new Error("Section ID missing");
-        if (!mongoose.Types.ObjectId.isValid(sessionId))
-          throw new Error(`Invalid sessionId: ${sessionId}`);
-
-        const classDoc = await ClassModel.findOne({ classId }).exec();
-        if (!classDoc)
-          throw new Error(`Class not found for classId: ${classId}`);
-
-        const sectionDoc = await SectionModel.findOne({
-          sectionId,
-          _id: { $in: classDoc.sections },
-        }).exec();
-        if (!sectionDoc)
-          throw new Error(
-            `Section with sectionId ${sectionId} not found under class ${classDoc.name}`
-          );
-
-        const addressData = await addressService.createAddress(address);
-
-        const student = await StudentService.addStudent({
-          ...rest,
-          name,
-          address: addressData._id,
-        });
-
-        await StudentService.admissionStudentToClass(
-          student._id,
-          sessionId,
-          classDoc._id,
-          sectionDoc._id
-        );
-
-        results.success.push(student);
-      } catch (err: any) {
-        results.failed.push({
-          row: i + 2,
-          name: studentData.name || "Unnamed Student",
-          error: err.message || "Unknown error",
-          data: studentData,
-        });
-
-        console.error(`Error processing student at row ${i + 2}:`, err.message);
-      }
-    }
-
-    res
-      .status(200)
-      .send(
-        createResponse(
-          results,
-          `Processed ${students.length} records. Success: ${results.success.length}, Failed: ${results.failed.length}`
-        )
-      );
+export const updateStudentStep1 = asyncHandler(async (req: Request, res: Response) => {
+  const data = req.body;
+  const { studentId } = req.params;
+  const student = await StudentService.updateStudent(studentId, data);
+  if (!student) {
+    throw createHttpError(500, "Failed to Update student step-1");
   }
-);
+  res.send(createResponse({ student }, "Student Updated Step-1 completed successfully"));
+});
+
+// Adress details - step 2
+export const addStudentStep2 = asyncHandler(async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+
+  const { address: addressData } = req.body;
+  const address = await addressService.saveAddress(addressData);
+  if (!address) {
+    throw createHttpError(500, "Failed to add address");
+  }
+  const student = await StudentService.updateStudent(studentId, { address: new mongoose.Types.ObjectId(address._id) });
+  res.send(createResponse({ student }, "Student add Step-2 completed successfully"));
+});
+
+export const addStudentStep3 = asyncHandler(async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+  const parentsData = req.body;
+
+  const student = await StudentService.updateStudent(studentId, { father: parentsData.father, mother: parentsData.mother, localGuardian: parentsData.localGuardian });
+  res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
+});
+
+export const addStudentStep4 = asyncHandler(async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+  const { session, class: classId, section, admissionYear, address, ...prevSchoolData } = req.body;
+  const isSessionValid = await SessionService.isSessionValid(session);
+  if (!isSessionValid) {
+    throw createHttpError(400, "Invalid session");
+  }
+  const isClassValid = await AcademicUtils.isClassAndSectionValid(
+    session,
+    classId,
+    section
+  );
+  if (!isClassValid) {
+    throw createHttpError(400, "Invalid class or section");
+  }
+  const admission = await StudentService.admissionStudentToClass(studentId, session, classId, section);
+  if (!admission) {
+    throw createHttpError(500, "Failed to admit student to class");
+  }
+  const enrollmentNumber = await StudentService.generateEnrollmentNumber(admissionYear);
+  const student = await StudentService.updateStudent(studentId, { admissionYear, previousSchool: prevSchoolData, enrollmentNumber: enrollmentNumber });
+  res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
+});
+
+export const addStudentStep5 = asyncHandler(async (req: Request, res: Response) => {
+  const { studentId } = req.params;
+  const { documents } = req.body;
+  const student = await StudentService.updateStudent(studentId, { documents, status: Enum.StudentStatus.ACTIVE });
+  res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
+});
+
+export const bulkUploadStudents = asyncHandler(async (req: Request, res: Response) => {
+  const { students } = req.body;
+
+  if (!Array.isArray(students) || students.length === 0) {
+    throw createHttpError(400, "No student data provided.");
+  }
+
+  const results: {
+    success: any[];
+    failed: { row: number; name?: string; error: string; data: any }[];
+  } = { success: [], failed: [] };
+
+  for (let i = 0; i < students.length; i++) {
+    const studentData = students[i];
+    try {
+      const { classId, sectionId, session, address, ...rest } = studentData;
+      const classData = await ClassService.getClassByUniqueId(classId);
+      const sectionData = await ClassService.getSectionByUniqueId(sectionId);
+
+      const addressData = await addressService.saveAddress(address);
+      const enrollmentNumber = await StudentService.generateEnrollmentNumber(rest.admissionYear);
+      const student = await StudentService.addStudent({
+        ...rest,
+        address: addressData._id,
+        enrollmentNumber,
+      });
+
+      await StudentService.admissionStudentToClass(
+        student._id,
+        studentData.session,
+        classData._id,
+        sectionData._id
+      );
+
+      results.success.push(student);
+    } catch (err: any) {
+      results.failed.push({
+        row: i + 2,
+        name: studentData.name || "Unnamed Student",
+        error: err.message || "Unknown error",
+        data: studentData,
+      });
+      console.error(`Error processing student at row ${i + 2}:`, err.message);
+    }
+  }
+
+  res
+    .status(200)
+    .send(
+      createResponse(
+        results,
+        `Processed ${students.length} records. Success: ${results.success.length}, Failed: ${results.failed.length}`
+      )
+    );
+});
+
+// old student addition function
 
 export const getStudents = asyncHandler(async (req: Request, res: Response) => {
-  const { sessionId } = req.params;
+  const sessionId = (req.query.sessionId as string) || "";;
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = (req.query.search as string) || "";
-  const standard = (req.query.standard as string) || "";
-  const section = (req.query.section as string) || "";
+  const classId = (req.query.class as string) || "";
+  const sectionId = (req.query.section as string) || "";
+  const gender = (req.query.gender as Enum.Gender) || "";
+  const studentStatus = (req.query.status as Enum.StudentStatus) || "";
+  const admissionStatus = (req.query.status as Enum.AdmissionStatus) || "";
+  const bloodGroup = (req.query.bloodGroup as Enum.BloodGroup) || "";
 
-  const result = await StudentService.getStudents(
+  const result = await StudentService.getAllStudents(
     sessionId,
     page,
     limit,
     search,
-    standard,
-    section
+    classId,
+    sectionId,
+    gender,
+    studentStatus,
+    admissionStatus,
+    bloodGroup,
   );
   res.send(createResponse(result, "Students fetched successfully"));
 });
