@@ -18,7 +18,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { ResetPasswordFormValues } from "../../type";
 import { resetPasswordSchema } from "../validation/yup";
 import { useResetPasswordMutation } from "@/services/authApi";
-import LoginVisuals from "./Login/LoginVisuals";
+import AuthImageSlider from "@/components/common/AuthImageSlider";
 
 const ResetPassword: React.FC = () => {
     const theme = useTheme();
@@ -134,7 +134,7 @@ const ResetPassword: React.FC = () => {
                         position: "relative",
                     }}
                 >
-                    <LoginVisuals />
+                    <AuthImageSlider />
                 </Paper>
             </Box>
         </Box>

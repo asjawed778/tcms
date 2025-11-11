@@ -3,7 +3,7 @@ import { Navigate } from "react-router-dom";
 import { getFirstAccessibleDashboardPath } from "@/components/GetFirstAccessibleDashboardPath";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName } from "@/utils/enum";
-import Dashboard from "@/modules/Dashboard";
+import Dashboard from "@/pages/Dashboard";
 
 const DashboardRedirect: React.FC = () => {
   const can = useCan();

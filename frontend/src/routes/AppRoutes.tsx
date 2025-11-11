@@ -17,14 +17,14 @@ const Login = lazy(() => import("@/pages/Login"));
 const ForgotPassword = lazy(() => import("@/pages/ForgotPassword"));
 const ResetPassword = lazy(() => import("@/pages/ResetPassword"));
 const PageNotFound = lazy(() => import("@/pages/PageNotFound"));
-const Employee = lazy(() => import("@/modules/Employee/pages"));
-const AddEmployee = lazy(() => import("@/modules/Employee/pages/AddEmployee"));
-const Student = lazy(() => import("@/modules/Student/pages/Student"));
-const AddStudent = lazy(() => import("@/modules/Student/pages/AddStudent"));
-const Academics = lazy(() => import("@/modules/Academics/pages/Academics"));
-const CreateClass = lazy(() => import("@/modules/Academics/pages/CreateClass"));
-const CreateTimeTable = lazy(() => import("@/modules/Academics/pages/CreateTimeTable"));
-const Tools = lazy(() => import("@/modules/Tools/pages/Tools"));
+const Employee = lazy(() => import("@/pages/Employee"));
+const AddEmployee = lazy(() => import("@/pages/AddEmployee"));
+const Student = lazy(() => import("@/pages/Student"));
+const AddStudent = lazy(() => import("@/pages/AddStudent"));
+const Academics = lazy(() => import("@/pages/Academics"));
+const CreateClass = lazy(() => import("@/pages/CreateClass"));
+const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
+const Tools = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
   return (
