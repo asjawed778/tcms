@@ -110,6 +110,23 @@ const AppRoutes = () => {
             }
           />
           <Route
+            path={`employee/update-details/:employeeId`}
+            element={
+              <ErrorBoundary>
+                <RoleAuthRoute
+                  permissions={[
+                    {
+                      module: ModuleName.Employee,
+                      operation: Operation.UPDATE,
+                    },
+                  ]}
+                >
+                  <AddEmployee />
+                </RoleAuthRoute>
+              </ErrorBoundary>
+            }
+          />
+          <Route
             path="student"
             element={
               <ErrorBoundary>

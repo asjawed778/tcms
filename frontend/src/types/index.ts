@@ -24,7 +24,7 @@ export interface ApiErrorResponse {
     };
 }
 
-export interface AddressPayload {
+export interface AddressRequest {
     addressLine1?: string;
     addressLine2?: string;
     city?: string;
@@ -33,7 +33,7 @@ export interface AddressPayload {
     pincode?: number;
 }
 
-export interface AddressResponse extends AddressPayload, BaseSchema {};
+export interface AddressResponse extends AddressRequest, BaseSchema {};
 
 export interface Document {
   name?: string;

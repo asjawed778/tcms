@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Box } from "@mui/material";
 import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
-import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import TableWrapper from "@/components/ui/TableWrapper";
 import toast from "react-hot-toast";
 import { Add, AdminPanelSettings, Delete, Edit } from "@mui/icons-material";
@@ -13,6 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { useCan } from "@/hooks/useCan";
 import CreateRole from "@/components/Administration/CreateRoleModal";
 import AssignPermission from "@/components/Administration/AssignPermissionModal";
+import AlertModal from "@/components/ui/AlertModal";
 
 interface Role {
   _id: string;
@@ -26,11 +26,11 @@ interface RoleColumn {
   width?: string | number;
 }
 
-  const roleColumns: RoleColumn[] = [
-    { key: "sno.", label: "S.No."},
-    { key: "name", label: "Role Name",  width: "300px" },
-    { key: "description", label: "Description" },
-  ];
+const roleColumns: RoleColumn[] = [
+  { key: "sno.", label: "S.No." },
+  { key: "name", label: "Role Name", width: "300px" },
+  { key: "description", label: "Description" },
+];
 
 const RolesAndPermissions = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -65,7 +65,7 @@ const RolesAndPermissions = () => {
     limit,
     search: searchQuery,
   });
-  
+
   const [deleteRole] = useDeleteRoleMutation();
 
   const handlePageChange = (newPage: number) => setPage(newPage);
@@ -168,7 +168,11 @@ const RolesAndPermissions = () => {
             bgcolor: "#FFF",
           }}
         />
-        {can(ModuleName.ADMINISTRATION, SubModuleName.ROLES, Operation.CREATE) && (
+        {can(
+          ModuleName.ADMINISTRATION,
+          SubModuleName.ROLES,
+          Operation.CREATE
+        ) && (
           <CustomButton
             label="Create Role"
             startIcon={<Add />}
@@ -206,8 +210,7 @@ const RolesAndPermissions = () => {
         />
       )}
       {openDeleteModal && (
-        <DialogBoxWrapper
-          title="Delete Role"
+        <AlertModal
           open={openDeleteModal}
           onClose={() => setOpenDeleteModal(false)}
           onConfirm={handleDelete}
@@ -229,7 +232,7 @@ const RolesAndPermissions = () => {
         width="70%"
       >
         <AssignPermission
-        title={`Update Permission-${selectedRole?.name}`}
+          title={`Update Permission-${selectedRole?.name}`}
           role={selectedRole}
           onClose={() => {
             setOpenAssignPermission(false);

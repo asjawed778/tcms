@@ -5,8 +5,13 @@ import TableWrapper from "@/components/ui/TableWrapper";
 import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllEmployeeQuery } from "@/services/employeeApi";
-import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
-import { PersonAdd } from "@mui/icons-material";
+import {
+  EmployeeStatus,
+  ModuleName,
+  Operation,
+  SubModuleName,
+} from "@/utils/enum";
+import { Delete, Edit, PersonAdd } from "@mui/icons-material";
 import { Box, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -15,12 +20,6 @@ import { getEmployeeColumns } from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
 import { EmployeeDetailsResponse } from "@/types/employee";
 
-const actionsList = [
-  {
-    action: "update",
-    label: "Update",
-  },
-];
 const Employee: React.FC = () => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -31,9 +30,12 @@ const Employee: React.FC = () => {
   const navigate = useNavigate();
   const can = useCan();
   const [openImagePreview, setOpenImagePreview] = useState(false);
-  const [seletedEmpImage, setSelectedEmpImage] = useState<{ url: string, type: 'image' }[]>([]);
+  const [seletedEmpImage, setSelectedEmpImage] = useState<
+    { url: string; type: "image" }[]
+  >([]);
   const [seletedEmployeeId, setSelectedEmployeeId] = useState<string>("");
-  const [selectedRow, setSelectedRow] = useState<EmployeeDetailsResponse | null>(null);
+  const [selectedRow, setSelectedRow] =
+    useState<EmployeeDetailsResponse | null>(null);
   const {
     data: employeeData,
     isFetching,
@@ -50,9 +52,45 @@ const Employee: React.FC = () => {
     }
   );
 
+  const actionsList = () => {
+    const ACTIONS = [
+      {
+        action: "update",
+        label: "Update",
+        icon: <Edit />,
+        color: "info.main",
+        permission: {
+          module: ModuleName.Employee,
+          subModule: null,
+          operation: Operation.UPDATE,
+        },
+      },
+      {
+        action: "deleteRole",
+        label: "Delete",
+        icon: <Delete />,
+        color: "error.main",
+        permission: {
+          module: ModuleName.Employee,
+          subModule: null,
+          operation: Operation.DELETE,
+        },
+      },
+    ];
+
+    return ACTIONS.filter(
+      (action) =>
+        !action.permission ||
+        can(
+          action.permission.module,
+          action.permission.subModule,
+          action.permission.operation
+        )
+    );
+  };
   const handleImageClick = (url: string) => {
     if (!url) return;
-    console.log("url: ", url)
+    console.log("url: ", url);
     setSelectedEmpImage([{ url, type: "image" }]);
     setOpenImagePreview(true);
   };
@@ -73,10 +111,19 @@ const Employee: React.FC = () => {
   const handleActionClick = (action: string, row: EmployeeDetailsResponse) => {
     switch (action) {
       case "update":
-        setSelectedRow(row);
+        navigate(`/dashboard/employee/update-details/${row._id}`);
+        break;
+
+      case "deleteRole":
+        // you can handle delete logic here later
+        break;
+
+      default:
+        break;
     }
   };
-  const handleAddFaculty = () => {
+
+  const handleAddEmployee = () => {
     navigate("/dashboard/employee/add");
   };
   const handleStatusChange = (val: EmployeeStatus) => {
@@ -87,7 +134,11 @@ const Employee: React.FC = () => {
     <>
       <Box sx={{ width: "100%", p: 2 }}>
         <Box sx={styles.container}>
-          <CustomSearchField placeholder="Search Employee..." onSearch={setSearchQuery} sx={styles.searchBox} />
+          <CustomSearchField
+            placeholder="Search Employee..."
+            onSearch={setSearchQuery}
+            sx={styles.searchBox}
+          />
           <Box sx={styles.contentBox}>
             <CustomDropdownField
               label="Status"
@@ -101,7 +152,7 @@ const Employee: React.FC = () => {
               <CustomButton
                 label="Add Employee"
                 startIcon={<PersonAdd />}
-                onClick={handleAddFaculty}
+                onClick={handleAddEmployee}
               />
             )}
           </Box>
@@ -145,16 +196,16 @@ const getStyles = (theme: any) => ({
     flexDirection: { xs: "column", md: "row" },
     alignItems: "center",
     gap: 2,
-    mb: 2
+    mb: 2,
   },
   searchBox: {
-    backgroundColor: theme.customColors.light
+    backgroundColor: theme.customColors.light,
   },
   contentBox: {
     display: "flex",
     alignItems: "center",
     gap: 1,
-  }
+  },
 });
 
 export default Employee;

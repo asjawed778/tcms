@@ -7,7 +7,14 @@ import {
   employeeProfessionalDetailsSchema,
   employeeSalaryStructureSchema,
 } from "../../validation/yup";
-import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  CardContent,
+  CircularProgress,
+} from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,6 +27,7 @@ import ProfessionalDetails from "./ProfessionalDetails";
 import SalaryStructure from "./SalaryStructure";
 import {
   useAddBasicDetailsMutation,
+  useGetEmployeeDetailsQuery,
   useUpdateAddressMutation,
   useUpdateBasicDetailsMutation,
   useUpdateDocumentsMutation,
@@ -60,7 +68,7 @@ const AddEmployee = () => {
   const [employeeId, setEmployeeId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
-  const { id: editEmployeeId } = useParams();
+  const { employeeId: editEmployeeId } = useParams();
 
   const [addBasicDetails, { isLoading: addingBasicDetails }] =
     useAddBasicDetailsMutation();
@@ -77,9 +85,19 @@ const AddEmployee = () => {
   const [updateDocuments, { isLoading: updatingDocuments }] =
     useUpdateDocumentsMutation();
 
+  const { data: employeeDetails, isFetching: fetchingEmployee } =
+    useGetEmployeeDetailsQuery(
+      { employeeId: editEmployeeId! },
+      {
+        skip: !editEmployeeId,
+      }
+    );
+  // console.log("Employee Details: ", employeeDetails);
+
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
-    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    // resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    defaultValues: {},
     mode: "onChange",
   });
   useEffect(() => {
@@ -87,12 +105,54 @@ const AddEmployee = () => {
       setEmployeeId(editEmployeeId);
     }
   }, [editEmployeeId]);
+  useEffect(() => {
+    if (employeeDetails?.data) {
+      const emp = employeeDetails.data;
+
+      methods.reset({
+        firstName: emp.firstName,
+        lastName: emp.lastName,
+        fatherName: emp.fatherName,
+        motherName: emp.motherName,
+        email: emp.email,
+        phoneNumber: emp.phoneNumber,
+        dob: emp.dob,
+        gender: emp.gender,
+        qualification: emp.qualification,
+        dateOfJoining: emp.dateOfJoining,
+        designation: emp.designation,
+        roleId: emp.roleId,
+        status: emp.status,
+        photo: emp.photo,
+
+        // Address
+        address: {
+          addressLine1: emp.address?.addressLine1,
+          city: emp.address?.city,
+          state: emp.address?.state,
+          country: emp.address?.country,
+          pincode: emp.address?.pincode,
+        },
+
+        // Professional
+        experience: emp.experience || [],
+        expertise: emp.expertise || [],
+
+        // Documents
+        documents: emp.documents || [],
+      });
+    }
+  }, [employeeDetails, methods]);
 
   const stepApis = [
     async (data: any) => {
       const payload = cleanData(data);
+      console.log("Data: ", data);
+      
       if (employeeId) {
-        await updateBasicDetails({ employeeId, payload }).unwrap();
+        const res = await updateBasicDetails({ employeeId, payload }).unwrap();
+        console.log("res: ",res);
+        
       } else {
         const response = await addBasicDetails({ payload }).unwrap();
         setEmployeeId(response.data._id);
@@ -133,12 +193,14 @@ const AddEmployee = () => {
     navigate("/dashboard/employee");
   };
   const onStepSubmit = async (data: any) => {
-    const isValid = await methods.trigger();
-    if (!isValid) {
-      toast.error("Please fill all required fields correctly.");
-      return;
-    }
+    // const isValid = await methods.trigger();
+    // if (!isValid) {
+    //   toast.error("Please fill all required fields correctly.");
+    //   return;
+    // }
+    const schema = steps[activeStep].schema;
     try {
+      await schema.validate(data, { abortEarly: false });
       await stepApis[activeStep](data);
       setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
 
@@ -171,6 +233,20 @@ const AddEmployee = () => {
     }
   };
 
+  if (fetchingEmployee) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Box p={2}>
       <Stepper activeStep={activeStep} alternativeLabel>

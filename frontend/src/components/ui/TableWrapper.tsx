@@ -247,8 +247,9 @@ function TableWrapper<T extends { _id?: string | number }>({
                 {actionDisplayType === "icon" ? (
                   currentActions.map((action, actionIndex) => (
                     <Tooltip
-                      key={`${row._id ?? index}-${action.action
-                        }-${actionIndex}`}
+                      key={`${row._id ?? index}-${
+                        action.action
+                      }-${actionIndex}`}
                       title={action.label}
                     >
                       <IconButton
@@ -295,8 +296,9 @@ function TableWrapper<T extends { _id?: string | number }>({
                       >
                         {currentActions.map((action, actionIndex) => (
                           <MenuItem
-                            key={`menu-${row._id ?? index}-${action.action
-                              }-${actionIndex}`}
+                            key={`menu-${row._id ?? index}-${
+                              action.action
+                            }-${actionIndex}`}
                             onClick={async (e) => {
                               e.stopPropagation();
                               await onActionClick?.(action.action, row);
