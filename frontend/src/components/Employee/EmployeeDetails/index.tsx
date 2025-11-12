@@ -61,34 +61,34 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
 
   const allTabs: TabItem[] = employeeDetails
     ? [
-        {
-          label: "Personal Info",
-          value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
-          component: <PersonalInfoTab employee={employeeDetails.data} />,
-          permission: {
-            module: Enum.ModuleName.Employee,
-            action: Enum.Operation.READ,
-          },
+      {
+        label: "Personal Info",
+        value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
+        component: <PersonalInfoTab employee={employeeDetails.data} />,
+        permission: {
+          module: Enum.ModuleName.Employee,
+          action: Enum.Operation.READ,
         },
-        {
-          label: "Professional Details",
-          value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
-          component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
-          permission: {
-            module: Enum.ModuleName.Employee,
-            action: Enum.Operation.READ,
-          },
+      },
+      {
+        label: "Professional Details",
+        value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
+        component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
+        permission: {
+          module: Enum.ModuleName.Employee,
+          action: Enum.Operation.READ,
         },
-        {
-          label: "Documents",
-          value: Enum.EmployeeDetailsTabs.DOCUMENTS,
-          component: <Documents documents={employeeDetails.data.documents} />,
-          permission: {
-            module: Enum.ModuleName.Employee,
-            action: Enum.Operation.READ,
-          },
+      },
+      {
+        label: "Documents",
+        value: Enum.EmployeeDetailsTabs.DOCUMENTS,
+        component: <Documents documents={employeeDetails.data.documents} />,
+        permission: {
+          module: Enum.ModuleName.Employee,
+          action: Enum.Operation.READ,
         },
-      ]
+      },
+    ]
     : [];
 
   const tabs = allTabs.filter(
@@ -118,7 +118,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
           onEditPhoto={() => console.log("Edit photo clicked")}
         />
       )}
-      <SegmentTabs tabs={tabs} defaultTab={tabs[0]?.value} />
+      <SegmentTabs tabUrlControlled={false} tabs={tabs} defaultTab={tabs[0]?.value} />
     </Box>
   );
 };

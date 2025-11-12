@@ -1,7 +1,10 @@
 import React from "react";
-import { Box, Grid, Theme, Typography, useTheme } from "@mui/material";
-import DocumentCardWrapper from "@/components/ui/DocumentCardWrapper";
+import { Box, Grid, Theme, useTheme } from "@mui/material";
+import DocumentCard from "@/components/common/DocumentCard";
 import { Document } from "@/types";
+import NoDataCard from "@/components/common/NoDataCard";
+import { DescriptionOutlined } from "@mui/icons-material";
+
 interface DocumentsProps {
   documents: Document[];
 }
@@ -20,15 +23,16 @@ const Documents: React.FC<DocumentsProps> = ({ documents }) => {
     document.body.removeChild(link);
   };
 
+  if (documents.length === 0) {
+    return <NoDataCard icon={<DescriptionOutlined sx={{ fontSize: "48px" }} />} title="No Document Found" />;
+  }
+
   return (
     <Box sx={styles.root}>
-      <Typography variant="h6" sx={styles.sectionTitle}>
-        Documents
-      </Typography>
       <Grid container spacing={2}>
         {documents.map((doc, index) => (
           <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
-            <DocumentCardWrapper document={doc} onDownload={handleDownload} />
+            <DocumentCard document={doc} onDownload={handleDownload} />
           </Grid>
         ))}
       </Grid>
@@ -38,10 +42,5 @@ const Documents: React.FC<DocumentsProps> = ({ documents }) => {
 export default Documents;
 
 const getStyles = (theme: Theme) => ({
-  root: { px: 2 },
-  sectionTitle: {
-    fontWeight: 600,
-    mb: 1,
-    color: theme.palette.text.primary,
-  },
+  root: { px: 2, py: 3 },
 });

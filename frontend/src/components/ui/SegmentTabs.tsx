@@ -11,18 +11,22 @@ interface TabItem {
 interface SegmentTabsProps {
   tabs: TabItem[];
   defaultTab?: string;
+  tabUrlControlled?: boolean;
 }
 
-const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab }) => {
+const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab, tabUrlControlled = true }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const activeTab = searchParams.get("tab") || defaultTab || tabs[0].value;
+  const [localTab, setLocalTab] = React.useState(defaultTab || tabs[0].value);
+  const activeTab = tabUrlControlled
+    ? searchParams.get("tab") || defaultTab || tabs[0].value
+    : localTab;
 
   useEffect(() => {
-    if (!searchParams.get("tab")) {
+    if (tabUrlControlled && !searchParams.get("tab")) {
       setSearchParams({ tab: defaultTab || tabs[0].value });
     }
-  }, [defaultTab, searchParams, setSearchParams, tabs]);
+  }, [defaultTab, searchParams, setSearchParams, tabs, tabUrlControlled]);
+
 
   const ActiveComponent = useMemo(
     () => tabs.find((t) => t.value === activeTab)?.component || null,
@@ -30,7 +34,11 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab }) => {
   );
 
   const handleChange = (_: React.SyntheticEvent, newValue: string) => {
-    setSearchParams({ tab: newValue });
+    if (tabUrlControlled) {
+      setSearchParams({ tab: newValue });
+    } else {
+      setLocalTab(newValue);
+    }
   };
 
   return (

@@ -69,12 +69,12 @@ const ProfessionalInfoTab: React.FC<ProfessionalInfoTabProps> = ({
       {employee.expertise && employee.expertise.length > 0 && (
         <>
           <Typography variant="h6" sx={styles.sectionTitle}>
-            Expertise Subjects
+            Expertise
           </Typography>
           <Grid container spacing={2}>
             {employee.expertise.map((subject, index) => (
               <Grid size={{ xs: 12, md: 3 }} key={index}>
-                <InfoItem label={`Subject ${index + 1}`} value={subject} />
+                <InfoItem value={subject} />
               </Grid>
             ))}
           </Grid>
