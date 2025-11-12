@@ -7,6 +7,7 @@ import PersonalInfoTab from "./PersonalInfoTab";
 import ProfessionalDetailsTab from "./ProfessionalDetailsTab";
 import BasicDetailsSkeleton from "@/components/Skeletons/BasicDetailsSkeleton";
 import SegmentTabs from "@/components/ui/SegmentTabs";
+import Documents from "./Documents";
 
 interface EmployeeDetailsProps {
   employeeId: string;
@@ -75,6 +76,15 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
           label: "Professional Details",
           value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
           component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
+          permission: {
+            module: Enum.ModuleName.Employee,
+            action: Enum.Operation.READ,
+          },
+        },
+        {
+          label: "Documents",
+          value: Enum.EmployeeDetailsTabs.DOCUMENTS,
+          component: <Documents documents={employeeDetails.data.documents} />,
           permission: {
             module: Enum.ModuleName.Employee,
             action: Enum.Operation.READ,

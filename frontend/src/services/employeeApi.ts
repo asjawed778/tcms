@@ -38,7 +38,7 @@ export const facultyApi = createApi({
     }),
     getSalaryStructure: builder.query({
       query: ({ employeeId }) => ({
-        url: `/admin/employeeId/${employeeId}/salary-structure`,
+        url: `/admin/employee/${employeeId}/salary-structure`,
         method: "GET",
       }),
     }),

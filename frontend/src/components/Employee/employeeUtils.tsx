@@ -1,4 +1,4 @@
-import { Box, Avatar } from "@mui/material";
+import { Box, Avatar, Typography } from "@mui/material";
 import GenderChip from "@/components/ui/GenderChip";
 import { formatDate } from "@/utils/helper";
 
@@ -40,3 +40,21 @@ export const getEmployeeColumns = (
 ];
 
 
+interface InfoItemProps {
+  label: string;
+  value?: string | number | null;
+}
+
+export const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => {
+  value = value || "--";
+  return (
+    <Box>
+      <Typography variant="caption" sx={{ color: "text.secondary" }}>
+        {label}
+      </Typography>
+      <Typography variant="body1" fontWeight={500}>
+        {value}
+      </Typography>
+    </Box>
+  );
+};

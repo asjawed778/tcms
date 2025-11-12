@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 import React from "react";
 import { formatTime } from "@/utils/helper";
-import { TimeTableResponse } from "../../../type";
+import { TimeTableResponse } from "@/../type";
 import { Download, Edit } from "@mui/icons-material";
 
 interface Props {
