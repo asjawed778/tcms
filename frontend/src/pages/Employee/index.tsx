@@ -13,11 +13,12 @@ import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
 import { getEmployeeColumns } from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
+import { EmployeeDetailsResponse } from "@/types/employee";
 
 const actionsList = [
   {
     action: "update",
-    label: "",
+    label: "Update",
   },
 ];
 const Employee: React.FC = () => {
@@ -32,6 +33,7 @@ const Employee: React.FC = () => {
   const [openImagePreview, setOpenImagePreview] = useState(false);
   const [seletedEmpImage, setSelectedEmpImage] = useState<{ url: string, type: 'image' }[]>([]);
   const [seletedEmployeeId, setSelectedEmployeeId] = useState<string>("");
+  const [selectedRow, setSelectedRow] = useState<EmployeeDetailsResponse | null>(null);
   const {
     data: employeeData,
     isFetching,
@@ -68,9 +70,10 @@ const Employee: React.FC = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(1);
   };
-  const handleActionClick = (action: string) => {
+  const handleActionClick = (action: string, row: EmployeeDetailsResponse) => {
     switch (action) {
       case "update":
+        setSelectedRow(row);
     }
   };
   const handleAddFaculty = () => {

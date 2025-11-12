@@ -1,6 +1,6 @@
 import * as Enum from "@/utils/enum";
 import { useGetEmployeeDetailsQuery } from "@/services/employeeApi";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import BasicDetails from "./BasicDetails";
 import { useCan } from "@/hooks/useCan";
 import PersonalInfoTab from "./PersonalInfoTab";
@@ -25,8 +25,6 @@ interface TabItem {
 }
 const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
   const can = useCan();
-  const theme = useTheme();
-  const styles = getStyles(theme);
   const {
     data: employeeDetails,
     isFetching,
@@ -125,21 +123,4 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
   );
 };
 
-const getStyles = (theme: any) => ({
-  container: {
-    display: "flex",
-    flexDirection: { xs: "column", md: "row" },
-    alignItems: "center",
-    gap: 2,
-    mb: 2,
-  },
-  searchBox: {
-    backgroundColor: theme.customColors.light,
-  },
-  contentBox: {
-    display: "flex",
-    alignItems: "center",
-    gap: 1,
-  },
-});
 export default EmployeeDetails;
