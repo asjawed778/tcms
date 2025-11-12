@@ -25,7 +25,7 @@ interface DocumentCardProps {
   onDownload?: (document: any) => void;
 }
 
-const DocumentCardWrapper: React.FC<DocumentCardProps> = ({
+const DocumentCard: React.FC<DocumentCardProps> = ({
   document,
   onDownload,
 }) => {
@@ -117,7 +117,7 @@ const DocumentCardWrapper: React.FC<DocumentCardProps> = ({
   );
 };
 
-export default DocumentCardWrapper;
+export default DocumentCard;
 
 const getStyles = (theme: Theme) => ({
   card: {
