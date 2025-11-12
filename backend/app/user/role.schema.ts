@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import { IUserRole, IPermission } from "./user.dto";
+import { RoleType } from "../common/utils/enum";
 
 export const permissionSchema = new mongoose.Schema<IPermission>({
     name: { type: String, required: true, trim: true },
@@ -25,6 +26,11 @@ const roleSchema = new mongoose.Schema<IUserRole>(
         name: { type: String, required: true, unique: true, trim: true },
         description: { type: String, trim: true },
         permissions: [permissionSchema],
+        type: {
+            type: String,
+            enum: Object.values(RoleType),
+            default: RoleType.CUSTOM,
+        }
     },
     { timestamps: true }
 );
