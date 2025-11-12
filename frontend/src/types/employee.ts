@@ -46,11 +46,8 @@ export interface EmployeeDetailsResponse extends CommonTypes.BaseSchema, Employe
     roleId: string;
     roleName: string;
     status: Enum.EmployeeStatus;
-    // designation: string;
-    // dateOfJoining: string;
-    // qualification?: string;
-    // expertise: string[];
     documents: CommonTypes.Document[];
-    // experience: Experience[];
     address: CommonTypes.AddressResponse;
-}
+};
+
+

@@ -484,7 +484,7 @@ export interface EmployeeBasicDetailsRequest {
   gender: Enum.Gender;
   photo?: string | File | null;
 }
-interface EmployeeAddress {
+export interface EmployeeAddress {
   addressLine1: string;
   addressLine2?: string;
   city?: string;
