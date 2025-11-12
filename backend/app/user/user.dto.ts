@@ -61,6 +61,7 @@ export interface IUserRole extends BaseSchema {
         name: string;
         description?: string;
         permissions: IPermission[];
+        type: Enum.RoleType;
 }
 
 export interface IUpdateRole extends Omit<IUserRole, "_id" | "createdAt" | "updatedAt"> { }

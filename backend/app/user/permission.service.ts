@@ -5,7 +5,7 @@ import { IPermission } from "./user.dto";
 import * as Enum from "../common/utils/enum";
 import { DefaultRoles } from "../common/utils/constants";
 import * as UserService from "./user.service";
-import mongoose, { Types } from "mongoose";
+import mongoose from "mongoose";
 
 const syncModules = async () => {
     const existingModules = await moduleSchema.find();
@@ -81,6 +81,7 @@ export const syncRolesAndPermissions = async () => {
             role = new roleSchema({
                 name: roleName,
                 description: `${roleName} default role`,
+                type: Enum.RoleType.DEFAULT,
                 permissions: allConfigPermissions.map((perm) => ({
                     name: perm.name,
                     operations: {

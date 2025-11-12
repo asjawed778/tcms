@@ -5,6 +5,11 @@ export enum UserRole {
   USER = "User",
 };
 
+export enum RoleType {
+  DEFAULT = "Default",
+  CUSTOM = "Custom",
+}
+
 // enum for session
 export enum SessionStatus {
   CURRENT = 'Current',

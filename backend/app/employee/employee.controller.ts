@@ -46,7 +46,7 @@ export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res:
         throw createHttpError(404, "Employee not found");
     }
     if (data.email || data.firstName || data.lastName || data.role) {
-        await UserService.updateUserByAdmin(empDoc.user, {
+        await UserService.updateUserByAdmin(empDoc.userId, {
             ...(data.firstName && { name: data.firstName }),
             ...(data.lastName && { name: data.lastName }),
             ...(data.email && { email: data.email }),
