@@ -114,10 +114,17 @@ const AddEmployee = () => {
       setEmployeeId(editEmployeeId);
     }
   }, [editEmployeeId]);
+
   useEffect(() => {
-    if (employeeDetails?.data && salaryStructure?.data) {
+    if (
+      employeeDetails?.data &&
+      salaryStructure?.data &&
+      !fetchingEmployee &&
+      !salaryFetching
+    ) {
       const emp = employeeDetails.data;
       const salary = salaryStructure.data[0] || {};
+
       methods.reset({
         firstName: emp.firstName,
         lastName: emp.lastName,
@@ -154,7 +161,13 @@ const AddEmployee = () => {
         documents: emp.documents || [],
       });
     }
-  }, [employeeDetails, methods]);
+  }, [
+    employeeDetails,
+    salaryStructure,
+    fetchingEmployee,
+    salaryFetching,
+    methods,
+  ]);
 
   const stepApis = [
     async (data: any) => {

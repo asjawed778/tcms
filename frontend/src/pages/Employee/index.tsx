@@ -11,8 +11,15 @@ import {
   Operation,
   SubModuleName,
 } from "@/utils/enum";
-import { Delete, Edit, PersonAdd } from "@mui/icons-material";
-import { Box, useTheme } from "@mui/material";
+import {
+  Delete,
+  Edit,
+  EditOutlined,
+  PersonAdd,
+  Visibility,
+  VisibilityOutlined,
+} from "@mui/icons-material";
+import { Box, Button, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
@@ -40,7 +47,6 @@ const Employee: React.FC = () => {
     data: employeeData,
     isFetching,
     isError,
-    refetch,
   } = useGetAllEmployeeQuery(
     {
       page,
@@ -52,49 +58,128 @@ const Employee: React.FC = () => {
       refetchOnMountOrArgChange: true,
     }
   );
+  const actionDisplayType = employeeData?.data?.employees?.some(
+    (emp) => emp.status !== EmployeeStatus.DRAFT
+  )
+    ? "menu"
+    : "icon";
 
-  const actionsList = () => {
-    const ACTIONS = [
-      {
-        action: "update",
-        label: "Update",
-        icon: <Edit />,
-        color: "info.main",
-        permission: {
-          module: ModuleName.Employee,
-          subModule: null,
-          operation: Operation.UPDATE,
+  const actionsList = (row: EmployeeDetailsResponse) => {
+    if (row.status === EmployeeStatus.DRAFT) {
+      return [
+        {
+          action: "update",
+          label: "Resume",
+          icon: (
+            <Button
+              variant="contained"
+              size="small"
+              endIcon={<EditOutlined fontSize="small" />}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleActionClick("update", row);
+              }}
+              sx={{
+                backgroundColor: theme.customColors.resumeAction,
+              }}
+            >
+              Resume
+            </Button>
+          ),
+          permission: {
+            module: ModuleName.Employee,
+            subModule: null,
+            operation: Operation.UPDATE,
+          },
         },
-      },
+        {
+          action: "view",
+          label: "View",
+          icon: <VisibilityOutlined />,
+          color: theme.customColors.viewAction,
+          permission: {
+            module: ModuleName.Employee,
+            subModule: null,
+            operation: Operation.READ,
+          },
+        },
+        {
+          action: "delete",
+          label: "Delete",
+          icon: <Delete />,
+          color: theme.customColors.deleteAction,
+          permission: {
+            module: ModuleName.Employee,
+            subModule: null,
+            operation: Operation.DELETE,
+          },
+        },
+      ];
+    }
+
+    if (row.status === EmployeeStatus.ACTIVE) {
+      return [
+        {
+          action: "update",
+          label: "Update Details",
+          icon: <EditOutlined />,
+          color: theme.customColors.updateAction,
+          permission: {
+            module: ModuleName.Employee,
+            subModule: null,
+            operation: Operation.UPDATE,
+          },
+        },
+        {
+          action: "view",
+          label: "View Details",
+          icon: <VisibilityOutlined />,
+          color: theme.customColors.viewAction,
+          permission: {
+            module: ModuleName.Employee,
+            subModule: null,
+            operation: Operation.READ,
+          },
+        },
+      ];
+    }
+
+    // For other statuses like RESIGN, RETIRED, etc.
+    return [
       {
-        action: "deleteRole",
-        label: "Delete",
-        icon: <Delete />,
-        color: "error.main",
+        action: "view",
+        label: "View Details",
+        icon: (
+          <Button
+            variant="text"
+            size="small"
+            endIcon={<VisibilityOutlined fontSize="small" />}
+            onClick={(e) => {
+              e.stopPropagation();
+              handleActionClick("view", row);
+            }}
+            sx={{
+              bgcolor: theme.customColors.viewAction,
+            }}
+          >
+            View Details
+          </Button>
+        ),
         permission: {
           module: ModuleName.Employee,
           subModule: null,
-          operation: Operation.DELETE,
+          operation: Operation.READ,
         },
       },
     ];
-
-    return ACTIONS.filter(
-      (action) =>
-        !action.permission ||
-        can(
-          action.permission.module,
-          action.permission.subModule,
-          action.permission.operation
-        )
-    );
   };
+
   const handleImageClick = (url: string) => {
     if (!url) return;
     setSelectedEmpImage([{ url, type: "image" }]);
     setOpenImagePreview(true);
   };
-  const handleEmployeeClick = (employeeId: string) => {
+  const handleEmployeeRowClick = (employeeId: string) => {
     if (!employeeId) return;
     setSelectedEmployeeId(employeeId);
   };
@@ -113,9 +198,8 @@ const Employee: React.FC = () => {
       case "update":
         navigate(`/dashboard/employee/update-details/${row._id}`);
         break;
-
-      case "deleteRole":
-        // you can handle delete logic here later
+      case "view":
+        handleEmployeeRowClick(row._id);
         break;
 
       default:
@@ -169,7 +253,8 @@ const Employee: React.FC = () => {
           isFetching={isFetching}
           actions={actionsList}
           isError={isError}
-          onRowClick={(employee) => handleEmployeeClick(employee._id)}
+          onRowClick={(employee) => handleEmployeeRowClick(employee._id)}
+          actionDisplayType={actionDisplayType}
         />
       </Box>
       <DocumentPreviewer
@@ -184,7 +269,10 @@ const Employee: React.FC = () => {
         width="60%"
         header="Employee Details"
       >
-        <EmployeeDetails employeeId={seletedEmployeeId} />
+        <EmployeeDetails
+          employeeId={seletedEmployeeId}
+          onImageClick={handleImageClick}
+        />
       </SideDrawerWrapper>
     </>
   );

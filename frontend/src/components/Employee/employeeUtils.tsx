@@ -1,6 +1,8 @@
 import { Box, Avatar, Typography } from "@mui/material";
 import GenderChip from "@/components/ui/GenderChip";
 import { formatDate } from "@/utils/helper";
+import { EmployeeDetailsResponse } from "@/types/employee";
+import { EmployeeStatus } from "@/utils/enum";
 
 export const getEmployeeColumns = (onImageClick: (url: string) => void) => [
   { key: "sno.", label: "S.No.", width: "7%" },
@@ -9,15 +11,19 @@ export const getEmployeeColumns = (onImageClick: (url: string) => void) => [
     key: "name",
     label: "Name",
     width: "25%",
-    render: (row: any) => (
+    render: (row: EmployeeDetailsResponse) => (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <Avatar
-          src={row.photo || undefined}
-          alt={row.name}
-          sx={{ width: 28, height: 28, cursor: "pointer" }}
+          src={row.photo || ""}
+          alt={row.firstName}
+          sx={{
+            width: 28,
+            height: 28,
+            cursor: row.photo ? "pointer" : "default",
+          }}
           onClick={(e) => {
             e.stopPropagation();
-            onImageClick(row.photo);
+            if (row.photo) onImageClick(row.photo);
           }}
         />
         {row.firstName} {row.lastName}
@@ -28,7 +34,9 @@ export const getEmployeeColumns = (onImageClick: (url: string) => void) => [
     key: "gender",
     label: "Gender",
     width: "15%",
-    render: (row: any) => <GenderChip gender={row.gender} />,
+    render: (row: EmployeeDetailsResponse) => (
+      <GenderChip gender={row.gender} />
+    ),
   },
   { key: "designation", label: "Designation", width: "12%" },
   { key: "role", label: "Role", width: "12%" },
@@ -36,7 +44,10 @@ export const getEmployeeColumns = (onImageClick: (url: string) => void) => [
     key: "dateOfJoining",
     label: "Joining Date",
     width: "12%",
-    render: (row: any) => formatDate(row.dateOfJoining),
+    render: (row: EmployeeDetailsResponse) =>
+      row.status === EmployeeStatus.DRAFT
+        ? "--"
+        : formatDate(row.dateOfJoining),
   },
 ];
 

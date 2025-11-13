@@ -17,6 +17,7 @@ import {
   SxProps,
   Theme,
   TablePagination,
+  Button,
 } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
 import NoDataCard from "../common/NoDataCard";
@@ -227,15 +228,19 @@ function TableWrapper<T extends { _id?: string | number }>({
             <TableCell
               align="left"
               sx={{
-                width: actionDisplayType === "icon" ? 100 : 80,
-                minWidth: actionDisplayType === "icon" ? 100 : 80,
-                maxWidth: actionDisplayType === "icon" ? 100 : 80,
+                // width: actionDisplayType === "icon" ? 100 : 80,
+                // minWidth: actionDisplayType === "icon" ? 100 : 50,
+                // maxWidth: actionDisplayType === "icon" ? 100 : 80,
                 pl: "10px",
                 py: 0,
                 border: "1px solid #E0E0E0",
+                whiteSpace: "nowrap",
+                width: "auto", // ✅ allow width to adjust automatically
+                maxWidth: "none", // ✅ prevent artificial clipping
+                overflow: "visible",
               }}
             >
-              <Box
+              {/* <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
@@ -269,6 +274,101 @@ function TableWrapper<T extends { _id?: string | number }>({
                       </IconButton>
                     </Tooltip>
                   ))
+                ) : (
+                  <>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenuOpen(e, index);
+                      }}
+                    >
+                      <MoreVert fontSize="small" color="primary" />
+                    </IconButton>
+                    {menuRowIndex === index && (
+                      <Menu
+                        anchorEl={anchorEl}
+                        open={Boolean(anchorEl)}
+                        onClose={handleMenuClose}
+                        anchorOrigin={{
+                          vertical: "bottom",
+                          horizontal: "right",
+                        }}
+                        transformOrigin={{
+                          vertical: "top",
+                          horizontal: "right",
+                        }}
+                      >
+                        {currentActions.map((action, actionIndex) => (
+                          <MenuItem
+                            key={`menu-${row._id ?? index}-${
+                              action.action
+                            }-${actionIndex}`}
+                            onClick={async (e) => {
+                              e.stopPropagation();
+                              await onActionClick?.(action.action, row);
+                              handleMenuClose();
+                            }}
+                            sx={{
+                              display: "flex",
+                              alignItems: "center",
+                              gap: 1,
+                              color: action.color || "inherit",
+                            }}
+                          >
+                            {action.icon && action.icon}
+                            {action.label}
+                          </MenuItem>
+                        ))}
+                      </Menu>
+                    )}
+                  </>
+                )}
+              </Box> */}
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: actionDisplayType === "icon" ? 0.25 : 0.5,
+                  minWidth: 0,
+                  overflow: "visible",
+                }}
+              >
+                {actionDisplayType === "icon" ? (
+                  currentActions.map((action, actionIndex) => {
+                    const isButton =
+                      React.isValidElement(action.icon) &&
+                      action.icon.type === Button;
+
+                    return isButton ? (
+                      <Box key={`${row._id}-${action.action}-${actionIndex}`}>
+                        {action.icon}
+                      </Box>
+                    ) : (
+                      <Tooltip
+                        key={`${row._id}-${action.action}-${actionIndex}`}
+                        title={action.label}
+                      >
+                        <Box component="span">
+                          <IconButton
+                            size="small"
+                            aria-label={action.label}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              onActionClick?.(action.action, row);
+                            }}
+                            sx={{
+                              color: action.color || "inherit",
+                              p: 0,
+                              fontSize: "14px",
+                            }}
+                          >
+                            {action.icon}
+                          </IconButton>
+                        </Box>
+                      </Tooltip>
+                    );
+                  })
                 ) : (
                   <>
                     <IconButton
@@ -359,7 +459,7 @@ function TableWrapper<T extends { _id?: string | number }>({
             sx={{
               borderCollapse: "collapse",
               width: "100%",
-              tableLayout: "fixed",
+              // tableLayout: "auto",
             }}
           >
             <TableHead>
@@ -393,8 +493,8 @@ function TableWrapper<T extends { _id?: string | number }>({
                   sx={{
                     fontWeight: 600,
                     border: "1px solid #E0E0E0",
-                    width: actionDisplayType === "icon" ? "100px" : "80px",
-                    minWidth: actionDisplayType === "icon" ? "100px" : "80px",
+                    // width: actionDisplayType === "icon" ? "100px" : "80px",
+                    // minWidth: actionDisplayType === "icon" ? "100px" : "10px",
                     pl: "10px",
                   }}
                 >

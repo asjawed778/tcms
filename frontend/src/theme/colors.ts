@@ -53,6 +53,12 @@ export interface ThemeColors {
   sidebarActiveBg: string;
   sidebarActiveIcon: string;
   sidebarActiveText: string;
+
+  // Table action......................
+  viewAction: string;
+  updateAction: string;
+  deleteAction: string;
+  resumeAction: string;
 }
 
 export const Colors: Record<ThemeMode, ThemeColors> = {
@@ -112,6 +118,12 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     sidebarActiveBg: "#0173f5",
     sidebarActiveIcon: "#FFF",
     sidebarActiveText: "#FFF",
+
+    // Table action......................
+    updateAction: "#0173f5",
+    viewAction: "#0b6fa8ff",
+    deleteAction: "#FF0000",
+    resumeAction: "#2597faff"
   },
 
   // >>>>>>>>>>>>>>>>>>>>>>>>>>DARK THEM>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
@@ -172,5 +184,11 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
     sidebarActiveBg: "#0173f5",
     sidebarActiveIcon: "#FFF",
     sidebarActiveText: "#FFF",
+
+    // Table action......................
+    updateAction: "#0173f5",
+    viewAction: "#0b6fa8ff",
+    deleteAction: "#FF0000",
+    resumeAction: "#2597faff",
   },
 };

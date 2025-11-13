@@ -76,7 +76,7 @@ interface SignupRequest {
   email: string;
   password: string;
 }
-interface SignupResponse extends User { }
+interface SignupResponse extends User {}
 
 //  General data..................................................
 interface DropdownOptions {
@@ -217,7 +217,7 @@ interface Subjects {
   writer: string;
   ISBN: string;
 }
-interface Students { }
+interface Students {}
 interface ClassTeacher {
   name: string;
   designation: string;
@@ -326,22 +326,6 @@ interface TimeTableApiResponse {
   message: string;
   success: boolean;
 }
-interface UnAssignFacultyFormData {
-  sessionId: string;
-  day: string;
-  startTime: Time;
-  endTime: Time;
-}
-interface UnAssingFaculty {
-  _id: string;
-  name: string;
-  designation: string;
-}
-interface UnAssingFacultyApiResponse {
-  data: UnAssingFaculty | UnAssingFaculty[];
-  message: string;
-  success: boolean;
-}
 
 // Student Admission Data..................................
 interface Parent {
@@ -430,7 +414,7 @@ interface AddRemarkRequest {
   actionTaken?: Enum.ActionTaken;
   supportingDocuments?: Document[];
 }
-export interface RemarkResponse extends AddRemarkRequest, BaseSchema { }
+export interface RemarkResponse extends AddRemarkRequest, BaseSchema {}
 // Subject...................................................................
 export interface SubjectRequest {
   name: string;
@@ -468,75 +452,4 @@ export interface SectionResponse extends SectionRequest, BaseSchema {
 }
 export interface SectionResponseList {
   sections: SectionResponse[];
-}
-
-// Employee.................................................................
-export interface EmployeeBasicDetailsRequest {
-  firstName: string;
-  lastName?: string;
-  fatherName?: string;
-  motherName?: string;
-  phoneNumber: string;
-  email: string;
-  aadhaarNumber?: string;
-  role?: string;
-  dob: string;
-  gender: Enum.Gender;
-  photo?: string | File | null;
-}
-export interface EmployeeAddress {
-  addressLine1: string;
-  addressLine2?: string;
-  city?: string;
-  state?: string;
-  country: string;
-  pincode: number;
-}
-export interface Experience {
-  organisationName: string;
-  years: number;
-  designation: string;
-}
-export interface ExpertiseSubject {
-  subject: string;
-}
-export interface ProfessionalDetailsRequest {
-  designation: string;
-  dateOfJoining: string;
-  qualification?: string;
-  certificate?: string;
-  experience: Experience[];
-  expertiseSubjects: ExpertiseSubject[];
-}
-export interface SalaryStructureRequest {
-  basicPay: number;
-  effectiveFrom: string;
-  effectiveTo?: string;
-  hra?: number;
-  allowances?: number;
-  deductions?: number;
-  remarks?: string;
-}
-export interface EmployeeDocuments {
-  documents: Document[];
-}
-export interface AddEmployeeRequest extends EmployeeBasicDetailsRequest, ProfessionalDetailsRequest, SalaryStructureRequest, EmployeeDocuments {
-  address: EmployeeAddress;
-};
-export interface EmployeeResponse extends BaseSchema, AddEmployeeRequest { };
-export interface EmployeeResponseList {
-  employees: EmployeeResponse[];
-  showing: number;
-  totalDocs: number;
-}
-
-export interface EmployeeDetailsResponse extends EmployeeResponse {
-  employeeId: string;
-  userId: string;
-  roleId: string;
-  roleName: string;
-
-  experience: ExperienceResponse[];
-  documents: EmployeeDocumentResponse[];
-  address: Addre;
 }

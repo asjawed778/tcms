@@ -7,6 +7,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { Edit, CameraAlt, Email, Phone, Badge } from "@mui/icons-material";
+import { useState } from "react";
+import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 
 interface BasicDetailsProps {
   _id: string;
@@ -20,6 +22,7 @@ interface BasicDetailsProps {
   email: string;
   onEditDetails?: () => void;
   onEditPhoto?: () => void;
+  onImageClick?: (url: string) => void;
 }
 
 const BasicDetails: React.FC<BasicDetailsProps> = ({
@@ -33,6 +36,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
   email,
   onEditDetails,
   onEditPhoto,
+  onImageClick,
 }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
@@ -45,6 +49,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
             src={photo}
             alt={`${firstName} ${lastName}`}
             sx={styles.avatar}
+            // onClick={() => onImageClick?.(photo)}
           />
           <IconButton
             sx={styles.cameraButton}
