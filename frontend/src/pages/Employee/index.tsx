@@ -9,21 +9,21 @@ import {
   EmployeeStatus,
   ModuleName,
   Operation,
-  SubModuleName,
 } from "@/utils/enum";
 import {
   Delete,
-  Edit,
   EditOutlined,
   PersonAdd,
-  Visibility,
   VisibilityOutlined,
 } from "@mui/icons-material";
-import { Box, Button, useTheme } from "@mui/material";
+import { alpha, Box, Button, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
-import { getDraftEmployeeColumns, getEmployeeColumns } from "@/components/Employee/employeeUtils";
+import {
+  getDraftEmployeeColumns,
+  getEmployeeColumns,
+} from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
 import { EmployeeDetailsResponse } from "@/types/employee";
 
@@ -35,6 +35,7 @@ const Employee: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(EmployeeStatus.ACTIVE);
+  const [showLastDateColumn, setShowLastDateColumn] = useState(false);
   const navigate = useNavigate();
   const can = useCan();
   const [openImagePreview, setOpenImagePreview] = useState(false);
@@ -42,8 +43,6 @@ const Employee: React.FC = () => {
     { url: string; type: "image" }[]
   >([]);
   const [seletedEmployeeId, setSelectedEmployeeId] = useState<string>("");
-  const [selectedRow, setSelectedRow] =
-    useState<EmployeeDetailsResponse | null>(null);
   const {
     data: employeeData,
     isFetching,
@@ -65,7 +64,7 @@ const Employee: React.FC = () => {
       return [
         {
           action: "update",
-          label: "Resume",
+          label: "",
           icon: (
             <Button
               variant="outlined"
@@ -76,7 +75,8 @@ const Employee: React.FC = () => {
                 handleActionClick("update", row);
               }}
               sx={{
-                backgroundColor: theme.customColors.primary + "20", borderRadius: "20px",
+                backgroundColor: theme.customColors.primary + "20",
+                borderRadius: "20px",
               }}
             >
               Resume
@@ -92,7 +92,7 @@ const Employee: React.FC = () => {
           action: "view",
           label: "View",
           icon: <VisibilityOutlined />,
-          // color: theme.customColors.viewAction,
+          color: theme.customColors.secondary,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -103,7 +103,7 @@ const Employee: React.FC = () => {
           action: "delete",
           label: "Delete",
           icon: <Delete />,
-          // color: theme.customColors.deleteAction,
+          color: "error.main",
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -119,7 +119,7 @@ const Employee: React.FC = () => {
           action: "update",
           label: "Update Details",
           icon: <EditOutlined />,
-          // color: theme.customColors.updateAction,
+          color: theme.customColors.primary,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -130,7 +130,7 @@ const Employee: React.FC = () => {
           action: "view",
           label: "View Details",
           icon: <VisibilityOutlined />,
-          // color: theme.customColors.viewAction,
+          color: theme.customColors.secondary,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -144,7 +144,7 @@ const Employee: React.FC = () => {
     return [
       {
         action: "view",
-        label: "View Details",
+        label: "",
         icon: (
           <Button
             variant="text"
@@ -155,7 +155,7 @@ const Employee: React.FC = () => {
               handleActionClick("view", row);
             }}
             sx={{
-              // bgcolor: theme.customColors.viewAction,
+              color: theme.customColors.secondary,
             }}
           >
             View Details
@@ -180,7 +180,10 @@ const Employee: React.FC = () => {
     setSelectedEmployeeId(employeeId);
   };
 
-  const employeeTableColumns = getDraftEmployeeColumns(handleImageClick);
+  const employeeTableColumns =
+    actionType === "menu"
+      ? getEmployeeColumns(handleImageClick, showLastDateColumn)
+      : getDraftEmployeeColumns(handleImageClick);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
@@ -215,6 +218,11 @@ const Employee: React.FC = () => {
     } else {
       setActionType("menu");
     }
+    if(val !== EmployeeStatus.ACTIVE && val !== EmployeeStatus.DRAFT){
+      setShowLastDateColumn(true);
+    } else {
+      setShowLastDateColumn(false)
+    }
   };
   return (
     <>
@@ -228,6 +236,7 @@ const Employee: React.FC = () => {
           <Box sx={styles.contentBox}>
             <CustomDropdownField
               label="Status"
+              placeholder="All"
               required={false}
               value={statusFilter}
               onChange={(value) => handleStatusChange(value as EmployeeStatus)}

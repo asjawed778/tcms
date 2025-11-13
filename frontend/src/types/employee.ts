@@ -42,12 +42,13 @@ export interface SalaryStructureRequest {
 
 export interface EmployeeDetailsResponse
   extends CommonTypes.BaseSchema,
-    EmployeeBasicDetailsRequest,
-    ProfessionalDetailsRequest {
+  EmployeeBasicDetailsRequest,
+  ProfessionalDetailsRequest {
   employeeId: string;
   userId: string;
   roleId: string;
   roleName: string;
+  lastWorkingDate?: string;
   status: Enum.EmployeeStatus;
   documents: CommonTypes.Document[];
   address: CommonTypes.AddressResponse;
