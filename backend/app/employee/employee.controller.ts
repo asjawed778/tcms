@@ -75,7 +75,7 @@ export const upsertEmpAddress = asyncHandler(async (req: Request, res: Response)
     }
     let address;
     if (empDoc.address) {
-        address = await AddressService.saveAddress(data.address, empDoc._id);
+        address = await AddressService.saveAddress(data.address, empDoc.address._id);
     } else {
         address = await AddressService.saveAddress(data.address);
     }

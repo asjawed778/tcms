@@ -24,7 +24,7 @@ const AddStudent = lazy(() => import("@/pages/AddStudent"));
 const Academics = lazy(() => import("@/pages/Academics"));
 const CreateClass = lazy(() => import("@/pages/CreateClass"));
 const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
-const Tools = lazy(() => import("@/pages/Administration"));
+const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
   return (
@@ -225,7 +225,7 @@ const AppRoutes = () => {
                     },
                   ]}
                 >
-                  <Tools />
+                  <Administration />
                 </RoleAuthRoute>
               </ErrorBoundary>
             }

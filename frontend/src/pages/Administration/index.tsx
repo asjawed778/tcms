@@ -4,7 +4,7 @@ import { Badge } from "@mui/material";
 import RolesAndPermissions from "./RolesAndPermissionTab";
 import SegmentTabs from "@/components/ui/SegmentTabs";
 
-function Tools() {
+function Administration() {
   const can = useCan();
 
   const allTabs = [
@@ -14,9 +14,9 @@ function Tools() {
       icon: <Badge />,
       component: <RolesAndPermissions />,
       permission: {
-        module: ModuleName.ADMINISTRATION,        
-        subModule: SubModuleName.ROLES,  
-        action: Operation.READ,           
+        module: ModuleName.ADMINISTRATION,
+        subModule: SubModuleName.ROLES,
+        action: Operation.READ,
       },
     },
   ];
@@ -28,4 +28,4 @@ function Tools() {
   return <SegmentTabs tabs={tabs} defaultTab={tabs[0]?.value} />;
 }
 
-export default Tools;
+export default Administration;

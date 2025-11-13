@@ -7,11 +7,8 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import CheckCircleOutlineOutlinedIcon from "@mui/icons-material/CheckCircleOutlineOutlined";
-import WarningAmberIcon from "@mui/icons-material/WarningAmber";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import CustomButton from "./CustomButton";
-import { Close } from "@mui/icons-material";
+import { Close, DeleteForever, WarningAmber, CheckCircleOutlineOutlined } from "@mui/icons-material";
 
 type AlertType = "success" | "warning" | "delete";
 interface AlertModalProps {
@@ -27,18 +24,18 @@ interface AlertModalProps {
 const iconMap = {
   success: {
     icon: (
-      <CheckCircleOutlineOutlinedIcon
+      <CheckCircleOutlineOutlined
         sx={{ fontSize: 70, color: "success.main" }}
       />
     ),
     bgColor: "rgba(69, 153, 72, 0.1)",
   },
   warning: {
-    icon: <WarningAmberIcon sx={{ fontSize: 70, color: "warning.main" }} />,
+    icon: <WarningAmber sx={{ fontSize: 70, color: "warning.main" }} />,
     bgColor: "rgba(255, 193, 7, 0.1)",
   },
   delete: {
-    icon: <DeleteForeverIcon sx={{ fontSize: 70, color: "error.main" }} />,
+    icon: <DeleteForever sx={{ fontSize: 70, color: "error.main" }} />,
     bgColor: "rgba(244, 67, 54, 0.1)",
   },
 };
