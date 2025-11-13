@@ -23,7 +23,7 @@ import { Box, Button, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
-import { getEmployeeColumns } from "@/components/Employee/employeeUtils";
+import { getDraftEmployeeColumns, getEmployeeColumns } from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
 import { EmployeeDetailsResponse } from "@/types/employee";
 
@@ -31,6 +31,7 @@ const Employee: React.FC = () => {
   const theme = useTheme();
   const styles = getStyles(theme);
   const [page, setPage] = useState(1);
+  const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(EmployeeStatus.ACTIVE);
@@ -58,11 +59,6 @@ const Employee: React.FC = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-  const actionDisplayType = employeeData?.data?.employees?.some(
-    (emp) => emp.status !== EmployeeStatus.DRAFT
-  )
-    ? "menu"
-    : "icon";
 
   const actionsList = (row: EmployeeDetailsResponse) => {
     if (row.status === EmployeeStatus.DRAFT) {
@@ -72,7 +68,7 @@ const Employee: React.FC = () => {
           label: "Resume",
           icon: (
             <Button
-              variant="contained"
+              variant="outlined"
               size="small"
               endIcon={<EditOutlined fontSize="small" />}
               onClick={(e) => {
@@ -80,7 +76,7 @@ const Employee: React.FC = () => {
                 handleActionClick("update", row);
               }}
               sx={{
-                backgroundColor: theme.customColors.resumeAction,
+                backgroundColor: theme.customColors.primary + "20", borderRadius: "20px",
               }}
             >
               Resume
@@ -96,7 +92,7 @@ const Employee: React.FC = () => {
           action: "view",
           label: "View",
           icon: <VisibilityOutlined />,
-          color: theme.customColors.viewAction,
+          // color: theme.customColors.viewAction,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -107,7 +103,7 @@ const Employee: React.FC = () => {
           action: "delete",
           label: "Delete",
           icon: <Delete />,
-          color: theme.customColors.deleteAction,
+          // color: theme.customColors.deleteAction,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -123,7 +119,7 @@ const Employee: React.FC = () => {
           action: "update",
           label: "Update Details",
           icon: <EditOutlined />,
-          color: theme.customColors.updateAction,
+          // color: theme.customColors.updateAction,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -134,7 +130,7 @@ const Employee: React.FC = () => {
           action: "view",
           label: "View Details",
           icon: <VisibilityOutlined />,
-          color: theme.customColors.viewAction,
+          // color: theme.customColors.viewAction,
           permission: {
             module: ModuleName.Employee,
             subModule: null,
@@ -159,7 +155,7 @@ const Employee: React.FC = () => {
               handleActionClick("view", row);
             }}
             sx={{
-              bgcolor: theme.customColors.viewAction,
+              // bgcolor: theme.customColors.viewAction,
             }}
           >
             View Details
@@ -184,15 +180,17 @@ const Employee: React.FC = () => {
     setSelectedEmployeeId(employeeId);
   };
 
-  const employeeTableColumns = getEmployeeColumns(handleImageClick);
+  const employeeTableColumns = getDraftEmployeeColumns(handleImageClick);
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
+
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setPage(1);
   };
+
   const handleActionClick = (action: string, row: EmployeeDetailsResponse) => {
     switch (action) {
       case "update":
@@ -201,7 +199,6 @@ const Employee: React.FC = () => {
       case "view":
         handleEmployeeRowClick(row._id);
         break;
-
       default:
         break;
     }
@@ -213,6 +210,11 @@ const Employee: React.FC = () => {
   const handleStatusChange = (val: EmployeeStatus) => {
     setStatusFilter(val);
     setPage(1);
+    if (val === EmployeeStatus.DRAFT) {
+      setActionType("icon");
+    } else {
+      setActionType("menu");
+    }
   };
   return (
     <>
@@ -254,7 +256,7 @@ const Employee: React.FC = () => {
           actions={actionsList}
           isError={isError}
           onRowClick={(employee) => handleEmployeeRowClick(employee._id)}
-          actionDisplayType={actionDisplayType}
+          actionDisplayType={actionType}
         />
       </Box>
       <DocumentPreviewer
