@@ -10,7 +10,7 @@ const ProfessionalDetails: React.FC = () => {
   const { control } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "expertiseSubjects",
+    name: "expertise",
   });
 
   const initialized = useRef(false);
@@ -62,7 +62,7 @@ const ProfessionalDetails: React.FC = () => {
       <Grid container spacing={2}>
         <Grid size={{ xs: 12 }}>
           <Typography variant="h6" sx={{ mb: 1 }}>
-            Expertise Subject
+            Expertise
           </Typography>
         </Grid>
         {fields.map((field, index) => (
@@ -75,8 +75,8 @@ const ProfessionalDetails: React.FC = () => {
             <Grid size={{ xs: 11 }}>
               <CustomInputField
                 name={`expertise.${index}.subject`}
-                label={`Subject ${index + 1}`}
-                placeholder="Enter Expertise Subject"
+                label={`Expertise ${index + 1}`}
+                placeholder="Enter Expertise"
                 required={false}
               />
             </Grid>
@@ -104,7 +104,7 @@ const ProfessionalDetails: React.FC = () => {
         ))}
         <Grid size={{ xs: 12 }} display="flex" justifyContent="flex-end">
           <CustomButton
-            label="Add More Subject"
+            label="Add More"
             onClick={() => append({ subject: "" })}
             variant="text"
             startIcon={<Add />}

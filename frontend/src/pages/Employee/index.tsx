@@ -40,6 +40,7 @@ const Employee: React.FC = () => {
     data: employeeData,
     isFetching,
     isError,
+    refetch,
   } = useGetAllEmployeeQuery(
     {
       page,
@@ -90,7 +91,6 @@ const Employee: React.FC = () => {
   };
   const handleImageClick = (url: string) => {
     if (!url) return;
-    console.log("url: ", url);
     setSelectedEmpImage([{ url, type: "image" }]);
     setOpenImagePreview(true);
   };

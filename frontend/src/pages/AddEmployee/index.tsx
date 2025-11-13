@@ -28,6 +28,7 @@ import SalaryStructure from "./SalaryStructure";
 import {
   useAddBasicDetailsMutation,
   useGetEmployeeDetailsQuery,
+  useGetSalaryStructureQuery,
   useUpdateAddressMutation,
   useUpdateBasicDetailsMutation,
   useUpdateDocumentsMutation,
@@ -90,13 +91,21 @@ const AddEmployee = () => {
       { employeeId: editEmployeeId! },
       {
         skip: !editEmployeeId,
+        refetchOnMountOrArgChange: true,
       }
     );
-  // console.log("Employee Details: ", employeeDetails);
+  const { data: salaryStructure, isFetching: salaryFetching } =
+    useGetSalaryStructureQuery(
+      { employeeId: editEmployeeId! },
+      {
+        skip: !editEmployeeId,
+        refetchOnMountOrArgChange: true,
+      }
+    );
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
-    // resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
     defaultValues: {},
     mode: "onChange",
   });
@@ -106,9 +115,9 @@ const AddEmployee = () => {
     }
   }, [editEmployeeId]);
   useEffect(() => {
-    if (employeeDetails?.data) {
+    if (employeeDetails?.data && salaryStructure?.data) {
       const emp = employeeDetails.data;
-
+      const salary = salaryStructure.data[0] || {};
       methods.reset({
         firstName: emp.firstName,
         lastName: emp.lastName,
@@ -116,16 +125,22 @@ const AddEmployee = () => {
         motherName: emp.motherName,
         email: emp.email,
         phoneNumber: emp.phoneNumber,
+        aadhaarNumber: emp.aadhaarNumber,
         dob: emp.dob,
         gender: emp.gender,
         qualification: emp.qualification,
         dateOfJoining: emp.dateOfJoining,
         designation: emp.designation,
-        roleId: emp.roleId,
+        role: emp.roleId,
         status: emp.status,
         photo: emp.photo,
-
-        // Address
+        basicPay: salary.basicPay,
+        deductions: salary.deductions,
+        hra: salary.hra,
+        allowances: salary.allowances,
+        effectiveFrom: salary.effectiveFrom,
+        effectiveTo: salary.effectiveTo,
+        remarks: salary.remarks,
         address: {
           addressLine1: emp.address?.addressLine1,
           city: emp.address?.city,
@@ -133,12 +148,9 @@ const AddEmployee = () => {
           country: emp.address?.country,
           pincode: emp.address?.pincode,
         },
-
-        // Professional
         experience: emp.experience || [],
-        expertise: emp.expertise || [],
-
-        // Documents
+        expertise:
+          emp.expertise?.map((item: string) => ({ subject: item })) || [],
         documents: emp.documents || [],
       });
     }
@@ -147,12 +159,8 @@ const AddEmployee = () => {
   const stepApis = [
     async (data: any) => {
       const payload = cleanData(data);
-      console.log("Data: ", data);
-      
       if (employeeId) {
         const res = await updateBasicDetails({ employeeId, payload }).unwrap();
-        console.log("res: ",res);
-        
       } else {
         const response = await addBasicDetails({ payload }).unwrap();
         setEmployeeId(response.data._id);
@@ -207,7 +215,10 @@ const AddEmployee = () => {
       if (activeStep < steps.length - 1) {
         setActiveStep((prev) => prev + 1);
       } else {
-        toast.success("Employee details added successfully!");
+        const message = editEmployeeId
+          ? "Employee details updated successfully!"
+          : "Employee details added successfully!";
+        toast.success(message);
         navigate("/dashboard/employee");
       }
     } catch (error: any) {
@@ -233,7 +244,7 @@ const AddEmployee = () => {
     }
   };
 
-  if (fetchingEmployee) {
+  if (fetchingEmployee || salaryFetching) {
     return (
       <Box
         sx={{
