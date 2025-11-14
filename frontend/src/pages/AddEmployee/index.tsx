@@ -173,7 +173,7 @@ const AddEmployee = () => {
     async (data: any) => {
       const payload = cleanData(data);
       if (employeeId) {
-        const res = await updateBasicDetails({ employeeId, payload }).unwrap();
+        await updateBasicDetails({ employeeId, payload }).unwrap();
       } else {
         const response = await addBasicDetails({ payload }).unwrap();
         setEmployeeId(response.data._id);
