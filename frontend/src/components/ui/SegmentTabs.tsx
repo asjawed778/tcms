@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box, SxProps } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
 interface TabItem {
@@ -12,9 +12,15 @@ interface SegmentTabsProps {
   tabs: TabItem[];
   defaultTab?: string;
   tabUrlControlled?: boolean;
+  tabContainerSx?: any;
 }
 
-const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab, tabUrlControlled = true }) => {
+const SegmentTabs: React.FC<SegmentTabsProps> = ({
+  tabs,
+  defaultTab,
+  tabUrlControlled = true,
+  tabContainerSx = {},
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [localTab, setLocalTab] = React.useState(defaultTab || tabs[0].value);
   const activeTab = tabUrlControlled
@@ -27,8 +33,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab, tabUrlContr
     }
   }, [defaultTab, searchParams, setSearchParams, tabs, tabUrlControlled]);
 
-
-  const ActiveComponent = useMemo(
+  const children = useMemo(
     () => tabs.find((t) => t.value === activeTab)?.component || null,
     [tabs, activeTab]
   );
@@ -44,15 +49,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab, tabUrlContr
   return (
     <Box>
       <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          backgroundColor: "#fff",
-          // borderBottom: "1px solid #E0E0E0",
-          pt: 1,
-          pl: 2
-        }}
+        sx={tabContainerSx}
       >
         <Tabs
           value={activeTab}
@@ -114,7 +111,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab, tabUrlContr
         </Tabs>
       </Box>
 
-      <Box>{ActiveComponent}</Box>
+      <Box>{children}</Box>
     </Box>
   );
 };

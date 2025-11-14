@@ -59,7 +59,7 @@ const PersonalDetails: React.FC = () => {
           </Grid>
         </Grid>
       </Grid>
-      <Grid size={{ xs: 12, md: 2 }}>
+      <Grid size={{ xs: 12, md: 2 }} mt={{ xs: 0, md: 2 }}>
         <ImageUploader name="image" required={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>

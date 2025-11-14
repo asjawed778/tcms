@@ -36,7 +36,7 @@ const ExperienceFieldArray = () => {
                   <CustomInputField
                     name={`experience.${index}.organisationName`}
                     label="Organisation Name"
-                    placeholder="Enter Onganization Name"
+                    placeholder="Enter organization name"
                     required={false}
                   />
                 </Grid>
@@ -44,7 +44,7 @@ const ExperienceFieldArray = () => {
                   <CustomInputField
                     name={`experience.${index}.years`}
                     label="Years"
-                    placeholder="Enter Experience (e.g. 5)"
+                    placeholder="Enter experience in years (e.g. 5)"
                     type="number"
                     required={false}
                   />
@@ -60,7 +60,7 @@ const ExperienceFieldArray = () => {
                     <CustomInputField
                       name={`experience.${index}.designation`}
                       label="Designation"
-                      placeholder="Enter Designation (e.g. Senior Lecturer)"
+                      placeholder="Enter designation (e.g. Senior Lecturer)"
                       required={false}
                     />
                   </Grid>

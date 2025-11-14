@@ -131,6 +131,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
         tabUrlControlled={false}
         tabs={tabs}
         defaultTab={tabs[0]?.value}
+        tabContainerSx={{pt: 1, px: 2, top: 0, position: "sticky"}}
       />
     </Box>
   );

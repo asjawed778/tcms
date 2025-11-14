@@ -31,7 +31,7 @@ const ProfessionalDetails: React.FC = () => {
           <CustomInputField
             name="designation"
             label="Designation"
-            placeholder="Enter Designation (Ex: Teacher)"
+            placeholder="Enter designation (e.g. Teacher)"
           />
         </Grid>
         <Grid size={{ xs: 12, md: 6 }}>
@@ -45,7 +45,7 @@ const ProfessionalDetails: React.FC = () => {
           <CustomInputField
             name="qualification"
             label="Qualification"
-            placeholder="Enter Your Qualification"
+            placeholder="Enter your qualification"
             required={false}
           />
         </Grid>
@@ -53,7 +53,7 @@ const ProfessionalDetails: React.FC = () => {
           <CustomInputField
             name="certification"
             label="Certification"
-            placeholder="Enter Certification Details if any"
+            placeholder="Enter certification details (if any)"
             required={false}
           />
         </Grid>
@@ -76,7 +76,7 @@ const ProfessionalDetails: React.FC = () => {
               <CustomInputField
                 name={`expertise.${index}.subject`}
                 label={`Expertise ${index + 1}`}
-                placeholder="Enter Expertise"
+                placeholder="Enter expertise"
                 required={false}
               />
             </Grid>

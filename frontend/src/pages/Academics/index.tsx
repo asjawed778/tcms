@@ -77,7 +77,7 @@ const Classes: React.FC = () => {
       can(tab.permission.module, tab.permission.subModule, tab.permission.action)
   );
 
-  return <SegmentTabs tabs={tabs} defaultTab={tabs[0]?.value} />;
+  return <SegmentTabs tabs={tabs} defaultTab={tabs[0]?.value} tabContainerSx={{bgcolor: "#fff", px: 2}} />;
 };
 
 export default Classes;
