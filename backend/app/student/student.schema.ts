@@ -58,9 +58,8 @@ const studentSchema = new mongoose.Schema<IStudent>({
     motherTongue: { type: String, required: false },
     photo: { type: String, required: false },
     adharNumber: {
-        type: String, 
+        type: String,
         required: false,
-        unique: true,
     },
     contactNumber: { type: String },
     email: { type: String },
