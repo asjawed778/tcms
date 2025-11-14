@@ -9,7 +9,7 @@ const router = Router();
 
 router
   .post(
-    "/add/step-1/personal-details",
+    "/add/personal-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
     StudentValidation.addPersonalDetails,
     catchError,
