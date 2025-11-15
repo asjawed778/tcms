@@ -353,6 +353,7 @@ export const getStudentById = async (studentId: string) => {
                 address: 1,
                 admissionYear: 1,
                 status: 1,
+                photo: 1,
                 createdAt: 1,
                 updatedAt: 1,
                 admission: {
