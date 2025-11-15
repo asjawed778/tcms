@@ -126,7 +126,6 @@ export interface IAdmission extends BaseSchema {
     section: Types.ObjectId;
     rollNumber: number;
     admissionStatus: Enum.AdmissionStatus;
-    deleted: boolean;
 };
 
 export interface IAdmissionCreate extends Omit<IAdmission, "_id" | "createdAt" | "updatedAt" | "admissionStatus" | "deleted" | "rollNumber" | "student"> { };

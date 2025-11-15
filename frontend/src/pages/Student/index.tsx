@@ -85,7 +85,6 @@ const Student: React.FC = () => {
       skip: !selectedSession?._id,
     }
   );
-  console.log("student data: ", studentData);
   const handleImageClick = (url: string) => {
     if (!url) return;
     setSelectedEmpImage([{ url, type: "image" }]);
@@ -93,7 +92,8 @@ const Student: React.FC = () => {
   };
   const handleRowClick = (student: any) => {
     setSelectedStudent(student);
-    setSelectedStudentId(student._id);
+    console.log("selected student: ", student);
+    setSelectedStudentId(student?.student._id);
   };
 
   const studentTableColumns = getStudentColumns(handleImageClick);
@@ -109,7 +109,7 @@ const Student: React.FC = () => {
 
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/${row._id}/update`, {
+        navigate(`/dashboard/student/update-details/${row.student._id}`, {
           state: { student: row },
         });
         break;

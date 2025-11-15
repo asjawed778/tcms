@@ -32,10 +32,6 @@ const admissionSchema = new mongoose.Schema<IAdmission>({
         enum: Object.values(Enum.AdmissionStatus),
         default: Enum.AdmissionStatus.ACTIVE,
     },
-    deleted: {
-        type: Boolean,
-        default: false,
-    }
 }, { timestamps: true, });
 
 admissionSchema.pre("validate", async function (next) {

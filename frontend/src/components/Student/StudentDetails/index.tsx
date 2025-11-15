@@ -35,11 +35,10 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
     isFetching,
     isError,
   } = useGetStudentDetailsQuery(
-    { studentId: student._id },
+    { studentId: student?.student._id },
     { refetchOnMountOrArgChange: true }
   );
-  console.log("student details: ", student);
-  
+
   // if (isFetching) {
   //   return <BasicDetailsSkeleton />;
   // }
@@ -65,47 +64,47 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
   //   );
   // }
 
-//   const allTabs: TabItem[] = employeeDetails
-//     ? [
-//         {
-//           label: "Personal Info",
-//           value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
-//           component: <PersonalInfoTab employee={employeeDetails.data} />,
-//           permission: {
-//             module: Enum.ModuleName.Employee,
-//             action: Enum.Operation.READ,
-//           },
-//         },
-//         {
-//           label: "Professional Details",
-//           value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
-//           component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
-//           permission: {
-//             module: Enum.ModuleName.Employee,
-//             action: Enum.Operation.READ,
-//           },
-//         },
-//         {
-//           label: "Documents",
-//           value: Enum.EmployeeDetailsTabs.DOCUMENTS,
-//           component: <Documents documents={employeeDetails.data.documents} />,
-//           permission: {
-//             module: Enum.ModuleName.Employee,
-//             action: Enum.Operation.READ,
-//           },
-//         },
-//       ]
-//     : [];
+  //   const allTabs: TabItem[] = employeeDetails
+  //     ? [
+  //         {
+  //           label: "Personal Info",
+  //           value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
+  //           component: <PersonalInfoTab employee={employeeDetails.data} />,
+  //           permission: {
+  //             module: Enum.ModuleName.Employee,
+  //             action: Enum.Operation.READ,
+  //           },
+  //         },
+  //         {
+  //           label: "Professional Details",
+  //           value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
+  //           component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
+  //           permission: {
+  //             module: Enum.ModuleName.Employee,
+  //             action: Enum.Operation.READ,
+  //           },
+  //         },
+  //         {
+  //           label: "Documents",
+  //           value: Enum.EmployeeDetailsTabs.DOCUMENTS,
+  //           component: <Documents documents={employeeDetails.data.documents} />,
+  //           permission: {
+  //             module: Enum.ModuleName.Employee,
+  //             action: Enum.Operation.READ,
+  //           },
+  //         },
+  //       ]
+  //     : [];
 
-//   const tabs = allTabs.filter(
-//     (tab) =>
-//       !tab.permission ||
-//       can(
-//         tab.permission.module,
-//         tab.permission.subModule,
-//         tab.permission.action
-//       )
-//   );
+  //   const tabs = allTabs.filter(
+  //     (tab) =>
+  //       !tab.permission ||
+  //       can(
+  //         tab.permission.module,
+  //         tab.permission.subModule,
+  //         tab.permission.action
+  //       )
+  //   );
   const handleUpdateDetails = (employeeId: string) => {
     navigate(`/dashboard/employee/${employeeId}/update`);
   };
@@ -118,7 +117,7 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
           phoneNumber={student.student.contactNumber}
           photo={student.student.image || ""}
           status={student.student.status}
-        //   roleName={employeeDetails.data.roleName}
+          //   roleName={employeeDetails.data.roleName}
           firstName={student.student.firstName}
           lastName={student.student.lastName || ""}
           email={student.student.email}
