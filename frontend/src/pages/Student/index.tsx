@@ -39,12 +39,12 @@ const actionsList = [
     icon: <Visibility />,
     color: "secondary.main",
   },
-  {
-    action: "addRemarks",
-    label: "Add Remarks",
-    icon: <Add />,
-    color: "primary.main",
-  },
+  // {
+  //   action: "addRemarks",
+  //   label: "Add Remarks",
+  //   icon: <Add />,
+  //   color: "primary.main",
+  // },
 ];
 const Student: React.FC = () => {
   const [page, setPage] = useState(1);
@@ -109,7 +109,7 @@ const Student: React.FC = () => {
 
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/update-details/${row._id}`, {
+        navigate(`/dashboard/student/${row._id}/update`, {
           state: { student: row },
         });
         break;
@@ -135,7 +135,7 @@ const Student: React.FC = () => {
   };
   return (
     <Box p={2}>
-      <Box>
+      <Box mb="24px">
         <Box
           sx={{
             display: "flex",

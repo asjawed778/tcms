@@ -197,7 +197,7 @@ const Employee: React.FC = () => {
   const handleActionClick = (action: string, row: EmployeeDetailsResponse) => {
     switch (action) {
       case "update":
-        navigate(`/dashboard/employee/update-details/${row._id}`);
+        navigate(`/dashboard/employee/${row._id}/update`);
         break;
       case "view":
         handleEmployeeRowClick(row._id);

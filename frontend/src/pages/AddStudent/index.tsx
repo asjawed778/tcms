@@ -93,6 +93,18 @@ const AddStudent = () => {
     }
   }, [editStudentId]);
   useEffect(() => {
+    const stepName = steps[activeStep].label.toLowerCase().replace(" ", "-");
+
+    if (!studentId) {
+      navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
+    } else {
+      navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
+        replace: true,
+      });
+    }
+  }, [activeStep]);
+
+  useEffect(() => {
     if (student) {
       const s = student.student;
 
@@ -143,7 +155,8 @@ const AddStudent = () => {
           occupation: s.localGuardian?.occupation || "",
           contactNumber: s.localGuardian?.contactNumber || "",
           email: s.localGuardian?.email || "",
-          bussinessOrEmployerName: s.localGuardian?.bussinessOrEmployerName || "",
+          bussinessOrEmployerName:
+            s.localGuardian?.bussinessOrEmployerName || "",
           officeAddress: s.motlocalGuardianher?.officeAddress || "",
           officeNumber: s.localGuardian?.officeNumber || "",
         },

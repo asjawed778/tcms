@@ -110,7 +110,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path={`employee/update-details/:employeeId`}
+            path={`employee/:employeeId/update`}
             element={
               <ErrorBoundary>
                 <RoleAuthRoute
@@ -161,7 +161,7 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path={`student/update-details/:studentId`}
+            path={`student/:studentId/update`}
             element={
               <ErrorBoundary>
                 <RoleAuthRoute
