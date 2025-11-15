@@ -30,6 +30,7 @@ export const addPersonalDetails = asyncHandler(async (req: Request, res: Respons
     adharNumber: data.adharNumber,
     contactNumber: data.contactNumber,
     email: data.email,
+    bloodGroup: data.bloodGroup,
   };
   const student = await StudentService.addPersonalDetails(studentData);
   if (!student) {
@@ -53,6 +54,7 @@ export const updatePersonalDetails = asyncHandler(async (req: Request, res: Resp
     adharNumber: data.adharNumber,
     contactNumber: data.contactNumber,
     email: data.email,
+    bloodGroup: data.bloodGroup,
   };
   const student = await StudentService.updateStudent(studentId, studentData);
   if (!student) {
@@ -71,7 +73,7 @@ export const upsertStudentAddress = asyncHandler(async (req: Request, res: Respo
     city: data.address.city,
     state: data.address.state,
     country: data.address.country,
-    pincode: data.address.zipCode,
+    pincode: data.address.pincode,
   };
   const studentDoc = await StudentService.getStudentById(studentId);
   if (!studentDoc) {
@@ -97,7 +99,8 @@ export const upsertStudentParentsInfo = asyncHandler(async (req: Request, res: R
 
 export const upsertStudentAdmissinInfo = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
-  const { session, class: classId, section, admissionYear, address, ...prevSchoolData } = req.body;
+  const { session, class: classId, section, admissionYear, address, previousSchool, ...rest } = req.body;
+  console.log("previous school data: ", previousSchool);
   const isSessionValid = await SessionService.isSessionValid(session);
   if (!isSessionValid) {
     throw createHttpError(400, "Invalid session");
@@ -115,7 +118,7 @@ export const upsertStudentAdmissinInfo = asyncHandler(async (req: Request, res: 
     throw createHttpError(500, "Failed to admit student to class");
   }
   const enrollmentNumber = await StudentUtils.generateEnrollmentNumber(admissionYear);
-  const student = await StudentService.updateStudent(studentId, { admissionYear, previousSchool: prevSchoolData, enrollmentNumber: enrollmentNumber, status: Enum.StudentStatus.ACTIVE });
+  const student = await StudentService.updateStudent(studentId, { admissionYear, previousSchool: previousSchool, enrollmentNumber: enrollmentNumber, status: Enum.StudentStatus.ACTIVE });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
 
