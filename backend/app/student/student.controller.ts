@@ -91,9 +91,9 @@ export const upsertStudentAddress = asyncHandler(async (req: Request, res: Respo
 
 export const upsertStudentParentsInfo = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
-  const parentsData = req.body;
+  const { father, mother, localGuardian } = req.body;
 
-  const student = await StudentService.updateStudent(studentId, { father: parentsData.father, mother: parentsData.mother, localGuardian: parentsData.localGuardian });
+  const student = await StudentService.updateStudent(studentId, { father, mother, localGuardian });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
 
@@ -197,18 +197,30 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
   const admissionStatus = req.query.admissionStatus as Enum.AdmissionStatus || "";
   const bloodGroup = (req.query.bloodGroup as Enum.BloodGroup) || "";
 
-  const result = await StudentService.getAllStudents(
-    sessionId,
-    page,
-    limit,
-    search,
-    classId,
-    sectionId,
-    gender,
-    studentStatus,
-    admissionStatus,
-    bloodGroup,
-  );
+  let result;
+  if (studentStatus && Object.values(Enum.StudentStatus).includes(studentStatus) && studentStatus === Enum.StudentStatus.DRAFT) {
+    console.log("fetching draft students");
+    result = await StudentService.getDraftStudents(
+      page,
+      limit,
+      search,
+      gender,
+      bloodGroup,
+    );
+  } else {
+    result = await StudentService.getAllStudents(
+      sessionId,
+      page,
+      limit,
+      search,
+      classId,
+      sectionId,
+      gender,
+      studentStatus,
+      admissionStatus,
+      bloodGroup,
+    );
+  }
   res.send(createResponse(result, "Students fetched successfully"));
 });
 

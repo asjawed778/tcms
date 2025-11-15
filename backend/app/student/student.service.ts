@@ -74,6 +74,56 @@ export const getAdmissionByStudentId = async (studentId: string, sessionId: stri
     return admission;
 };
 
+export const getDraftStudents = async (
+    page: number = 1,
+    limit: number = 10,
+    search?: string,
+    gender?: Enum.Gender,
+    bloodGroup?: Enum.BloodGroup
+) => {
+
+    const skip = (page - 1) * limit;
+
+    const studentQuery: any = {
+        status: Enum.StudentStatus.DRAFT
+    };
+
+    if (search) {
+        studentQuery.$or = [
+            { firstName: { $regex: search, $options: "i" } },
+            { lastName: { $regex: search, $options: "i" } },
+            { enrollmentNumber: { $regex: search, $options: "i" } },
+            { adharNumber: { $regex: search, $options: "i" } },
+            { "father.name": { $regex: search, $options: "i" } },
+            { "mother.name": { $regex: search, $options: "i" } },
+            { contactNumber: { $regex: search, $options: "i" } }
+        ];
+    }
+
+    if (gender) studentQuery.gender = gender;
+    if (bloodGroup) studentQuery.bloodGroup = bloodGroup;
+
+    const total = await studentSchema.countDocuments(studentQuery);
+
+    const students = await studentSchema
+        .find(studentQuery)
+        .populate("address")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit);
+
+    return {
+        students,
+        totalDocs: total,
+        totalPages: Math.ceil(total / limit),
+        currentPage: page,
+        hasNext: page < Math.ceil(total / limit),
+        hasPrevious: page > 1,
+        pageLimit: limit,
+    };
+};
+
+
 
 export const getAllStudents = async (
     sessionId: string,

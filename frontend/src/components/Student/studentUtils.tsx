@@ -86,19 +86,19 @@ export const getStudentColumns = (onImageClick: (url: string) => void) => [
     render: (row: any) => (
       <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
         <Avatar
-          src={row.student.photo || ""}
-          alt={row.student.firstName}
+          src={row.student?.photo || ""}
+          alt={row.student?.firstName}
           sx={{
             width: 28,
             height: 28,
-            cursor: row.student.photo ? "pointer" : "default",
+            cursor: row.student?.photo ? "pointer" : "default",
           }}
           onClick={(e) => {
             e.stopPropagation();
-            if (row.student.photo) onImageClick(row.student.photo);
+            if (row.student?.photo) onImageClick(row.student?.photo);
           }}
         />
-        {row.student.firstName} {row.student.lastName}
+        {row.student?.firstName} {row.student?.lastName}
       </Box>
     ),
   },
@@ -107,7 +107,7 @@ export const getStudentColumns = (onImageClick: (url: string) => void) => [
     key: "gender",
     label: "Gender",
     width: "15%",
-    render: (row: any) => <GenderChip gender={row.student.gender} />,
+    render: (row: any) => <GenderChip gender={row.student?.gender} />,
   },
 
   {
