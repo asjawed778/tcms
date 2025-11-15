@@ -432,6 +432,9 @@ export const addStudent = [
     body("documents.*.url")
         .optional().isURL().withMessage("Each document URL must be valid"),
 
+    body("documents.*.documentNumber")
+        .optional(),
+
     // Full Address Object
     body("address.addressLine1")
         .notEmpty().withMessage("Address Line 1 is required"),
@@ -449,8 +452,7 @@ export const addStudent = [
         .notEmpty().withMessage("Country is required"),
 
     body("address.pincode")
-        .notEmpty().withMessage("Pincode is required")
-        .isPostalCode("IN").withMessage("Pincode must be a valid Indian postal code"),
+        .notEmpty().withMessage("Pincode is required"),
 
     body("session")
         .notEmpty().withMessage("Session ID is required")
