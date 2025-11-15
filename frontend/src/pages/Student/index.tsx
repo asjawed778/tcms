@@ -109,7 +109,7 @@ const Student: React.FC = () => {
 
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/update-details/${row._id}`, {
+        navigate(`/dashboard/student/update-details/${row.student._id}`, {
           state: { student: row },
         });
         break;

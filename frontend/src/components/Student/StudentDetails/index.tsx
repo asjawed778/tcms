@@ -38,7 +38,6 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
     { studentId: student?.student._id },
     { refetchOnMountOrArgChange: true }
   );
-  console.log("student details: ", student);
 
   // if (isFetching) {
   //   return <BasicDetailsSkeleton />;
