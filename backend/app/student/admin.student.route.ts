@@ -65,7 +65,7 @@ router
     StudentController.getStudents
   )
   .get(
-    "/details/:studentId",
+    "/:studentId/details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.READ }),
     StudentValidation.getStudentById,
     catchError,

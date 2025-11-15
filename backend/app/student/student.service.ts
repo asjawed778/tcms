@@ -1,37 +1,15 @@
 import createHttpError from "http-errors";
 import * as StudentDto from "./student.dto";
 import * as Enum from "../common/utils/enum";
+import * as StudentUtils from "./student.utils";
 import studentSchema from "./student.schema";
 import admissionSchema from "./admission.schema";
-import { Types } from "mongoose";
+import mongoose, { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
 
 
-export const generateEnrollmentNumber = async (
-    admissionYear?: number,
-    prefix: string = "TCMS"
-): Promise<string> => {
-    const year = admissionYear || new Date().getFullYear();
-    let unique = false;
-    let registrationNumber = "";
-
-    while (!unique) {
-        const randomNumber = Math.floor(100000 + Math.random() * 900000);
-        registrationNumber = `${prefix}${year}${randomNumber}`;
-
-        const existingStudent = await studentSchema.findOne({
-            enrollmentNumber: registrationNumber,
-        });
-
-        if (!existingStudent) {
-            unique = true;
-        }
-    }
-    return registrationNumber;
-};
-
-export const addStudentStep1 = async (studentData: StudentDto.IAddStudentPersonalDetails) => {
-    const registrationNumber = await generateEnrollmentNumber();
+export const addPersonalDetails = async (studentData: StudentDto.IAddStudentPersonalDetails) => {
+    const registrationNumber = await StudentUtils.generateEnrollmentNumber();
     const data = { ...studentData, enrollmentNumber: registrationNumber };
     const student = new studentSchema(data);
     const result = await student.save();
@@ -46,19 +24,6 @@ export const updateStudent = async (studentId: string, updateData: Partial<Stude
     return student;
 };
 
-
-
-
-
-
-
-
-
-
-
-
-// old student addition function
-
 export const addStudent = async (studentData: StudentDto.IStudentCreate) => {
     const student = await studentSchema.findOne({ adharNumber: studentData.adharNumber });
     if (student) {
@@ -69,14 +34,36 @@ export const addStudent = async (studentData: StudentDto.IStudentCreate) => {
     return result;
 };
 
-export const admissionStudentToClass = async (studentId: string, sessionId: string, classId: string, sectionId: string) => {
-    const admission = await admissionSchema.create({
+export const admissionStudentToClass = async (
+    studentId: string,
+    sessionId: string,
+    classId: string,
+    sectionId: string
+) => {
+    console.log("admissionStudentToClass", studentId, sessionId, classId, sectionId);
+    const existingAdmission = await admissionSchema.findOne({
         student: studentId,
-        class: classId,
-        section: sectionId,
         session: sessionId,
     });
-    return admission;
+    console.log("existingAdmission", existingAdmission);
+
+    if (existingAdmission) {
+        existingAdmission.session = new Types.ObjectId(sessionId);
+        existingAdmission.class = new Types.ObjectId(classId);
+        existingAdmission.section = new Types.ObjectId(sectionId);
+        existingAdmission.admissionStatus = Enum.AdmissionStatus.ACTIVE;
+
+        await existingAdmission.save();
+        return existingAdmission;
+    }
+    const newAdmission = new admissionSchema({
+        student: studentId,
+        session: sessionId,
+        class: classId,
+        section: sectionId,
+    });
+    const result = await newAdmission.save();
+    return result;
 };
 
 export const getAdmissionByStudentId = async (studentId: string, sessionId: string) => {
@@ -86,195 +73,6 @@ export const getAdmissionByStudentId = async (studentId: string, sessionId: stri
     }
     return admission;
 };
-
-// export const getStudents = async (
-//     session: string,
-//     page: number = 1,
-//     limit: number = 10,
-//     search?: string,
-//     standard?: string,
-//     section?: string,
-//     gender?: Enum.Gender,
-//     status?: Enum.StudentStatus,
-//     bloodGroup?: Enum.BloodGroup,
-// ): Promise<StudentDto.IGetStudentResponse<any>> => {
-
-//     const skip = (page - 1) * limit;
-
-//     const admissionQuery: any = {
-//         session: new Types.ObjectId(session),
-//         deleted: false,
-//     };
-
-//     if (standard) {
-//         admissionQuery.class = new Types.ObjectId(standard);
-//     }
-//     if (section) {
-//         admissionQuery.section = new Types.ObjectId(section);
-//     }
-
-//     let studentQuery: any = {};
-//     if (search) {
-//         studentQuery = {
-//             $or: [
-//                 { 'student.name': { $regex: search, $options: 'i' } },
-//                 { 'student.enrollmentNumber': { $regex: search, $options: 'i' } },
-//                 { 'student.adharNumber': { $regex: search, $options: 'i' } },
-//                 { 'student.father.name': { $regex: search, $options: 'i' } },
-//                 { 'student.mother.name': { $regex: search, $options: 'i' } },
-//                 { 'student.contactNumber': { $regex: search, $options: 'i' } }
-//             ]
-//         };
-//     }
-
-
-//     const totalAggResult = await admissionSchema.aggregate([
-//         { $match: admissionQuery },
-//         {
-//             $lookup: {
-//                 from: 'students',
-//                 localField: 'student',
-//                 foreignField: '_id',
-//                 as: 'student'
-//             }
-//         },
-//         { $unwind: '$student' },
-//         { $match: studentQuery },
-//         { $count: 'total' }
-//     ]);
-
-//     const total = totalAggResult.length > 0 ? totalAggResult[0].total : 0;
-
-//     const admissions = await admissionSchema.aggregate([
-//         { $match: admissionQuery },
-//         {
-//             $lookup: {
-//                 from: 'students',
-//                 localField: 'student',
-//                 foreignField: '_id',
-//                 as: 'student'
-//             }
-//         },
-//         { $unwind: '$student' },
-//         {
-//             $match: studentQuery
-//         },
-//         {
-//             $lookup: {
-//                 from: 'addresses',
-//                 localField: 'student.address',
-//                 foreignField: '_id',
-//                 as: 'student.address'
-//             }
-//         },
-//         { $unwind: { path: '$student.address', preserveNullAndEmptyArrays: true } },
-//         {
-//             $lookup: {
-//                 from: 'classes',
-//                 localField: 'class',
-//                 foreignField: '_id',
-//                 as: 'class'
-//             }
-//         },
-//         { $unwind: { path: '$class', preserveNullAndEmptyArrays: true } },
-//         {
-//             $lookup: {
-//                 from: 'sections',
-//                 localField: 'section',
-//                 foreignField: '_id',
-//                 as: 'section'
-//             }
-//         },
-//         { $unwind: { path: '$section', preserveNullAndEmptyArrays: true } },
-//         {
-//             $lookup: {
-//                 from: 'sessions',
-//                 localField: 'session',
-//                 foreignField: '_id',
-//                 as: 'session'
-//             }
-//         },
-//         { $unwind: { path: '$session', preserveNullAndEmptyArrays: true } },
-//         { $sort: { rollNumber: 1 } },
-//         { $skip: skip },
-//         { $limit: limit },
-//         {
-//             $project: {
-//                 student: {
-//                     _id: '$student._id',
-//                     name: '$student.name',
-//                     enrollmentNumber: '$student.enrollmentNumber',
-//                     adharNumber: '$student.adharNumber',
-//                     image: '$student.image',
-//                     dob: '$student.dob',
-//                     gender: '$student.gender',
-//                     nationality: '$student.nationality',
-//                     religion: '$student.religion',
-//                     motherTongue: '$student.motherTongue',
-//                     bloodGroup: '$student.bloodGroup',
-//                     email: '$student.email',
-//                     contactNumber: '$student.contactNumber',
-//                     father: '$student.father',
-//                     mother: '$student.mother',
-//                     localGuardian: '$student.localGuardian',
-//                     previousSchool: '$student.previousSchool',
-//                     address: {
-//                         _id: '$student.address._id',
-//                         addressLine1: '$student.address.addressLine1',
-//                         addressLine2: '$student.address.addressLine2',
-//                         city: '$student.address.city',
-//                         state: '$student.address.state',
-//                         country: '$student.address.country',
-//                         pincode: '$student.address.pincode'
-//                     },
-//                     documents: '$student.documents',
-//                     admissionYear: '$student.admissionYear',
-//                     status: '$student.status',
-//                 },
-//                 admission: {
-//                     _id: '$_id',
-//                     session: {
-//                         _id: '$session._id',
-//                         session: '$session.session'
-//                     },
-//                     class: {
-//                         _id: '$class._id',
-//                         name: '$class.name'
-//                     },
-//                     section: {
-//                         _id: '$section._id',
-//                         name: '$section.name'
-//                     },
-//                     admissionStatus: '$admissionStatus',
-//                     deleted: '$deleted',
-//                     rollNumber: '$rollNumber',
-//                     createdAt: '$createdAt',
-//                     updatedAt: '$updatedAt'
-//                 }
-//             }
-//         }
-//     ]);
-
-//     const filteredAdmissions = admissions.map(admission => ({
-//         student: admission.student,
-//         admission: admission.admission
-//     }));
-
-//     const totalPages = Math.ceil(total / limit);
-//     const hasNext = page < totalPages;
-//     const hasPrevious = page > 1;
-
-//     return {
-//         students: filteredAdmissions,
-//         totalDocs: total,
-//         totalPages,
-//         currentPage: page,
-//         hasNext,
-//         hasPrevious,
-//         pageLimit: limit,
-//     };
-// };
-
 
 
 export const getAllStudents = async (
@@ -293,12 +91,12 @@ export const getAllStudents = async (
     const skip = (page - 1) * limit;
 
     // Base admission query
-    const admissionQuery: any = { deleted: false };
+    const admissionQuery: any = {};
     if (sessionId) admissionQuery.session = new Types.ObjectId(sessionId);
     if (classId) admissionQuery.class = new Types.ObjectId(classId);
     if (sectionId) admissionQuery.section = new Types.ObjectId(sectionId);
     if (admissionStatus) admissionQuery.admissionStatus = admissionStatus;
-    
+
     // Student-level filters
     const studentFilters: any[] = [];
 
@@ -378,8 +176,9 @@ export const getAllStudents = async (
                     { $limit: limit },
                     {
                         $project: {
+                            _id: 0,
                             student: {
-                                _id: 1,
+                                _id: "$student._id",
                                 firstName: 1,
                                 lastName: 1,
                                 enrollmentNumber: 1,
@@ -447,16 +246,154 @@ export const getAllStudents = async (
     };
 };
 
-
 export const getStudentById = async (studentId: string) => {
-    const student = await studentSchema.findById(studentId)
-        .populate({
-            path: 'address',
-            select: 'addressLine1 addressLine2 city state country pincode'
-        })
+    console.log("getStudentById service", studentId);
+    const result = await studentSchema.aggregate([
+        {
+            $match: { _id: new Types.ObjectId(studentId) }
+        },
+        {
+            $lookup: {
+                from: "addresses",
+                localField: "address",
+                foreignField: "_id",
+                as: "address"
+            }
+        },
+        {
+            $unwind: {
+                path: "$address",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "admissions",
+                localField: "_id",
+                foreignField: "student",
+                as: "admissions"
+            }
+        },
+        {
+            $addFields: {
+                initialAdmission: {
+                    $arrayElemAt: [
+                        {
+                            $sortArray: {
+                                input: "$admissions",
+                                sortBy: { createdAt: 1 }
+                            }
+                        },
+                        0
+                    ]
+                }
+            }
+        },
+        {
+            $lookup: {
+                from: "sessions",
+                localField: "initialAdmission.session",
+                foreignField: "_id",
+                as: "initialSession"
+            }
+        },
+        {
+            $unwind: {
+                path: "$initialSession",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "classes",
+                localField: "initialAdmission.class",
+                foreignField: "_id",
+                as: "initialClass"
+            }
+        },
+        {
+            $unwind: {
+                path: "$initialClass",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $lookup: {
+                from: "sections",
+                localField: "initialAdmission.section",
+                foreignField: "_id",
+                as: "initialSection"
+            }
+        },
+        {
+            $unwind: {
+                path: "$initialSection",
+                preserveNullAndEmptyArrays: true
+            }
+        },
+        {
+            $project: {
+                enrollmentNumber: 1,
+                firstName: 1,
+                lastName: 1,
+                dob: 1,
+                gender: 1,
+                nationality: 1,
+                religion: 1,
+                motherTongue: 1,
+                adharNumber: 1,
+                contactNumber: 1,
+                email: 1,
+                bloodGroup: 1,
+                father: 1,
+                mother: 1,
+                localGuardian: 1,
+                previousSchool: 1,
+                documents: 1,
+                address: 1,
+                admissionYear: 1,
+                status: 1,
+                createdAt: 1,
+                updatedAt: 1,
+                admission: {
+                    _id: "$initialAdmission._id",
+                    rollNumber: "$initialAdmission.rollNumber",
+                    admissionStatus: "$initialAdmission.admissionStatus",
+                    createdAt: "$initialAdmission.createdAt",
+                    updatedAt: "$initialAdmission.updatedAt",
 
-    return student;
+                    session: {
+                        _id: "$initialSession._id",
+                        session: "$initialSession.session"
+                    },
+                    class: {
+                        _id: "$initialClass._id",
+                        name: "$initialClass.name"
+                    },
+                    section: {
+                        _id: "$initialSection._id",
+                        name: "$initialSection.name"
+                    }
+                }
+            }
+        }
+    ]);
+    return result[0] || null;
 };
+
+
+
+
+
+
+
+
+// old student addition function
+
+
+
+
+
 
 export const addRemark = async (remarkData: StudentDto.IRemarkCreate) => {
     const remark = new remarksSchema(remarkData);

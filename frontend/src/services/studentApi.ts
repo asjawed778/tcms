@@ -12,7 +12,7 @@ export const studentApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getAllStudent: builder.query({
-      query: ({page = 1, limit = 10, searchQuery = "", sessionId, studentStatus })  => ({
+      query: ({ page = 1, limit = 10, searchQuery = "", sessionId, studentStatus }) => ({
         url: `/admin/student/all`,
         params: {
           page,
@@ -39,28 +39,28 @@ export const studentApi = createApi({
       }),
     }),
     updateAddress: builder.mutation({
-      query: ({payload, studentId}) => ({
+      query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/address`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateParentDetails: builder.mutation({
-      query: ({payload, studentId}) => ({
+      query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/parent-details`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateAdmissionDetails: builder.mutation({
-      query: ({payload, studentId}) => ({
+      query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/admission-details`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateDocuments: builder.mutation({
-      query: ({payload, studentId}) => ({
+      query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/documents`,
         method: "PUT",
         body: payload,
@@ -75,7 +75,7 @@ export const studentApi = createApi({
     }),
     getStudentDetails: builder.query({
       query: ({ studentId }) => ({
-        url: `/admin/student/details/${studentId}`,
+        url: `/admin/student/${studentId}/details`,
         method: "GET",
       })
     }),

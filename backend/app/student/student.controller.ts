@@ -10,6 +10,7 @@ import * as classService from "../academics/academic.service";
 import * as AddressService from "../common/services/address.service";
 import * as ClassService from "../academics/academic.service";
 import * as AcademicUtils from "../academics/academic.utils";
+import * as StudentUtils from "./student.utils";
 import mongoose, { Types } from "mongoose";
 import * as AddressDto from "../common/dto/address.dto";
 
@@ -30,11 +31,11 @@ export const addPersonalDetails = asyncHandler(async (req: Request, res: Respons
     contactNumber: data.contactNumber,
     email: data.email,
   };
-  const student = await StudentService.addStudentStep1(studentData);
+  const student = await StudentService.addPersonalDetails(studentData);
   if (!student) {
-    throw createHttpError(500, "Failed to add student step-1");
+    throw createHttpError(500, "Failed to add student Personal Details");
   }
-  res.send(createResponse({ student }, "Student add Step-1 completed successfully"));
+  res.send(createResponse({ student }, "Student add Personal Details completed successfully"));
 });
 
 export const updatePersonalDetails = asyncHandler(async (req: Request, res: Response) => {
@@ -113,15 +114,15 @@ export const upsertStudentAdmissinInfo = asyncHandler(async (req: Request, res: 
   if (!admission) {
     throw createHttpError(500, "Failed to admit student to class");
   }
-  const enrollmentNumber = await StudentService.generateEnrollmentNumber(admissionYear);
-  const student = await StudentService.updateStudent(studentId, { admissionYear, previousSchool: prevSchoolData, enrollmentNumber: enrollmentNumber });
+  const enrollmentNumber = await StudentUtils.generateEnrollmentNumber(admissionYear);
+  const student = await StudentService.updateStudent(studentId, { admissionYear, previousSchool: prevSchoolData, enrollmentNumber: enrollmentNumber, status: Enum.StudentStatus.ACTIVE });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
 
 export const studentAdditionalDoc = asyncHandler(async (req: Request, res: Response) => {
   const { studentId } = req.params;
   const { documents } = req.body;
-  const student = await StudentService.updateStudent(studentId, { documents, status: Enum.StudentStatus.ACTIVE });
+  const student = await StudentService.updateStudent(studentId, { documents });
   res.send(createResponse({ student }, "Student add Step-3 completed successfully"));
 });
 
@@ -145,7 +146,7 @@ export const bulkUploadStudents = asyncHandler(async (req: Request, res: Respons
       const sectionData = await ClassService.getSectionByUniqueId(sectionId);
 
       const addressData = await AddressService.saveAddress(address);
-      const enrollmentNumber = await StudentService.generateEnrollmentNumber(rest.admissionYear);
+      const enrollmentNumber = await StudentUtils.generateEnrollmentNumber(rest.admissionYear);
       const student = await StudentService.addStudent({
         ...rest,
         address: addressData._id,
@@ -181,8 +182,6 @@ export const bulkUploadStudents = asyncHandler(async (req: Request, res: Respons
     );
 });
 
-// old student addition function
-
 export const getStudents = asyncHandler(async (req: Request, res: Response) => {
   const sessionId = (req.query.sessionId as string) || "";;
   const page = parseInt(req.query.page as string) || 1;
@@ -191,8 +190,8 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
   const classId = (req.query.class as string) || "";
   const sectionId = (req.query.section as string) || "";
   const gender = (req.query.gender as Enum.Gender) || "";
-  const studentStatus = (req.query.status as Enum.StudentStatus) || "";
-  const admissionStatus = (req.query.status as Enum.AdmissionStatus) || "";
+  const studentStatus = req.query.studentStatus as Enum.StudentStatus || "";
+  const admissionStatus = req.query.admissionStatus as Enum.AdmissionStatus || "";
   const bloodGroup = (req.query.bloodGroup as Enum.BloodGroup) || "";
 
   const result = await StudentService.getAllStudents(
@@ -210,16 +209,17 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
   res.send(createResponse(result, "Students fetched successfully"));
 });
 
-export const getStudentById = asyncHandler(
-  async (req: Request, res: Response) => {
-    const studentId = req.params.studentId;
-    const student = await StudentService.getStudentById(studentId);
-    if (!student) {
-      throw createHttpError(404, "Student not found");
-    }
-    res.send(createResponse(student, "Student fetched successfully"));
+export const getStudentById = asyncHandler(async (req: Request, res: Response) => {
+  const studentId = req.params.studentId;
+  const student = await StudentService.getStudentById(studentId);
+  if (!student) {
+    throw createHttpError(404, "Student not found");
   }
-);
+  res.send(createResponse(student, "Student fetched successfully"));
+});
+
+// old student addition function
+
 
 export const addRemark = asyncHandler(async (req: Request, res: Response) => {
   const { studentId, sessionId } = req.params;
