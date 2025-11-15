@@ -3,14 +3,14 @@ import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomSearchField from "@/components/ui/CustomSearchField";
 import { useAppSelector } from "@/store/store";
 import {
-  Add,
-  Edit,
+  Delete,
+  EditOutlined,
   KeyboardArrowDown,
   PersonAdd,
   Upload,
-  Visibility,
+  VisibilityOutlined,
 } from "@mui/icons-material";
-import { Box, Menu, MenuItem, Typography } from "@mui/material";
+import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AddRemark from "@/components/Student/AddRemarkModal";
@@ -20,37 +20,25 @@ import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, StudentStatus } from "@/utils/enum";
 import TableWrapper from "@/components/ui/TableWrapper";
 import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
-import { getStudentColumns } from "@/components/Student/studentUtils";
+import {
+  getDraftStudentColumns,
+  getStudentColumns,
+} from "@/components/Student/studentUtils";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
 import StudentDetails from "@/components/Student/StudentDetails";
-import { useGetAllClassQuery } from "@/services/academics.Api";
+import {
+  useGetAllClassQuery,
+  useGetAllSectionQuery,
+} from "@/services/academics.Api";
+import SegmentTabs from "@/components/ui/SegmentTabs";
 
-const actionsList = [
-  {
-    action: "update",
-    label: "Update Details",
-    icon: <Edit />,
-    color: "primary.main",
-  },
-  {
-    action: "view",
-    label: "View Details",
-    icon: <Visibility />,
-    color: "secondary.main",
-  },
-  // {
-  //   action: "addRemarks",
-  //   label: "Add Remarks",
-  //   icon: <Add />,
-  //   color: "primary.main",
-  // },
-];
 const Student: React.FC = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
   const [status, setStatus] = useState(StudentStatus.ACTIVE);
   const [classFilter, setClassFilter] = useState("");
+  const [sectionFilter, setSectionFilter] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
@@ -65,7 +53,9 @@ const Student: React.FC = () => {
     { url: string; type: "image" }[]
   >([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const can = useCan();
+  const theme = useTheme();
 
   const {
     data: studentData,
@@ -80,6 +70,7 @@ const Student: React.FC = () => {
       searchQuery,
       studentStatus: status,
       classId: classFilter,
+      sectionId: sectionFilter,
     },
     {
       skip: !selectedSession?._id,
@@ -92,12 +83,26 @@ const Student: React.FC = () => {
     },
     { skip: !selectedSession?._id }
   );
+  const { data: sectionData, isFetching: fetchingSection } =
+    useGetAllSectionQuery(
+      {
+        sessionId: selectedSession?._id,
+        classId: classFilter,
+      },
+      { skip: !classFilter || !selectedSession?._id }
+    );
   const classOptions = classData?.data?.classes?.map((cls: any) => ({
     label: cls.name,
     value: cls._id,
-  })); 
-  console.log("Class filter: ", classFilter);
-  
+  }));
+  const sectionTabs = [
+    { label: "All Sections", value: "" },
+    ...(sectionData?.data?.sections ?? []).map((s: any) => ({
+      label: "Section " + s.name,
+      value: s._id,
+    })),
+  ];
+
   const handleImageClick = (url: string) => {
     if (!url) return;
     setSelectedEmpImage([{ url, type: "image" }]);
@@ -107,7 +112,10 @@ const Student: React.FC = () => {
     setSelectedStudentId(studentId);
   };
 
-  const studentTableColumns = getStudentColumns(handleImageClick);
+  const studentTableColumns =
+    actionType === "menu"
+      ? getStudentColumns(handleImageClick)
+      : getDraftStudentColumns(handleImageClick);
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -115,15 +123,99 @@ const Student: React.FC = () => {
     setRowsPerPage(newRowsPerPage);
     setPage(1);
   };
+  const actionsList = (row: any) => {
+    if (row.status === StudentStatus.DRAFT) {
+      return [
+        {
+          action: "update",
+          label: "",
+          icon: (
+            <Button
+              variant="outlined"
+              size="small"
+              endIcon={<EditOutlined fontSize="small" />}
+              onClick={(e) => {
+                e.stopPropagation();
+                // handleActionClick("update", row);
+                navigate(`/dashboard/student/${row._id}/update`);
+              }}
+              sx={{
+                backgroundColor: theme.customColors.primary + "20",
+                borderRadius: "20px",
+              }}
+            >
+              Resume
+            </Button>
+          ),
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.UPDATE,
+          },
+        },
+        {
+          action: "view",
+          label: "View",
+          icon: (
+            <VisibilityOutlined
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedStudentId(row._id);
+              }}
+            />
+          ),
+          color: theme.customColors.secondary,
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.READ,
+          },
+        },
+        {
+          action: "delete",
+          label: "Delete",
+          icon: <Delete />,
+          color: "error.main",
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.DELETE,
+          },
+        },
+      ];
+    }
+    return [
+      {
+        action: "update",
+        label: "Update Details",
+        icon: <EditOutlined />,
+        color: theme.customColors.primary,
+        permission: {
+          module: ModuleName.STUDENTS,
+          subModule: null,
+          operation: Operation.UPDATE,
+        },
+      },
+      {
+        action: "view",
+        label: "View Details",
+        icon: <VisibilityOutlined />,
+        color: theme.customColors.secondary,
+        permission: {
+          module: ModuleName.STUDENTS,
+          subModule: null,
+          operation: Operation.READ,
+        },
+      },
+    ];
+  };
   const handleActionClick = (action: string, row: any) => {
-    console.log("row data: ", row);
-
     switch (action) {
       case "update":
         navigate(`/dashboard/student/${row.student._id}/update`);
         break;
       case "view":
-        handleRowClick(row._id);
+        handleRowClick(row.student._id);
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
@@ -138,17 +230,23 @@ const Student: React.FC = () => {
   const handleBulkUpload = () => {
     setOpenBulkUpload(true);
   };
-  const handleChange = (val: any) => {
+  const handleStatusChange = (val: any) => {
     setStatus(val);
     setPage(1);
+    if (val === StudentStatus.DRAFT) {
+      setActionType("icon");
+    } else {
+      setActionType("menu");
+    }
   };
-  const handleClassChange = (val:  any) => {
+  const handleClassChange = (val: any) => {
     setClassFilter(val);
+    setSectionFilter("");
     setPage(1);
-  }
+  };
   return (
     <Box p={2}>
-      <Box mb="24px">
+      <Box mb="4px">
         <Box
           sx={{
             display: "flex",
@@ -171,25 +269,21 @@ const Student: React.FC = () => {
               gap: 1,
             }}
           >
-            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography> */}
             <CustomDropdownField
-              // name="class"
               label="Class"
               required={false}
               value={classFilter}
               onChange={handleClassChange}
               options={classOptions}
               labelPosition="inside"
-              sx={{ width: 250 }}
+              disabled={status === StudentStatus.DRAFT}
             />
             <CustomDropdownField
-              name="status"
               label="Status"
+              // placeholder={StudentStatus.ACTIVE}
               required={false}
               value={status}
-              onChange={handleChange}
+              onChange={handleStatusChange}
               options={Object.values(StudentStatus)}
               labelPosition="inside"
             />
@@ -258,21 +352,33 @@ const Student: React.FC = () => {
           )}
         </Box>
       </Box>
-
-      <TableWrapper
-        rows={studentData?.data?.students || []}
-        columns={studentTableColumns}
-        totalCount={studentData?.data?.totalDocs ?? 0}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        onActionClick={handleActionClick}
-        isFetching={isFetching}
-        actions={actionsList}
-        isError={isError}
-        onRowClick={(student) => handleRowClick(student.student._id)}
-      />
+      {classFilter && sectionData && status !== StudentStatus.DRAFT && (
+        <SegmentTabs
+          tabs={sectionTabs}
+          defaultTab=""
+          tabUrlControlled={false}
+          onTabChange={setSectionFilter}
+        />
+      )}
+      <Box mt={2}>
+        <TableWrapper
+          rows={studentData?.data?.students || []}
+          columns={studentTableColumns}
+          totalCount={studentData?.data?.totalDocs ?? 0}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onActionClick={handleActionClick}
+          isFetching={isFetching || fetchingSection}
+          actions={actionsList}
+          isError={isError}
+          onRowClick={(student) =>
+            handleRowClick(student?.student?._id || student?._id)
+          }
+          actionDisplayType={actionType}
+        />
+      </Box>
       {openImagePreview && (
         <DocumentPreviewer
           open={openImagePreview}

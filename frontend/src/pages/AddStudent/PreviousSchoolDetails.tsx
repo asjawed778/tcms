@@ -1,7 +1,10 @@
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import FileUploader from "@/components/ui/FileUploader";
-import { useGetAllClassQuery, useGetAllSectionQuery } from "@/services/academics.Api";
+import {
+  useGetAllClassQuery,
+  useGetAllSectionQuery,
+} from "@/services/academics.Api";
 import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
 import mapToDropdownOptions from "@/utils/helper";
@@ -33,15 +36,12 @@ const PreviousSchoolDetails: React.FC = () => {
   const { data: sectionData } = useGetAllSectionQuery(
     {
       sessionId: selectedSessionId as string,
-      classId: selectedClassId
+      classId: selectedClassId,
     },
     {
       skip: !selectedSessionId || !selectedClassId,
     }
   );
-  console.log("class data: ", classData);
-  console.log("section data: ", sectionData);
-  
   const className =
     classData?.data.classes.map((items: any) => ({
       label: items.name,
@@ -50,7 +50,7 @@ const PreviousSchoolDetails: React.FC = () => {
   const sectionOptions = sectionData?.data?.sections.map((section) => ({
     label: section.name,
     value: section._id,
-  }))
+  }));
   const sessionsOptions = useMemo(
     () =>
       mapToDropdownOptions({
@@ -71,18 +71,6 @@ const PreviousSchoolDetails: React.FC = () => {
     setValue("session", value);
   };
 
-  // const sectionOptions = useMemo(() => {
-  //   const foundClass = classData?.data?.classes?.find(
-  //     (cls: any) => cls._id === selectedClassId
-  //   );
-  //   return (
-  //     foundClass?.sections?.map((section: any) => ({
-  //       label: section.name,
-  //       value: section._id as string,
-  //     })) || []
-  //   );
-  // }, [selectedClassId, classData]);
-
   useEffect(() => {
     setValue("previousSchool.transferCertificate.name", "Transfer Certificate");
     setValue(
@@ -93,7 +81,7 @@ const PreviousSchoolDetails: React.FC = () => {
   return (
     <Grid container spacing={2}>
       <Grid size={{ xs: 12 }}>
-        <Typography sx={{fontSize: "18px", fontWeight: 600}}>
+        <Typography sx={{ fontSize: "18px", fontWeight: 600 }}>
           Addmission Details
         </Typography>
       </Grid>
@@ -129,7 +117,7 @@ const PreviousSchoolDetails: React.FC = () => {
         />
       </Grid>
       <Grid size={{ xs: 12 }}>
-        <Typography sx={{fontSize: "16px", fontWeight: 600}}>
+        <Typography sx={{ fontSize: "16px", fontWeight: 600 }}>
           Previous School Details (if applicable)
         </Typography>
       </Grid>
@@ -211,7 +199,7 @@ const PreviousSchoolDetails: React.FC = () => {
             required={false}
           />
           <CustomInputField
-            name="previousSchool.transferCertificate.number"
+            name="previousSchool.transferCertificate.documentNumber"
             label="Document Number"
             placeholder="Enter Document Number"
             required={false}

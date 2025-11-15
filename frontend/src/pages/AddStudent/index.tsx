@@ -8,7 +8,14 @@ import {
   personalDetailsSchema,
   previousSchoolSchema,
 } from "@/validation/yup";
-import { Stepper, Step, StepLabel, Box, CardContent, CircularProgress } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  CardContent,
+  CircularProgress,
+} from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -80,7 +87,6 @@ const AddStudent = () => {
         refetchOnMountOrArgChange: true,
       }
     );
-  console.log("Student details ", studentDetails);
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
@@ -108,7 +114,6 @@ const AddStudent = () => {
   useEffect(() => {
     if (studentDetails?.data && !fetchingStudent) {
       const s = studentDetails.data;
-
       methods.reset({
         firstName: s.firstName || "",
         lastName: s.lastName || "",
@@ -136,7 +141,7 @@ const AddStudent = () => {
           occupation: s.father?.occupation || "",
           contactNumber: s.father?.contactNumber || "",
           email: s.father?.email || "",
-          bussinessOrEmployerName: s.father?.bussinessOrEmployerName || "",
+          businessOrEmployerName: s.father?.businessOrEmployerName || "",
           officeAddress: s.father?.officeAddress || "",
           officeNumber: s.father?.officeNumber || "",
         },
@@ -146,7 +151,7 @@ const AddStudent = () => {
           occupation: s.mother?.occupation || "",
           contactNumber: s.mother?.contactNumber || "",
           email: s.mother?.email || "",
-          bussinessOrEmployerName: s.mother?.bussinessOrEmployerName || "",
+          businessOrEmployerName: s.mother?.businessOrEmployerName || "",
           officeAddress: s.mother?.officeAddress || "",
           officeNumber: s.mother?.officeNumber || "",
         },
@@ -156,9 +161,8 @@ const AddStudent = () => {
           occupation: s.localGuardian?.occupation || "",
           contactNumber: s.localGuardian?.contactNumber || "",
           email: s.localGuardian?.email || "",
-          bussinessOrEmployerName:
-            s.localGuardian?.bussinessOrEmployerName || "",
-          officeAddress: s.motlocalGuardianher?.officeAddress || "",
+          businessOrEmployerName: s.localGuardian?.businessOrEmployerName || "",
+          officeAddress: s.localGuardian?.officeAddress || "",
           officeNumber: s.localGuardian?.officeNumber || "",
         },
         session: s.admission.session._id,
@@ -166,8 +170,22 @@ const AddStudent = () => {
         section: s.admission.section._id,
         admissionYear: s.admissionYear,
         previousSchool: {
-          schoolName: s.previousSchool?.schoolName || "",
+          name: s.previousSchool?.name || "",
           address: s.previousSchool?.address || "",
+          reasonForLeaving: s.previousSchool?.reasonForLeaving || "",
+          dateOfLeaving: s.previousSchool?.dateOfLeaving || "",
+          schoolLeavingCertificate: {
+            name: s.previousSchool?.schoolLeavingCertificate?.name || "",
+            documentNumber:
+              s.previousSchool?.schoolLeavingCertificate?.documentNumber || "",
+            url: s.previousSchool?.schoolLeavingCertificate?.url || "",
+          },
+          transferCertificate: {
+            name: s.previousSchool?.transferCertificate?.name || "",
+            documentNumber:
+              s.previousSchool?.transferCertificate?.documentNumber || "",
+            url: s.previousSchool?.transferCertificate?.url || "",
+          },
         },
         documents: s.documents || [],
       });
@@ -201,11 +219,6 @@ const AddStudent = () => {
   };
 
   const onStepSubmit = async (data: any) => {
-    // const isValid = await methods.trigger();
-    // if (!isValid) {
-    //   toast.error("Please fill all required fields correctly.");
-    //   return;
-    // }
     const schema = steps[activeStep].schema;
     try {
       await schema.validate(data, { abortEarly: false });

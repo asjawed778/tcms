@@ -6,13 +6,14 @@ interface TabItem {
   label: string;
   value: string;
   icon?: React.ReactElement;
-  component: React.ReactNode;
+  component?: React.ReactNode;
 }
 interface SegmentTabsProps {
   tabs: TabItem[];
   defaultTab?: string;
   tabUrlControlled?: boolean;
   tabContainerSx?: any;
+  onTabChange?: (value: string) => void;
 }
 
 const SegmentTabs: React.FC<SegmentTabsProps> = ({
@@ -20,6 +21,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({
   defaultTab,
   tabUrlControlled = true,
   tabContainerSx = {},
+  onTabChange,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [localTab, setLocalTab] = React.useState(defaultTab || tabs[0].value);
@@ -44,6 +46,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({
     } else {
       setLocalTab(newValue);
     }
+    onTabChange?.(newValue); 
   };
 
   return (

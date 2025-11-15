@@ -43,6 +43,7 @@ const ParentDetails: React.FC = () => {
           label="Mobile Number"
           placeholder="Enter father's mobile number"
           required={false}
+          type="number"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -55,7 +56,7 @@ const ParentDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
-          name="father.bussinessOrEmployerName"
+          name="father.businessOrEmployerName"
           label="Bussiness/Employer Name"
           placeholder="Enter father's bussiness/employer name"
           required={false}
@@ -125,7 +126,7 @@ const ParentDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
-          name="mother.bussinessOrEmployerName"
+          name="mother.businessOrEmployerName"
           label="Business/Employer Name"
           placeholder="Enter mother's business/employer name"
           required={false}
@@ -194,7 +195,7 @@ const ParentDetails: React.FC = () => {
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
-          name="localGuardian.bussinessOrEmployerName"
+          name="localGuardian.businessOrEmployerName"
           label="Business/Employer Name"
           placeholder="Enter local guardian's business/employer name"
           required={false}
