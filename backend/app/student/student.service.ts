@@ -247,7 +247,6 @@ export const getAllStudents = async (
 };
 
 export const getStudentById = async (studentId: string) => {
-    console.log("getStudentById service", studentId);
     const result = await studentSchema.aggregate([
         {
             $match: { _id: new Types.ObjectId(studentId) }
