@@ -13,11 +13,9 @@ import {
 import { Box, Menu, MenuItem, Typography } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import StudentTable from "../../components/Student/StudentTable";
-import ViewDetails from "../../components/Student/ViewDetailsModal";
-import AddRemark from "../../components/Student/AddRemarkModal";
+import AddRemark from "@/components/Student/AddRemarkModal";
 import { useGetAllStudentQuery } from "@/services/studentApi";
-import BulkUpload from "../../components/Student/BulkUploadModal";
+import BulkUpload from "@/components/Student/BulkUploadModal";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, StudentStatus } from "@/utils/enum";
 import TableWrapper from "@/components/ui/TableWrapper";
@@ -25,6 +23,7 @@ import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 import { getStudentColumns } from "@/components/Student/studentUtils";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
 import StudentDetails from "@/components/Student/StudentDetails";
+import { useGetAllClassQuery } from "@/services/academics.Api";
 
 const actionsList = [
   {
@@ -50,10 +49,10 @@ const Student: React.FC = () => {
   const [page, setPage] = useState(1);
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState();
+  const [status, setStatus] = useState(StudentStatus.ACTIVE);
+  const [classFilter, setClassFilter] = useState("");
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
-  const [openViewDetailsModal, setOpenViewDetailsModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
   const selectedSession = useAppSelector(
@@ -80,20 +79,32 @@ const Student: React.FC = () => {
       limit: rowsPerPage,
       searchQuery,
       studentStatus: status,
+      classId: classFilter,
     },
     {
       skip: !selectedSession?._id,
+      refetchOnMountOrArgChange: true,
     }
   );
+  const { data: classData } = useGetAllClassQuery(
+    {
+      sessionId: selectedSession?._id,
+    },
+    { skip: !selectedSession?._id }
+  );
+  const classOptions = classData?.data?.classes?.map((cls: any) => ({
+    label: cls.name,
+    value: cls._id,
+  })); 
+  console.log("Class filter: ", classFilter);
+  
   const handleImageClick = (url: string) => {
     if (!url) return;
     setSelectedEmpImage([{ url, type: "image" }]);
     setOpenImagePreview(true);
   };
-  const handleRowClick = (student: any) => {
-    setSelectedStudent(student);
-    console.log("selected student: ", student);
-    setSelectedStudentId(student?.student._id);
+  const handleRowClick = (studentId: any) => {
+    setSelectedStudentId(studentId);
   };
 
   const studentTableColumns = getStudentColumns(handleImageClick);
@@ -109,12 +120,10 @@ const Student: React.FC = () => {
 
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/update-details/${row.student._id}`, {
-          state: { student: row },
-        });
+        navigate(`/dashboard/student/${row.student._id}/update`);
         break;
       case "view":
-        handleRowClick(row);
+        handleRowClick(row._id);
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
@@ -133,6 +142,10 @@ const Student: React.FC = () => {
     setStatus(val);
     setPage(1);
   };
+  const handleClassChange = (val:  any) => {
+    setClassFilter(val);
+    setPage(1);
+  }
   return (
     <Box p={2}>
       <Box mb="24px">
@@ -158,9 +171,19 @@ const Student: React.FC = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
               Filter By:
-            </Typography>
+            </Typography> */}
+            <CustomDropdownField
+              // name="class"
+              label="Class"
+              required={false}
+              value={classFilter}
+              onChange={handleClassChange}
+              options={classOptions}
+              labelPosition="inside"
+              sx={{ width: 250 }}
+            />
             <CustomDropdownField
               name="status"
               label="Status"
@@ -248,7 +271,7 @@ const Student: React.FC = () => {
         isFetching={isFetching}
         actions={actionsList}
         isError={isError}
-        onRowClick={(student) => handleRowClick(student)}
+        onRowClick={(student) => handleRowClick(student.student._id)}
       />
       {openImagePreview && (
         <DocumentPreviewer
@@ -264,15 +287,8 @@ const Student: React.FC = () => {
         width="60%"
         header="Student Details"
       >
-        <StudentDetails student={selectedStudent} />
+        <StudentDetails studentId={selectedStudentId} />
       </SideDrawerWrapper>
-      {selectedStudent && (
-        <ViewDetails
-          open={openViewDetailsModal}
-          onClose={() => setOpenViewDetailsModal(false)}
-          student={selectedStudent}
-        />
-      )}
       {selectedStudent && (
         <AddRemark
           open={openRemarksModal}

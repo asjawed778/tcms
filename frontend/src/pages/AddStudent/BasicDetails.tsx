@@ -58,7 +58,7 @@ const PersonalDetails: React.FC = () => {
         </Grid>
       </Grid>
       <Grid size={{ xs: 12, md: 2 }} mt={{ xs: 0, md: 2 }}>
-        <ImageUploader name="image" required={false} />
+        <ImageUploader name="photo" required={false} />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField

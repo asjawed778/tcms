@@ -12,14 +12,19 @@ export const studentApi = createApi({
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     getAllStudent: builder.query({
-      query: ({ page = 1, limit = 10, searchQuery = "", sessionId, studentStatus }) => ({
+      query: ({ page = 1, limit = 10, search = "", sessionId, status, classId, sectionId, gender, studentStatus, admissionStatus, bloodGroup}) => ({
         url: `/admin/student/all`,
         params: {
           page,
           limit,
           ...(sessionId && { sessionId }),
-          ...(searchQuery && { searchQuery }),
+          ...(search && { search }),
+          ...(classId && { classId }),
+          ...(sectionId && { sectionId }),
+          ...(gender && { gender }),
           ...(studentStatus && { studentStatus }),
+          ...(admissionStatus && { admissionStatus }),
+          ...(bloodGroup && { bloodGroup }),
         },
         method: "GET"
       }),

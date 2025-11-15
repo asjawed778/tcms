@@ -12,7 +12,7 @@ import { useGetStudentDetailsQuery } from "@/services/studentApi";
 import BasicDetails from "./BasicDetails";
 
 interface EmployeeDetailsProps {
-  student: any;
+  studentId: string;
 }
 interface TabItem {
   label: string;
@@ -26,43 +26,44 @@ interface TabItem {
   };
 }
 const StudentDetails: React.FC<EmployeeDetailsProps> = ({
-  student,
+  studentId,
 }) => {
   const can = useCan();
   const navigate = useNavigate();
   const {
-    data: employeeDetails,
+    data: studentDetails,
     isFetching,
     isError,
   } = useGetStudentDetailsQuery(
-    { studentId: student?.student._id },
+    { studentId },
     { refetchOnMountOrArgChange: true }
   );
+console.log("Student all details: ", studentDetails);
 
-  // if (isFetching) {
-  //   return <BasicDetailsSkeleton />;
-  // }
-  // if (isError) {
-  //   return (
-  //     <Box
-  //       sx={{
-  //         p: 4,
-  //         display: "flex",
-  //         flexDirection: "column",
-  //         alignItems: "center",
-  //         justifyContent: "center",
-  //         color: "error.main",
-  //       }}
-  //     >
-  //       <Typography variant="h6" fontWeight={600}>
-  //         Failed to load employee details
-  //       </Typography>
-  //       <Typography variant="body2" sx={{ mt: 1 }}>
-  //         Please try again later. Or check you internet connection.
-  //       </Typography>
-  //     </Box>
-  //   );
-  // }
+  if (isFetching) {
+    return <BasicDetailsSkeleton />;
+  }
+  if (isError) {
+    return (
+      <Box
+        sx={{
+          p: 4,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          color: "error.main",
+        }}
+      >
+        <Typography variant="h6" fontWeight={600}>
+          Failed to load employee details
+        </Typography>
+        <Typography variant="body2" sx={{ mt: 1 }}>
+          Please try again later. Or check you internet connection.
+        </Typography>
+      </Box>
+    );
+  }
 
   //   const allTabs: TabItem[] = employeeDetails
   //     ? [
@@ -105,23 +106,23 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
   //         tab.permission.action
   //       )
   //   );
-  const handleUpdateDetails = (employeeId: string) => {
-    navigate(`/dashboard/employee/${employeeId}/update`);
+  const handleUpdateDetails = (studenteId: string) => {
+    navigate(`/dashboard/student/${studenteId}/update`);
   };
   return (
     <Box>
-      {student && (
+      {studentDetails && (
         <BasicDetails
-          _id={student.student._id}
-          enrollmentNumber={student.student.enrollmentNumber}
-          phoneNumber={student.student.contactNumber}
-          photo={student.student.image || ""}
-          status={student.student.status}
+          _id={studentDetails.data._id}
+          enrollmentNumber={studentDetails.data.enrollmentNumber}
+          phoneNumber={studentDetails.data.contactNumber}
+          photo={studentDetails.data.image || ""}
+          status={studentDetails.data.status}
           //   roleName={employeeDetails.data.roleName}
-          firstName={student.student.firstName}
-          lastName={student.student.lastName || ""}
-          email={student.student.email}
-          onEditDetails={() => handleUpdateDetails(employeeDetails.data._id)}
+          firstName={studentDetails.data.firstName}
+          lastName={studentDetails.data.lastName || ""}
+          email={studentDetails.data.email}
+          onEditDetails={() => handleUpdateDetails(studentDetails.data._id)}
           onEditPhoto={() => console.log("Edit photo clicked")}
         />
       )}

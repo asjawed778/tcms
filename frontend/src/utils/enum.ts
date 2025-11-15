@@ -66,10 +66,6 @@ export enum ParticipationLevel {
 
 export enum StudentStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive",
-  PASSED_OUT = "Passed Out",
-  EXPELLED = "Expelled",
-  TRANSFERRED = "Transferred",
   DRAFT = "Draft",
 }
 

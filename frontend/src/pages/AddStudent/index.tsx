@@ -7,11 +7,11 @@ import {
   parentDetailsSchema,
   personalDetailsSchema,
   previousSchoolSchema,
-} from "../../validation/yup";
-import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
+} from "@/validation/yup";
+import { Stepper, Step, StepLabel, Box, CardContent, CircularProgress } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import ParentDetails from "./ParentDetails";
 import PreviousSchoolDetails from "./PreviousSchoolDetails";
 import DocumentDetails from "./DocumentDetails";
@@ -58,10 +58,7 @@ const AddStudent = () => {
   const [studentId, setStudentId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
-  const { id: editStudentId } = useParams();
-  const { state } = useLocation();
-  const student = state?.student;
-  // console.log("student: ", student);
+  const { studentId: editStudentId } = useParams();
 
   const [addBasicDetails, { isLoading: addingBasicDetails }] =
     useAddStudentBasicDetailsMutation();
@@ -75,7 +72,7 @@ const AddStudent = () => {
     useUpdateAdmissionDetailsMutation();
   const [updateDocuments, { isLoading: updatingDocuments }] =
     useUpdateDocumentsMutation();
-  const { data: employeeDetails, isFetching: fetchingEmployee } =
+  const { data: studentDetails, isFetching: fetchingStudent } =
     useGetStudentDetailsQuery(
       { studentId: editStudentId! },
       {
@@ -83,30 +80,34 @@ const AddStudent = () => {
         refetchOnMountOrArgChange: true,
       }
     );
+  console.log("Student details ", studentDetails);
+
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
     resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
   });
-  useEffect(() => {
-    if (editStudentId) {
-      setStudentId(editStudentId);
-    }
-  }, [editStudentId]);
-  useEffect(() => {
-    const stepName = steps[activeStep].label.toLowerCase().replace(" ", "-");
 
-    if (!studentId) {
+  useEffect(() => {
+    if (editStudentId && studentId !== editStudentId) {
+      setStudentId(editStudentId);
+      return;
+    }
+    if (!studentId && editStudentId) return;
+    const stepName = steps[activeStep].label.toLowerCase().replace(/ /g, "-");
+    if (!editStudentId && !studentId) {
       navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
-    } else {
+      return;
+    }
+    if (studentId) {
       navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
         replace: true,
       });
     }
-  }, [activeStep]);
+  }, [activeStep, studentId, editStudentId]);
 
   useEffect(() => {
-    if (student) {
-      const s = student.student;
+    if (studentDetails?.data && !fetchingStudent) {
+      const s = studentDetails.data;
 
       methods.reset({
         firstName: s.firstName || "",
@@ -116,7 +117,7 @@ const AddStudent = () => {
         adharNumber: s.adharNumber || "",
         dob: s.dob || "",
         gender: s.gender || "",
-        image: s.image || "",
+        photo: s.photo || "",
         nationality: s.nationality || "",
         motherTongue: s.motherTongue || "",
         religion: s.religion,
@@ -160,9 +161,9 @@ const AddStudent = () => {
           officeAddress: s.motlocalGuardianher?.officeAddress || "",
           officeNumber: s.localGuardian?.officeNumber || "",
         },
-        session: student.admission.session._id,
-        class: student.admission.class._id,
-        section: student.admission.section._id,
+        session: s.admission.session._id,
+        class: s.admission.class._id,
+        section: s.admission.section._id,
         admissionYear: s.admissionYear,
         previousSchool: {
           schoolName: s.previousSchool?.schoolName || "",
@@ -171,7 +172,7 @@ const AddStudent = () => {
         documents: s.documents || [],
       });
     }
-  }, [employeeDetails, methods]);
+  }, [studentDetails, methods]);
 
   const stepApis = [
     async (data: any) => {
@@ -242,6 +243,20 @@ const AddStudent = () => {
     }
   };
 
+  if (fetchingStudent) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Box p={3}>
       <Stepper activeStep={activeStep} alternativeLabel>
