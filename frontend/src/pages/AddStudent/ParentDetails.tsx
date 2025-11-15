@@ -49,7 +49,7 @@ const ParentDetails: React.FC = () => {
         <CustomInputField
           name="father.email"
           label="Email"
-          placeholder="Enter father's email"
+          placeholder="Enter father's email address"
           required={false}
         />
       </Grid>
@@ -119,7 +119,7 @@ const ParentDetails: React.FC = () => {
         <CustomInputField
           name="mother.email"
           label="Email"
-          placeholder="Enter mother's email"
+          placeholder="Enter mother's email address"
           required={false}
         />
       </Grid>

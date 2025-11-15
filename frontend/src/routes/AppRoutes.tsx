@@ -161,6 +161,23 @@ const AppRoutes = () => {
             }
           />
           <Route
+            path={`student/update-details/:studentId`}
+            element={
+              <ErrorBoundary>
+                <RoleAuthRoute
+                  permissions={[
+                    {
+                      module: ModuleName.STUDENTS,
+                      operation: Operation.UPDATE,
+                    },
+                  ]}
+                >
+                  <AddStudent />
+                </RoleAuthRoute>
+              </ErrorBoundary>
+            }
+          />
+          <Route
             path="academics"
             element={
               <ErrorBoundary>

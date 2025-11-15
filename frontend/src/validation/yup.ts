@@ -286,10 +286,9 @@ export const addSectionSchema = yup.object({
 
 // Addmission Schema.....................................................
 export const personalDetailsSchema = yup.object({
-  name: yup.string().trim().required("Name is required"),
+  firstName: yup.string().trim().required("Name is required"),
   dob: yup
     .string()
-    .matches(/^(\d{4})-(\d{2})-(\d{2})$/, "DOB must be a valid date")
     .required("Date of birth is required"),
   email: yup
     .string()
@@ -340,10 +339,18 @@ export const personalDetailsSchema = yup.object({
     ),
   adharNumber: yup
     .string()
-    .optional()
     .nullable()
-    .length(12, "Aadhaar number must be 12 digits")
-    .matches(/^\d{12}$/, "Aadhaar number must be numeric"),
+    .notRequired()
+    // .length(12, "Aadhaar number must be 12 digits")
+    // .matches(/^\d{12}$/, "Aadhaar number must be numeric"),
+     .test(
+      "is-valid-aadhar",
+      "Aadhaar number must be (12 digits)",
+      (value) => {
+        if (!value) return true;
+        return /^\d{12}$/.test(value);
+      }
+    ),
 });
 export const addressdetailsSchema = yup.object({
   address: yup.object().shape({
@@ -742,6 +749,7 @@ export const employeeAddressDetailsSchema = yup.object({
     addressLine1: yup.string().required("Address Line 1 is required").trim(),
     country: yup.string().required("Country is required"),
     state: yup.string().required("State is required"),
+    city: yup.string().required("City is required"),
     pincode: yup
       .string()
       .required("Pincode is required")

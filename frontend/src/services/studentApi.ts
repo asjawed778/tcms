@@ -11,50 +11,57 @@ export const studentApi = createApi({
   reducerPath: "studentApi",
   baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
-    getAllStudent: builder.query<StudentApiResponse, { page?: number;        limit?: number; searchQuery?: string; active?: string; sessionId: string; }>({
-      query: ({page = 1, limit = 10, searchQuery = "", active, sessionId, })  => ({
+    getAllStudent: builder.query({
+      query: ({page = 1, limit = 10, searchQuery = "", sessionId, studentStatus })  => ({
         url: `/admin/student/all`,
         params: {
           page,
           limit,
           ...(sessionId && { sessionId }),
           ...(searchQuery && { searchQuery }),
-          ...(active && { active }),
+          ...(studentStatus && { studentStatus }),
         },
         method: "GET"
       }),
     }),
-    addStudent: builder.mutation({
-      query: (payload) => ({
-        url: "/admin/student/add/step-1/personal-details",
+    addStudentBasicDetails: builder.mutation({
+      query: ({ payload }) => ({
+        url: "/admin/student/add/personal-details",
         method: "POST",
+        body: payload,
+      }),
+    }),
+    updateStudentBasicDetails: builder.mutation({
+      query: ({ studentId, payload }) => ({
+        url: `/admin/student/${studentId}/personal-details`,
+        method: "PUT",
         body: payload,
       }),
     }),
     updateAddress: builder.mutation({
       query: ({payload, studentId}) => ({
-        url: `/admin/student/${studentId}/step-2/address`,
+        url: `/admin/student/${studentId}/address`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateParentDetails: builder.mutation({
       query: ({payload, studentId}) => ({
-        url: `/admin/student/${studentId}/step-3/parent-details`,
+        url: `/admin/student/${studentId}/parent-details`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateAdmissionDetails: builder.mutation({
       query: ({payload, studentId}) => ({
-        url: `/admin/student/${studentId}/step-4/admission-details`,
+        url: `/admin/student/${studentId}/admission-details`,
         method: "PUT",
         body: payload,
       }),
     }),
     updateDocuments: builder.mutation({
       query: ({payload, studentId}) => ({
-        url: `/admin/student/${studentId}/step-5/documents`,
+        url: `/admin/student/${studentId}/documents`,
         method: "PUT",
         body: payload,
       }),
@@ -66,8 +73,8 @@ export const studentApi = createApi({
         body: payload,
       }),
     }),
-    useGetStudentDetails: builder.query({
-      query: ({studentId}) => ({
+    getStudentDetails: builder.query({
+      query: ({ studentId }) => ({
         url: `/admin/student/details/${studentId}`,
         method: "GET",
       })
@@ -87,12 +94,13 @@ export const studentApi = createApi({
 
 export const {
   useGetAllStudentQuery,
-  useAddStudentMutation,
+  useAddStudentBasicDetailsMutation,
+  useUpdateStudentBasicDetailsMutation,
   useUpdateAdmissionDetailsMutation,
   useUpdateAddressMutation,
   useUpdateParentDetailsMutation,
   useUpdateDocumentsMutation,
-  useUseGetStudentDetailsQuery,
+  useGetStudentDetailsQuery,
   useAddRemarkMutation,
   useUploadBulkStudentsMutation,
 } = studentApi;

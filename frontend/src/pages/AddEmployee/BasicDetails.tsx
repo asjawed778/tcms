@@ -27,14 +27,14 @@ const BasicDetails: React.FC = () => {
             <CustomInputField
               name="firstName"
               label="First Name"
-              placeholder="Enter First name"
+              placeholder="Enter first name"
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField
               name="lastName"
               label="Last Name"
-              placeholder="Enter Last Name"
+              placeholder="Enter last name"
               required={false}
             />
           </Grid>
@@ -42,7 +42,7 @@ const BasicDetails: React.FC = () => {
             <CustomInputField
               name="fatherName"
               label="Father's Name"
-              placeholder="Enter Father's Name"
+              placeholder="Enter father's name"
               required={false}
             />
           </Grid>
@@ -50,7 +50,7 @@ const BasicDetails: React.FC = () => {
             <CustomInputField
               name="motherName"
               label="Mother's Name"
-              placeholder="Enter Mother's Name"
+              placeholder="Enter mother's name"
               required={false}
             />
           </Grid>
@@ -64,7 +64,7 @@ const BasicDetails: React.FC = () => {
         <CustomInputField
           name="email"
           label="Email"
-          placeholder="Enter email"
+          placeholder="Enter email address"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -72,7 +72,7 @@ const BasicDetails: React.FC = () => {
           name="phoneNumber"
           type="number"
           label="Phone Number"
-          placeholder="Enter Phone Number"
+          placeholder="Enter phone number"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -104,7 +104,7 @@ const BasicDetails: React.FC = () => {
           name="aadhaarNumber"
           type="number"
           label="Aadhaar Number"
-          placeholder="Enter Aadhaar Number"
+          placeholder="Enter aadhaar number"
           required={false}
         />
       </Grid>

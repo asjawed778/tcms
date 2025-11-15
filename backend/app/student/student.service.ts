@@ -305,7 +305,8 @@ export const getAllStudents = async (
     if (search) {
         studentFilters.push({
             $or: [
-                { 'student.name': { $regex: search, $options: 'i' } },
+                { 'student.firstName': { $regex: search, $options: 'i' } },
+                { 'student.lastName': { $regex: search, $options: 'i' } },
                 { 'student.enrollmentNumber': { $regex: search, $options: 'i' } },
                 { 'student.adharNumber': { $regex: search, $options: 'i' } },
                 { 'student.father.name': { $regex: search, $options: 'i' } },
@@ -379,7 +380,8 @@ export const getAllStudents = async (
                         $project: {
                             student: {
                                 _id: 1,
-                                name: 1,
+                                firstName: 1,
+                                lastName: 1,
                                 enrollmentNumber: 1,
                                 adharNumber: 1,
                                 profileImage: 1,

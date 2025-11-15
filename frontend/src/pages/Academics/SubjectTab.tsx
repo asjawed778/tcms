@@ -27,6 +27,7 @@ import { SubjectResponse } from "../../../type";
 import SubjectCard from "../../components/Academics/Subject/SubjectCard";
 import SubjectDetailsModal from "../../components/Academics/Subject/SubjectDetailsModal";
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
+import AlertModal from "@/components/ui/AlertModal";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
@@ -332,8 +333,7 @@ const SubjectTab = () => {
         />
       )}
       {openDeleteSubject && (
-        <DialogBoxWrapper
-          title="Delete Subject"
+        <AlertModal
           open={openDeleteSubject}
           onClose={() => {
             setOpenDeleteSubject(false);

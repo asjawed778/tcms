@@ -52,13 +52,13 @@ const DocumentDetails: React.FC = () => {
                 <CustomInputField
                   name={`documents.${index}.name`}
                   label="Document Name"
-                  placeholder="Enter Document Name"
+                  placeholder="Enter document name"
                   required={false}
                 />
                 <CustomInputField
                   name={`documents.${index}.documentNumber`}
                   label="Document Number"
-                  placeholder="Enter Document Number"
+                  placeholder="Enter document number"
                   required={false}
                 />
               </Grid>

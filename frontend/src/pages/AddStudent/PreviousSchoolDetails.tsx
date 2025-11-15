@@ -1,7 +1,7 @@
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import FileUploader from "@/components/ui/FileUploader";
-import { useGetAllClassQuery } from "@/services/academics.Api";
+import { useGetAllClassQuery, useGetAllSectionQuery } from "@/services/academics.Api";
 import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
 import mapToDropdownOptions from "@/utils/helper";
@@ -17,7 +17,11 @@ const PreviousSchoolDetails: React.FC = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
-
+  const selectedClassId: string = useWatch({
+    control,
+    name: "class",
+  });
+  const { data: allSessions } = useGetSessionsQuery();
   const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSessionId as string,
@@ -26,17 +30,27 @@ const PreviousSchoolDetails: React.FC = () => {
       skip: !selectedSessionId,
     }
   );
-
+  const { data: sectionData } = useGetAllSectionQuery(
+    {
+      sessionId: selectedSessionId as string,
+      classId: selectedClassId
+    },
+    {
+      skip: !selectedSessionId || !selectedClassId,
+    }
+  );
+  console.log("class data: ", classData);
+  console.log("section data: ", sectionData);
+  
   const className =
     classData?.data.classes.map((items: any) => ({
       label: items.name,
       value: items._id as string,
     })) || [];
-  const selectedClassId: string = useWatch({
-    control,
-    name: "class",
-  });
-  const { data: allSessions } = useGetSessionsQuery();
+  const sectionOptions = sectionData?.data?.sections.map((section) => ({
+    label: section.name,
+    value: section._id,
+  }))
   const sessionsOptions = useMemo(
     () =>
       mapToDropdownOptions({
@@ -57,17 +71,17 @@ const PreviousSchoolDetails: React.FC = () => {
     setValue("session", value);
   };
 
-  const sectionOptions = useMemo(() => {
-    const foundClass = classData?.data.classes.find(
-      (cls: any) => cls._id === selectedClassId
-    );
-    return (
-      foundClass?.sections.map((section: any) => ({
-        label: section.name,
-        value: section._id as string,
-      })) || []
-    );
-  }, [selectedClassId, classData]);
+  // const sectionOptions = useMemo(() => {
+  //   const foundClass = classData?.data?.classes?.find(
+  //     (cls: any) => cls._id === selectedClassId
+  //   );
+  //   return (
+  //     foundClass?.sections?.map((section: any) => ({
+  //       label: section.name,
+  //       value: section._id as string,
+  //     })) || []
+  //   );
+  // }, [selectedClassId, classData]);
 
   useEffect(() => {
     setValue("previousSchool.transferCertificate.name", "Transfer Certificate");
