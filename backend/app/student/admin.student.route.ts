@@ -9,46 +9,46 @@ const router = Router();
 
 router
   .post(
-    "/add/step-1/personal-details",
+    "/add/personal-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
-    StudentValidation.addStudentStep1,
+    StudentValidation.addPersonalDetails,
     catchError,
-    StudentController.addStudentStep1
+    StudentController.addPersonalDetails
   )
   .put(
-    "/:studentId/step-1/personal-details",
+    "/:studentId/personal-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.UPDATE }),
-    StudentValidation.updateStudentStep1,
+    StudentValidation.updatePersonalDetails,
     catchError,
-    StudentController.updateStudentStep1
+    StudentController.updatePersonalDetails
   )
   .put(
-    "/:studentId/step-2/address",
+    "/:studentId/address",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
-    StudentValidation.addStudentStep2,
+    StudentValidation.upsertStudentAddress,
     catchError,
-    StudentController.addStudentStep2
+    StudentController.upsertStudentAddress
   )
   .put(
-    "/:studentId/step-3/parent-details",
+    "/:studentId/parent-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
-    StudentValidation.addStudentStep3,
+    StudentValidation.upsertStudentParentsInfo,
     catchError,
-    StudentController.addStudentStep3
+    StudentController.upsertStudentParentsInfo
   )
   .put(
-    "/:studentId/step-4/admission-details",
+    "/:studentId/admission-details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
-    StudentValidation.addStudentStep4,
+    StudentValidation.upsertStudentAdmissinInfo,
     catchError,
-    StudentController.addStudentStep4
+    StudentController.upsertStudentAdmissinInfo
   )
   .put(
-    "/:studentId/step-5/documents",
+    "/:studentId/documents",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.CREATE }),
-    StudentValidation.addStudentStep5,
+    StudentValidation.studentAdditionalDoc,
     catchError,
-    StudentController.addStudentStep5
+    StudentController.studentAdditionalDoc
   )
   .post(
     "/bulk-upload",
@@ -65,11 +65,18 @@ router
     StudentController.getStudents
   )
   .get(
-    "/details/:studentId",
+    "/:studentId/details",
     roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.READ }),
     StudentValidation.getStudentById,
     catchError,
     StudentController.getStudentById
+  )
+  .delete(
+    "/:studentId/delete-draft",
+    roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.DELETE }),
+    StudentValidation.deleteDraftStudent,
+    catchError,
+    StudentController.deleteDraftStudent
   )
 
   // additional routes for student

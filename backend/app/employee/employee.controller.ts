@@ -46,7 +46,7 @@ export const updateEmployeeBasicDetails = asyncHandler(async (req: Request, res:
         throw createHttpError(404, "Employee not found");
     }
     if (data.email || data.firstName || data.lastName || data.role) {
-        await UserService.updateUserByAdmin(empDoc.user, {
+        await UserService.updateUserByAdmin(empDoc.userId, {
             ...(data.firstName && { name: data.firstName }),
             ...(data.lastName && { name: data.lastName }),
             ...(data.email && { email: data.email }),
@@ -75,7 +75,7 @@ export const upsertEmpAddress = asyncHandler(async (req: Request, res: Response)
     }
     let address;
     if (empDoc.address) {
-        address = await AddressService.saveAddress(data.address, empDoc._id);
+        address = await AddressService.saveAddress(data.address, empDoc.address._id);
     } else {
         address = await AddressService.saveAddress(data.address);
     }
@@ -151,6 +151,22 @@ export const getEmpSalaryStructure = asyncHandler(async (req, res) => {
         )
     );
 });
+
+export const deleteDraftEmployee = asyncHandler(async (req: Request, res: Response) => {
+    const employeeId = req.params.employeeId;
+    const employee = await EmployeeService.getEmployeeById(employeeId);
+    if (!employee) {
+        throw createHttpError(404, "Employee not found");
+    }
+    if (employee.status !== Enum.EmployeeStatus.DRAFT) {
+        throw createHttpError(400, "Only draft employees can be deleted");
+    }
+    await EmployeeService.deleteDraftEmployee(employeeId);
+    res.send(createResponse({}, "Employee deleted successfully"));
+});
+
+
+
 
 // old controllers
 

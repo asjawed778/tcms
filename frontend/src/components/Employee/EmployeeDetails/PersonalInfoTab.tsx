@@ -2,6 +2,7 @@ import React from "react";
 import { Box, Typography, Grid, useTheme, Theme } from "@mui/material";
 import { EmployeeDetailsResponse } from "@/types/employee";
 import { formatDate } from "@/utils/helper";
+import InfoItem from "@/components/common/InfoItem";
 
 interface PersonalInfoTabProps {
   employee: EmployeeDetailsResponse;
@@ -72,26 +73,6 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ employee }) => {
 };
 
 export default PersonalInfoTab;
-
-interface InfoItemProps {
-  label: string;
-  value?: string | number | null;
-}
-const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => {
-  value = value || "--";
-  return (
-    <Box>
-      <Box>
-        <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          {label}
-        </Typography>
-        <Typography variant="body1" fontWeight={500}>
-          {value}
-        </Typography>
-      </Box>
-    </Box>
-  );
-};
 
 const getStyles = (theme: Theme) => ({
   root: { px: 2 },

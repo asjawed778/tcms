@@ -1,51 +1,57 @@
 import React, { useEffect, useMemo } from "react";
-import { Tabs, Tab, Box } from "@mui/material";
+import { Tabs, Tab, Box, SxProps } from "@mui/material";
 import { useSearchParams } from "react-router-dom";
 
 interface TabItem {
   label: string;
   value: string;
   icon?: React.ReactElement;
-  component: React.ReactNode;
+  component?: React.ReactNode;
 }
 interface SegmentTabsProps {
   tabs: TabItem[];
   defaultTab?: string;
+  tabUrlControlled?: boolean;
+  tabContainerSx?: any;
+  onTabChange?: (value: string) => void;
 }
 
-const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab }) => {
+const SegmentTabs: React.FC<SegmentTabsProps> = ({
+  tabs,
+  defaultTab,
+  tabUrlControlled = true,
+  tabContainerSx = {},
+  onTabChange,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-
-  const activeTab = searchParams.get("tab") || defaultTab || tabs[0].value;
+  const [localTab, setLocalTab] = React.useState(defaultTab || tabs[0].value);
+  const activeTab = tabUrlControlled
+    ? searchParams.get("tab") || defaultTab || tabs[0].value
+    : localTab;
 
   useEffect(() => {
-    if (!searchParams.get("tab")) {
+    if (tabUrlControlled && !searchParams.get("tab")) {
       setSearchParams({ tab: defaultTab || tabs[0].value });
     }
-  }, [defaultTab, searchParams, setSearchParams, tabs]);
+  }, [defaultTab, searchParams, setSearchParams, tabs, tabUrlControlled]);
 
-  const ActiveComponent = useMemo(
+  const children = useMemo(
     () => tabs.find((t) => t.value === activeTab)?.component || null,
     [tabs, activeTab]
   );
 
   const handleChange = (_: React.SyntheticEvent, newValue: string) => {
-    setSearchParams({ tab: newValue });
+    if (tabUrlControlled) {
+      setSearchParams({ tab: newValue });
+    } else {
+      setLocalTab(newValue);
+    }
+    onTabChange?.(newValue);
   };
 
   return (
     <Box>
-      <Box
-        sx={{
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          backgroundColor: "#fff",
-          // borderBottom: "1px solid #E0E0E0",
-          pt: 1,
-          pl: 2
-        }}
-      >
+      <Box sx={tabContainerSx}>
         <Tabs
           value={activeTab}
           onChange={handleChange}
@@ -106,7 +112,7 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({ tabs, defaultTab }) => {
         </Tabs>
       </Box>
 
-      <Box>{ActiveComponent}</Box>
+      <Box>{children}</Box>
     </Box>
   );
 };

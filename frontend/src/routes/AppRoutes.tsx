@@ -24,7 +24,7 @@ const AddStudent = lazy(() => import("@/pages/AddStudent"));
 const Academics = lazy(() => import("@/pages/Academics"));
 const CreateClass = lazy(() => import("@/pages/CreateClass"));
 const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
-const Tools = lazy(() => import("@/pages/Administration"));
+const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
   return (
@@ -110,6 +110,23 @@ const AppRoutes = () => {
             }
           />
           <Route
+            path={`employee/:employeeId/update`}
+            element={
+              <ErrorBoundary>
+                <RoleAuthRoute
+                  permissions={[
+                    {
+                      module: ModuleName.Employee,
+                      operation: Operation.UPDATE,
+                    },
+                  ]}
+                >
+                  <AddEmployee />
+                </RoleAuthRoute>
+              </ErrorBoundary>
+            }
+          />
+          <Route
             path="student"
             element={
               <ErrorBoundary>
@@ -135,6 +152,23 @@ const AppRoutes = () => {
                     {
                       module: ModuleName.STUDENTS,
                       operation: Operation.CREATE,
+                    },
+                  ]}
+                >
+                  <AddStudent />
+                </RoleAuthRoute>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path={`student/:studentId/update`}
+            element={
+              <ErrorBoundary>
+                <RoleAuthRoute
+                  permissions={[
+                    {
+                      module: ModuleName.STUDENTS,
+                      operation: Operation.UPDATE,
                     },
                   ]}
                 >
@@ -208,7 +242,7 @@ const AppRoutes = () => {
                     },
                   ]}
                 >
-                  <Tools />
+                  <Administration />
                 </RoleAuthRoute>
               </ErrorBoundary>
             }

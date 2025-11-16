@@ -79,14 +79,14 @@ const AddressDetails: React.FC = () => {
         <CustomInputField
           name="address.addressLine1"
           label="Address Line1"
-          placeholder="Enter Line1 details"
+          placeholder="Enter address line 1"
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomInputField
           name="address.addressLine2"
           label="Address Line2"
-          placeholder="Enter Line2 Details"
+          placeholder="Enter address line 2"
           required={false}
         />
       </Grid>
@@ -94,6 +94,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.country"
           label="Country"
+          placeholder="-- Select Country --"
           options={countryList}
         />
       </Grid>
@@ -101,6 +102,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.state"
           label="State"
+          placeholder="-- Select State --"
           control={control}
           options={stateList}
           disabled={!selectedCountry}
@@ -110,6 +112,7 @@ const AddressDetails: React.FC = () => {
         <CustomDropdownField
           name="address.city"
           label="City"
+          placeholder="-- Select City --"
           control={control}
           options={cityList}
           disabled={!selectedState}
@@ -119,7 +122,7 @@ const AddressDetails: React.FC = () => {
         <CustomInputField
           name="address.pincode"
           label="Pincode"
-          placeholder="Enter Pincode number"
+          placeholder="Enter Pincode"
         />
       </Grid>
     </Grid>

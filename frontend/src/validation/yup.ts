@@ -286,11 +286,8 @@ export const addSectionSchema = yup.object({
 
 // Addmission Schema.....................................................
 export const personalDetailsSchema = yup.object({
-  name: yup.string().trim().required("Name is required"),
-  dob: yup
-    .string()
-    .matches(/^(\d{4})-(\d{2})-(\d{2})$/, "DOB must be a valid date")
-    .required("Date of birth is required"),
+  firstName: yup.string().trim().required("Name is required"),
+  dob: yup.string().required("Date of birth is required"),
   email: yup
     .string()
     .optional()
@@ -340,10 +337,14 @@ export const personalDetailsSchema = yup.object({
     ),
   adharNumber: yup
     .string()
-    .optional()
     .nullable()
-    .length(12, "Aadhaar number must be 12 digits")
-    .matches(/^\d{12}$/, "Aadhaar number must be numeric"),
+    .notRequired()
+    // .length(12, "Aadhaar number must be 12 digits")
+    // .matches(/^\d{12}$/, "Aadhaar number must be numeric"),
+    .test("is-valid-aadhar", "Aadhaar number must be (12 digits)", (value) => {
+      if (!value) return true;
+      return /^\d{12}$/.test(value);
+    }),
 });
 export const addressdetailsSchema = yup.object({
   address: yup.object().shape({
@@ -369,7 +370,15 @@ export const parentDetailsSchema = yup.object({
     contactNumber: yup
       .string()
       .optional()
-      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
+      .notRequired()
+      .test(
+        "is-valid-phone",
+        "Enter a valid Indian phone number (10 digits)",
+        (value) => {
+          if (!value) return true;
+          return /^[0-9]{10}$/.test(value);
+        }
+      ),
     qualification: yup.string().optional().nullable(),
     occupation: yup.string().required("Occupation is required"),
     bussinessOrEmployerName: yup.string().optional(),
@@ -386,33 +395,43 @@ export const parentDetailsSchema = yup.object({
     contactNumber: yup
       .string()
       .optional()
-      .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
+      .test(
+        "is-valid-phone",
+        "Enter a valid Indian phone number (10 digits)",
+        (value) => {
+          if (!value) return true;
+          return /^[0-9]{10}$/.test(value);
+        }
+      ),
     qualification: yup.string().optional(),
     occupation: yup.string().optional(),
     bussinessOrEmployerName: yup.string().optional(),
     officeAddress: yup.string().optional(),
     officeNumber: yup.string().optional(),
   }),
-  // localGuardian: yup.object({
-  //   name: yup.string().optional(),
-  //   email: yup
-  //     .string()
-  //     .optional()
-  //     .email("Invalid email format")
-  //     .matches(
-  //       /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-  //       "Email must include domain (e.g. gmail.com)"
-  //     ),
-  //   contactNumber: yup
-  //     .string()
-  //     .optional()
-  //     .matches(/^[0-9]{10}$/, "Enter a valid Indian phone number (10 digits)"),
-  //   qualification: yup.string().optional(),
-  //   occupation: yup.string().optional(),
-  //   bussinessOrEmployerName: yup.string().optional(),
-  //   officeAddress: yup.string().optional(),
-  //   officeNumber: yup.string().optional(),
-  // }),
+  localGuardian: yup.object({
+    name: yup.string().optional(),
+    email: yup
+      .string()
+      .optional()
+      .email("Local Guardian's email must be a valid email address"),
+    contactNumber: yup
+      .string()
+      .optional()
+      .test(
+        "is-valid-phone",
+        "Enter a valid Indian phone number (10 digits)",
+        (value) => {
+          if (!value) return true;
+          return /^[0-9]{10}$/.test(value);
+        }
+      ),
+    qualification: yup.string().optional(),
+    occupation: yup.string().optional(),
+    bussinessOrEmployerName: yup.string().optional(),
+    officeAddress: yup.string().optional(),
+    officeNumber: yup.string().optional(),
+  }),
 });
 const groupedFields = [
   "name",
@@ -742,6 +761,7 @@ export const employeeAddressDetailsSchema = yup.object({
     addressLine1: yup.string().required("Address Line 1 is required").trim(),
     country: yup.string().required("Country is required"),
     state: yup.string().required("State is required"),
+    city: yup.string().required("City is required"),
     pincode: yup
       .string()
       .required("Pincode is required")
@@ -749,21 +769,10 @@ export const employeeAddressDetailsSchema = yup.object({
   }),
 });
 export const employeeProfessionalDetailsSchema = yup.object({
-  designation: yup
-    .string()
-    .required("Designation is required")
-    .trim(),
-  dateOfJoining: yup
-    .string()
-    .required("Date of Joining is required")
+  designation: yup.string().required("Designation is required").trim(),
+  dateOfJoining: yup.string().required("Date of Joining is required"),
 });
 export const employeeSalaryStructureSchema = yup.object({
-  basicPay: yup
-    .string()
-    .required("Basic pay is required")
-    .trim(),
-  effectiveFrom: yup
-    .string()
-    .required("Date of effective from is required")
+  basicPay: yup.string().required("Basic pay is required").trim(),
+  effectiveFrom: yup.string().required("Date of effective from is required"),
 });
-

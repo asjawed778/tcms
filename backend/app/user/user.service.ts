@@ -4,7 +4,7 @@ import bcrypt from 'bcrypt';
 import createHttpError from "http-errors";
 import { omit } from "lodash";
 import { loadConfig } from "../common/helper/config.hepler";
-import { ClientSession, Types } from "mongoose";
+import mongoose, { ClientSession, Types } from "mongoose";
 import * as Enum from "../common/utils/enum";
 import * as UserDto from "./user.dto";
 import roleSchema from "./role.schema";
@@ -221,6 +221,22 @@ export const updateUserByAdmin = async (
         throw createHttpError(500, "Error updating user");
     }
     return updatedUser;
+};
+
+export const deleteUserById = async (userId: string, session?: mongoose.ClientSession) => {
+    if (!userId) return false;
+    try {
+        const query = UserSchema.deleteOne({ _id: userId });
+        if (session) {
+            await query.session(session);
+        } else {
+            await query;
+        }
+        return true;
+    } catch (err) {
+        console.error("Failed to delete user:", err);
+        throw err;
+    }
 };
 
 

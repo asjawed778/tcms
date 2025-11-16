@@ -66,10 +66,6 @@ export enum ParticipationLevel {
 
 export enum StudentStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive",
-  PASSED_OUT = "Passed Out",
-  EXPELLED = "Expelled",
-  TRANSFERRED = "Transferred",
   DRAFT = "Draft",
 }
 
@@ -222,6 +218,13 @@ export enum ToolsTabs {
 export enum EmployeeDetailsTabs {
   PERSONAL_INFORMATION = "personal-information",
   PROFESSIONAL_DETAILS = "professional-details",
+  DOCUMENTS = "documents"
+}
+export enum StudentDetailsTabs {
+  PERSONAL_INFORMATION = "personal-information",
+  PARENT_INFORMATION = "parent-information",
+  ADMISSION_DETAILS = "admission-details",
+  DOCUMENTS = "documents"
 }
 
 // roles permissions and modules enums

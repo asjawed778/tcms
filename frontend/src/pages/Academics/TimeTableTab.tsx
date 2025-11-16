@@ -129,23 +129,27 @@ const TimeTableTab: React.FC = () => {
             flex: 1,
           }}
         >
-          <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+          {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
             Filter By:
-          </Typography>
+          </Typography> */}
           <CustomDropdownField
             label="Select Class"
+            placeholder="-- Select Class --"
             value={selectedClass}
             onChange={handleClassChange}
             options={classOptions}
             labelPosition="inside"
+            sx={{bgcolor: "#FFF"}}
           />
           <CustomDropdownField
             label="Select Section"
+            placeholder="-- Select Section --"
             value={selectedSection}
             onChange={(val: any) => setSelectedSecton(val)}
             options={sectionOptions}
             disabled={!selectedClass}
             labelPosition="inside"
+            sx={{bgcolor: "#FFF"}}
           />
         </Box>
 

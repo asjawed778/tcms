@@ -3,99 +3,316 @@ import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomSearchField from "@/components/ui/CustomSearchField";
 import { useAppSelector } from "@/store/store";
 import {
-  Add,
+  Delete,
+  EditOutlined,
   KeyboardArrowDown,
   PersonAdd,
   Upload,
-  Visibility,
+  VisibilityOutlined,
 } from "@mui/icons-material";
-import { Box, Menu, MenuItem, Typography } from "@mui/material";
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import StudentTable from "../../components/Student/StudentTable";
-import ViewDetails from "../../components/Student/ViewDetailsModal";
-import AddRemark from "../../components/Student/AddRemarkModal";
-import { useGetAllStudentQuery } from "@/services/studentApi";
-import BulkUpload from "../../components/Student/BulkUploadModal";
+import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import AddRemark from "@/components/Student/AddRemarkModal";
+import {
+  useDeleteStudentMutation,
+  useGetAllStudentQuery,
+} from "@/services/studentApi";
+import BulkUpload from "@/components/Student/BulkUploadModal";
 import { useCan } from "@/hooks/useCan";
-import { ModuleName, Operation } from "@/utils/enum";
+import { ModuleName, Operation, StudentStatus } from "@/utils/enum";
+import TableWrapper from "@/components/ui/TableWrapper";
+import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
+import {
+  getDraftStudentColumns,
+  getStudentColumns,
+} from "@/components/Student/studentUtils";
+import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
+import StudentDetails from "@/components/Student/StudentDetails";
+import {
+  useGetAllClassQuery,
+  useGetAllSectionQuery,
+} from "@/services/academics.Api";
+import SegmentTabs from "@/components/ui/SegmentTabs";
+import { StudentDetailsResponse } from "@/types/student";
+import toast from "react-hot-toast";
+import AlertModal from "@/components/ui/AlertModal";
 
-const actionsList = [
-  {
-    action: "viewDetails",
-    label: "View Details",
-    icon: <Visibility />,
-    color: "info.main",
-  },
-  {
-    action: "addRemarks",
-    label: "Add Remarks",
-    icon: <Add />,
-    color: "secondary.main",
-  },
-];
 const Student: React.FC = () => {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState("All");
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
+  const [rowsPerPage, setRowsPerPage] = useState(
+    () => Number(searchParams.get("limit")) || 10
+  );
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get("search") || ""
+  );
+  const [status, setStatus] = useState(
+    () => searchParams.get("status") || StudentStatus.ACTIVE
+  );
+  const [classFilter, setClassFilter] = useState(
+    () => searchParams.get("class") || ""
+  );
+  const [sectionFilter, setSectionFilter] = useState(
+    () => searchParams.get("section") || ""
+  );
+  const [selectedStudent, setSelectedStudent] =
+    useState<StudentDetailsResponse | null>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
-  const [openViewDetailsModal, setOpenViewDetailsModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
-  const selectedSession = useAppSelector( (state) => state.session.selectedSession);
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession
+  );
   const menuAnchorRef = React.useRef<HTMLElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [openImagePreview, setOpenImagePreview] = useState(false);
+  const [seletedEmpImage, setSelectedEmpImage] = useState<
+    { url: string; type: "image" }[]
+  >([]);
+  const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
+  const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const can = useCan();
+  const theme = useTheme();
 
   const {
     data: studentData,
-    isLoading,
+    isFetching,
     isError,
     refetch,
   } = useGetAllStudentQuery(
     {
       sessionId: selectedSession?._id as string,
-      page: page + 1,
+      page: page,
       limit: rowsPerPage,
-      searchQuery,
+      search: searchQuery,
+      studentStatus: status,
+      classId: classFilter,
+      sectionId: sectionFilter,
     },
     {
       skip: !selectedSession?._id,
+      // refetchOnMountOrArgChange: true,
     }
   );
+  const [deleteStudent] = useDeleteStudentMutation();
+  const { data: classData } = useGetAllClassQuery(
+    {
+      sessionId: selectedSession?._id,
+    },
+    { skip: !selectedSession?._id }
+  );
+  const { data: sectionData, isFetching: fetchingSection } =
+    useGetAllSectionQuery(
+      {
+        sessionId: selectedSession?._id,
+        classId: classFilter,
+      },
+      { skip: !classFilter || !selectedSession?._id }
+    );
+  const classOptions = classData?.data?.classes?.map((cls: any) => ({
+    label: cls.name,
+    value: cls._id,
+  }));
+  const sectionTabs = [
+    { label: "All Sections", value: "" },
+    ...(sectionData?.data?.sections ?? []).map((s: any) => ({
+      label: "Section " + s.name,
+      value: s._id,
+    })),
+  ];
+  console.log("#### student data : ", studentData);
+  // useEffect(() => {
+  //   const params = new URLSearchParams();
+
+  //   if (page) params.set("page", String(page));
+  //   if (rowsPerPage) params.set("limit", String(rowsPerPage));
+  //   if (searchQuery) params.set("search", searchQuery);
+  //   if (status) params.set("status", status);
+  //   if (classFilter) params.set("class", classFilter);
+  //   if (sectionFilter) params.set("section", sectionFilter);
+
+  //   setSearchParams(params);
+  // }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
+
+
+  const handleImageClick = (url: string) => {
+    if (!url) return;
+    setSelectedEmpImage([{ url, type: "image" }]);
+    setOpenImagePreview(true);
+  };
+  const handleRowClick = (studentId: any) => {
+    setSelectedStudentId(studentId);
+  };
+  const studentTableColumns =
+    actionType === "menu"
+      ? getStudentColumns(handleImageClick)
+      : getDraftStudentColumns(handleImageClick);
+
+  const actionsList = (row: any) => {
+    if (row.status === StudentStatus.DRAFT) {
+      return [
+        {
+          action: "update",
+          label: "",
+          icon: (
+            <Button
+              variant="outlined"
+              size="small"
+              endIcon={<EditOutlined fontSize="small" />}
+              onClick={(e) => {
+                e.stopPropagation();
+                // handleActionClick("update", row);
+                navigate(`/dashboard/student/${row._id}/update`);
+              }}
+              sx={{
+                backgroundColor: theme.customColors.primary + "20",
+                borderRadius: "20px",
+              }}
+            >
+              Resume
+            </Button>
+          ),
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.UPDATE,
+          },
+        },
+        {
+          action: "view",
+          label: "View",
+          icon: (
+            <VisibilityOutlined
+              onClick={(e) => {
+                e.stopPropagation();
+                setSelectedStudentId(row._id);
+              }}
+            />
+          ),
+          color: theme.customColors.secondary,
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.READ,
+          },
+        },
+        {
+          action: "delete",
+          label: "Delete",
+          icon: <Delete />,
+          color: "error.main",
+          permission: {
+            module: ModuleName.STUDENTS,
+            subModule: null,
+            operation: Operation.DELETE,
+          },
+        },
+      ];
+    }
+    return [
+      {
+        action: "update",
+        label: "Update Details",
+        icon: <EditOutlined />,
+        color: theme.customColors.primary,
+        permission: {
+          module: ModuleName.STUDENTS,
+          subModule: null,
+          operation: Operation.UPDATE,
+        },
+      },
+      {
+        action: "view",
+        label: "View Details",
+        icon: <VisibilityOutlined />,
+        color: theme.customColors.secondary,
+        permission: {
+          module: ModuleName.STUDENTS,
+          subModule: null,
+          operation: Operation.READ,
+        },
+      },
+    ];
+  };
+  const handleActionClick = (action: string, row: any) => {
+    switch (action) {
+      case "update":
+        navigate(`/dashboard/student/${row.student._id}/update`);
+        break;
+      case "view":
+        handleRowClick(row.student._id);
+        break;
+      case "delete":
+        setOpenDeleteModal(true);
+        setSelectedStudent(row.student);
+        break;
+      case "addRemarks":
+        setOpenRemarksModal(true);
+        setSelectedStudent(row);
+        break;
+      default:
+        break;
+    }
+  };
 
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
-    setPage(0);
-  };
-  const handleActionClick = (action: string, row: any) => {
-    setSelectedStudent(row);
-    switch (action) {
-      case "viewDetails":
-        setOpenViewDetailsModal(true);
-        break;
-      case "addRemarks":
-        setOpenRemarksModal(true);
-    }
+    setPage(1);
   };
   const handleAddStudent = () => {
     navigate("/dashboard/student/add");
   };
+  const handleStudentDelete = async () => {
+    if (!selectedStudent?._id) return;
+    try {
+      await deleteStudent({ studentId: selectedStudent._id }).unwrap();
+      refetch();
+      setOpenDeleteModal(false);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error?.data?.message || "Something went wrong. Please try again!"
+      );
+    }
+  };
   const handleBulkUpload = () => {
     setOpenBulkUpload(true);
   };
-  const handleChange = (val: any) => {
+  const handleStatusChange = (val: any) => {
     setStatus(val);
-    setPage(0);
+    setClassFilter("");
+    setSectionFilter("");
+    setPage(1);
+    if (val === StudentStatus.DRAFT) {
+      setActionType("icon");
+    } else {
+      setActionType("menu");
+    }
   };
+  const handleClassChange = (val: any) => {
+    setClassFilter(val);
+    setSectionFilter("");
+    setPage(1);
+  };
+  const handleSearch = (q: string) => {
+    setSearchQuery(q);
+    setPage(1);
+  };
+  const handleTabChange = (val: string) => {
+    setSectionFilter(val);
+    setPage(1);
+  };
+
   return (
     <Box p={2}>
-      <Box>
+      <Box mb="4px">
         <Box
           sx={{
             display: "flex",
@@ -107,7 +324,8 @@ const Student: React.FC = () => {
         >
           <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
             <CustomSearchField
-              onSearch={setSearchQuery}
+              placeholder="Search Student..."
+              onSearch={handleSearch}
               sx={{ bgcolor: "#fff" }}
             />
           </Box>
@@ -118,17 +336,27 @@ const Student: React.FC = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography>
             <CustomDropdownField
-              name="status"
+              label="Class"
+              placeholder="-- Select Class --"
+              required={false}
+              value={classFilter}
+              onChange={handleClassChange}
+              options={classOptions}
+              labelPosition="inside"
+              disabled={status === StudentStatus.DRAFT}
+              sx={{ bgcolor: "#fff" }}
+            />
+            <CustomDropdownField
               label="Status"
+              placeholder="-- Select Status --"
               required={false}
               value={status}
-              onChange={handleChange}
-              options={[{ label: "All", value: "All" }]}
+              onChange={handleStatusChange}
+              options={Object.values(StudentStatus)}
               labelPosition="inside"
+              showClearIcon={false}
+              sx={{ bgcolor: "#fff" }}
             />
           </Box>
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
@@ -149,7 +377,7 @@ const Student: React.FC = () => {
                   Add Student
                 </CustomButton>
                 <CustomButton
-                  onClick={() => setMenuOpen((prev) => !prev)} 
+                  onClick={() => setMenuOpen((prev) => !prev)}
                   sx={{
                     minWidth: "40px",
                     borderRadius: 0,
@@ -160,8 +388,8 @@ const Student: React.FC = () => {
                 </CustomButton>
               </Box>
               <Menu
-                anchorEl={menuAnchorRef.current} 
-                open={menuOpen} 
+                anchorEl={menuAnchorRef.current}
+                open={menuOpen}
                 onClose={() => setMenuOpen(false)}
                 anchorOrigin={{
                   vertical: "bottom",
@@ -195,27 +423,65 @@ const Student: React.FC = () => {
           )}
         </Box>
       </Box>
-
-      <StudentTable
-        students={studentData?.data.students || []}
-        totalCount={studentData?.data?.totalDocs ?? 0}
-        page={page}
-        rowsPerPage={rowsPerPage}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleRowsPerPageChange}
-        onActionClick={handleActionClick}
-        isLoading={isLoading}
-        actionsList={actionsList}
-        isError={isError}
-        isSessionNotSelected={!selectedSession?._id}
-      />
-      {selectedStudent && (
-        <ViewDetails
-          open={openViewDetailsModal}
-          onClose={() => setOpenViewDetailsModal(false)}
-          student={selectedStudent}
+      {classFilter && sectionData && status !== StudentStatus.DRAFT && (
+        <SegmentTabs
+          key={classFilter}
+          tabs={sectionTabs}
+          defaultTab={sectionTabs[0]?.value}
+          tabUrlControlled={false}
+          onTabChange={handleTabChange}
         />
       )}
+      <Box mt={2}>
+        <TableWrapper
+          rows={studentData?.data?.students || []}
+          columns={studentTableColumns}
+          totalCount={studentData?.data?.totalDocs ?? 0}
+          page={page}
+          rowsPerPage={rowsPerPage}
+          onPageChange={handlePageChange}
+          onRowsPerPageChange={handleRowsPerPageChange}
+          onActionClick={handleActionClick}
+          isFetching={isFetching || fetchingSection}
+          actions={actionsList}
+          isError={isError}
+          onRowClick={(student) =>
+            handleRowClick(student?.student?._id || student?._id)
+          }
+          actionDisplayType={actionType}
+        />
+      </Box>
+      {openImagePreview && (
+        <DocumentPreviewer
+          open={openImagePreview}
+          onClose={() => setOpenImagePreview(false)}
+          files={seletedEmpImage}
+        />
+      )}
+      {openDeleteModal && (
+        <AlertModal
+          open={openDeleteModal}
+          type="success"
+          onClose={() => setOpenDeleteModal(false)}
+          onConfirm={handleStudentDelete}
+          message={
+            <>
+              Are you sure you want to delete
+              <strong> "{selectedStudent?.firstName}"</strong>? This action
+              cannot be undone.
+            </>
+          }
+        />
+      )}
+      <SideDrawerWrapper
+        open={Boolean(selectedStudentId)}
+        onClose={() => setSelectedStudentId("")}
+        anchor="right"
+        width="60%"
+        header="Student Details"
+      >
+        <StudentDetails studentId={selectedStudentId} />
+      </SideDrawerWrapper>
       {selectedStudent && (
         <AddRemark
           open={openRemarksModal}

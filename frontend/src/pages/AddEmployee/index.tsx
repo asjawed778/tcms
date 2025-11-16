@@ -7,7 +7,14 @@ import {
   employeeProfessionalDetailsSchema,
   employeeSalaryStructureSchema,
 } from "../../validation/yup";
-import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  CardContent,
+  CircularProgress,
+} from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -20,6 +27,8 @@ import ProfessionalDetails from "./ProfessionalDetails";
 import SalaryStructure from "./SalaryStructure";
 import {
   useAddBasicDetailsMutation,
+  useGetEmployeeDetailsQuery,
+  useGetSalaryStructureQuery,
   useUpdateAddressMutation,
   useUpdateBasicDetailsMutation,
   useUpdateDocumentsMutation,
@@ -60,7 +69,7 @@ const AddEmployee = () => {
   const [employeeId, setEmployeeId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
-  const { id: editEmployeeId } = useParams();
+  const { employeeId: editEmployeeId } = useParams();
 
   const [addBasicDetails, { isLoading: addingBasicDetails }] =
     useAddBasicDetailsMutation();
@@ -77,9 +86,27 @@ const AddEmployee = () => {
   const [updateDocuments, { isLoading: updatingDocuments }] =
     useUpdateDocumentsMutation();
 
+  const { data: employeeDetails, isFetching: fetchingEmployee } =
+    useGetEmployeeDetailsQuery(
+      { employeeId: editEmployeeId! },
+      {
+        skip: !editEmployeeId,
+        refetchOnMountOrArgChange: true,
+      }
+    );
+  const { data: salaryStructure, isFetching: salaryFetching } =
+    useGetSalaryStructureQuery(
+      { employeeId: editEmployeeId! },
+      {
+        skip: !editEmployeeId,
+        refetchOnMountOrArgChange: true,
+      }
+    );
+
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
     resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    defaultValues: {},
     mode: "onChange",
   });
   useEffect(() => {
@@ -87,6 +114,60 @@ const AddEmployee = () => {
       setEmployeeId(editEmployeeId);
     }
   }, [editEmployeeId]);
+
+  useEffect(() => {
+    if (
+      employeeDetails?.data &&
+      salaryStructure?.data &&
+      !fetchingEmployee &&
+      !salaryFetching
+    ) {
+      const emp = employeeDetails.data;
+      const salary = salaryStructure.data[0] || {};
+
+      methods.reset({
+        firstName: emp.firstName,
+        lastName: emp.lastName,
+        fatherName: emp.fatherName,
+        motherName: emp.motherName,
+        email: emp.email,
+        phoneNumber: emp.phoneNumber,
+        aadhaarNumber: emp.aadhaarNumber,
+        dob: emp.dob,
+        gender: emp.gender,
+        qualification: emp.qualification,
+        dateOfJoining: emp.dateOfJoining,
+        designation: emp.designation,
+        role: emp.roleId,
+        status: emp.status,
+        photo: emp.photo,
+        basicPay: salary.basicPay,
+        deductions: salary.deductions,
+        hra: salary.hra,
+        allowances: salary.allowances,
+        effectiveFrom: salary.effectiveFrom,
+        effectiveTo: salary.effectiveTo,
+        remarks: salary.remarks,
+        address: {
+          addressLine1: emp.address?.addressLine1,
+          city: emp.address?.city,
+          state: emp.address?.state,
+          country: emp.address?.country,
+          pincode: emp.address?.pincode,
+        },
+        experience: emp.experience || [],
+        expertise:
+          emp.expertise?.map((item: string) => ({ subject: item })) || [],
+        documents: emp.documents || [],
+      });
+    }
+  }, [
+    employeeDetails,
+    salaryStructure,
+    fetchingEmployee,
+    salaryFetching,
+    methods,
+  ]);
 
   const stepApis = [
     async (data: any) => {
@@ -133,19 +214,24 @@ const AddEmployee = () => {
     navigate("/dashboard/employee");
   };
   const onStepSubmit = async (data: any) => {
-    const isValid = await methods.trigger();
-    if (!isValid) {
-      toast.error("Please fill all required fields correctly.");
-      return;
-    }
+    // const isValid = await methods.trigger();
+    // if (!isValid) {
+    //   toast.error("Please fill all required fields correctly.");
+    //   return;
+    // }
+    const schema = steps[activeStep].schema;
     try {
+      await schema.validate(data, { abortEarly: false });
       await stepApis[activeStep](data);
       setCompletedSteps((prev) => [...new Set([...prev, activeStep])]);
 
       if (activeStep < steps.length - 1) {
         setActiveStep((prev) => prev + 1);
       } else {
-        toast.success("Employee details added successfully!");
+        const message = editEmployeeId
+          ? "Employee details updated successfully!"
+          : "Employee details added successfully!";
+        toast.success(message);
         navigate("/dashboard/employee");
       }
     } catch (error: any) {
@@ -171,6 +257,20 @@ const AddEmployee = () => {
     }
   };
 
+  if (fetchingEmployee || salaryFetching) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
   return (
     <Box p={2}>
       <Stepper activeStep={activeStep} alternativeLabel>

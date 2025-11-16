@@ -7,7 +7,7 @@ import { Box, Button, Grid, IconButton, Stack } from "@mui/material";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import { ActionTaken, RemarkType } from "@/utils/enum";
 import CustomInputField from "@/components/ui/CustomInputField";
-import { AddCircleOutline, Close } from "@mui/icons-material";
+import { Add, AddCircleOutline, Close } from "@mui/icons-material";
 import FileUploader from "@/components/ui/FileUploader";
 import CustomButton from "@/components/ui/CustomButton";
 import toast from "react-hot-toast";
@@ -80,7 +80,7 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
     <ModalWrapper
       open={open}
       onClose={onClose}
-      title={`Add Remarks for ${student?.student.name}`}
+      title={`Add Remarks for ${student?.student.firstName}`}
       width="50%"
     >
       <FormProvider {...methods}>
@@ -160,10 +160,10 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
                   </Grid>
                 </Grid>
               ))}
-              <Grid size={{ xs: 12 }} sx={{ textAlign: "left" }}>
+              <Grid size={{ xs: 12 }} sx={{display: "flex", justifyContent: "flex-end"}}>
                 <Button
-                  variant="outlined"
-                  startIcon={<AddCircleOutline />}
+                  variant="text"
+                  startIcon={<Add />}
                   onClick={() =>
                     append({ name: "", documentNumber: "", url: "" })
                   }

@@ -2,7 +2,7 @@ import { body, param, query } from "express-validator";
 import * as Enum from "../common/utils/enum";
 
 // Personal Details
-export const addStudentStep1 = [
+export const addPersonalDetails = [
     body("firstName")
         .notEmpty().withMessage("Student name is required")
         .isString().withMessage("Student name must be a string"),
@@ -29,7 +29,7 @@ export const addStudentStep1 = [
     body("motherTongue")
         .optional(),
 
-    body("image")
+    body("photo")
         .optional(),
 
     body("adharNumber")
@@ -49,22 +49,18 @@ export const addStudentStep1 = [
         .isIn(Object.values(Enum.BloodGroup)).withMessage("Invalid blood group"),
 ];
 
-export const updateStudentStep1 = [
+export const updatePersonalDetails = [
     param("studentId")
         .notEmpty().withMessage("Student ID is required")
         .isMongoId().withMessage("Invalid Student ID"),
-    ...addStudentStep1,
+    ...addPersonalDetails,
 ];
 
 // address details validation
-export const addStudentStep2 = [
+export const upsertStudentAddress = [
     param("studentId")
         .notEmpty().withMessage("Student ID is required")
         .isMongoId().withMessage("Invalid Student ID"),
-
-    body("addressId")
-        .optional()
-        .isMongoId().withMessage("Invalid Address ID"),
 
     body("address.addressLine1")
         .notEmpty().withMessage("Address Line 1 is required"),
@@ -87,7 +83,7 @@ export const addStudentStep2 = [
 ];
 
 // parent details validation
-export const addStudentStep3 = [
+export const upsertStudentParentsInfo = [
     param("studentId")
         .notEmpty().withMessage("Student ID is required")
         .isMongoId().withMessage("Invalid Student ID"),
@@ -143,14 +139,36 @@ export const addStudentStep3 = [
 
     // Local Guardian (optional)
     body("localGuardian.name")
+        .optional(),
+
+    body("localGuardian.qualification")
+        .optional(),
+
+    body("localGuardian.occupation")
+        .optional(),
+
+    body("localGuardian.businessOrEmployerName")
         .optional().isString(),
+
+    body("localGuardian.officeAddress")
+        .optional().isString(),
+
+    body("localGuardian.officeNumber")
+        .optional().isString(),
+
+    body("localGuardian.email")
+        .optional().isEmail(),
 
     body("localGuardian.contactNumber")
         .optional().isMobilePhone("en-IN"),
 ];
 
 // admission and previous school details validation
-export const addStudentStep4 = [
+export const upsertStudentAdmissinInfo = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+
     // Admission Info
     body("session")
         .notEmpty().withMessage("Session ID is required")
@@ -192,11 +210,14 @@ export const addStudentStep4 = [
 
     body("previousSchool.transferCertificate.url")
         .optional().isURL().withMessage("Transfer certificate URL must be valid"),
-
 ];
 
 // additinal documents validation
-export const addStudentStep5 = [
+export const studentAdditionalDoc = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+
     // Documents (optional array)
     body("documents").optional().isArray(),
 
@@ -224,11 +245,11 @@ export const bulkAddStudents = [
         .withMessage("Students must be an array with at least one student"),
 
     ...mapToBulk([
-        ...addStudentStep1,
-        ...addStudentStep2,
-        ...addStudentStep3,
-        ...addStudentStep4,
-        ...addStudentStep5,
+        ...addPersonalDetails,
+        ...upsertStudentAddress,
+        ...upsertStudentParentsInfo,
+        ...upsertStudentAdmissinInfo,
+        ...studentAdditionalDoc,
     ]),
 ];
 
@@ -273,6 +294,12 @@ export const getStudents = [
     query("bloodGroup")
         .optional()
         .isIn(Object.values(Enum.BloodGroup)).withMessage("Invalid Blood Group"),
+];
+
+export const deleteDraftStudent = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
 ];
 
 
@@ -411,6 +438,9 @@ export const addStudent = [
     body("documents.*.url")
         .optional().isURL().withMessage("Each document URL must be valid"),
 
+    body("documents.*.documentNumber")
+        .optional(),
+
     // Full Address Object
     body("address.addressLine1")
         .notEmpty().withMessage("Address Line 1 is required"),
@@ -428,8 +458,7 @@ export const addStudent = [
         .notEmpty().withMessage("Country is required"),
 
     body("address.pincode")
-        .notEmpty().withMessage("Pincode is required")
-        .isPostalCode("IN").withMessage("Pincode must be a valid Indian postal code"),
+        .notEmpty().withMessage("Pincode is required"),
 
     body("session")
         .notEmpty().withMessage("Session ID is required")

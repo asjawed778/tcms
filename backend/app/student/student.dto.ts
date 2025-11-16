@@ -57,7 +57,6 @@ export interface PreviousSchool {
 };
 
 
-// todo : we need to add some proper doc - signature(student , parent), image, adhar card -> do not use doucemnt make proper 
 export interface IStudent extends BaseSchema {
     enrollmentNumber: string;
 
@@ -69,7 +68,7 @@ export interface IStudent extends BaseSchema {
     nationality?: string;
     religion?: Religion;
     motherTongue?: string;
-    profileImage: string;
+    photo: string;
     adharNumber?: string;
     contactNumber?: string;
     email?: string;
@@ -93,21 +92,20 @@ export interface IStudent extends BaseSchema {
     status: Enum.StudentStatus;
 };
 
-export interface IAddStudentStep1 {
-    name: string;
+export interface IAddStudentPersonalDetails {
+    firstName: string;
+    lastName?: string;
     dob: Date;
     gender: Enum.Gender;
     nationality?: string;
     religion?: Enum.Religion;
     motherTongue?: string;
-    profileImage: string;
+    photo: string;
     adharNumber?: string;
     contactNumber?: string;
     email?: string;
     bloodGroup?: Enum.BloodGroup;
 }
-
-
 
 
 export interface IStudentCreate extends Omit<IStudent, "_id" | "createdAt" | "updatedAt"> { };
@@ -128,7 +126,6 @@ export interface IAdmission extends BaseSchema {
     section: Types.ObjectId;
     rollNumber: number;
     admissionStatus: Enum.AdmissionStatus;
-    deleted: boolean;
 };
 
 export interface IAdmissionCreate extends Omit<IAdmission, "_id" | "createdAt" | "updatedAt" | "admissionStatus" | "deleted" | "rollNumber" | "student"> { };

@@ -71,6 +71,13 @@ router
         catchError,
         EmployeeController.getEmpSalaryStructure
     )
+    .delete(
+        "/:employeeId/delete-draft",
+        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.DELETE }),
+        EmployeeValidation.deleteDraftEmployee,
+        catchError,
+        EmployeeController.deleteDraftEmployee
+    )
 
     // old routes
 

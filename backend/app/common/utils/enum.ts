@@ -5,6 +5,11 @@ export enum UserRole {
   USER = "User",
 };
 
+export enum RoleType {
+  DEFAULT = "Default",
+  CUSTOM = "Custom",
+}
+
 // enum for session
 export enum SessionStatus {
   CURRENT = 'Current',
@@ -62,10 +67,6 @@ export enum ParticipationLevel {
 
 export enum StudentStatus {
   ACTIVE = "Active",
-  INACTIVE = "Inactive",
-  PASSED_OUT = "Passed Out",
-  EXPELLED = "Expelled",
-  TRANSFERRED = "Transferred",
   DRAFT = "Draft"
 };
 

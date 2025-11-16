@@ -33,6 +33,7 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
+  showClearIcon?: boolean;
   control?: Control<T>;
   value?: string | string[] | Option | Option[] | null;
   onChange?: (value: string | string[] | null) => void;
@@ -98,18 +99,16 @@ const StyledTextField = styled(TextField)(({ theme }) => {
   };
 });
 
-const StyledLabel = styled("label")(
-  ({ theme }) => ({
-    display: "block",
-    fontSize: "14px",
-    marginBottom: "4px",
-    // color: error ? theme.palette.error.main : theme.palette.text.primary,
-    "& span": {
-      color: theme.palette.error.main,
-      marginLeft: 2,
-    },
-  })
-);
+const StyledLabel = styled("label")(({ theme }) => ({
+  display: "block",
+  fontSize: "14px",
+  marginBottom: "4px",
+  // color: error ? theme.palette.error.main : theme.palette.text.primary,
+  "& span": {
+    color: theme.palette.error.main,
+    marginLeft: 2,
+  },
+}));
 
 const CustomDropdown = <T extends FieldValues>({
   label,
@@ -120,6 +119,7 @@ const CustomDropdown = <T extends FieldValues>({
   required = true,
   fullWidth = true,
   loading = false,
+  showClearIcon = true,
   control: incomingControl,
   value: propValue,
   onChange: propOnChange,
@@ -177,7 +177,7 @@ const CustomDropdown = <T extends FieldValues>({
     return (
       <Box sx={{ width: fullWidth ? "100%" : "auto" }}>
         {labelPosition === "outside" && (
-          <StyledLabel htmlFor={name} >
+          <StyledLabel htmlFor={name}>
             {label}
             {required && (
               <Box component="span" sx={{ color: theme.palette.error.main }}>
@@ -200,6 +200,7 @@ const CustomDropdown = <T extends FieldValues>({
           getOptionLabel={(option) => option.label}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           disabled={disabled}
+          disableClearable={!showClearIcon}
           loading={loading}
           fullWidth={fullWidth}
           noOptionsText="No options"
@@ -220,10 +221,16 @@ const CustomDropdown = <T extends FieldValues>({
               label={labelPosition === "inside" ? label : undefined}
               placeholder={placeholder}
               required={required}
-              error={hasError} // triggers red border
+              error={hasError} 
               helperText={error?.message}
               size="small"
               InputLabelProps={{ shrink: true }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor:
+                    (sx as any)?.bgcolor ?? Colors[theme.palette.mode].inputBackground,
+                },
+              }}
             />
           )}
         />

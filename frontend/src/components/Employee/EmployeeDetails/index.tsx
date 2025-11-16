@@ -1,15 +1,18 @@
 import * as Enum from "@/utils/enum";
 import { useGetEmployeeDetailsQuery } from "@/services/employeeApi";
-import { Box, Typography, useTheme } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import BasicDetails from "./BasicDetails";
 import { useCan } from "@/hooks/useCan";
 import PersonalInfoTab from "./PersonalInfoTab";
 import ProfessionalDetailsTab from "./ProfessionalDetailsTab";
 import BasicDetailsSkeleton from "@/components/Skeletons/BasicDetailsSkeleton";
 import SegmentTabs from "@/components/ui/SegmentTabs";
+import Documents from "./Documents";
+import { useNavigate } from "react-router-dom";
 
 interface EmployeeDetailsProps {
   employeeId: string;
+  onImageClick: (url: string) => void;
 }
 interface TabItem {
   label: string;
@@ -22,10 +25,12 @@ interface TabItem {
     action: Enum.Operation;
   };
 }
-const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
+const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
+  employeeId,
+  onImageClick,
+}) => {
   const can = useCan();
-  const theme = useTheme();
-  const styles = getStyles(theme);
+  const navigate = useNavigate();
   const {
     data: employeeDetails,
     isFetching,
@@ -80,6 +85,15 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
             action: Enum.Operation.READ,
           },
         },
+        {
+          label: "Documents",
+          value: Enum.EmployeeDetailsTabs.DOCUMENTS,
+          component: <Documents documents={employeeDetails.data.documents} />,
+          permission: {
+            module: Enum.ModuleName.Employee,
+            action: Enum.Operation.READ,
+          },
+        },
       ]
     : [];
 
@@ -92,7 +106,9 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
         tab.permission.action
       )
   );
-
+  const handleUpdateDetails = (employeeId: string) => {
+    navigate(`/dashboard/employee/${employeeId}/update`);
+  };
   return (
     <Box>
       {employeeDetails && (
@@ -106,30 +122,19 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({ employeeId }) => {
           firstName={employeeDetails.data.firstName}
           lastName={employeeDetails.data.lastName || ""}
           email={employeeDetails.data.email}
-          onEditDetails={() => console.log("Edit details clicked")}
+          onEditDetails={() => handleUpdateDetails(employeeDetails.data._id)}
           onEditPhoto={() => console.log("Edit photo clicked")}
+          onImageClick={onImageClick}
         />
       )}
-      <SegmentTabs tabs={tabs} defaultTab={tabs[0]?.value} />
+      <SegmentTabs
+        tabUrlControlled={false}
+        tabs={tabs}
+        defaultTab={tabs[0]?.value}
+        tabContainerSx={{pt: 1, px: 2, top: 0, position: "sticky"}}
+      />
     </Box>
   );
 };
 
-const getStyles = (theme: any) => ({
-  container: {
-    display: "flex",
-    flexDirection: { xs: "column", md: "row" },
-    alignItems: "center",
-    gap: 2,
-    mb: 2,
-  },
-  searchBox: {
-    backgroundColor: theme.customColors.light,
-  },
-  contentBox: {
-    display: "flex",
-    alignItems: "center",
-    gap: 1,
-  },
-});
 export default EmployeeDetails;

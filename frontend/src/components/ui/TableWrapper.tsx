@@ -19,7 +19,7 @@ import {
   TablePagination,
 } from "@mui/material";
 import { MoreVert } from "@mui/icons-material";
-import NoRecordFound from "@/assets/svg/no-record-found.svg";
+import NoDataCard from "../common/NoDataCard";
 
 interface Column<T> {
   key: string;
@@ -457,21 +457,7 @@ function TableWrapper<T extends { _id?: string | number }>({
                     colSpan={columns.length + 1}
                     sx={{ border: "1px solid #E0E0E0" }}
                   >
-                    <Box
-                      display="flex"
-                      flexDirection="column"
-                      justifyContent="center"
-                      alignItems="center"
-                      sx={{ height: "50vh " }}
-                    >
-                      <img src={NoRecordFound} />                      
-                      <Typography variant="subtitle1" color="text.primary" fontWeight="600" my={1} fontSize={22}>
-                        No Results Found
-                      </Typography>
-                      <Typography variant="subtitle1" color="text.secondary">
-                        It seems there is no data available yet.
-                      </Typography>
-                    </Box>
+                    <NoDataCard />
                   </TableCell>
                 </TableRow>
               ) : (

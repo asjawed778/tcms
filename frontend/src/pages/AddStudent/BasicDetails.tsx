@@ -27,10 +27,17 @@ const PersonalDetails: React.FC = () => {
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField
-              name="name"
-              label="Student Name"
-              placeholder="Enter student full name"
-              labelPosition="outside"
+              name="firstName"
+              label="First Name"
+              placeholder="Enter first name"
+            />
+          </Grid>
+          <Grid size={{ xs: 12, md: 6 }}>
+            <CustomInputField
+              name="lastName"
+              label="Last Name"
+              placeholder="Enter last name"
+              required={false}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -48,35 +55,37 @@ const PersonalDetails: React.FC = () => {
               options={Object.values(Gender)}
             />
           </Grid>
-          <Grid size={{ xs: 12, md: 6 }}>
-            <CustomInputField
-              name="adharNumber"
-              type="number"
-              label="Aadhaar Number"
-              placeholder="Enter Aadhaar Number"
-              required={false}
-            />
-          </Grid>
         </Grid>
       </Grid>
-      <Grid size={{ xs: 12, md: 2 }}>
-        <ImageUploader name="image" required={false} />
+      <Grid size={{ xs: 12, md: 2 }} mt={{ xs: 0, md: 2 }}>
+        <ImageUploader name="photo" required={false} />
+      </Grid>
+      <Grid size={{ xs: 12, md: 4 }}>
+        <CustomInputField
+          name="email"
+          label="Email"
+          placeholder="Enter email address"
+          required={false}
+        />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
           name="contactNumber"
           label="Phone Number"
-          placeholder="Enter Phone Number"
+          placeholder="Enter phone number"
           type="number"
           required={false}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomInputField
-          name="email"
-          label="Email"
-          placeholder="Enter email"
+          name="adharNumber"
+          type="number"
+          label="Aadhaar Number"
+          placeholder="Enter aadhaar number"
           required={false}
+          // minValue={12}
+          // maxValue={12}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 4 }}>
@@ -98,8 +107,8 @@ const PersonalDetails: React.FC = () => {
       <Grid size={{ xs: 12, md: 4 }}>
         <CustomDropdownField
           name="religion"
-          label="Select Religion"
-          placeholder="Select your religion"
+          label="Religion"
+          placeholder="-- Select Religion --"
           options={religionOptions}
           required={false}
         />
@@ -108,6 +117,7 @@ const PersonalDetails: React.FC = () => {
         <CustomDropdownField
           name="bloodGroup"
           label="Blood Group"
+          placeholder="-- Select Blod Group --"
           options={bloodGroupOptions}
           required={false}
         />

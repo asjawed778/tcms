@@ -63,7 +63,7 @@ const SalaryStructure = () => {
           <CustomInputField
             name="remarks"
             label="Remarks"
-            placeholder="e.g. Annual revision, promotion, etc."
+            placeholder="Enter remarks (e.g. annual revision, promotion, etc.)"
             multiline
             rows={2}
             required={false}

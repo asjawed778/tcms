@@ -1,4 +1,4 @@
-import CustomModalWrapper from "@/components/ui/ModalWrapper";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 import CustomInputField from "@/components/ui/CustomInputField";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomButton from "@/components/ui/CustomButton";
@@ -79,7 +79,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
   };
 
   return (
-    <CustomModalWrapper
+    <ModalWrapper
       open={open}
       onClose={onClose}
       title="Add New Subject"
@@ -166,7 +166,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
           </CustomButton>
         </Box>
       </form>
-    </CustomModalWrapper>
+    </ModalWrapper>
   );
 };
 

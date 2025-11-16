@@ -60,7 +60,7 @@ const SideDrawerWrapper: React.FC<SideDrawerWrapperProps> = ({
             initial={{ x: anchor === "right" ? "100%" : "-100%" }}
             animate={{ x: 0 }}
             exit={{ x: anchor === "right" ? "100%" : "-100%" }}
-            transition={{ duration: 0.6, ease: "easeInOut" }}
+            transition={{ duration: 0.4, ease: "easeInOut" }}
             style={{
               position: "fixed",
               top: 0,

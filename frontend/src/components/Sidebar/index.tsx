@@ -13,11 +13,7 @@ import {
   Typography,
   DrawerProps,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import ExpandLess from "@mui/icons-material/ExpandLess";
-import ExpandMore from "@mui/icons-material/ExpandMore";
-import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
-import ChevronRightIcon from "@mui/icons-material/ChevronRight";
+import { ChevronRight, Menu, ExpandLess, ExpandMore, ChevronLeft } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppTheme } from "@/context/ThemeContext";
@@ -127,7 +123,7 @@ const Sidebar: React.FC = () => {
       {isMobile && (
         <Box sx={{ p: 1 }}>
           <IconButton onClick={() => dispatch(setMobileOpen(true))}>
-            <MenuIcon />
+            <Menu />
           </IconButton>
         </Box>
       )}
@@ -154,7 +150,7 @@ const Sidebar: React.FC = () => {
                 boxShadow: 2,
               }}
             >
-              {open ? <ChevronLeftIcon /> : <ChevronRightIcon />}
+              {open ? <ChevronLeft /> : <ChevronRight />}
             </IconButton>
           )}
 
