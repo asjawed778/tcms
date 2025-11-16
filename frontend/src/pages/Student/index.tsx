@@ -11,7 +11,7 @@ import {
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddRemark from "@/components/Student/AddRemarkModal";
 import {
@@ -124,29 +124,20 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
-  const updateQueryParams = (updates: Record<string, any>) => {
-    const newParams = new URLSearchParams();
 
-    const merged = {
-      page: page.toString(),
-      limit: rowsPerPage.toString(),
-      search: searchQuery,
-      status,
-      class: classFilter,
-      section: sectionFilter,
-      ...updates,
-    };
+  useEffect(() => {
+    const params = new URLSearchParams();
 
-    Object.entries(merged).forEach(([key, value]) => {
-      if (value) {
-        newParams.set(key, value.toString());
-      } else {
-        newParams.delete(key);
-      }
-    });
+    if (page) params.set("page", String(page));
+    if (rowsPerPage) params.set("limit", String(rowsPerPage));
+    if (searchQuery) params.set("search", searchQuery);
+    if (status) params.set("status", status);
+    if (classFilter) params.set("class", classFilter);
+    if (sectionFilter) params.set("section", sectionFilter);
 
-    setSearchParams(newParams);
-  };
+    setSearchParams(params);
+  }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
+
 
   const handleImageClick = (url: string) => {
     if (!url) return;
@@ -269,13 +260,11 @@ const Student: React.FC = () => {
   };
 
   const handlePageChange = (newPage: number) => {
-    updateQueryParams({ page: newPage });
     setPage(newPage);
   };
   const handleRowsPerPageChange = (newRowsPerPage: number) => {
     setRowsPerPage(newRowsPerPage);
     setPage(1);
-    updateQueryParams({ page: 1, limit: newRowsPerPage });
   };
   const handleAddStudent = () => {
     navigate("/dashboard/student/add");
@@ -306,32 +295,19 @@ const Student: React.FC = () => {
     } else {
       setActionType("menu");
     }
-    updateQueryParams({
-      status: val,
-      class: "",
-      section: "",
-      page: 1,
-    });
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
     setSectionFilter("");
     setPage(1);
-    updateQueryParams({
-      class: val,
-      section: "",
-      page: 1,
-    });
   };
   const handleSearch = (q: string) => {
     setSearchQuery(q);
     setPage(1);
-    updateQueryParams({ search: q, page: 1 });
   };
   const handleTabChange = (val: string) => {
     setSectionFilter(val);
     setPage(1);
-    updateQueryParams({ section: val, page: 1 });
   };
 
   return (
@@ -485,6 +461,7 @@ const Student: React.FC = () => {
       {openDeleteModal && (
         <AlertModal
           open={openDeleteModal}
+          type="success"
           onClose={() => setOpenDeleteModal(false)}
           onConfirm={handleStudentDelete}
           message={
