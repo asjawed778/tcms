@@ -7,7 +7,7 @@ export const commonApi = createApi({
   endpoints: (builder) => ({
     uploadFile: builder.mutation<{ data: {url: string} }, FormData>({
       query: (formData) => ({
-        url: '/common/upload',
+        url: '/admin/common/upload',
         method: 'POST',
         body: formData,
       }),

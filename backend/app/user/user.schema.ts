@@ -1,13 +1,14 @@
 import mongoose from "mongoose";
 import { type IUser } from "./user.dto";
-import * as Enum from "../common/constant/enum";
-
 
 const userSchema = new mongoose.Schema<IUser>({
-  name: {
+  firstName: {
     type: String,
     required: true,
     trim: true,
+  },
+  lastName: {
+    type: String,
   },
   email: {
     type: String,
@@ -20,9 +21,8 @@ const userSchema = new mongoose.Schema<IUser>({
     required: true,
   },
   role: {
-    type: String,
-    enum: Object.values(Enum.UserRole),
-    default: Enum.UserRole.USER,
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Role",
     required: true,
   },
   refreshToken: {
@@ -33,7 +33,7 @@ const userSchema = new mongoose.Schema<IUser>({
     type: String,
     default: null
   },
-  active: {
+  isActive: {
     type: Boolean,
     default: true,
   },

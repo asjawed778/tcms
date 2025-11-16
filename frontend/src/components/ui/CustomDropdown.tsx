@@ -1,0 +1,260 @@
+import { useMemo } from "react";
+import {
+  Autocomplete,
+  TextField,
+  Box,
+  styled,
+  CircularProgress,
+  useTheme,
+  SxProps,
+  Theme,
+} from "@mui/material";
+import {
+  Controller,
+  useFormContext,
+  Control,
+  FieldValues,
+  Path,
+  FieldError,
+} from "react-hook-form";
+import { Colors } from "@/theme/colors";
+
+interface Option {
+  label: string;
+  value: string;
+}
+
+interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
+  label: string;
+  name?: Path<T>;
+  placeholder?: string;
+  multiple?: boolean;
+  disabled?: boolean;
+  required?: boolean;
+  fullWidth?: boolean;
+  loading?: boolean;
+  showClearIcon?: boolean;
+  control?: Control<T>;
+  value?: string | string[] | Option | Option[] | null;
+  onChange?: (value: string | string[] | null) => void;
+  options?: (Option | string)[];
+  labelPosition?: "inside" | "outside";
+  sx?: SxProps<Theme>;
+}
+
+const StyledTextField = styled(TextField)(({ theme }) => {
+  const palette = Colors[theme.palette.mode];
+  return {
+    "& .MuiOutlinedInput-root": {
+      height: "42px",
+      backgroundColor: palette.inputBackground,
+      borderRadius: "8px",
+      transition: "all 0.2s ease-in-out",
+      "& .MuiOutlinedInput-input": {
+        padding: "8px 10px !important",
+        fontSize: "15px",
+        color: palette.inputText,
+        "::placeholder": {
+          color: palette.inputPlaceholder,
+          opacity: 1,
+        },
+      },
+      "& .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder,
+      },
+      "&:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputBorder,
+      },
+      "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: palette.inputFocusBorder,
+        borderWidth: "1.5px",
+      },
+      "&.Mui-focused": {
+        boxShadow: `0 0 6px ${theme.palette.primary.main}`,
+      },
+      "&.Mui-error .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+      },
+      "&.Mui-error:hover .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+      },
+      "&.Mui-error.Mui-focused .MuiOutlinedInput-notchedOutline": {
+        borderColor: theme.palette.error.main,
+        borderWidth: "1.5px",
+      },
+      "&.Mui-error.Mui-focused": {
+        boxShadow: `0 0 6px ${theme.palette.error.main}40`,
+      },
+    },
+    "& .MuiInputLabel-root": {
+      color: palette.inputLabel,
+      "&.Mui-focused": { color: palette.inputFocus },
+      "& .MuiFormLabel-asterisk": {
+        color: theme.palette.error.main,
+      },
+      "&.Mui-error": {
+        color: theme.palette.error.main,
+      },
+    },
+  };
+});
+
+const StyledLabel = styled("label")(({ theme }) => ({
+  display: "block",
+  fontSize: "14px",
+  marginBottom: "4px",
+  // color: error ? theme.palette.error.main : theme.palette.text.primary,
+  "& span": {
+    color: theme.palette.error.main,
+    marginLeft: 2,
+  },
+}));
+
+const CustomDropdown = <T extends FieldValues>({
+  label,
+  name,
+  placeholder = "Select",
+  multiple = false,
+  disabled = false,
+  required = true,
+  fullWidth = true,
+  loading = false,
+  showClearIcon = true,
+  control: incomingControl,
+  value: propValue,
+  onChange: propOnChange,
+  options = [],
+  labelPosition = "outside",
+  sx = {},
+}: CustomDropdownFieldProps<T>) => {
+  const theme = useTheme();
+  const formContext = useFormContext<T>();
+  const control = incomingControl ?? formContext?.control;
+
+  const combinedOptions: Option[] = useMemo(
+    () =>
+      options.map((opt) =>
+        typeof opt === "string" ? { label: opt, value: opt } : opt
+      ),
+    [options]
+  );
+
+  const getDisplayValue = (
+    val: string | string[] | Option | Option[] | null
+  ): Option | Option[] | null => {
+    if (multiple && Array.isArray(val)) {
+      return combinedOptions.filter((opt) =>
+        val.some((v) => {
+          if (typeof v === "string") return v === opt.value;
+          if (v && typeof v === "object" && "value" in v)
+            return v.value === opt.value;
+          return false;
+        })
+      );
+    }
+    if (!multiple && val !== null && val !== undefined) {
+      if (typeof val === "string") {
+        return combinedOptions.find((opt) => opt.value === val) || null;
+      }
+      if (typeof val === "object" && "value" in val) {
+        return (
+          combinedOptions.find((opt) => opt.value === (val as Option).value) ||
+          null
+        );
+      }
+    }
+
+    return null;
+  };
+
+  const renderAutocomplete = (
+    fieldValue: any,
+    onFieldChange: (v: any) => void,
+    error?: FieldError
+  ) => {
+    const hasError = !!error?.message;
+
+    return (
+      <Box sx={{ width: fullWidth ? "100%" : "auto" }}>
+        {labelPosition === "outside" && (
+          <StyledLabel htmlFor={name}>
+            {label}
+            {required && (
+              <Box component="span" sx={{ color: theme.palette.error.main }}>
+                *
+              </Box>
+            )}
+          </StyledLabel>
+        )}
+
+        <Autocomplete
+          multiple={multiple}
+          options={combinedOptions}
+          value={getDisplayValue(fieldValue)}
+          onChange={(_, newValue) => {
+            const selected = multiple
+              ? (newValue as Option[]).map((opt) => opt.value)
+              : (newValue as Option)?.value ?? null;
+            onFieldChange(selected);
+          }}
+          getOptionLabel={(option) => option.label}
+          isOptionEqualToValue={(option, value) => option.value === value.value}
+          disabled={disabled}
+          disableClearable={!showClearIcon}
+          loading={loading}
+          fullWidth={fullWidth}
+          noOptionsText="No options"
+          loadingText={
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+              <CircularProgress size={20} />
+              Loading...
+            </Box>
+          }
+          sx={{
+            ...sx,
+            minWidth: 180,
+          }}
+          renderInput={(params) => (
+            <StyledTextField
+              {...params}
+              id={name}
+              label={labelPosition === "inside" ? label : undefined}
+              placeholder={placeholder}
+              required={required}
+              error={hasError} 
+              helperText={error?.message}
+              size="small"
+              InputLabelProps={{ shrink: true }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  backgroundColor:
+                    (sx as any)?.bgcolor ?? Colors[theme.palette.mode].inputBackground,
+                },
+              }}
+            />
+          )}
+        />
+      </Box>
+    );
+  };
+
+  if (control && name) {
+    return (
+      <Controller
+        name={name}
+        control={control}
+        render={({ field, fieldState }) =>
+          renderAutocomplete(field.value, field.onChange, fieldState.error)
+        }
+      />
+    );
+  }
+
+  return renderAutocomplete(
+    propValue ?? null,
+    propOnChange ?? (() => {}),
+    undefined
+  );
+};
+
+export default CustomDropdown;

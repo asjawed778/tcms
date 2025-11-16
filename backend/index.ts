@@ -9,17 +9,19 @@ import fileUpload from "express-fileupload";
 import { initDB } from "./app/common/services/database.service";
 import { initPassport } from "./app/common/services/passport-jwt.service";
 import { loadConfig } from "./app/common/helper/config.hepler";
-import { type IUser } from "./app/user/user.dto";
+import { IUserResponse, type IUser } from "./app/user/user.dto";
 import errorHandler from "./app/common/middleware/error-handler.middleware";
-import routes from "./app/routes"; 
+import routes from "./app/routes";
 import swaggerUi from "swagger-ui-express";
 import apiLimiter from "./app/common/middleware/rate-limit.middleware";
- 
+import swaggerDocument from "./app/swagger/swagger";
+import { initPermission } from "./app/user/permission.service";
+
 loadConfig();
 
 declare global {
   namespace Express {
-    interface User extends Omit<IUser, "password"> {}
+    interface User extends IUserResponse { }
     interface Request {
       user?: User;
     }
@@ -27,7 +29,6 @@ declare global {
 }
 
 const port = Number(process.env.PORT) ?? 5000;
-
 
 const app: Express = express();
 
@@ -56,9 +57,6 @@ app.use(fileUpload({
 }));
 
 
-import swaggerDocument from "./app/swagger/swagger";
-import { initUser } from "./app/user/user.init";
-
 
 const initApp = async (): Promise<void> => {
   // init mongodb
@@ -67,8 +65,8 @@ const initApp = async (): Promise<void> => {
   // passport init
   initPassport();
 
-  // init default admin user
-  await initUser();
+  // init roles and permissions
+  await initPermission();
 
   // set base path to /api
   app.use("/api", apiLimiter, routes);
@@ -79,7 +77,7 @@ const initApp = async (): Promise<void> => {
 
   // Set up Swagger UI
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
- 
+
   // error handler
   app.use(errorHandler);
 
@@ -93,7 +91,6 @@ const initApp = async (): Promise<void> => {
     console.log(`Swagger docs available at http://localhost:${port}/api-docs`);
   });
 
-  
 };
 
 void initApp();

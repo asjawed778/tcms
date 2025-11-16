@@ -1,42 +1,62 @@
+import { createTheme, ThemeOptions } from '@mui/material/styles';
+import { Colors, ThemeColors, ThemeMode } from './colors';
 
-import { createTheme } from "@mui/material";
-import { Colors } from "./colors";
+declare module "@mui/material/styles" {
+  interface Theme {
+    customColors: (typeof Colors)["light"];
+  }
+  interface ThemeOptions {
+    customColors?: (typeof Colors)["light"];
+  }
+}
 
-export const createCustomTheme = (mode: "light" | "dark") => {
-  
-  const colors = Colors[mode];
-  return createTheme({
+const createAppTheme = (mode: ThemeMode) => {
+  const palette: ThemeColors = Colors[mode];
+
+  const themeOptions: ThemeOptions = {
     palette: {
       mode,
       primary: {
-        main: colors.primary,
+        main: palette.primary,
       },
       secondary: {
-        main: colors.secondary,
+        main: palette.secondary,
       },
       background: {
-        default: colors.background,
-        paper: colors.background,
+        default: palette.background,
+        paper: mode === 'light' ? '#fff' : '#1c1f22',
       },
       text: {
-        primary: colors.buttonText,
+        primary: mode === "light" ? "#000000" : "#e0e0e0",
+        secondary: mode === "light" ? "#969696" : "#b0b0b0",
       },
+      success: {
+        main: palette.success,
+      },
+      warning: {
+        main: palette.warning,
+      },
+      error: {
+        main: palette.error,
+      },
+    },
+    typography: {
+      fontFamily: 'MyCustomFont,  Arial, sans-serif',
     },
     components: {
       MuiButton: {
         styleOverrides: {
           root: {
-            backgroundColor: colors.buttonBackground,
-            color: colors.buttonText,
-            "&:hover": {
-              backgroundColor: colors.buttonHover,
-            },
+            // borderRadius: 8,
+            textTransform: 'none',
           },
         },
       },
-      // Add other component overrides as needed
     },
-  });
+    customColors: palette,
+  };
+
+  return createTheme(themeOptions);
 };
 
-
+export default createAppTheme;

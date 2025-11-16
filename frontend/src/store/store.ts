@@ -1,40 +1,44 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector } from "react-redux";
-import authReducer from "./reducers/authReducer";
-import { authApi } from "../services/authApi";
-import { userApi } from "../services/userApi"; 
-import sidebarReducer from "./reducers/sidebarReducer"; 
+
+// slieces
+import authSlice from "./reducers/authSlice";
+import sessionSlice from "./reducers/sessionSlice"
+import sidebarSlice from "./reducers/sidebarSlice";
+
+// apis
+import { authApi } from "@/services/authApi";
+import { userApi } from "@/services/userApi";
 import { sessionApi } from "@/services/sessionApi";
-import { facultyApi } from "@/services/facultyApi";
-import { dropdownApi } from "@/services/dropdownApi";
+import { facultyApi } from "@/services/employeeApi";
 import { commonApi } from "@/services/commonApi";
-import sessionReducer from "./reducers/sessionSlice"
-import { classApi } from "@/services/classApi";
+import { academicsApi } from "@/services/academics.Api";
 import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({
   reducer: {
-    sidebar: sidebarReducer,
-    auth: authReducer,
-    session: sessionReducer,
+    // slices
+    auth: authSlice,
+    sidebar: sidebarSlice,
+    session: sessionSlice,
+
+    // apis
     [authApi.reducerPath]: authApi.reducer,
-    [userApi.reducerPath]: userApi.reducer, 
+    [userApi.reducerPath]: userApi.reducer,
     [sessionApi.reducerPath]: sessionApi.reducer,
     [facultyApi.reducerPath]: facultyApi.reducer,
-    [dropdownApi.reducerPath]: dropdownApi.reducer,
     [commonApi.reducerPath]: commonApi.reducer,
-    [classApi.reducerPath]: classApi.reducer,
+    [academicsApi.reducerPath]: academicsApi.reducer,
     [studentApi.reducerPath]: studentApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
-      authApi.middleware, 
-      userApi.middleware, 
-      sessionApi.middleware, 
+      authApi.middleware,
+      userApi.middleware,
+      sessionApi.middleware,
       facultyApi.middleware,
-      dropdownApi.middleware, 
       commonApi.middleware,
-      classApi.middleware,
+      academicsApi.middleware,
       studentApi.middleware,
     ),
 });

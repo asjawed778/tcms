@@ -9,7 +9,7 @@ export const authApi = createApi({
 
     registerUser: builder.mutation({
       query: (userData) => ({
-        url: '/user/register',
+        url: '/admin/register',
         method: 'POST',
         body: userData,
       }),
@@ -17,7 +17,7 @@ export const authApi = createApi({
 
     loginUser: builder.mutation<AuthResponse, LoginFormValues>({
       query: (userData) => ({
-        url: '/user/login',
+        url: '/admin/login',
         method: 'POST',
         body: userData, 
       }),
@@ -25,19 +25,32 @@ export const authApi = createApi({
 
     forgotPassword: builder.mutation({
       query: (data)=> ({
-        url: '/user/send-password-reset-link',
+        url: '/admin/send-password-reset-link',
         method: 'POST',
         body: data,
       }),
     }),
-
     resetPassword: builder.mutation({
       query: (data) => ({
-        url: `/user/reset-password/${data.token}`,
+        url: `/admin/reset-password/${data.token}`,
         method: 'POST',
         body: {newPassword: data.newPassword},
       }),
-    })
+    }),
+    updatePassword: builder.mutation({
+      query: (data) => ({
+        url: '/admin/update-password',
+        method: 'PATCH',
+        body: data,
+        credentials: 'include',
+      }),
+    }),
+    logoutUser: builder.mutation<void, void>({
+      query: () => ({
+        url: '/admin/logout',
+        method: 'POST',
+      }),
+    }),
   }),
 });
 
@@ -45,5 +58,7 @@ export const {
   useRegisterUserMutation,
   useLoginUserMutation,
   useForgotPasswordMutation,
-  useResetPasswordMutation
+  useResetPasswordMutation,
+  useUpdatePasswordMutation,
+  useLogoutUserMutation,
 } = authApi;

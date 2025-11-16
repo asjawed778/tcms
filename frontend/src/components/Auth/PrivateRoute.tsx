@@ -6,7 +6,7 @@ const PrivateRoute: React.FC = () => {
   const isAuthenticated = useAppSelector(
     (state) => state.auth.isAuthenticated
   );
-  return isAuthenticated ? <Outlet /> : <Navigate to="/auth/login" replace />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
 };
 
 export default PrivateRoute;

@@ -9,4 +9,4 @@ export interface IAddress extends BaseSchema {
     pincode: number;
 }
 
-export interface ICreateAddress extends Omit<IAddress, "createdAt" | "updatedAt" | "_id"> {} 
+export interface ICreateAddress extends Omit<IAddress, "createdAt" | "updatedAt" | "_id"> {}

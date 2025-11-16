@@ -3,44 +3,22 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  IconButton,
   Button,
   Box,
   Avatar,
-  useMediaQuery,
-  useTheme,
 } from "@mui/material";
-import MenuIcon from "@mui/icons-material/Menu";
-import { toggleCollapsed, toggleMobile } from "../../store/reducers/sidebarReducer";
 import { useNavigate } from "react-router-dom";
-import logo from "../../assets/logo.png";
-import { useAppDispatch, useAppSelector } from "../../store/store";
+import logo from "@/assets/images/logo.png";
+import { useAppSelector } from "@/store/store";
 import { useAppTheme } from "@/context/ThemeContext";
 import SessionDropdown from "../Sessions";
-import ToggleThemeSwitch from "./ToggleThemeSwitch";
-import { Close } from "@mui/icons-material";
+// import ToggleThemeSwitch from "./ToggleThemeSwitch";
 import Profile from "./Profile";
 
 const Header: React.FC = () => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { colors } = useAppTheme(); 
   const user = useAppSelector((state) => state.auth);
-  const sidebar = useAppSelector((state) => state.sidebar)
-
-  const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
-    // const isMediumScreen = useMediaQuery(theme.breakpoints.between('sm', 'lg'));
-  
-
-  const handleMenuBtn = () => {
-    if (isSmallScreen) {
-      dispatch(toggleMobile());
-    } else {
-      dispatch(toggleCollapsed());
-    }
-  };
-
   return (
     <AppBar
       position="fixed"
@@ -49,7 +27,7 @@ const Header: React.FC = () => {
         backgroundColor: colors.headerBackground,
         color: colors.headerText,
         zIndex: 1300,
-        height: 64,
+        height: 52,
         justifyContent: "center",
         
       }}
@@ -67,7 +45,7 @@ const Header: React.FC = () => {
           >
             TCMS
           </Typography>
-          <IconButton
+          {/* <IconButton
             edge="start"
             onClick={handleMenuBtn}
             sx={{
@@ -76,12 +54,12 @@ const Header: React.FC = () => {
             }}
           >
           {isSmallScreen && sidebar.mobileOpen ? <Close /> : <MenuIcon />}
-          </IconButton>
+          </IconButton> */}
         </Box>
         <Box display="flex" alignItems="center" gap={2}>
           
           <SessionDropdown />
-          <ToggleThemeSwitch />
+          {/* <ToggleThemeSwitch /> */}
           {user.isAuthenticated ? (
             <Profile />
           ) : (
