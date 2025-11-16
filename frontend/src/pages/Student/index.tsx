@@ -124,19 +124,19 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
+  console.log("#### student data : ", studentData);
+  // useEffect(() => {
+  //   const params = new URLSearchParams();
 
-  useEffect(() => {
-    const params = new URLSearchParams();
+  //   if (page) params.set("page", String(page));
+  //   if (rowsPerPage) params.set("limit", String(rowsPerPage));
+  //   if (searchQuery) params.set("search", searchQuery);
+  //   if (status) params.set("status", status);
+  //   if (classFilter) params.set("class", classFilter);
+  //   if (sectionFilter) params.set("section", sectionFilter);
 
-    if (page) params.set("page", String(page));
-    if (rowsPerPage) params.set("limit", String(rowsPerPage));
-    if (searchQuery) params.set("search", searchQuery);
-    if (status) params.set("status", status);
-    if (classFilter) params.set("class", classFilter);
-    if (sectionFilter) params.set("section", sectionFilter);
-
-    setSearchParams(params);
-  }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
+  //   setSearchParams(params);
+  // }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
 
 
   const handleImageClick = (url: string) => {
