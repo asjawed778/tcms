@@ -5,9 +5,9 @@ import { formatDate } from "@/utils/helper";
 import InfoItem from "@/components/common/InfoItem";
 
 interface PersonalInfoTabProps {
-  employee: EmployeeDetailsResponse;
+  student: any;
 }
-const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ employee }) => {
+const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ student }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
@@ -18,54 +18,66 @@ const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ employee }) => {
       </Typography>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Father's Name" value={employee.fatherName} />
+          <InfoItem label="Father's Name" value={student?.father?.name} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Mother's Name" value={employee.motherName} />
+          <InfoItem label="Mother's Name" value={student?.mother?.name} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Gender" value={employee.gender} />
+          <InfoItem label="Gender" value={student?.gender} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Date of Birth" value={formatDate(employee.dob)} />
+          <InfoItem label="Date of Birth" value={formatDate(student?.dob)} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Email" value={employee.email} />
+          <InfoItem label="Email" value={student?.email} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Phone Number" value={employee.phoneNumber} />
+          <InfoItem label="Phone Number" value={student?.contactNumber} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Aadhaar Number" value={employee.aadhaarNumber} />
+          <InfoItem label="Aadhaar Number" value={student?.adharNumber} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <InfoItem label="Blood Group" value={student?.bloodGroup} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <InfoItem label="Mother Tongue" value={student?.motherTongue} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <InfoItem label="Nationality" value={student?.nationality} />
+        </Grid>
+        <Grid size={{ xs: 12, md: 4 }}>
+          <InfoItem label="Religion" value={student?.religion} />
         </Grid>
       </Grid>
       <Typography variant="h6" sx={styles.sectionTitle}>
-        Address Details
+        Address
       </Typography>
       <Grid container spacing={1}>
         <Grid size={{ xs: 12, md: 4 }}>
           <InfoItem
             label="Address Line 1"
-            value={employee.address?.addressLine1}
+            value={student?.address?.addressLine1}
           />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
           <InfoItem
             label="Address Line 2"
-            value={employee.address?.addressLine2}
+            value={student?.address?.addressLine2}
           />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Country" value={employee.address?.country} />
+          <InfoItem label="Country" value={student?.address?.country} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="State" value={employee.address?.state} />
+          <InfoItem label="State" value={student?.address?.state} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="City" value={employee.address?.city} />
+          <InfoItem label="City" value={student?.address?.city} />
         </Grid>
         <Grid size={{ xs: 12, md: 4 }}>
-          <InfoItem label="Pincode" value={employee.address?.pincode} />
+          <InfoItem label="Pincode" value={student?.address?.pincode} />
         </Grid>
       </Grid>
     </Box>

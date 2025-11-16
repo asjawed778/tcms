@@ -46,14 +46,12 @@ const SegmentTabs: React.FC<SegmentTabsProps> = ({
     } else {
       setLocalTab(newValue);
     }
-    onTabChange?.(newValue); 
+    onTabChange?.(newValue);
   };
 
   return (
     <Box>
-      <Box
-        sx={tabContainerSx}
-      >
+      <Box sx={tabContainerSx}>
         <Tabs
           value={activeTab}
           onChange={handleChange}

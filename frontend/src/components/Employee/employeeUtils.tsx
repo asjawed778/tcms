@@ -115,24 +115,3 @@ export const getDraftEmployeeColumns = (
         : formatDate(row.dateOfJoining),
   },
 ];
-
-interface InfoItemProps {
-  label?: string;
-  value?: string | number | null;
-}
-
-export const InfoItem: React.FC<InfoItemProps> = ({ label, value }) => {
-  value = value || "--";
-  return (
-    <Box>
-      {label && (
-        <Typography variant="caption" sx={{ color: "text.secondary" }}>
-          {label}
-        </Typography>
-      )}
-      <Typography variant="body1" fontWeight={500}>
-        {value}
-      </Typography>
-    </Box>
-  );
-};

@@ -58,7 +58,7 @@ const DocumentPreviewer: React.FC<DocumentPreviewerProps> = ({
         <Box
           sx={{
             width: "100%",
-            height: "70vh",
+            height: "50vh",
             display: "flex",
             justifyContent: "center",
             alignItems: "center",

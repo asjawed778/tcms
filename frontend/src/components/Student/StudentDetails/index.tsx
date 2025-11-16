@@ -9,7 +9,12 @@ import BasicDetailsSkeleton from "@/components/Skeletons/BasicDetailsSkeleton";
 // import Documents from "./Documents";
 import { useNavigate } from "react-router-dom";
 import { useGetStudentDetailsQuery } from "@/services/studentApi";
-import BasicDetails from "./BasicDetails";
+import BasicDetails from "./BasicDetailsTab";
+import AdmissionDetailsTab from "./AdmissionDetailsTab";
+import PersonalInfoTab from "./PersonalInfoTab";
+import DocumentsTab from "./DocumentsTab";
+import SegmentTabs from "@/components/ui/SegmentTabs";
+import ParentInfoTab from "./ParentInfoTab";
 
 interface EmployeeDetailsProps {
   studentId: string;
@@ -56,7 +61,7 @@ console.log("Student all details: ", studentDetails);
         }}
       >
         <Typography variant="h6" fontWeight={600}>
-          Failed to load employee details
+          Failed to load student details
         </Typography>
         <Typography variant="body2" sx={{ mt: 1 }}>
           Please try again later. Or check you internet connection.
@@ -65,47 +70,56 @@ console.log("Student all details: ", studentDetails);
     );
   }
 
-  //   const allTabs: TabItem[] = employeeDetails
-  //     ? [
-  //         {
-  //           label: "Personal Info",
-  //           value: Enum.EmployeeDetailsTabs.PERSONAL_INFORMATION,
-  //           component: <PersonalInfoTab employee={employeeDetails.data} />,
-  //           permission: {
-  //             module: Enum.ModuleName.Employee,
-  //             action: Enum.Operation.READ,
-  //           },
-  //         },
-  //         {
-  //           label: "Professional Details",
-  //           value: Enum.EmployeeDetailsTabs.PROFESSIONAL_DETAILS,
-  //           component: <ProfessionalDetailsTab employee={employeeDetails.data} />,
-  //           permission: {
-  //             module: Enum.ModuleName.Employee,
-  //             action: Enum.Operation.READ,
-  //           },
-  //         },
-  //         {
-  //           label: "Documents",
-  //           value: Enum.EmployeeDetailsTabs.DOCUMENTS,
-  //           component: <Documents documents={employeeDetails.data.documents} />,
-  //           permission: {
-  //             module: Enum.ModuleName.Employee,
-  //             action: Enum.Operation.READ,
-  //           },
-  //         },
-  //       ]
-  //     : [];
+    const allTabs: TabItem[] = studentDetails
+      ? [
+          {
+            label: "Personal Info",
+            value: Enum.StudentDetailsTabs.PERSONAL_INFORMATION,
+            component: <PersonalInfoTab student={studentDetails.data} />,
+            permission: {
+              module: Enum.ModuleName.STUDENTS,
+              action: Enum.Operation.READ,
+            },
+          },
+          {
+            label: "Parent Info",
+            value: Enum.StudentDetailsTabs.PARENT_INFORMATION,
+            component: <ParentInfoTab student={studentDetails.data} />,
+            permission: {
+              module: Enum.ModuleName.STUDENTS,
+              action: Enum.Operation.READ,
+            },
+          },
+          {
+            label: "Admission Details",
+            value: Enum.StudentDetailsTabs.ADMISSION_DETAILS,
+            component: <AdmissionDetailsTab student={studentDetails.data} />,
+            permission: {
+              module: Enum.ModuleName.STUDENTS,
+              action: Enum.Operation.READ,
+            },
+          },
+          {
+            label: "Documents",
+            value: Enum.StudentDetailsTabs.DOCUMENTS,
+            component: <DocumentsTab student={studentDetails.data} />,
+            permission: {
+              module: Enum.ModuleName.STUDENTS,
+              action: Enum.Operation.READ,
+            },
+          },
+        ]
+      : [];
 
-  //   const tabs = allTabs.filter(
-  //     (tab) =>
-  //       !tab.permission ||
-  //       can(
-  //         tab.permission.module,
-  //         tab.permission.subModule,
-  //         tab.permission.action
-  //       )
-  //   );
+    const tabs = allTabs.filter(
+      (tab) =>
+        !tab.permission ||
+        can(
+          tab.permission.module,
+          tab.permission.subModule,
+          tab.permission.action
+        )
+    );
   const handleUpdateDetails = (studenteId: string) => {
     navigate(`/dashboard/student/${studenteId}/update`);
   };
@@ -116,9 +130,8 @@ console.log("Student all details: ", studentDetails);
           _id={studentDetails.data._id}
           enrollmentNumber={studentDetails.data.enrollmentNumber}
           phoneNumber={studentDetails.data.contactNumber}
-          photo={studentDetails.data.image || ""}
+          photo={studentDetails.data.photo || ""}
           status={studentDetails.data.status}
-          //   roleName={employeeDetails.data.roleName}
           firstName={studentDetails.data.firstName}
           lastName={studentDetails.data.lastName || ""}
           email={studentDetails.data.email}
@@ -126,12 +139,12 @@ console.log("Student all details: ", studentDetails);
           onEditPhoto={() => console.log("Edit photo clicked")}
         />
       )}
-      {/* <SegmentTabs
+      <SegmentTabs
         tabUrlControlled={false}
         tabs={tabs}
         defaultTab={tabs[0]?.value}
-        tabContainerSx={{pt: 1, px: 2, top: 0, position: "sticky"}}
-      /> */}
+        tabContainerSx={{mt: 1, px: 2, top: 0, position: "sticky", bgcolor: "grey.50"}}
+      />
     </Box>
   );
 };

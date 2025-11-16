@@ -2,8 +2,8 @@ import React from "react";
 import { Box, Typography, Grid, Theme, useTheme } from "@mui/material";
 import { EmployeeDetailsResponse } from "@/types/employee";
 import { formatDate } from "@/utils/helper";
-import { InfoItem } from "../employeeUtils";
 import { useGetSalaryStructureQuery } from "@/services/employeeApi";
+import InfoItem from "@/components/common/InfoItem";
 
 interface ProfessionalInfoTabProps {
   employee: EmployeeDetailsResponse;

@@ -220,6 +220,12 @@ export enum EmployeeDetailsTabs {
   PROFESSIONAL_DETAILS = "professional-details",
   DOCUMENTS = "documents"
 }
+export enum StudentDetailsTabs {
+  PERSONAL_INFORMATION = "personal-information",
+  PARENT_INFORMATION = "parent-information",
+  ADMISSION_DETAILS = "admission-details",
+  DOCUMENTS = "documents"
+}
 
 // roles permissions and modules enums
 // Operatioin,  Module and SubModule Names for Role-Based Access Control

@@ -241,7 +241,7 @@ const Student: React.FC = () => {
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
-    setSectionFilter("");
+    setSectionFilter("all");
     setPage(1);
   };
   return (
@@ -355,7 +355,7 @@ const Student: React.FC = () => {
       {classFilter && sectionData && status !== StudentStatus.DRAFT && (
         <SegmentTabs
           tabs={sectionTabs}
-          defaultTab=""
+          defaultTab={sectionTabs[0]?.value}
           tabUrlControlled={false}
           onTabChange={setSectionFilter}
         />
