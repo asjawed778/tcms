@@ -241,7 +241,7 @@ const Student: React.FC = () => {
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
-    setSectionFilter("all");
+    setSectionFilter("");
     setPage(1);
   };
   return (
@@ -271,6 +271,7 @@ const Student: React.FC = () => {
           >
             <CustomDropdownField
               label="Class"
+              placeholder="-- Select Class --"
               required={false}
               value={classFilter}
               onChange={handleClassChange}
@@ -280,12 +281,13 @@ const Student: React.FC = () => {
             />
             <CustomDropdownField
               label="Status"
-              // placeholder={StudentStatus.ACTIVE}
+              placeholder="-- Select Status --"
               required={false}
               value={status}
               onChange={handleStatusChange}
               options={Object.values(StudentStatus)}
               labelPosition="inside"
+              showClearIcon={false}
             />
           </Box>
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
@@ -354,10 +356,11 @@ const Student: React.FC = () => {
       </Box>
       {classFilter && sectionData && status !== StudentStatus.DRAFT && (
         <SegmentTabs
+          key={classFilter}
           tabs={sectionTabs}
           defaultTab={sectionTabs[0]?.value}
           tabUrlControlled={false}
-          onTabChange={setSectionFilter}
+          onTabChange={(val)=>setSectionFilter(val)}
         />
       )}
       <Box mt={2}>

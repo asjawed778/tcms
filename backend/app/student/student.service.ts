@@ -231,7 +231,7 @@ export const getAllStudents = async (
                                 lastName: 1,
                                 enrollmentNumber: 1,
                                 adharNumber: 1,
-                                profileImage: 1,
+                                photo: 1,
                                 dob: 1,
                                 gender: 1,
                                 nationality: 1,

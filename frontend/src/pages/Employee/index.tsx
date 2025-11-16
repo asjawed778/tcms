@@ -236,12 +236,13 @@ const Employee: React.FC = () => {
           <Box sx={styles.contentBox}>
             <CustomDropdownField
               label="Status"
-              placeholder="All"
+              placeholder="-- Select Status --"
               required={false}
               value={statusFilter}
               onChange={(value) => handleStatusChange(value as EmployeeStatus)}
               options={Object.values(EmployeeStatus)}
               labelPosition="inside"
+              showClearIcon={false}
             />
             {can(ModuleName.Employee, null, Operation.CREATE) && (
               <CustomButton

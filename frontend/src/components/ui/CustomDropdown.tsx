@@ -33,6 +33,7 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   required?: boolean;
   fullWidth?: boolean;
   loading?: boolean;
+  showClearIcon?: boolean;
   control?: Control<T>;
   value?: string | string[] | Option | Option[] | null;
   onChange?: (value: string | string[] | null) => void;
@@ -120,6 +121,7 @@ const CustomDropdown = <T extends FieldValues>({
   required = true,
   fullWidth = true,
   loading = false,
+  showClearIcon = true,
   control: incomingControl,
   value: propValue,
   onChange: propOnChange,
@@ -200,6 +202,7 @@ const CustomDropdown = <T extends FieldValues>({
           getOptionLabel={(option) => option.label}
           isOptionEqualToValue={(option, value) => option.value === value.value}
           disabled={disabled}
+          disableClearable={!showClearIcon}
           loading={loading}
           fullWidth={fullWidth}
           noOptionsText="No options"

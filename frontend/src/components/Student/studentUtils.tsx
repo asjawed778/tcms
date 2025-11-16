@@ -103,7 +103,7 @@ export const getDraftStudentColumns = (onImageClick: (url: string) => void) => [
   {
     key: "gender",
     label: "Gender",
-    width: "16%",
+    width: "15%",
     render: (row: any) => <GenderChip gender={row?.gender} />,
   },
 ];

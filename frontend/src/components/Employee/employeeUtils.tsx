@@ -1,4 +1,4 @@
-import { Box, Avatar, Typography } from "@mui/material";
+import { Box, Avatar } from "@mui/material";
 import GenderChip from "@/components/ui/GenderChip";
 import { formatDate } from "@/utils/helper";
 import { EmployeeDetailsResponse } from "@/types/employee";
@@ -108,7 +108,7 @@ export const getDraftEmployeeColumns = (
   {
     key: "dateOfJoining",
     label: "Joining Date",
-    width: "11%",
+    width: "10%",
     render: (row: EmployeeDetailsResponse) =>
       row.status === EmployeeStatus.DRAFT
         ? "--"
