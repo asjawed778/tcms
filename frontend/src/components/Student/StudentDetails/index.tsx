@@ -143,7 +143,7 @@ console.log("Student all details: ", studentDetails);
         tabUrlControlled={false}
         tabs={tabs}
         defaultTab={tabs[0]?.value}
-        tabContainerSx={{mt: 1, px: 2, top: 0, position: "sticky", bgcolor: "grey.50"}}
+        tabContainerSx={{mt: 1, px: 2}}
       />
     </Box>
   );

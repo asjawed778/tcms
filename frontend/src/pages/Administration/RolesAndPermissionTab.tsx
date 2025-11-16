@@ -161,7 +161,7 @@ const RolesAndPermissions = () => {
         mb={2}
       >
         <CustomSearchField
-          placeholder="Search..."
+          placeholder="Search Role..."
           onSearch={setSearchQuery}
           value={searchQuery}
           sx={{

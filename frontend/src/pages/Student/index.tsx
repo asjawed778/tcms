@@ -12,7 +12,7 @@ import {
 } from "@mui/icons-material";
 import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import AddRemark from "@/components/Student/AddRemarkModal";
 import { useGetAllStudentQuery } from "@/services/studentApi";
 import BulkUpload from "@/components/Student/BulkUploadModal";
@@ -33,12 +33,24 @@ import {
 import SegmentTabs from "@/components/ui/SegmentTabs";
 
 const Student: React.FC = () => {
-  const [page, setPage] = useState(1);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [status, setStatus] = useState(StudentStatus.ACTIVE);
-  const [classFilter, setClassFilter] = useState("");
-  const [sectionFilter, setSectionFilter] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+
+  const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
+  const [rowsPerPage, setRowsPerPage] = useState(
+    () => Number(searchParams.get("limit")) || 10
+  );
+  const [searchQuery, setSearchQuery] = useState(
+    () => searchParams.get("search") || ""
+  );
+  const [status, setStatus] = useState(
+    () => searchParams.get("status") || StudentStatus.ACTIVE
+  );
+  const [classFilter, setClassFilter] = useState(
+    () => searchParams.get("class") || ""
+  );
+  const [sectionFilter, setSectionFilter] = useState(
+    () => searchParams.get("section") || ""
+  );
   const [selectedStudent, setSelectedStudent] = useState<any>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
@@ -67,7 +79,7 @@ const Student: React.FC = () => {
       sessionId: selectedSession?._id as string,
       page: page,
       limit: rowsPerPage,
-      searchQuery,
+      search: searchQuery,
       studentStatus: status,
       classId: classFilter,
       sectionId: sectionFilter,
@@ -102,6 +114,29 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
+  const updateQueryParams = (updates: Record<string, any>) => {
+    const newParams = new URLSearchParams();
+
+    const merged = {
+      page: page.toString(),
+      limit: rowsPerPage.toString(),
+      search: searchQuery,
+      status,
+      class: classFilter,
+      section: sectionFilter,
+      ...updates,
+    };
+
+    Object.entries(merged).forEach(([key, value]) => {
+      if (value) {
+        newParams.set(key, value.toString());
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    setSearchParams(newParams);
+  };
 
   const handleImageClick = (url: string) => {
     if (!url) return;
@@ -111,18 +146,11 @@ const Student: React.FC = () => {
   const handleRowClick = (studentId: any) => {
     setSelectedStudentId(studentId);
   };
-
   const studentTableColumns =
     actionType === "menu"
       ? getStudentColumns(handleImageClick)
       : getDraftStudentColumns(handleImageClick);
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-  const handleRowsPerPageChange = (newRowsPerPage: number) => {
-    setRowsPerPage(newRowsPerPage);
-    setPage(1);
-  };
+
   const actionsList = (row: any) => {
     if (row.status === StudentStatus.DRAFT) {
       return [
@@ -224,6 +252,16 @@ const Student: React.FC = () => {
         break;
     }
   };
+
+  const handlePageChange = (newPage: number) => {
+    updateQueryParams({ page: newPage });
+    setPage(newPage);
+  };
+  const handleRowsPerPageChange = (newRowsPerPage: number) => {
+    setRowsPerPage(newRowsPerPage);
+    setPage(1);
+    updateQueryParams({ page: 1, limit: newRowsPerPage });
+  };
   const handleAddStudent = () => {
     navigate("/dashboard/student/add");
   };
@@ -232,18 +270,42 @@ const Student: React.FC = () => {
   };
   const handleStatusChange = (val: any) => {
     setStatus(val);
+    setClassFilter("");
+    setSectionFilter("");
     setPage(1);
     if (val === StudentStatus.DRAFT) {
       setActionType("icon");
     } else {
       setActionType("menu");
     }
+    updateQueryParams({
+      status: val,
+      class: "",
+      section: "",
+      page: 1,
+    });
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
     setSectionFilter("");
     setPage(1);
+    updateQueryParams({
+      class: val,
+      section: "",
+      page: 1,
+    });
   };
+  const handleSearch = (q: string) => {
+    setSearchQuery(q);
+    setPage(1);
+    updateQueryParams({ search: q, page: 1 });
+  };
+  const handleTabChange = (val: string) => {
+    setSectionFilter(val);
+    setPage(1);
+    updateQueryParams({ section: val, page: 1 });
+  };
+
   return (
     <Box p={2}>
       <Box mb="4px">
@@ -258,7 +320,8 @@ const Student: React.FC = () => {
         >
           <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
             <CustomSearchField
-              onSearch={setSearchQuery}
+              placeholder="Search Student..."
+              onSearch={handleSearch}
               sx={{ bgcolor: "#fff" }}
             />
           </Box>
@@ -278,6 +341,7 @@ const Student: React.FC = () => {
               options={classOptions}
               labelPosition="inside"
               disabled={status === StudentStatus.DRAFT}
+              sx={{ bgcolor: "#fff" }}
             />
             <CustomDropdownField
               label="Status"
@@ -288,6 +352,7 @@ const Student: React.FC = () => {
               options={Object.values(StudentStatus)}
               labelPosition="inside"
               showClearIcon={false}
+              sx={{ bgcolor: "#fff" }}
             />
           </Box>
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
@@ -360,7 +425,7 @@ const Student: React.FC = () => {
           tabs={sectionTabs}
           defaultTab={sectionTabs[0]?.value}
           tabUrlControlled={false}
-          onTabChange={(val)=>setSectionFilter(val)}
+          onTabChange={handleTabChange}
         />
       )}
       <Box mt={2}>

@@ -28,6 +28,7 @@ import SubjectCard from "../../components/Academics/Subject/SubjectCard";
 import SubjectDetailsModal from "../../components/Academics/Subject/SubjectDetailsModal";
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
 import AlertModal from "@/components/ui/AlertModal";
+import NoDataCard from "@/components/common/NoDataCard";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
@@ -76,7 +77,7 @@ const SubjectTab = () => {
     { skip: !selectedSession?._id }
   );
   const [deleteSubject] = useDeleteSubjectMutation();
-// console.log("selectedSession:", selectedSession);
+  // console.log("selectedSession:", selectedSession);
 
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({
@@ -175,21 +176,21 @@ const SubjectTab = () => {
     setClassId(val);
   };
   if (!selectedSession || !selectedSession._id) {
-  return (
-    <Box
-      sx={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "80vh",
-      }}
-    >
-      <Typography variant="body1" color="text.secondary">
-        No academic session found. Please create a session first.
-      </Typography>
-    </Box>
-  );
-}
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "80vh",
+        }}
+      >
+        <Typography variant="body1" color="text.secondary">
+          No academic session found. Please create a session first.
+        </Typography>
+      </Box>
+    );
+  }
 
   return (
     <>
@@ -203,6 +204,7 @@ const SubjectTab = () => {
           }}
         >
           <CustomSearchField
+            placeholder="Search Subject..."
             onSearch={setSearchQuery}
             sx={{ bgcolor: "#fff" }}
           />
@@ -213,17 +215,19 @@ const SubjectTab = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
               Filter By:
-            </Typography>
+            </Typography> */}
 
             <CustomDropdownField
               label="Class Name"
+              placeholder="-- Select Class --"
               required={false}
               value={classId}
               onChange={handleChange}
               options={classOptions}
               labelPosition="inside"
+              sx={{ bgcolor: "#FFF" }}
             />
             {can(
               ModuleName.ACADEMICS,
@@ -272,10 +276,10 @@ const SubjectTab = () => {
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "80vh",
+              height: "70vh",
             }}
           >
-            <Typography variant="body1">No records found.</Typography>
+            <NoDataCard />
           </Box>
         ) : tableView ? (
           <Box mt={2}>

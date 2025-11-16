@@ -3,9 +3,10 @@ import { Box, Typography, Grid, useTheme, Theme } from "@mui/material";
 import { EmployeeDetailsResponse } from "@/types/employee";
 import { formatDate } from "@/utils/helper";
 import InfoItem from "@/components/common/InfoItem";
+import { StudentDetailsResponse } from "@/types/student";
 
 interface PersonalInfoTabProps {
-  student: any;
+  student: StudentDetailsResponse;
 }
 const PersonalInfoTab: React.FC<PersonalInfoTabProps> = ({ student }) => {
   const theme = useTheme();

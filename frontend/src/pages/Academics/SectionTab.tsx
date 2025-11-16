@@ -30,7 +30,9 @@ const sectionColumns = [
 const SectionTab = () => {
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
-  const [selectedClassId, setSelectedClassId] = useState<string | undefined>(undefined);
+  const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
+    undefined
+  );
   const [selectedRow, setSelectedRow] = useState<SectionResponse | null>(null);
   const [openAddSection, setOpenAddSection] = useState(false);
   const [openUpdateSection, setOpenUpdateSection] = useState(false);
@@ -47,23 +49,22 @@ const SectionTab = () => {
     isFetching: sectionFetching,
     isError: sectionError,
     refetch,
-  } = useGetAllSectionQuery({
-    page,
-    limit,
-    search: searchQuery,
-    sessionId: selectedSession?._id,
-    classId: selectedClassId,
-  },
-  {
-    skip: !selectedSession?._id || !selectedClassId,
-  }
-);
+  } = useGetAllSectionQuery(
+    {
+      page,
+      limit,
+      search: searchQuery,
+      sessionId: selectedSession?._id,
+      classId: selectedClassId,
+    },
+    {
+      skip: !selectedSession?._id || !selectedClassId,
+    }
+  );
 
   const [deleteSection] = useDeleteSectionMutation();
 
-  const {
-    data: classData,
-  } = useGetAllClassQuery(
+  const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id as string,
     },
@@ -124,10 +125,10 @@ const SectionTab = () => {
     setLimit(newRowsPerPage);
     setPage(1);
   };
-  const handleRowClick = (row: any) =>{
+  const handleRowClick = (row: any) => {
     setSelectedRow(row);
     setOpenViewSection(true);
-  }
+  };
   const handleActionClick = (action: string, row: SectionResponse) => {
     setSelectedRow(row);
     switch (action) {
@@ -145,7 +146,7 @@ const SectionTab = () => {
     }
   };
   const handleDeleteSection = async () => {
-    if(!selectedRow?._id) return;
+    if (!selectedRow?._id) return;
     try {
       await deleteSection({ sectionId: selectedRow._id }).unwrap();
       toast.success("Section deleted successfully!");
@@ -158,11 +159,11 @@ const SectionTab = () => {
     }
   };
   useEffect(() => {
-  if (classData?.data?.classes?.length && !selectedClassId) {
-    const firstClassId = classData.data.classes[0]._id;
-    setSelectedClassId(firstClassId);
-  }
-}, [classData, selectedClassId]);
+    if (classData?.data?.classes?.length && !selectedClassId) {
+      const firstClassId = classData.data.classes[0]._id;
+      setSelectedClassId(firstClassId);
+    }
+  }, [classData, selectedClassId]);
 
   const classOptions =
     classData?.data?.classes?.map((item: any) => ({
@@ -185,7 +186,11 @@ const SectionTab = () => {
             mb: 2,
           }}
         >
-          <CustomSearchField onSearch={setSearchQuery} sx={{bgcolor: "#fff"}}/>
+          <CustomSearchField
+            placeholder="Search Section..."
+            onSearch={setSearchQuery}
+            sx={{ bgcolor: "#fff" }}
+          />
           <Box
             sx={{
               display: "flex",
@@ -193,9 +198,9 @@ const SectionTab = () => {
               gap: 1,
             }}
           >
-            <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
+            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
               Filter By:
-            </Typography>
+            </Typography> */}
 
             <CustomDropdownField
               label="Class Name"
@@ -204,6 +209,8 @@ const SectionTab = () => {
               onChange={handleChange}
               options={classOptions}
               labelPosition="inside"
+              sx={{ bgcolor: "#FFF" }}
+              showClearIcon={false}
             />
             {can(
               ModuleName.ACADEMICS,
@@ -252,7 +259,7 @@ const SectionTab = () => {
         />
       )}
       {openViewSection && (
-        <SectionDetailsModal 
+        <SectionDetailsModal
           open={openViewSection}
           onClose={() => setOpenViewSection(false)}
           section={selectedRow}

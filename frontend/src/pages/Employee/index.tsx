@@ -243,6 +243,7 @@ const Employee: React.FC = () => {
               options={Object.values(EmployeeStatus)}
               labelPosition="inside"
               showClearIcon={false}
+              sx={{bgcolor: "#FFF"}}
             />
             {can(ModuleName.Employee, null, Operation.CREATE) && (
               <CustomButton
