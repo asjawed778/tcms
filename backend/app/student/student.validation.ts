@@ -296,6 +296,12 @@ export const getStudents = [
         .isIn(Object.values(Enum.BloodGroup)).withMessage("Invalid Blood Group"),
 ];
 
+export const deleteDraftStudent = [
+    param("studentId")
+        .notEmpty().withMessage("Student ID is required")
+        .isMongoId().withMessage("Invalid Student ID"),
+];
+
 
 // old student addition validation code
 export const addStudent = [

@@ -152,6 +152,22 @@ export const getEmpSalaryStructure = asyncHandler(async (req, res) => {
     );
 });
 
+export const deleteDraftEmployee = asyncHandler(async (req: Request, res: Response) => {
+    const employeeId = req.params.employeeId;
+    const employee = await EmployeeService.getEmployeeById(employeeId);
+    if (!employee) {
+        throw createHttpError(404, "Employee not found");
+    }
+    if (employee.status !== Enum.EmployeeStatus.DRAFT) {
+        throw createHttpError(400, "Only draft employees can be deleted");
+    }
+    await EmployeeService.deleteDraftEmployee(employeeId);
+    res.send(createResponse({}, "Employee deleted successfully"));
+});
+
+
+
+
 // old controllers
 
 

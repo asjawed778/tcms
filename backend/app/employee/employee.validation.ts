@@ -263,6 +263,12 @@ export const getEmployeeById = [
         .isMongoId().withMessage("Employee ID must be a valid MongoDB ObjectId"),
 ];
 
+export const deleteDraftEmployee = [
+    param("employeeId")
+        .notEmpty().withMessage("Employee ID is required")
+        .isMongoId().withMessage("Invalid Employee ID"),
+];
+
 // old validations
 
 

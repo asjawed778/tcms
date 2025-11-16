@@ -1,8 +1,9 @@
 import mongoose from "mongoose";
 import * as EmployeeDto from "./employee.dto";
-import facultySchema from "./employee.schema"
 import * as Enum from "../common/utils/enum";
+import * as AWSService from "../common/services/AWS.service";
 import * as AddressService from "../common/services/address.service";
+import * as UserService from "../user/user.service";
 import employeeSchema from "./employee.schema";
 import createHttpError from "http-errors";
 import salaryStructureSchema from "./salaryStructure.schema";
@@ -228,6 +229,55 @@ export const getEmployeeAddress = async (employeeId: string) => {
     const addressDoc = await AddressService.getAddressById(addressId);
     return addressDoc;
 };
+
+export const deleteDraftEmployee = async (employeeId: string) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const employee = await employeeSchema.findById(employeeId).session(session);
+
+        if (!employee) throw createHttpError(404, "Employee not found");
+        if (employee.photo) {
+            try {
+                await AWSService.deleteObject(employee.photo);
+            } catch (err) {
+                console.error("Failed to delete employee photo:", err);
+            }
+        }
+        if (employee.documents?.length) {
+            for (const doc of employee.documents) {
+                if (doc.url) {
+                    try {
+                        await AWSService.deleteObject(doc.url);
+                    } catch (err) {
+                        console.error("Failed to delete employee document:", err);
+                    }
+                }
+            }
+        }
+
+        if (employee.address) {
+            await AddressService.deleteAddressById(employee.address.toString(), session);
+        }
+
+        if (employee.user) {
+            await UserService.deleteUserById(employee.user.toString(), session);
+        }
+
+        await employeeSchema.deleteOne({ _id: employeeId }).session(session);
+
+        await session.commitTransaction();
+        session.endSession();
+        return true;
+
+    } catch (err) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error("Delete Employee Error:", err);
+        throw err;
+    }
+};
+
 
 
 

@@ -232,6 +232,19 @@ export const getStudentById = asyncHandler(async (req: Request, res: Response) =
   res.send(createResponse(student, "Student fetched successfully"));
 });
 
+export const deleteDraftStudent = asyncHandler(async (req: Request, res: Response) => {
+  const studentId = req.params.studentId;
+  const student = await StudentService.getStudentById(studentId);
+  if (!student) {
+    throw createHttpError(404, "Student not found");
+  }
+  if (student.status !== Enum.StudentStatus.DRAFT) {
+    throw createHttpError(400, "Only draft students can be deleted");
+  }
+  await StudentService.deleteDraftStudent(studentId, "", student.class, student.section);
+  res.send(createResponse({}, "Student Data successfully"));
+});
+
 // old student addition function
 
 

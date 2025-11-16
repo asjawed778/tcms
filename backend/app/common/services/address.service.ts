@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import { IAddress, ICreateAddress } from "../dto/address.dto";
 import addressSchema from "../schema/address.schema";
 import createHttpError from "http-errors";
@@ -26,12 +27,28 @@ export const saveAddress = async (
     return newAddress as IAddress;
 };
 
-
 export const getAddressById = async (addressId: string) => {
     const address = await addressSchema.findById(addressId);
     if (!address) {
         throw createHttpError(404, "Address Not found")
     }
     return address;
-}
+};
+
+
+export const deleteAddressById = async (addressId: string, session?: mongoose.ClientSession) => {
+    if (!addressId) return false;
+    try {
+        const query = addressSchema.deleteOne({ _id: addressId });
+        if (session) {
+            await query.session(session);
+        } else {
+            await query;
+        }
+        return true;
+    } catch (err) {
+        console.error("Failed to delete address:", err);
+        throw err;
+    }
+};
 

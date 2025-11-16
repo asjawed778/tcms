@@ -71,6 +71,13 @@ router
     catchError,
     StudentController.getStudentById
   )
+  .delete(
+    "/:studentId/delete-draft",
+    roleAuth({ module: Enum.ModuleName.STUDENTS, operation: Enum.Operation.DELETE }),
+    StudentValidation.deleteDraftStudent,
+    catchError,
+    StudentController.deleteDraftStudent
+  )
 
   // additional routes for student
   .post(

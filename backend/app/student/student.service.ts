@@ -2,11 +2,12 @@ import createHttpError from "http-errors";
 import * as StudentDto from "./student.dto";
 import * as Enum from "../common/utils/enum";
 import * as StudentUtils from "./student.utils";
+import * as AddressService from "../common/services/address.service";
+import * as AWSService from "../common/services/AWS.service";
 import studentSchema from "./student.schema";
 import admissionSchema from "./admission.schema";
 import mongoose, { Types } from "mongoose";
 import remarksSchema from "./remarks.schema";
-
 
 export const addPersonalDetails = async (studentData: StudentDto.IAddStudentPersonalDetails) => {
     const registrationNumber = await StudentUtils.generateEnrollmentNumber();
@@ -122,8 +123,6 @@ export const getDraftStudents = async (
         pageLimit: limit,
     };
 };
-
-
 
 export const getAllStudents = async (
     sessionId: string,
@@ -428,6 +427,77 @@ export const getStudentById = async (studentId: string) => {
     ]);
     return result[0] || null;
 };
+
+export const deleteDraftStudent = async (
+    studentId: string,
+    sessionId?: string,
+    classId?: string,
+    sectionId?: string
+) => {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+    try {
+        const student = await studentSchema.findById(studentId).session(session);
+        if (!student) throw createHttpError(404, "Student not found");
+        if (student.photo) {
+            try {
+                await AWSService.deleteObject(student.photo);
+            } catch (err) {
+                console.error("Failed to delete student photo:", err);
+            }
+        }
+        if (student.documents && student.documents.length) {
+            for (const doc of student.documents) {
+                if (doc.url) {
+                    try {
+                        await AWSService.deleteObject(doc.url);
+                    } catch (err) {
+                        console.error("Failed to delete doc from S3:", err);
+                    }
+                }
+            }
+        }
+        if (student.previousSchool) {
+            const prev = student.previousSchool;
+            if (prev.schoolLeavingCertificate?.url) {
+                try {
+                    await AWSService.deleteObject(prev.schoolLeavingCertificate.url);
+                } catch (err) {
+                    console.error("Failed to delete SLC:", err);
+                }
+            }
+            if (prev.transferCertificate?.url) {
+                try {
+                    await AWSService.deleteObject(prev.transferCertificate.url);
+                } catch (err) {
+                    console.error("Failed to delete TC:", err);
+                }
+            }
+        }
+
+        if (student.address) {
+            await AddressService.deleteAddressById(student.address.toString(), session);
+        }
+
+        const admissionDeleteFilter: any = { student: studentId };
+        if (sessionId) admissionDeleteFilter.session = sessionId;
+        if (classId) admissionDeleteFilter.class = classId;
+        if (sectionId) admissionDeleteFilter.section = sectionId;
+
+        await admissionSchema.deleteOne(admissionDeleteFilter).session(session);
+
+        await studentSchema.deleteOne({ _id: studentId }).session(session);
+        await session.commitTransaction();
+        session.endSession();
+        return true;
+    } catch (err) {
+        await session.abortTransaction();
+        session.endSession();
+        console.error("Delete Student Error:", err);
+        throw err;
+    }
+};
+
 
 
 
