@@ -1,7 +1,6 @@
 import ModalWrapper from "@/components/ui/ModalWrapper";
 import { yupResolver } from "@hookform/resolvers/yup";
 import React, { useEffect, useRef } from "react";
-import { addRemarkSchema } from "../../validation/yup";
 import { FormProvider, useFieldArray, useForm } from "react-hook-form";
 import { Box, Button, Grid, IconButton, Stack } from "@mui/material";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
@@ -15,6 +14,7 @@ import { useNavigate } from "react-router-dom";
 import { useAppSelector } from "@/store/store";
 import { cleanData } from "@/utils/helper";
 import { useAddRemarkMutation } from "@/services/studentApi";
+import { addRemarkSchema } from "@/validation/student";
 
 interface AddRemarkProps {
   student: any;

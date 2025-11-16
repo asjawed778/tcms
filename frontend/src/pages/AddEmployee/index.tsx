@@ -6,7 +6,7 @@ import {
   employeeBasicDetailsSchema,
   employeeProfessionalDetailsSchema,
   employeeSalaryStructureSchema,
-} from "../../validation/yup";
+} from "@/validation/employee";
 import {
   Stepper,
   Step,

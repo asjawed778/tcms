@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { AddressRequest, ApiResponse, Document } from "@/types";
+import { AddressRequest, ApiResponse, DocumentRequest } from "@/types";
 import {
   EmployeeBasicDetailsRequest,
   EmployeeDetailsResponse,
@@ -106,7 +106,7 @@ export const facultyApi = createApi({
     }),
     updateDocuments: builder.mutation<
       ApiResponse<EmployeeDetailsResponse>,
-      { employeeId: string; payload: Document }
+      { employeeId: string; payload: DocumentRequest }
     >({
       query: ({ employeeId, payload }) => ({
         url: `/admin/employee/${employeeId}/documents`,

@@ -46,8 +46,8 @@ export interface PreviousSchool {
   address?: string;
   reasonForLeaving?: string;
   dateOfLeaving?: string;
-  schoolLeavingCertificate: CommonTypes.Document;
-  transferCertificate: CommonTypes.Document;
+  schoolLeavingCertificate: CommonTypes.DocumentRequest;
+  transferCertificate: CommonTypes.DocumentRequest;
 }
 
 export interface AdmissionDetailsRequest {
@@ -82,7 +82,7 @@ export interface StudentDetailsResponse
   enrollmentNumber: string;
   status: StudentStatus;
   address: CommonTypes.AddressResponse;
-  documents: CommonTypes.Document;
+  documents: CommonTypes.DocumentRequest;
   admission: AdmissionDetailsResponse;
 }
 

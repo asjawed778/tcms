@@ -1,10 +1,10 @@
 import React from "react";
 import { Box, Grid, Theme, useTheme } from "@mui/material";
 import DocumentCard from "@/components/common/DocumentCard";
-import { Document } from "@/types";
 import NoDataCard from "@/components/common/NoDataCard";
 import { DescriptionOutlined } from "@mui/icons-material";
 import { StudentDetailsResponse } from "@/types/student";
+import { DocumentRequest } from "@/types";
 
 interface DocumentsProps {
   student: StudentDetailsResponse;
@@ -14,7 +14,7 @@ const DocumentsTab: React.FC<DocumentsProps> = ({ student }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const handleDownload = (doc: Document) => {
+  const handleDownload = (doc: DocumentRequest) => {
     if (!doc?.url) return;
 
     const link = document.createElement("a");
@@ -28,7 +28,7 @@ const DocumentsTab: React.FC<DocumentsProps> = ({ student }) => {
   };
 
   // Collect all available documents
-  const allDocuments: Document[] = [];
+  const allDocuments: DocumentRequest[] = [];
 
   // 1. Regular student documents
   if (Array.isArray(student?.documents) && student.documents.length > 0) {
@@ -51,7 +51,11 @@ const DocumentsTab: React.FC<DocumentsProps> = ({ student }) => {
   if (allDocuments.length === 0) {
     return (
       <NoDataCard
-        icon={<DescriptionOutlined sx={{ fontSize: "48px", color: "text.disabled" }} />}
+        icon={
+          <DescriptionOutlined
+            sx={{ fontSize: "48px", color: "text.disabled" }}
+          />
+        }
         title="No Document Found"
         subtitle="No documents or certificates are uploaded yet."
       />
