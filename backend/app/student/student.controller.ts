@@ -190,8 +190,8 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
   const page = parseInt(req.query.page as string) || 1;
   const limit = parseInt(req.query.limit as string) || 10;
   const search = (req.query.search as string) || "";
-  const classId = (req.query.class as string) || "";
-  const sectionId = (req.query.section as string) || "";
+  const classId = (req.query.classId as string) || "";
+  const sectionId = (req.query.sectionId as string) || "";
   const gender = (req.query.gender as Enum.Gender) || "";
   const studentStatus = req.query.studentStatus as Enum.StudentStatus || "";
   const admissionStatus = req.query.admissionStatus as Enum.AdmissionStatus || "";
@@ -216,7 +216,6 @@ export const getStudents = asyncHandler(async (req: Request, res: Response) => {
       classId,
       sectionId,
       gender,
-      studentStatus,
       admissionStatus,
       bloodGroup,
     );

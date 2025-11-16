@@ -133,7 +133,6 @@ export const getAllStudents = async (
     classId?: string,
     sectionId?: string,
     gender?: Enum.Gender,
-    studentStatus?: Enum.StudentStatus,
     admissionStatus?: Enum.AdmissionStatus,
     bloodGroup?: Enum.BloodGroup,
 ): Promise<StudentDto.IGetStudentResponse<any>> => {
@@ -165,7 +164,6 @@ export const getAllStudents = async (
     }
 
     if (gender) studentFilters.push({ 'student.gender': gender });
-    if (studentStatus) studentFilters.push({ 'student.status': studentStatus });
     if (bloodGroup) studentFilters.push({ 'student.bloodGroup': bloodGroup });
 
     // Construct full aggregation pipeline
