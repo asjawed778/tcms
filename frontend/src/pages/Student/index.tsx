@@ -73,8 +73,6 @@ const Student: React.FC = () => {
   >([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-
-  const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const can = useCan();
   const theme = useTheme();
 
@@ -98,7 +96,8 @@ const Student: React.FC = () => {
       // refetchOnMountOrArgChange: true,
     }
   );
-  const [deleteStudent] = useDeleteStudentMutation();
+
+  const [deleteStudent, {isLoading: isDelete}] = useDeleteStudentMutation();
   const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id,
@@ -138,7 +137,6 @@ const Student: React.FC = () => {
     setSearchParams(params);
   }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
 
-
   const handleImageClick = (url: string) => {
     if (!url) return;
     setSelectedEmpImage([{ url, type: "image" }]);
@@ -147,6 +145,7 @@ const Student: React.FC = () => {
   const handleRowClick = (studentId: any) => {
     setSelectedStudentId(studentId);
   };
+  const actionType = status === StudentStatus.DRAFT ? "icon" : "menu";
   const studentTableColumns =
     actionType === "menu"
       ? getStudentColumns(handleImageClick)
@@ -248,7 +247,7 @@ const Student: React.FC = () => {
         break;
       case "delete":
         setOpenDeleteModal(true);
-        setSelectedStudent(row.student);
+        setSelectedStudent(row);
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
@@ -258,7 +257,6 @@ const Student: React.FC = () => {
         break;
     }
   };
-
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -290,11 +288,6 @@ const Student: React.FC = () => {
     setClassFilter("");
     setSectionFilter("");
     setPage(1);
-    if (val === StudentStatus.DRAFT) {
-      setActionType("icon");
-    } else {
-      setActionType("menu");
-    }
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
@@ -461,9 +454,9 @@ const Student: React.FC = () => {
       {openDeleteModal && (
         <AlertModal
           open={openDeleteModal}
-          type="success"
           onClose={() => setOpenDeleteModal(false)}
           onConfirm={handleStudentDelete}
+          isLoading={isDelete}
           message={
             <>
               Are you sure you want to delete

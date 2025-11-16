@@ -80,7 +80,7 @@ const AddRemark: React.FC<AddRemarkProps> = ({ student, onClose, open }) => {
     <ModalWrapper
       open={open}
       onClose={onClose}
-      title={`Add Remarks for ${student?.student.firstName}`}
+      title={`Add Remarks for ${student?.student?.firstName}`}
       width="50%"
     >
       <FormProvider {...methods}>

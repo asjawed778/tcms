@@ -53,7 +53,7 @@ const DocumentsTab: React.FC<DocumentsProps> = ({ student }) => {
       <NoDataCard
         icon={
           <DescriptionOutlined
-            sx={{ fontSize: "48px", color: "text.disabled" }}
+            sx={{ fontSize: "48px" }}
           />
         }
         title="No Document Found"

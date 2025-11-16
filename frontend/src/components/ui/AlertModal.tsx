@@ -19,6 +19,7 @@ interface AlertModalProps {
   onClose: () => void;
   onConfirm?: () => void;
   width?: string | number;
+  isLoading?: boolean;
 }
 
 const iconMap = {
@@ -46,8 +47,9 @@ const AlertModal: React.FC<AlertModalProps> = ({
   title,
   message,
   onClose,
-  onConfirm,
+  onConfirm,  
   width = 500,
+  isLoading = false
 }) => {
   const { icon, bgColor } = iconMap[type];
 
@@ -119,7 +121,7 @@ const AlertModal: React.FC<AlertModalProps> = ({
         ) : (
           <DialogActions sx={{ justifyContent: "space-between", p: 2 }}>
             <CustomButton label="No" onClick={onClose} variant="outlined" />
-            <CustomButton label="Yes" onClick={onConfirm} />
+            <CustomButton label="Yes" onClick={onConfirm} loading={isLoading} />
           </DialogActions>
         )}
       </Dialog>
