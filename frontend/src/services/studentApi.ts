@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { AddressRequest, ApiResponse } from "@/types";
-import { AddRemarkRequest, AdmissionDetailsRequest, BasicDetailsRequest, ParentDetailsRequest, RemarkResponse, StudentDetailsResponse, StudentResponseList } from "@/types/student";
+import { AddressRequest, ApiResponse, Document } from "@/types";
+import { AddRemarkRequest, AdmissionDetailsRequest, BasicDetailsRequest, ParentDetailsRequest, RemarkResponse, StudentDetailsResponse, StudentResponse, StudentResponseList } from "@/types/student";
 
 export const studentApi = createApi({
   reducerPath: "studentApi",
@@ -25,42 +25,42 @@ export const studentApi = createApi({
         method: "GET"
       }),
     }),
-    addStudentBasicDetails: builder.mutation<ApiResponse<StudentResponseList>, {payload: BasicDetailsRequest}>({
+    addStudentBasicDetails: builder.mutation<ApiResponse<StudentResponse>, {payload: BasicDetailsRequest}>({
       query: ({ payload }) => ({
         url: "/admin/student/add/personal-details",
         method: "POST",
         body: payload,
       }),
     }),
-    updateStudentBasicDetails: builder.mutation<StudentDetailsResponse, {studentId: string; payload: BasicDetailsRequest}>({
+    updateStudentBasicDetails: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: BasicDetailsRequest}>({
       query: ({ studentId, payload }) => ({
         url: `/admin/student/${studentId}/personal-details`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateAddress: builder.mutation<StudentDetailsResponse, {studentId: string; payload: AddressRequest}>({
+    updateAddress: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: AddressRequest}>({
       query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/address`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateParentDetails: builder.mutation<StudentDetailsResponse, {studentId: string; payload: ParentDetailsRequest}>({
+    updateParentDetails: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: ParentDetailsRequest}>({
       query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/parent-details`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateAdmissionDetails: builder.mutation<StudentDetailsResponse, {studentId: string; payload: AdmissionDetailsRequest}>({
+    updateAdmissionDetails: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: AdmissionDetailsRequest}>({
       query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/admission-details`,
         method: "PUT",
         body: payload,
       }),
     }),
-    updateDocuments: builder.mutation<StudentDetailsResponse, {studentId: string; payload: Document}>({
+    updateDocuments: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: Document}>({
       query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/documents`,
         method: "PUT",
@@ -78,6 +78,12 @@ export const studentApi = createApi({
       query: ({ studentId }) => ({
         url: `/admin/student/${studentId}/details`,
         method: "GET",
+      })
+    }),
+    deleteStudent: builder.mutation<ApiResponse<null>, {studentId: string;}>({
+      query: ({ studentId }) => ({
+        url: `/admin/student/${studentId}/delete-draft`,
+        method: "DELETE",
       })
     }),
     addRemark: builder.mutation<
@@ -103,5 +109,6 @@ export const {
   useUpdateDocumentsMutation,
   useGetStudentDetailsQuery,
   useAddRemarkMutation,
+  useDeleteStudentMutation,
   useUploadBulkStudentsMutation,
 } = studentApi;

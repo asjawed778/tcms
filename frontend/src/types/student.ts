@@ -86,6 +86,9 @@ export interface StudentDetailsResponse
   admission: AdmissionDetailsResponse;
 }
 
+export interface StudentResponse {
+  student: StudentDetailsResponse;
+}
 export interface StudentResponseList {
   students: Array<{
     student: StudentDetailsResponse;

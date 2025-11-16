@@ -4,19 +4,18 @@ import CustomSearchField from "@/components/ui/CustomSearchField";
 import TableWrapper from "@/components/ui/TableWrapper";
 import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllEmployeeQuery } from "@/services/employeeApi";
 import {
-  EmployeeStatus,
-  ModuleName,
-  Operation,
-} from "@/utils/enum";
+  useDeleteEmployeeMutation,
+  useGetAllEmployeeQuery,
+} from "@/services/employeeApi";
+import { EmployeeStatus, ModuleName, Operation } from "@/utils/enum";
 import {
   Delete,
   EditOutlined,
   PersonAdd,
   VisibilityOutlined,
 } from "@mui/icons-material";
-import { alpha, Box, Button, useTheme } from "@mui/material";
+import { alpha, Box, Button, useStepContext, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
@@ -26,6 +25,8 @@ import {
 } from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
 import { EmployeeDetailsResponse } from "@/types/employee";
+import AlertModal from "@/components/ui/AlertModal";
+import toast from "react-hot-toast";
 
 const Employee: React.FC = () => {
   const theme = useTheme();
@@ -36,6 +37,7 @@ const Employee: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState(EmployeeStatus.ACTIVE);
   const [showLastDateColumn, setShowLastDateColumn] = useState(false);
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
   const navigate = useNavigate();
   const can = useCan();
   const [openImagePreview, setOpenImagePreview] = useState(false);
@@ -43,10 +45,13 @@ const Employee: React.FC = () => {
     { url: string; type: "image" }[]
   >([]);
   const [seletedEmployeeId, setSelectedEmployeeId] = useState<string>("");
+  const [selectedEmployee, setSelectedEmployee] =
+    useState<EmployeeDetailsResponse | null>(null);
   const {
     data: employeeData,
     isFetching,
     isError,
+    refetch,
   } = useGetAllEmployeeQuery(
     {
       page,
@@ -58,7 +63,7 @@ const Employee: React.FC = () => {
       refetchOnMountOrArgChange: true,
     }
   );
-
+  const [deleteEmployee] = useDeleteEmployeeMutation();
   const actionsList = (row: EmployeeDetailsResponse) => {
     if (row.status === EmployeeStatus.DRAFT) {
       return [
@@ -202,6 +207,10 @@ const Employee: React.FC = () => {
       case "view":
         handleEmployeeRowClick(row._id);
         break;
+      case "delete":
+        setOpenDeleteModal(true);
+        setSelectedEmployee(row);
+        break;
       default:
         break;
     }
@@ -209,6 +218,19 @@ const Employee: React.FC = () => {
 
   const handleAddEmployee = () => {
     navigate("/dashboard/employee/add");
+  };
+  const handleEmployeeDelete = async () => {
+    if (!selectedEmployee) return;
+    try {
+      await deleteEmployee({ employeeId: selectedEmployee?._id }).unwrap();
+      refetch();
+      setOpenDeleteModal(false);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error?.data?.message || "Something went wrong. Please try again!"
+      );
+    }
   };
   const handleStatusChange = (val: EmployeeStatus) => {
     setStatusFilter(val);
@@ -218,10 +240,10 @@ const Employee: React.FC = () => {
     } else {
       setActionType("menu");
     }
-    if(val !== EmployeeStatus.ACTIVE && val !== EmployeeStatus.DRAFT){
+    if (val !== EmployeeStatus.ACTIVE && val !== EmployeeStatus.DRAFT) {
       setShowLastDateColumn(true);
     } else {
-      setShowLastDateColumn(false)
+      setShowLastDateColumn(false);
     }
   };
   return (
@@ -243,7 +265,7 @@ const Employee: React.FC = () => {
               options={Object.values(EmployeeStatus)}
               labelPosition="inside"
               showClearIcon={false}
-              sx={{bgcolor: "#FFF"}}
+              sx={{ bgcolor: "#FFF" }}
             />
             {can(ModuleName.Employee, null, Operation.CREATE) && (
               <CustomButton
@@ -287,6 +309,20 @@ const Employee: React.FC = () => {
           onImageClick={handleImageClick}
         />
       </SideDrawerWrapper>
+      {openDeleteModal && (
+        <AlertModal
+          open={openDeleteModal}
+          onClose={() => setOpenDeleteModal(false)}
+          onConfirm={handleEmployeeDelete}
+          message={
+            <>
+              Are you sure you want to delete
+              <strong> "{selectedEmployee?.firstName}"</strong>? This action
+              cannot be undone.
+            </>
+          }
+        />
+      )}
     </>
   );
 };

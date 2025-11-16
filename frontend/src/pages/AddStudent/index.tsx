@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import ParentDetails from "./ParentDetails";
 import PreviousSchoolDetails from "./PreviousSchoolDetails";
 import DocumentDetails from "./DocumentDetails";
@@ -59,10 +59,18 @@ const steps = [
     schema: documentDetailsSchema,
   },
 ];
-
+const stepSlugs = steps.map((s) => s.label.toLowerCase().replace(/ /g, "-"));
 const AddStudent = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const [studentId, setStudentId] = useState<string | null>(null);
+    const [searchParams] = useSearchParams();
+
+  const urlStep = searchParams.get("step") || stepSlugs[0];
+  const initialStepIndex = stepSlugs.indexOf(urlStep);
+
+  const [activeStep, setActiveStep] = useState(
+    initialStepIndex >= 0 ? initialStepIndex : 0
+  );
+
+  const [studentId, setStudentId] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
   const { studentId: editStudentId } = useParams();
@@ -99,12 +107,12 @@ const AddStudent = () => {
       return;
     }
     if (!studentId && editStudentId) return;
-    const stepName = steps[activeStep].label.toLowerCase().replace(/ /g, "-");
+    const stepName = stepSlugs[activeStep];
     if (!editStudentId && !studentId) {
       navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
       return;
     }
-    if (studentId) {
+    if (studentId ) {
       navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
         replace: true,
       });

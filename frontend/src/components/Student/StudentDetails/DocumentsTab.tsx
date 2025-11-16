@@ -4,19 +4,10 @@ import DocumentCard from "@/components/common/DocumentCard";
 import { Document } from "@/types";
 import NoDataCard from "@/components/common/NoDataCard";
 import { DescriptionOutlined } from "@mui/icons-material";
-
-interface PreviousSchool {
-  schoolLeavingCertificate?: Document;
-  transferCertificate?: Document;
-}
-
-interface Student {
-  documents?: Document[];
-  previousSchool?: PreviousSchool;
-}
+import { StudentDetailsResponse } from "@/types/student";
 
 interface DocumentsProps {
-  student: Student | null;
+  student: StudentDetailsResponse;
 }
 
 const DocumentsTab: React.FC<DocumentsProps> = ({ student }) => {

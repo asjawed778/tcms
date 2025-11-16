@@ -43,7 +43,6 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
     { studentId },
     { refetchOnMountOrArgChange: true }
   );
-console.log("Student all details: ", studentDetails);
 
   if (isFetching) {
     return <BasicDetailsSkeleton />;
@@ -129,7 +128,7 @@ console.log("Student all details: ", studentDetails);
         <BasicDetails
           _id={studentDetails.data._id}
           enrollmentNumber={studentDetails.data.enrollmentNumber}
-          phoneNumber={studentDetails.data.contactNumber}
+          contactNumber={studentDetails.data.contactNumber}
           photo={studentDetails.data.photo || ""}
           status={studentDetails.data.status}
           firstName={studentDetails.data.firstName}

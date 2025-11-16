@@ -39,6 +39,15 @@ export const facultyApi = createApi({
         method: "GET",
       }),
     }),
+    deleteEmployee: builder.mutation<
+      ApiResponse<null>,
+      { employeeId: string }
+    >({
+      query: ({ employeeId }) => ({
+        url: `/admin/employee/${employeeId}/delete-draft`,
+        method: "DELETE",
+      }),
+    }),
     getSalaryStructure: builder.query({
       query: ({ employeeId }) => ({
         url: `/admin/employee/${employeeId}/salary-structure`,
@@ -121,6 +130,7 @@ export const facultyApi = createApi({
 export const {
   useGetAllEmployeeQuery,
   useGetEmployeeDetailsQuery,
+  useDeleteEmployeeMutation,
   useGetSalaryStructureQuery,
   useAddBasicDetailsMutation,
   useUpdateBasicDetailsMutation,

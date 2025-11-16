@@ -14,7 +14,10 @@ import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import AddRemark from "@/components/Student/AddRemarkModal";
-import { useGetAllStudentQuery } from "@/services/studentApi";
+import {
+  useDeleteStudentMutation,
+  useGetAllStudentQuery,
+} from "@/services/studentApi";
 import BulkUpload from "@/components/Student/BulkUploadModal";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, StudentStatus } from "@/utils/enum";
@@ -31,6 +34,9 @@ import {
   useGetAllSectionQuery,
 } from "@/services/academics.Api";
 import SegmentTabs from "@/components/ui/SegmentTabs";
+import { StudentDetailsResponse } from "@/types/student";
+import toast from "react-hot-toast";
+import AlertModal from "@/components/ui/AlertModal";
 
 const Student: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -51,7 +57,8 @@ const Student: React.FC = () => {
   const [sectionFilter, setSectionFilter] = useState(
     () => searchParams.get("section") || ""
   );
-  const [selectedStudent, setSelectedStudent] = useState<any>(null);
+  const [selectedStudent, setSelectedStudent] =
+    useState<StudentDetailsResponse | null>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
   const [openBulkUpload, setOpenBulkUpload] = useState(false);
   const navigate = useNavigate();
@@ -65,6 +72,8 @@ const Student: React.FC = () => {
     { url: string; type: "image" }[]
   >([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
+
   const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const can = useCan();
   const theme = useTheme();
@@ -86,9 +95,10 @@ const Student: React.FC = () => {
     },
     {
       skip: !selectedSession?._id,
-      refetchOnMountOrArgChange: true,
+      // refetchOnMountOrArgChange: true,
     }
   );
+  const [deleteStudent] = useDeleteStudentMutation();
   const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id,
@@ -245,9 +255,14 @@ const Student: React.FC = () => {
       case "view":
         handleRowClick(row.student._id);
         break;
+      case "delete":
+        setOpenDeleteModal(true);
+        setSelectedStudent(row.student);
+        break;
       case "addRemarks":
         setOpenRemarksModal(true);
         setSelectedStudent(row);
+        break;
       default:
         break;
     }
@@ -264,6 +279,19 @@ const Student: React.FC = () => {
   };
   const handleAddStudent = () => {
     navigate("/dashboard/student/add");
+  };
+  const handleStudentDelete = async () => {
+    if (!selectedStudent?._id) return;
+    try {
+      await deleteStudent({ studentId: selectedStudent._id }).unwrap();
+      refetch();
+      setOpenDeleteModal(false);
+    } catch (error: any) {
+      console.log(error);
+      toast.error(
+        error?.data?.message || "Something went wrong. Please try again!"
+      );
+    }
   };
   const handleBulkUpload = () => {
     setOpenBulkUpload(true);
@@ -452,6 +480,20 @@ const Student: React.FC = () => {
           open={openImagePreview}
           onClose={() => setOpenImagePreview(false)}
           files={seletedEmpImage}
+        />
+      )}
+      {openDeleteModal && (
+        <AlertModal
+          open={openDeleteModal}
+          onClose={() => setOpenDeleteModal(false)}
+          onConfirm={handleStudentDelete}
+          message={
+            <>
+              Are you sure you want to delete
+              <strong> "{selectedStudent?.firstName}"</strong>? This action
+              cannot be undone.
+            </>
+          }
         />
       )}
       <SideDrawerWrapper

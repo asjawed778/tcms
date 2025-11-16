@@ -77,7 +77,6 @@ const SubjectTab = () => {
     { skip: !selectedSession?._id }
   );
   const [deleteSubject] = useDeleteSubjectMutation();
-  // console.log("selectedSession:", selectedSession);
 
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({

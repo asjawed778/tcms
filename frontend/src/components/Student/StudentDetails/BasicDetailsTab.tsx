@@ -13,13 +13,13 @@ import DocumentPreviewer from "@/components/ui/DocumentPreviewer";
 interface BasicDetailsProps {
   _id: string;
   enrollmentNumber: string;
-  phoneNumber: string;
+  contactNumber?: string;
   photo: string;
   status: string;
 //   roleName: string;
   firstName: string;
   lastName: string;
-  email: string;
+  email?: string;
   onEditDetails?: () => void;
   onEditPhoto?: () => void;
 //   onImageClick?: (url: string) => void;
@@ -27,7 +27,7 @@ interface BasicDetailsProps {
 
 const BasicDetails: React.FC<BasicDetailsProps> = ({
   enrollmentNumber,
-  phoneNumber,
+  contactNumber,
   photo,
   status,
 //   roleName,
@@ -116,7 +116,7 @@ const BasicDetails: React.FC<BasicDetailsProps> = ({
                 Phone Number
               </Typography>
               <Typography variant="body1" sx={styles.value}>
-                {phoneNumber}
+                {contactNumber}
               </Typography>
             </Box>
           </Box>
