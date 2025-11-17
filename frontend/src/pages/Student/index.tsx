@@ -40,7 +40,6 @@ import AlertModal from "@/components/ui/AlertModal";
 
 const Student: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
   const [rowsPerPage, setRowsPerPage] = useState(
     () => Number(searchParams.get("limit")) || 10
@@ -125,17 +124,25 @@ const Student: React.FC = () => {
   ];
 
   useEffect(() => {
-    const params = new URLSearchParams();
+      setSearchParams({
+        // tab: ToolsTabs.ROLES_AND_PERMISSIONS,
+        page: String(page),
+        limit: String(rowsPerPage),
+      });
+    }, [page, rowsPerPage, setSearchParams]);
+  // useEffect(() => {
+  //   const params = new URLSearchParams();
 
-    if (page) params.set("page", String(page));
-    if (rowsPerPage) params.set("limit", String(rowsPerPage));
-    if (searchQuery) params.set("search", searchQuery);
-    if (status) params.set("status", status);
-    if (classFilter) params.set("class", classFilter);
-    if (sectionFilter) params.set("section", sectionFilter);
+  //   if (page) params.set("page", String(page));
+  //   if (rowsPerPage) params.set("limit", String(rowsPerPage));
+  //   if (searchQuery) params.set("search", searchQuery);
+  //   if (status) params.set("status", status);
+  //   if (classFilter) params.set("class", classFilter);
+  //   if (sectionFilter) params.set("section", sectionFilter);
 
-    setSearchParams(params);
-  }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
+  //   setSearchParams(params);
+  // }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
+
 
   const handleImageClick = (url: string) => {
     if (!url) return;

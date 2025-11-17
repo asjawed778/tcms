@@ -1,6 +1,6 @@
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 // components
 import PublicRoute from "@/components/Auth/PublicRoutes";
@@ -11,6 +11,7 @@ import SplashScreen from "@/components/SplashScreen";
 
 // layouts
 import DashboardLayout from "@/layouts/DashboardLayout";
+import { useLenis } from "lenis/react";
 
 // pages
 const Login = lazy(() => import("@/pages/Login"));
@@ -27,6 +28,13 @@ const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
 const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
+  const { pathname } = useLocation();
+  const lenis = useLenis();
+
+  useEffect(() => {
+    lenis?.scrollTo(0, { duration: 1 });
+  }, [pathname]);
+
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes>
