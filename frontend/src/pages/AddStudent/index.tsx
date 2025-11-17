@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  addressdetailsSchema,
-  documentDetailsSchema,
-  parentDetailsSchema,
-  personalDetailsSchema,
-  previousSchoolSchema,
-} from "@/validation/yup";
-import {
   Stepper,
   Step,
   StepLabel,
@@ -35,6 +28,7 @@ import {
   useUpdateStudentBasicDetailsMutation,
 } from "@/services/studentApi";
 import CustomButton from "@/components/ui/CustomButton";
+import { addressdetailsSchema, documentDetailsSchema, parentDetailsSchema, personalDetailsSchema, previousSchoolSchema } from "@/validation/student";
 
 const steps = [
   {

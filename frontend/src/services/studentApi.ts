@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { AddressRequest, ApiResponse, Document } from "@/types";
+import { AddressRequest, ApiResponse, DocumentRequest } from "@/types";
 import { AddRemarkRequest, AdmissionDetailsRequest, BasicDetailsRequest, ParentDetailsRequest, RemarkResponse, StudentDetailsResponse, StudentResponse, StudentResponseList } from "@/types/student";
 
 export const studentApi = createApi({
@@ -60,7 +60,7 @@ export const studentApi = createApi({
         body: payload,
       }),
     }),
-    updateDocuments: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: Document}>({
+    updateDocuments: builder.mutation<ApiResponse<StudentResponse>, {studentId: string; payload: DocumentRequest}>({
       query: ({ payload, studentId }) => ({
         url: `/admin/student/${studentId}/documents`,
         method: "PUT",
