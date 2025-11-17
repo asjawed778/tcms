@@ -123,7 +123,6 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
-  console.log("#### student data : ", studentData);
   // useEffect(() => {
   //   const params = new URLSearchParams();
 
