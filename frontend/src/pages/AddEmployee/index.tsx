@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { cleanData } from "@/utils/helper";
 import CustomButton from "@/components/ui/CustomButton";
 import BasicDetails from "./BasicDetails";
@@ -63,9 +63,15 @@ const steps = [
     schema: yup.object({}),
   },
 ];
+const stepSlugs = steps.map((s) => s.label.toLowerCase().replace(/ /g, "-"));
 
 const AddEmployee = () => {
-  const [activeStep, setActiveStep] = useState(0);
+  const [searchParams] = useSearchParams();
+  const urlStep = searchParams.get("step") || stepSlugs[0];
+  const initialStepIndex = stepSlugs.indexOf(urlStep);
+  const [activeStep, setActiveStep] = useState(
+    initialStepIndex >= 0 ? initialStepIndex : 0
+  );
   const [employeeId, setEmployeeId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -91,7 +97,7 @@ const AddEmployee = () => {
       { employeeId: editEmployeeId! },
       {
         skip: !editEmployeeId,
-        refetchOnMountOrArgChange: true,
+        // refetchOnMountOrArgChange: true,
       }
     );
   const { data: salaryStructure, isFetching: salaryFetching } =
@@ -99,7 +105,7 @@ const AddEmployee = () => {
       { employeeId: editEmployeeId! },
       {
         skip: !editEmployeeId,
-        refetchOnMountOrArgChange: true,
+        // refetchOnMountOrArgChange: true,
       }
     );
 
@@ -110,10 +116,22 @@ const AddEmployee = () => {
     mode: "onChange",
   });
   useEffect(() => {
-    if (editEmployeeId) {
+    if (editEmployeeId && employeeId !== editEmployeeId) {
       setEmployeeId(editEmployeeId);
+      return;
     }
-  }, [editEmployeeId]);
+    if (!employeeId && editEmployeeId) return;
+    const stepName = stepSlugs[activeStep];
+    if (!editEmployeeId && !employeeId) {
+      navigate(`/dashboard/employee/add?step=${stepName}`, { replace: true });
+      return;
+    }
+    if (employeeId) {
+      navigate(`/dashboard/employee/${employeeId}/update?step=${stepName}`, {
+        replace: true,
+      });
+    }
+  }, [activeStep, employeeId, editEmployeeId]);
 
   useEffect(() => {
     if (
@@ -257,7 +275,7 @@ const AddEmployee = () => {
     }
   };
 
-  if (fetchingEmployee || salaryFetching) {
+  if (fetchingEmployee || salaryFetching ) {
     return (
       <Box
         sx={{
