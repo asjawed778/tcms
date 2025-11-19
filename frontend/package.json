@@ -1,5 +1,5 @@
 {
-  "name": "frontend",
+  "name": "tcms",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -21,7 +21,6 @@
     "country-state-city": "^3.2.1",
     "date-fns": "^4.1.0",
     "framer-motion": "^12.6.3",
-    "lenis": "^1.3.15",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-dropzone": "^14.3.8",

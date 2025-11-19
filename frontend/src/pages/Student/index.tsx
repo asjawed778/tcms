@@ -36,7 +36,7 @@ import {
 import SegmentTabs from "@/components/ui/SegmentTabs";
 import { StudentDetailsResponse } from "@/types/student";
 import toast from "react-hot-toast";
-import AlertModal from "@/components/ui/AlertModal";
+import AlertModal from "@/components/common/AlertModal";
 
 const Student: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();

@@ -11,7 +11,6 @@ import SplashScreen from "@/components/SplashScreen";
 
 // layouts
 import DashboardLayout from "@/layouts/DashboardLayout";
-import { useLenis } from "lenis/react";
 
 // pages
 const Login = lazy(() => import("@/pages/Login"));
@@ -28,12 +27,6 @@ const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
 const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
-  const { pathname } = useLocation();
-  const lenis = useLenis();
-
-  useEffect(() => {
-    lenis?.scrollTo(0, { duration: 1 });
-  }, [pathname]);
 
   return (
     <Suspense fallback={<SplashScreen />}>
