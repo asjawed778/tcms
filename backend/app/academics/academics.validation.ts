@@ -11,17 +11,6 @@ export const createSubject = [
     body("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-    body("publication")
-        .optional()
-        .isString().withMessage("Publication must be a string"),
-
-    body("writer")
-        .optional()
-        .isString().withMessage("Writer must be a string"),
-
-    body("ISBN")
-        .optional()
-        .isString().withMessage("ISBN must be a string"),
 
     body("subjectType")
         .notEmpty().withMessage("Subject type is required")
@@ -55,21 +44,6 @@ export const createSubjectBulk = [
         .isMongoId()
         .withMessage("Session ID must be a valid Mongo ID"),
 
-    body("subjects.*.publication")
-        .optional()
-        .isString()
-        .withMessage("Publication must be a string"),
-
-    body("subjects.*.writer")
-        .optional()
-        .isString()
-        .withMessage("Writer must be a string"),
-
-    body("subjects.*.ISBN")
-        .optional()
-        .isString()
-        .withMessage("ISBN must be a string"),
-
     body("subjects.*.subjectType")
         .notEmpty()
         .withMessage("Subject type is required")
@@ -100,18 +74,6 @@ export const editSubject = [
     body("name")
         .optional()
         .isString().withMessage("Subject name must be a string"),
-
-    body("publication")
-        .optional()
-        .isString().withMessage("Publication must be a string"),
-
-    body("writer")
-        .optional()
-        .isString().withMessage("Writer must be a string"),
-
-    body("ISBN")
-        .optional()
-        .isString().withMessage("ISBN must be a string"),
 
     body("subjectType")
         .optional()

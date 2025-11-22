@@ -5,10 +5,8 @@ import * as SessionService from "../session/session.service";
 import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
 import * as AcademicDto from "./academic.dto";
-import mongoose from "mongoose";
 import * as UserService from "../user/user.service";
 import * as AcademicUtils from "./academic.utils";
-import * as Enum from "../common/utils/enum";
 
 // subject controllers
 export const createSubject = asyncHandler(async (req: Request, res: Response) => {
@@ -19,8 +17,6 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
 
 export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
-    console.log("Subject data: ", subjects);
-
     const result = [];
     for (const subject of subjects) {
         const response = await AcademicService.createSubject(subject);
