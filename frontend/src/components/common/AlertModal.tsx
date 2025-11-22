@@ -7,8 +7,8 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import CustomButton from "./CustomButton";
 import { Close, DeleteForever, WarningAmber, CheckCircleOutlineOutlined } from "@mui/icons-material";
+import CustomButton from "../ui/CustomButton";
 
 type AlertType = "success" | "warning" | "delete";
 interface AlertModalProps {

@@ -25,7 +25,7 @@ import {
 } from "@/components/Employee/employeeUtils";
 import EmployeeDetails from "@/components/Employee/EmployeeDetails";
 import { EmployeeDetailsResponse } from "@/types/employee";
-import AlertModal from "@/components/ui/AlertModal";
+import AlertModal from "@/components/common/AlertModal";
 import toast from "react-hot-toast";
 
 const Employee: React.FC = () => {

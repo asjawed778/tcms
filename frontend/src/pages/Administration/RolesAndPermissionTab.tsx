@@ -12,7 +12,7 @@ import { useSearchParams } from "react-router-dom";
 import { useCan } from "@/hooks/useCan";
 import CreateRole from "@/components/Administration/CreateRoleModal";
 import AssignPermission from "@/components/Administration/AssignPermissionModal";
-import AlertModal from "@/components/ui/AlertModal";
+import AlertModal from "@/components/common/AlertModal";
 
 interface Role {
   _id: string;
