@@ -1,1 +1,1 @@
-School Management Project
+Prepare Proper SMS Repo Readme Page!
