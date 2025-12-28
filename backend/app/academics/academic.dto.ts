@@ -32,6 +32,8 @@ export interface IBook extends BaseSchema {
     ISBN?: string;
 };
 
+export interface ICreateBook extends Omit<IBook, "_id" | "createdAt" | "updatedAt"> { }
+
 export interface ICreateSubject extends Omit<ISubject, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
 
 export interface IClass extends BaseSchema {
