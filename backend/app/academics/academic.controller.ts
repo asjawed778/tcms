@@ -5,10 +5,8 @@ import * as SessionService from "../session/session.service";
 import { createResponse } from "../common/helper/response.hepler";
 import createHttpError from "http-errors";
 import * as AcademicDto from "./academic.dto";
-import mongoose from "mongoose";
 import * as UserService from "../user/user.service";
 import * as AcademicUtils from "./academic.utils";
-import * as Enum from "../common/utils/enum";
 
 // subject controllers
 export const createSubject = asyncHandler(async (req: Request, res: Response) => {
@@ -19,8 +17,6 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
 
 export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
-    console.log("Subject data: ", subjects);
-
     const result = [];
     for (const subject of subjects) {
         const response = await AcademicService.createSubject(subject);
@@ -51,6 +47,32 @@ export const getAllSubjects = asyncHandler(async (req: Request, res: Response) =
     const result = await AcademicService.getAllSubjects(sessionId, page, limit, search, classId);
     res.send(createResponse(result, "Subjects fetched successfully"));
 });
+
+export const createBook = asyncHandler(async (req: Request, res: Response) => {
+    const data = req.body;
+    const result = await AcademicService.createBook(data);
+    res.send(createResponse(result, "Book created successfully"));
+});
+
+export const creatBookBulk = asyncHandler(async (req: Request, res: Response) => {
+    const { books } = req.body;
+    const booksResult = AcademicService.createBookBulk(books);
+    res.send(createResponse(booksResult, "Books created successfully"));
+});
+
+export const editBook = asyncHandler(async (req: Request, res: Response) => {
+    const { bookId } = req.params;
+    const data = req.body;
+    const result = await AcademicService.editBook(bookId, data);
+    res.send(createResponse(result, "Book edited successfully"));
+});
+
+export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
+    const { bookId } = req.params;
+    await AcademicService.deleteBook(bookId);
+    res.send(createResponse({}, "Book deleted successfully"));
+});
+
 
 // section controllers
 export const createSection = asyncHandler(async (req: Request, res: Response) => {

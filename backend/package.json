@@ -1,5 +1,5 @@
 {
-  "name": "schoolmanagement",
+  "name": "tcms-api",
   "private": true,
   "scripts": {
     "local": "nodemon",

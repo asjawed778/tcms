@@ -35,8 +35,10 @@ export interface AddressRequest {
 
 export interface AddressResponse extends AddressRequest, BaseSchema {};
 
-export interface Document {
+export interface DocumentRequest {
   name?: string;
   documentNumber?: string;
   url: string;
 }
+
+export interface DocumentResponse extends BaseSchema, DocumentRequest {}

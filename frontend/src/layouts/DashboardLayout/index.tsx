@@ -23,25 +23,29 @@ const DashboardLayout: React.FC = () => {
           // bgcolor="#ccc"
           color={colors.text}
           mt="56px"
+          // sx={{
+          //   overflowY: "auto",
+          //   height: "calc(100vh - 56px)",
+          //   position: "relative",
+          //   "&::-webkit-scrollbar": {
+          //     width: "4px",
+          //   },
+          //   "&::-webkit-scrollbar-track": {
+          //     background: "transparent",
+          //   },
+          //   "&::-webkit-scrollbar-thumb": {
+          //     backgroundColor: "rgba(0,0,0,0.2)",
+          //     borderRadius: "4px",
+          //   },
+          //   "&::-webkit-scrollbar-thumb:hover": {
+          //     backgroundColor: "rgba(0,0,0,0.35)",
+          //   },
+          //   scrollbarWidth: "thin", // Firefox
+          //   scrollbarColor: "rgba(0,0,0,0.2) transparent",
+          // }}
           sx={{
-            overflowY: "auto", 
-            height: "calc(100vh - 56px)",
-            position: "relative", 
-            "&::-webkit-scrollbar": {
-              width: "4px", 
-            },
-            "&::-webkit-scrollbar-track": {
-              background: "transparent",
-            },
-            "&::-webkit-scrollbar-thumb": {
-              backgroundColor: "rgba(0,0,0,0.2)",
-              borderRadius: "4px",
-            },
-            "&::-webkit-scrollbar-thumb:hover": {
-              backgroundColor: "rgba(0,0,0,0.35)",
-            },
-            scrollbarWidth: "thin", // Firefox
-            scrollbarColor: "rgba(0,0,0,0.2) transparent",
+            minHeight: "calc(100vh - 56px)",
+            overflow: "visible",
           }}
         >
           {/* <CustomAnimatedDiv key={location.pathname} animationType="zoom"> */}

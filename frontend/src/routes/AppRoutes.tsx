@@ -1,6 +1,6 @@
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import { lazy, Suspense } from "react";
-import { Navigate, Route, Routes } from "react-router-dom";
+import { lazy, Suspense, useEffect } from "react";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
 // components
 import PublicRoute from "@/components/Auth/PublicRoutes";
@@ -27,6 +27,7 @@ const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
 const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
+
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes>

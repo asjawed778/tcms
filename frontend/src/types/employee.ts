@@ -50,7 +50,7 @@ export interface EmployeeDetailsResponse
   roleName: string;
   lastWorkingDate?: string;
   status: Enum.EmployeeStatus;
-  documents: CommonTypes.Document[];
+  documents: CommonTypes.DocumentRequest[];
   address: CommonTypes.AddressResponse;
 }
 

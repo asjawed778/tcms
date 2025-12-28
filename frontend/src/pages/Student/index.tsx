@@ -36,11 +36,10 @@ import {
 import SegmentTabs from "@/components/ui/SegmentTabs";
 import { StudentDetailsResponse } from "@/types/student";
 import toast from "react-hot-toast";
-import AlertModal from "@/components/ui/AlertModal";
+import AlertModal from "@/components/common/AlertModal";
 
 const Student: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-
   const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
   const [rowsPerPage, setRowsPerPage] = useState(
     () => Number(searchParams.get("limit")) || 10
@@ -73,8 +72,6 @@ const Student: React.FC = () => {
   >([]);
   const [selectedStudentId, setSelectedStudentId] = useState("");
   const [openDeleteModal, setOpenDeleteModal] = useState(false);
-
-  const [actionType, setActionType] = useState<"menu" | "icon">("menu");
   const can = useCan();
   const theme = useTheme();
 
@@ -98,7 +95,8 @@ const Student: React.FC = () => {
       // refetchOnMountOrArgChange: true,
     }
   );
-  const [deleteStudent] = useDeleteStudentMutation();
+
+  const [deleteStudent, {isLoading: isDelete}] = useDeleteStudentMutation();
   const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id,
@@ -124,7 +122,14 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
-  console.log("#### student data : ", studentData);
+
+  useEffect(() => {
+      setSearchParams({
+        // tab: ToolsTabs.ROLES_AND_PERMISSIONS,
+        page: String(page),
+        limit: String(rowsPerPage),
+      });
+    }, [page, rowsPerPage, setSearchParams]);
   // useEffect(() => {
   //   const params = new URLSearchParams();
 
@@ -147,6 +152,7 @@ const Student: React.FC = () => {
   const handleRowClick = (studentId: any) => {
     setSelectedStudentId(studentId);
   };
+  const actionType = status === StudentStatus.DRAFT ? "icon" : "menu";
   const studentTableColumns =
     actionType === "menu"
       ? getStudentColumns(handleImageClick)
@@ -248,7 +254,7 @@ const Student: React.FC = () => {
         break;
       case "delete":
         setOpenDeleteModal(true);
-        setSelectedStudent(row.student);
+        setSelectedStudent(row);
         break;
       case "addRemarks":
         setOpenRemarksModal(true);
@@ -258,7 +264,6 @@ const Student: React.FC = () => {
         break;
     }
   };
-
   const handlePageChange = (newPage: number) => {
     setPage(newPage);
   };
@@ -290,11 +295,6 @@ const Student: React.FC = () => {
     setClassFilter("");
     setSectionFilter("");
     setPage(1);
-    if (val === StudentStatus.DRAFT) {
-      setActionType("icon");
-    } else {
-      setActionType("menu");
-    }
   };
   const handleClassChange = (val: any) => {
     setClassFilter(val);
@@ -461,9 +461,9 @@ const Student: React.FC = () => {
       {openDeleteModal && (
         <AlertModal
           open={openDeleteModal}
-          type="success"
           onClose={() => setOpenDeleteModal(false)}
           onConfirm={handleStudentDelete}
+          isLoading={isDelete}
           message={
             <>
               Are you sure you want to delete

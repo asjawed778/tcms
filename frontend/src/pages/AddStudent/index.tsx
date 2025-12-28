@@ -2,13 +2,6 @@ import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import {
-  addressdetailsSchema,
-  documentDetailsSchema,
-  parentDetailsSchema,
-  personalDetailsSchema,
-  previousSchoolSchema,
-} from "@/validation/yup";
-import {
   Stepper,
   Step,
   StepLabel,
@@ -35,6 +28,13 @@ import {
   useUpdateStudentBasicDetailsMutation,
 } from "@/services/studentApi";
 import CustomButton from "@/components/ui/CustomButton";
+import {
+  addressdetailsSchema,
+  documentDetailsSchema,
+  parentDetailsSchema,
+  personalDetailsSchema,
+  previousSchoolSchema,
+} from "@/validation/student";
 
 const steps = [
   {
@@ -60,16 +60,12 @@ const steps = [
   },
 ];
 const stepSlugs = steps.map((s) => s.label.toLowerCase().replace(/ /g, "-"));
-const AddStudent = () => {
-    const [searchParams] = useSearchParams();
 
+const AddStudent = () => {
+  const [searchParams] = useSearchParams();
   const urlStep = searchParams.get("step") || stepSlugs[0];
   const initialStepIndex = stepSlugs.indexOf(urlStep);
-
-  const [activeStep, setActiveStep] = useState(
-    initialStepIndex >= 0 ? initialStepIndex : 0
-  );
-
+  const [activeStep, setActiveStep] = useState(initialStepIndex >= 0 ?initialStepIndex : 0);
   const [studentId, setStudentId] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -112,7 +108,7 @@ const AddStudent = () => {
       navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
       return;
     }
-    if (studentId ) {
+    if (studentId) {
       navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
         replace: true,
       });

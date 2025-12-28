@@ -17,18 +17,6 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         ref: "Session",
         required: true
     },
-    publication: {
-        type: String,
-        required: false
-    },
-    writer: {
-        type: String,
-        required: false
-    },
-    ISBN: {
-        type: String,
-        required: false
-    },
     subjectType: {
         type: String,
         enum: Object.values(Enum.SubjectType),
@@ -43,6 +31,10 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         type: String,
         required: false
     },
-});
+    books: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book'
+    }]
+}, { timestamps: true });
 
 export default mongoose.model<ISubject>('Subject', subjectSchema);

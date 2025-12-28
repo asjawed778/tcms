@@ -90,7 +90,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
         enum: Object.values(Enum.TimeTableStatus),
         default: Enum.TimeTableStatus.DRAFT
     },
-});
+}, { timestamps: true });
 
 export default mongoose.model<ITimeTable>("TimeTable", timeTableSchema);
 
