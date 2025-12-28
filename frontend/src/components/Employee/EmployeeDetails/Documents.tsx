@@ -1,18 +1,18 @@
 import React from "react";
 import { Box, Grid, Theme, useTheme } from "@mui/material";
 import DocumentCard from "@/components/common/DocumentCard";
-import { Document } from "@/types";
 import NoDataCard from "@/components/common/NoDataCard";
 import { DescriptionOutlined } from "@mui/icons-material";
+import { DocumentRequest } from "@/types";
 
 interface DocumentsProps {
-  documents: Document[];
+  documents: DocumentRequest[];
 }
 const Documents: React.FC<DocumentsProps> = ({ documents }) => {
   const theme = useTheme();
   const styles = getStyles(theme);
 
-  const handleDownload = (doc: Document) => {
+  const handleDownload = (doc: DocumentRequest) => {
     const link = document.createElement("a");
     const fileUrl = doc.url;
     link.href = fileUrl;

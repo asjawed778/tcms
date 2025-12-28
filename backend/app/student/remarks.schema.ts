@@ -48,9 +48,11 @@ const RemarkSchema = new mongoose.Schema<IRemark>({
             url: { type: String, required: true },
         }
     ],
-    deleted: { type: Boolean, required: true, default: false}
-}, {
-    timestamps: true
-});
+    deleted: {
+        type: Boolean,
+        required: true,
+        default: false
+    }
+}, { timestamps: true });
 
 export default mongoose.model('Remark', RemarkSchema);

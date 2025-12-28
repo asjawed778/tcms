@@ -30,6 +30,6 @@ const sectionSchema = new mongoose.Schema<ISection>({
         type: Number,
         required: false
     },
-});
+}, { timestamps: true });
 
 export default mongoose.model<ISection>("Section", sectionSchema);

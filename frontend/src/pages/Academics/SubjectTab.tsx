@@ -8,6 +8,7 @@ import {
   useGetAllClassQuery,
   useGetAllSubjectQuery,
 } from "@/services/academics.Api";
+import toast from "react-hot-toast";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import {
@@ -20,15 +21,13 @@ import {
 } from "@mui/icons-material";
 import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
-import AddSubject from "../../components/Academics/Subject/AddSubject";
-import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
-import toast from "react-hot-toast";
+import AddSubject from "@/components/Academics/Subject/AddSubject";
 import { SubjectResponse } from "../../../type";
-import SubjectCard from "../../components/Academics/Subject/SubjectCard";
-import SubjectDetailsModal from "../../components/Academics/Subject/SubjectDetailsModal";
+import SubjectCard from "@/components/Academics/Subject/SubjectCard";
+import SubjectDetailsModal from "@/components/Academics/Subject/SubjectDetailsModal";
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
-import AlertModal from "@/components/ui/AlertModal";
 import NoDataCard from "@/components/common/NoDataCard";
+import AlertModal from "@/components/common/AlertModal";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
@@ -233,12 +232,12 @@ const SubjectTab = () => {
               SubModuleName.SUBJECTS,
               Operation.CREATE
             ) && (
-              <CustomButton
-                label="Add Subject"
-                startIcon={<Add />}
-                onClick={handleAddSubject}
-              />
-            )}
+                <CustomButton
+                  label="Add Subject"
+                  startIcon={<Add />}
+                  onClick={handleAddSubject}
+                />
+              )}
             <Tooltip
               title={tableView ? "Switch to Card View" : "Switch to Table View"}
             >

@@ -8,7 +8,6 @@ import { roleAuth } from "../common/middleware/role-auth.middleware";
 const router = Router();
 
 router
-
     // subject routes
     .post(
         "/subject",

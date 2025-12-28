@@ -9,7 +9,7 @@ const classSchema = new mongoose.Schema<IClass>({
         required: true
     },
     classId: {
-        type: String,   
+        type: String,
         unique: true,
         required: true
     },
@@ -32,6 +32,6 @@ const classSchema = new mongoose.Schema<IClass>({
         required: true,
         default: false
     }
-});
+}, { timestamps: true });
 
 export default mongoose.model<IClass>('Class', classSchema);
