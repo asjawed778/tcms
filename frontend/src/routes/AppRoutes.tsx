@@ -101,40 +101,6 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="employee/add"
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.Employee,
-                      operation: Operation.CREATE,
-                    },
-                  ]}
-                >
-                  <AddEmployee />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path={`employee/:employeeId/update`}
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.Employee,
-                      operation: Operation.UPDATE,
-                    },
-                  ]}
-                >
-                  <AddEmployee />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
-          <Route
             path="student"
             element={
               <ErrorBoundary>
@@ -151,40 +117,7 @@ const AppRoutes = () => {
               </ErrorBoundary>
             }
           />
-          <Route
-            path="student/add"
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.STUDENTS,
-                      operation: Operation.CREATE,
-                    },
-                  ]}
-                >
-                  <AddStudent />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
-          <Route
-            path={`student/:studentId/update`}
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.STUDENTS,
-                      operation: Operation.UPDATE,
-                    },
-                  ]}
-                >
-                  <AddStudent />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
+
           <Route
             path="academics"
             element={
@@ -256,6 +189,74 @@ const AppRoutes = () => {
             }
           />
         </Route>
+        <Route
+          path="student/add"
+          element={
+            <ErrorBoundary>
+              <RoleAuthRoute
+                permissions={[
+                  {
+                    module: ModuleName.STUDENTS,
+                    operation: Operation.CREATE,
+                  },
+                ]}
+              >
+                <AddStudent />
+              </RoleAuthRoute>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path={`student/:studentId/update`}
+          element={
+            <ErrorBoundary>
+              <RoleAuthRoute
+                permissions={[
+                  {
+                    module: ModuleName.STUDENTS,
+                    operation: Operation.UPDATE,
+                  },
+                ]}
+              >
+                <AddStudent />
+              </RoleAuthRoute>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="employee/add"
+          element={
+            <ErrorBoundary>
+              <RoleAuthRoute
+                permissions={[
+                  {
+                    module: ModuleName.Employee,
+                    operation: Operation.CREATE,
+                  },
+                ]}
+              >
+                <AddEmployee />
+              </RoleAuthRoute>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path={`employee/:employeeId/update`}
+          element={
+            <ErrorBoundary>
+              <RoleAuthRoute
+                permissions={[
+                  {
+                    module: ModuleName.Employee,
+                    operation: Operation.UPDATE,
+                  },
+                ]}
+              >
+                <AddEmployee />
+              </RoleAuthRoute>
+            </ErrorBoundary>
+          }
+        />
         <Route path="*" element={<PageNotFound />} />
       </Routes>
     </Suspense>

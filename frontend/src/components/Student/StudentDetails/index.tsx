@@ -120,7 +120,7 @@ const StudentDetails: React.FC<EmployeeDetailsProps> = ({
         )
     );
   const handleUpdateDetails = (studenteId: string) => {
-    navigate(`/dashboard/student/${studenteId}/update`);
+    navigate(`/student/${studenteId}/update`);
   };
   return (
     <Box>

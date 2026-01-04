@@ -41,17 +41,30 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   labelPosition?: "inside" | "outside";
   sx?: SxProps<Theme>;
 }
-
-const StyledTextField = styled(TextField)(({ theme }) => {
+interface StyledTextFieldOwnerState {
+  multiple?: boolean;
+}
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "ownerState",
+})<{ ownerState: StyledTextFieldOwnerState }>(({ theme, ownerState }) => {
   const palette = Colors[theme.palette.mode];
+  const multiple = ownerState?.multiple;
   return {
     "& .MuiOutlinedInput-root": {
-      height: "42px",
+      minHeight: "40px",
+      height: multiple ? "auto" : "40px",
+      alignItems: "center",
       backgroundColor: palette.inputBackground,
       borderRadius: "8px",
       transition: "all 0.2s ease-in-out",
+
+      "& .MuiAutocomplete-tag": {
+        height: "24px",
+        fontSize: "14px",
+        margin: "1px",
+      },
       "& .MuiOutlinedInput-input": {
-        padding: "8px 10px !important",
+        padding: "2px 10px !important",
         fontSize: "15px",
         color: palette.inputText,
         "::placeholder": {
@@ -190,6 +203,10 @@ const CustomDropdown = <T extends FieldValues>({
         <Autocomplete
           multiple={multiple}
           options={combinedOptions}
+          ChipProps={{
+            size: "small",
+          }}
+          limitTags={2}
           value={getDisplayValue(fieldValue)}
           onChange={(_, newValue) => {
             const selected = multiple
@@ -220,15 +237,17 @@ const CustomDropdown = <T extends FieldValues>({
               id={name}
               label={labelPosition === "inside" ? label : undefined}
               placeholder={placeholder}
+              ownerState={{ multiple }}
               required={required}
-              error={hasError} 
+              error={hasError}
               helperText={error?.message}
               size="small"
               InputLabelProps={{ shrink: true }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   backgroundColor:
-                    (sx as any)?.bgcolor ?? Colors[theme.palette.mode].inputBackground,
+                    (sx as any)?.bgcolor ??
+                    Colors[theme.palette.mode].inputBackground,
                 },
               }}
             />

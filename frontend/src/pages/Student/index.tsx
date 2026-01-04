@@ -172,7 +172,7 @@ const Student: React.FC = () => {
               onClick={(e) => {
                 e.stopPropagation();
                 // handleActionClick("update", row);
-                navigate(`/dashboard/student/${row._id}/update`);
+                navigate(`/student/${row._id}/update`);
               }}
               sx={{
                 backgroundColor: theme.customColors.primary + "20",
@@ -247,7 +247,7 @@ const Student: React.FC = () => {
   const handleActionClick = (action: string, row: any) => {
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/${row.student._id}/update`);
+        navigate(`/student/${row.student._id}/update`);
         break;
       case "view":
         handleRowClick(row.student._id);
@@ -272,7 +272,7 @@ const Student: React.FC = () => {
     setPage(1);
   };
   const handleAddStudent = () => {
-    navigate("/dashboard/student/add");
+    navigate("/student/add");
   };
   const handleStudentDelete = async () => {
     if (!selectedStudent?._id) return;
