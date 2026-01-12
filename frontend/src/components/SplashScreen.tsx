@@ -24,7 +24,7 @@ const SplashScreen: React.FC = () => {
         style={{ marginBottom: 16 }}
       />
       <Typography variant="h4">TCMS</Typography>
-      <CircularProgress color="secondary" sx={{ mt: 2 }} />
+      {/* <CircularProgress color="secondary" sx={{ mt: 2 }} /> */}
     </Box>
   );
 };
