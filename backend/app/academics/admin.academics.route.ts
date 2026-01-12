@@ -141,7 +141,7 @@ router
         ClassControler.removeAssignedTeacher
     )
     .post(
-        "/timetable/:sessionId/:classId/:sectionId",
+        "/timetable",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.TIMETABLE, operation: Enum.Operation.CREATE }),
         AcademicValidation.createTimeTable,
         catchError,

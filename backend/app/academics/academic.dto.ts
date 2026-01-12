@@ -14,6 +14,14 @@ export interface ISection extends BaseSchema {
 
 export interface ICreateSection extends Omit<ISection, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
 
+export interface TextBook {
+    title: string;
+    coverPhoto?: string;
+    publication?: string;
+    author?: string;
+    ISBN?: string;
+};
+
 export interface ISubject extends BaseSchema {
     name: string;
     subjectId: string;
@@ -21,20 +29,11 @@ export interface ISubject extends BaseSchema {
     subjectType: Enum.SubjectType;
     subjectCategory: Enum.SubjectCategory;
     syllabus?: string;
-    books?: Types.ObjectId[];
+    books?: TextBook[];
 };
 
-export interface IBook extends BaseSchema {
-    title: string;
-    thumbnail?: string;
-    publication?: string;
-    author?: string;
-    ISBN?: string;
-};
+export interface ICreateSubject extends Omit<ISubject, "_id" | "createdAt" | "updatedAt"> { }
 
-export interface ICreateBook extends Omit<IBook, "_id" | "createdAt" | "updatedAt"> { }
-
-export interface ICreateSubject extends Omit<ISubject, "_id" | "deleted" | "createdAt" | "updatedAt"> { }
 
 export interface IClass extends BaseSchema {
     name: string;

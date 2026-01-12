@@ -10,7 +10,6 @@ import * as AcademicUtils from "./academic.utils";
 import * as AcademicDto from "./academic.dto";
 import admissionSchema from "../student/admission.schema";
 import classFeeStructureSchema from "./feeStructure.schema";
-import bookSchema from "./book.schema";
 
 
 // subjects service functions
@@ -68,36 +67,6 @@ export const getAllSubjects = async (sessionId: string, page?: number, limit?: n
     .limit(limit || 0);
   const total = await subjectSchema.countDocuments(query);
   return { subjects, totalDoc: total, currentPage: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
-};
-
-export const createBook = async (data: ClassDto.ICreateBook) => {
-  const newBook = await bookSchema.create(data);
-  if (!newBook) {
-    throw createHttpError(500, "Failed to create book");
-  }
-  return newBook;
-};
-
-export const createBookBulk = async (data: ClassDto.ICreateBook[]) => {
-  const newBooks = await bookSchema.insertMany(data);
-  if (!newBooks || newBooks.length === 0) {
-    throw createHttpError(500, "Failed to create books");
-  }
-  return newBooks;
-};
-
-export const editBook = async (bookId: string, data: Partial<ClassDto.IBook>) => {
-  const book = await bookSchema.findByIdAndUpdate(bookId, data, { new: true });
-  if (!book) {
-    throw createHttpError(404, "Book not found");
-  }
-  return book;
-};
-
-export const deleteBook = async (bookId: string) => {
-  const book = await bookSchema.findByIdAndDelete(bookId);
-  if (!book) throw createHttpError(404, "Book not found");
-  return book;
 };
 
 // section service functions
@@ -404,7 +373,7 @@ export const getClassFeeStructure = async (classId: string) => {
   return result;
 };
 
-// time-table service function
+// -------- Timetable service functions ---------
 export const createTimeTable = async (sessionId: string, classId: string, sectionId: string, timeTableData: AcademicDto.IDaySchedule) => {
 
   const existingTimeTable = await classTimetableSchema.findOne({

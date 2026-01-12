@@ -48,32 +48,6 @@ export const getAllSubjects = asyncHandler(async (req: Request, res: Response) =
     res.send(createResponse(result, "Subjects fetched successfully"));
 });
 
-export const createBook = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createBook(data);
-    res.send(createResponse(result, "Book created successfully"));
-});
-
-export const creatBookBulk = asyncHandler(async (req: Request, res: Response) => {
-    const { books } = req.body;
-    const booksResult = AcademicService.createBookBulk(books);
-    res.send(createResponse(booksResult, "Books created successfully"));
-});
-
-export const editBook = asyncHandler(async (req: Request, res: Response) => {
-    const { bookId } = req.params;
-    const data = req.body;
-    const result = await AcademicService.editBook(bookId, data);
-    res.send(createResponse(result, "Book edited successfully"));
-});
-
-export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
-    const { bookId } = req.params;
-    await AcademicService.deleteBook(bookId);
-    res.send(createResponse({}, "Book deleted successfully"));
-});
-
-
 // section controllers
 export const createSection = asyncHandler(async (req: Request, res: Response) => {
     const data = req.body;
@@ -164,7 +138,7 @@ export const upsertClassFeeStructure = asyncHandler(async (req: Request, res: Re
 
 // Timetable controllers
 export const createTimeTable = asyncHandler(async (req: Request, res: Response) => {
-    const { sessionId, classId, sectionId } = req.params;
+    const { sessionId, classId, sectionId } = req.body;
     const data = req.body;
     const timeTableData: AcademicDto.IDaySchedule = {
         day: data.day,
