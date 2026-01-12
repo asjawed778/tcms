@@ -6,7 +6,6 @@ import {
   Step,
   StepLabel,
   Box,
-  CardContent,
   CircularProgress,
   Container,
 } from "@mui/material";
@@ -37,6 +36,8 @@ import {
   previousSchoolSchema,
 } from "@/validation/student";
 import { ArrowBack } from "@mui/icons-material";
+import PageHeader from "@/components/common/PageHeader";
+import Loader from "@/components/common/Loader";
 
 const steps = [
   {
@@ -266,87 +267,76 @@ const AddStudent = () => {
 
   if (fetchingStudent) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Loader height="100vh" />
     );
   }
   return (
-    <Container maxWidth="lg" sx={{ my: { xs: 1, md: 2 }, px: 0 }}>
-      <CustomButton
-        label="Back to dashboard"
-        startIcon={<ArrowBack />}
-        variant="text"
-        onClick={() => navigate("/dashboard/student")}
-        sx={{ backgroundColor: "transparent" }}
+    <Box mt="52px">
+      <PageHeader
+        title={studentId ? "Update Student" : "Add New Student"}
+        backTo="/dashboard/student"
       />
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index} onClick={() => handleStepClick(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
+          {steps.map((step, index) => (
+            <Step key={index} onClick={() => handleStepClick(index)}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={methods.handleSubmit(onStepSubmit)}
+            noValidate
+            style={{ backgroundColor: "#FFF", borderRadius: "8px" }}
+          >
             <Box
               sx={{
-                width: "100%",
-                bgcolor: "#fff",
-                borderRadius: "8px",
-                mt: 1,
+                p: 2,
+                minHeight: "70vh",
               }}
             >
-              <CardContent>
-                <Box>
-                  <StepComponent />
-                </Box>
-              </CardContent>
+              <StepComponent />
             </Box>
-
             <Box
-              mt={2}
-              display="flex"
-              justifyContent="space-between"
-              gap={2}
-              flexWrap="wrap"
+              sx={{
+                display: "flex",
+                justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 2,
+                p: 2,
+              }}
             >
               {activeStep > 0 && (
                 <CustomButton
                   variant="contained"
-                  onClick={() => setActiveStep((s) => s - 1)}
+                  onClick={() => setActiveStep((prev) => prev - 1)}
                 >
                   Back
                 </CustomButton>
               )}
-              <Box flexGrow={1} />
-              <CustomButton
-                label="Exit"
-                variant="outlined"
-                onClick={handleExitClick}
-              />
-              <CustomButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isLoading}
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
-              </CustomButton>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <CustomButton
+                  label="Exit"
+                  variant="outlined"
+                  onClick={handleExitClick}
+                />
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                </CustomButton>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
-    </Container>
+          </form>
+        </FormProvider>
+      </Container>
+    </Box>
   );
 };
 

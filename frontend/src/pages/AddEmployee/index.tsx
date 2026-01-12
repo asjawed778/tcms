@@ -15,7 +15,6 @@ import {
   CardContent,
   CircularProgress,
   Container,
-  Typography,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -37,7 +36,8 @@ import {
   useUpdateProfessionalDetailsMutation,
   useUpdateSalaryStructureMutation,
 } from "@/services/employeeApi";
-import { ArrowBack } from "@mui/icons-material";
+import PageHeader from "@/components/common/PageHeader";
+import Loader from "@/components/common/Loader";
 
 const steps = [
   {
@@ -280,29 +280,17 @@ const AddEmployee = () => {
 
   if (fetchingEmployee || salaryFetching) {
     return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
+      <Loader height="100vh" />
     );
   }
   return (
-    <Container maxWidth="lg" sx={{ my: { xs: 1, md: 2 }, px: 0 }}>
-        <CustomButton
-          label="Back to dashboard"
-          startIcon={<ArrowBack />}
-          variant="text"
-          onClick={() => navigate("/dashboard/employee")}
-          sx={{ backgroundColor: "transparent" }}
-        />
-
-        <Stepper activeStep={activeStep} alternativeLabel>
+    <Box mt="52px">
+      <PageHeader
+        title={editEmployeeId ? "Update Employee" : "Add New Employee"}
+        backTo="/dashboard/employee"
+      />
+      <Container maxWidth="lg" sx={{ py: 2}}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
           {steps.map((step, index) => (
             <Step key={index} onClick={() => handleStepClick(index)}>
               <StepLabel>{step.label}</StepLabel>
@@ -311,39 +299,38 @@ const AddEmployee = () => {
         </Stepper>
 
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-            <Box>
-              <Box
-                sx={{
-                  width: "100%",
-                  bgcolor: "#fff",
-                  borderRadius: "8px",
-                  mt: 1,
-                }}
-              >
-                <CardContent>
-                  <Box>
-                    <StepComponent />
-                  </Box>
-                </CardContent>
-              </Box>
-
-              <Box
-                mt={2}
-                display="flex"
-                justifyContent="space-between"
-                gap={2}
-                flexWrap="wrap"
-              >
-                {activeStep > 0 && (
-                  <CustomButton
-                    variant="contained"
-                    onClick={() => setActiveStep((s) => s - 1)}
-                  >
-                    Back
-                  </CustomButton>
-                )}
-                <Box flexGrow={1} />
+          <form
+            onSubmit={methods.handleSubmit(onStepSubmit)}
+            noValidate
+            style={{ backgroundColor: "#FFF", borderRadius: "8px"}}
+          >
+            <Box
+              sx={{
+                p: 2,
+                minHeight: "70vh",
+              }}
+            >
+              <StepComponent />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 2,
+                p: 2,
+              }}
+            >
+              {activeStep > 0 && (
+                <CustomButton
+                  variant="contained"
+                  onClick={() => setActiveStep((prev) => prev - 1)}
+                >
+                  Back
+                </CustomButton>
+              )}
+              <Box sx={{ display: "flex", gap: 2 }}>
                 <CustomButton
                   label="Exit"
                   variant="outlined"
@@ -361,7 +348,8 @@ const AddEmployee = () => {
             </Box>
           </form>
         </FormProvider>
-    </Container>
+      </Container>
+    </Box>
   );
 };
 
