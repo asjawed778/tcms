@@ -8,6 +8,7 @@ import {
   Box,
   CardContent,
   CircularProgress,
+  Container,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -35,6 +36,7 @@ import {
   personalDetailsSchema,
   previousSchoolSchema,
 } from "@/validation/student";
+import { ArrowBack } from "@mui/icons-material";
 
 const steps = [
   {
@@ -65,7 +67,9 @@ const AddStudent = () => {
   const [searchParams] = useSearchParams();
   const urlStep = searchParams.get("step") || stepSlugs[0];
   const initialStepIndex = stepSlugs.indexOf(urlStep);
-  const [activeStep, setActiveStep] = useState(initialStepIndex >= 0 ?initialStepIndex : 0);
+  const [activeStep, setActiveStep] = useState(
+    initialStepIndex >= 0 ? initialStepIndex : 0
+  );
   const [studentId, setStudentId] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -105,11 +109,11 @@ const AddStudent = () => {
     if (!studentId && editStudentId) return;
     const stepName = stepSlugs[activeStep];
     if (!editStudentId && !studentId) {
-      navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
+      navigate(`/student/add?step=${stepName}`, { replace: true });
       return;
     }
     if (studentId) {
-      navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
+      navigate(`/student/${studentId}/update?step=${stepName}`, {
         replace: true,
       });
     }
@@ -275,7 +279,14 @@ const AddStudent = () => {
     );
   }
   return (
-    <Box p={3}>
+    <Container maxWidth="lg" sx={{ my: { xs: 1, md: 2 }, px: 0 }}>
+      <CustomButton
+        label="Back to dashboard"
+        startIcon={<ArrowBack />}
+        variant="text"
+        onClick={() => navigate("/dashboard/student")}
+        sx={{ backgroundColor: "transparent" }}
+      />
       <Stepper activeStep={activeStep} alternativeLabel>
         {steps.map((step, index) => (
           <Step key={index} onClick={() => handleStepClick(index)}>
@@ -335,7 +346,7 @@ const AddStudent = () => {
           </Box>
         </form>
       </FormProvider>
-    </Box>
+    </Container>
   );
 };
 

@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, ReactNode } from "react";
 import {
   TextField,
   InputAdornment,
@@ -21,7 +21,7 @@ import { Colors } from "@/theme/colors";
 
 interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   extends Omit<TextFieldProps, "name" | "label" | "onChange" | "value"> {
-  name: Path<T>;
+  name?: Path<T>;
   label: string;
   placeholder?: string;
   type?: string;
@@ -29,6 +29,8 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   startIcon?: React.ReactNode;
   endIcon?: React.ReactNode;
   control?: Control<any>;
+  value?: string | number | readonly string[] | undefined;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
   disabled?: boolean;
   fullWidth?: boolean;
   required?: boolean;
@@ -71,10 +73,9 @@ const StyledTextField = styled(TextField)(({ theme }) => {
           opacity: 1,
         },
       },
-
       "& input::-webkit-outer-spin-button, & input::-webkit-inner-spin-button":
         {
-          WebkitAppearance: "textfield",
+          WebkitAppearance: "none",
           margin: 0,
         },
       "& input[type=number]": {
@@ -88,15 +89,15 @@ const StyledTextField = styled(TextField)(({ theme }) => {
   };
 });
 
-const Label = styled("label")<{ error?: boolean }>(({ theme }) => ({
+const Label = styled("label")<{ error?: boolean }>(({ theme, error }) => ({
   fontSize: "14px",
   marginBottom: "4px",
-  display: "inline-block",
+  display: "block",
   // color: error ? theme.palette.error.main : theme.palette.text.primary,
   "& span": { color: theme.palette.error.main, marginLeft: 2 },
 }));
 
-function CustomInputField<T extends FieldValues = FieldValues>({
+function CustomInputField<T extends FieldValues>({
   name,
   label,
   labelPosition = "outside",
@@ -105,7 +106,9 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   size = "small",
   startIcon,
   endIcon,
-  control,
+  control: propControl,
+  value: propValue,
+  onChange: propOnChange,
   disabled = false,
   fullWidth = true,
   required = true,
@@ -115,151 +118,148 @@ function CustomInputField<T extends FieldValues = FieldValues>({
   readOnly = false,
   minValue,
   maxValue,
+  error: propError,
+  helperText: propHelperText,
   ...rest
 }: CustomInputFieldProps<T>) {
-  const { control: contextControl } = useFormContext<T>() || {};
-  const activeControl = control ?? contextControl;
-
   const [showPassword, setShowPassword] = useState(false);
-  const [uncontrolledValue, setUncontrolledValue] = useState("");
+  const formContext = useFormContext<T>();
+  const contextControl = formContext?.control;
+  const activeControl = propControl ?? contextControl;
   const isPassword = type === "password";
   const isDate = type === "date";
   const isNumber = type === "number";
 
-  const handleWheel = (e: React.WheelEvent<HTMLInputElement>) => {
-    e.preventDefault();
-    (e.target as HTMLInputElement).blur();
-  };
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
   }, []);
+
   const handleNumberChange = (
     e: React.ChangeEvent<HTMLInputElement>,
     onChange: (value: any) => void
   ) => {
     const value = e.target.value;
-    const num = Number(value);
     if (value === "") {
       onChange("");
       return;
     }
-    if (value.startsWith("-")) {
-      return;
-    }
+    if (value.startsWith("-")) return;
+    const num = Number(value);
     if (minValue !== undefined && num < minValue) return;
     if (maxValue !== undefined && num > maxValue) return;
     onChange(num);
+    propOnChange?.(e);
   };
 
   const renderTextField = (
-    field: {
-      value: T[Path<T>] | undefined;
-      onChange: (value: any) => void;
-    },
-    error: FieldError | null
-  ) => (
-    <Box>
-      {labelPosition === "outside" && (
-        <Label htmlFor={name} error={!!error}>
-          {label}
-          {required && <span>*</span>}
-        </Label>
-      )}
-      <StyledTextField
-        id={name}
-        label={labelPosition === "inside" ? label : undefined}
-        multiline={!!rows}
-        rows={rows}
-        disabled={disabled}
-        value={
-          isDate && field.value
-            ? new Date(field.value).toISOString().split("T")[0]
-            : field.value ?? ""
-        }
-        placeholder={placeholder}
-        size={size}
-        type={
-          isDate
-            ? "date"
-            : isPassword
-            ? showPassword
-              ? "text"
-              : "password"
-            : type
-        }
-        fullWidth={fullWidth}
-        variant="outlined"
-        error={!!error}
-        helperText={error?.message}
-        required={labelPosition === "inside" ? false : required}
-        onChange={(e: any) =>
-          isNumber ? handleNumberChange(e, field.onChange) : field.onChange(e)
-        }
-        onWheel={(e) => {
-          if (type === "number") e.currentTarget.blur();
-        }}
-        InputProps={{
-          startAdornment: startIcon && (
-            <InputAdornment position="start">{startIcon}</InputAdornment>
-          ),
-          endAdornment: isPassword ? (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={handleTogglePassword}
-                edge="end"
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                {showPassword ? <VisibilityOff /> : <Visibility />}
-              </IconButton>
-            </InputAdornment>
-          ) : endIcon ? (
-            <InputAdornment position="end">{endIcon}</InputAdornment>
-          ) : undefined,
-        }}
-        InputLabelProps={{
-          shrink: isDate ? true : undefined,
-        }}
-        inputProps={{
-          ...(type === "number"
-            ? {
-                min: minValue,
-                max: maxValue,
-                onWheel: (e: React.WheelEvent<HTMLInputElement>) =>
-                  e.currentTarget.blur(),
-              }
-            : {}),
-          step: "1",
-          readOnly,
-          max:
-            isDate && maxDate
-              ? new Date(maxDate).toISOString().split("T")[0]
-              : undefined,
-          min:
-            isDate && minDate
-              ? new Date(minDate).toISOString().split("T")[0]
-              : undefined,
-        }}
-        {...rest}
-      />
-    </Box>
-  );
+    fieldValue: any,
+    fieldOnChange: (value: any) => void,
+    error: FieldError | boolean | undefined,
+    helperText?: ReactNode
+  ) => {
+    const displayValue =
+      isDate && fieldValue
+        ? new Date(fieldValue).toISOString().split("T")[0]
+        : fieldValue ?? "";
 
-  return activeControl ? (
-    <Controller
-      name={name}
-      control={activeControl}
-      render={({ field, fieldState: { error } }) =>
-        renderTextField(field, error ?? null)
+    return (
+      <Box>
+        {labelPosition === "outside" && (
+          <Label htmlFor={name} error={!!error}>
+            {label}
+            {required && <span>*</span>}
+          </Label>
+        )}
+        <StyledTextField
+          id={name}
+          label={labelPosition === "inside" ? label : undefined}
+          multiline={!!rows}
+          rows={rows}
+          disabled={disabled}
+          value={displayValue}
+          placeholder={placeholder}
+          size={size}
+          type={
+            isDate
+              ? "date"
+              : isPassword
+              ? showPassword
+                ? "text"
+                : "password"
+              : type
+          }
+          fullWidth={fullWidth}
+          variant="outlined"
+          error={!!error}
+          helperText={helperText || (error as FieldError)?.message}
+          required={labelPosition === "inside" ? false : required}
+          onChange={(e: any) =>
+            isNumber
+              ? handleNumberChange(e, fieldOnChange)
+              : fieldOnChange(e.target.value)
+          }
+          onWheel={(e) => type === "number" && e.currentTarget.blur()}
+          InputProps={{
+            startAdornment: startIcon && (
+              <InputAdornment position="start">{startIcon}</InputAdornment>
+            ),
+            endAdornment: isPassword ? (
+              <InputAdornment position="end">
+                <IconButton onClick={handleTogglePassword} edge="end">
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                </IconButton>
+              </InputAdornment>
+            ) : endIcon ? (
+              <InputAdornment position="end">{endIcon}</InputAdornment>
+            ) : undefined,
+          }}
+          InputLabelProps={{
+            shrink: isDate ? true : undefined,
+          }}
+          inputProps={{
+            min:
+              isDate && minDate
+                ? new Date(minDate).toISOString().split("T")[0]
+                : minValue,
+            max:
+              isDate && maxDate
+                ? new Date(maxDate).toISOString().split("T")[0]
+                : maxValue,
+            step: "1",
+            readOnly,
+          }}
+          {...rest}
+        />
+      </Box>
+    );
+  };
+  if (activeControl && name) {
+    return (
+      <Controller
+        name={name}
+        control={activeControl}
+        render={({ field, fieldState: { error } }) =>
+          renderTextField(field.value, field.onChange, error, error?.message)
+        }
+      />
+    );
+  }
+  return renderTextField(
+    propValue ?? "",
+    (value) => {
+      if (propOnChange && value?.target) {
+        propOnChange(value);
+      } else {
+        const syntheticEvent = {
+          target: {
+            value: typeof value === "number" ? value.toString() : value,
+          },
+        } as React.ChangeEvent<HTMLInputElement>;
+        propOnChange?.(syntheticEvent);
       }
-    />
-  ) : (
-    renderTextField(
-      {
-        value: uncontrolledValue as T[Path<T>] | undefined,
-        onChange: (value) => setUncontrolledValue(String(value)),
-      },
-      null
-    )
+    },
+    propError,
+    propHelperText
   );
 }
 

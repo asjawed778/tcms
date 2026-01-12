@@ -14,6 +14,8 @@ import {
   Box,
   CardContent,
   CircularProgress,
+  Container,
+  Typography,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -35,6 +37,7 @@ import {
   useUpdateProfessionalDetailsMutation,
   useUpdateSalaryStructureMutation,
 } from "@/services/employeeApi";
+import { ArrowBack } from "@mui/icons-material";
 
 const steps = [
   {
@@ -123,11 +126,11 @@ const AddEmployee = () => {
     if (!employeeId && editEmployeeId) return;
     const stepName = stepSlugs[activeStep];
     if (!editEmployeeId && !employeeId) {
-      navigate(`/dashboard/employee/add?step=${stepName}`, { replace: true });
+      navigate(`/employee/add?step=${stepName}`, { replace: true });
       return;
     }
     if (employeeId) {
-      navigate(`/dashboard/employee/${employeeId}/update?step=${stepName}`, {
+      navigate(`/employee/${employeeId}/update?step=${stepName}`, {
         replace: true,
       });
     }
@@ -275,7 +278,7 @@ const AddEmployee = () => {
     }
   };
 
-  if (fetchingEmployee || salaryFetching ) {
+  if (fetchingEmployee || salaryFetching) {
     return (
       <Box
         sx={{
@@ -290,67 +293,75 @@ const AddEmployee = () => {
     );
   }
   return (
-    <Box p={2}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index} onClick={() => handleStepClick(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <Container maxWidth="lg" sx={{ my: { xs: 1, md: 2 }, px: 0 }}>
+        <CustomButton
+          label="Back to dashboard"
+          startIcon={<ArrowBack />}
+          variant="text"
+          onClick={() => navigate("/dashboard/employee")}
+          sx={{ backgroundColor: "transparent" }}
+        />
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box>
-            <Box
-              sx={{
-                width: "100%",
-                bgcolor: "#fff",
-                borderRadius: "8px",
-                mt: 1,
-              }}
-            >
-              <CardContent>
-                <Box>
-                  <StepComponent />
-                </Box>
-              </CardContent>
-            </Box>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((step, index) => (
+            <Step key={index} onClick={() => handleStepClick(index)}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-            <Box
-              mt={2}
-              display="flex"
-              justifyContent="space-between"
-              gap={2}
-              flexWrap="wrap"
-            >
-              {activeStep > 0 && (
-                <CustomButton
-                  variant="contained"
-                  onClick={() => setActiveStep((s) => s - 1)}
-                >
-                  Back
-                </CustomButton>
-              )}
-              <Box flexGrow={1} />
-              <CustomButton
-                label="Exit"
-                variant="outlined"
-                onClick={handleExitClick}
-              />
-              <CustomButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isLoading}
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
+            <Box>
+              <Box
+                sx={{
+                  width: "100%",
+                  bgcolor: "#fff",
+                  borderRadius: "8px",
+                  mt: 1,
+                }}
               >
-                {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
-              </CustomButton>
+                <CardContent>
+                  <Box>
+                    <StepComponent />
+                  </Box>
+                </CardContent>
+              </Box>
+
+              <Box
+                mt={2}
+                display="flex"
+                justifyContent="space-between"
+                gap={2}
+                flexWrap="wrap"
+              >
+                {activeStep > 0 && (
+                  <CustomButton
+                    variant="contained"
+                    onClick={() => setActiveStep((s) => s - 1)}
+                  >
+                    Back
+                  </CustomButton>
+                )}
+                <Box flexGrow={1} />
+                <CustomButton
+                  label="Exit"
+                  variant="outlined"
+                  onClick={handleExitClick}
+                />
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                </CustomButton>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
-    </Box>
+          </form>
+        </FormProvider>
+    </Container>
   );
 };
 
