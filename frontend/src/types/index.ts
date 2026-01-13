@@ -1,22 +1,22 @@
 
-export interface ApiResponse<T> {
+interface ApiResponse<T> {
     data: T;
     message: string;
     success: boolean;
 }
-export interface PaginationQueryParams {
+interface PaginationQueryParams {
     page?: number;
     limit?: number;
     search?: string;
     [key: string]: any;
 }
-export interface BaseSchema {
+interface BaseSchema {
     _id: string;
     createdAt?: string;
     updatedAt?: string;
     __v?: number;
 }
-export interface ApiErrorResponse {
+interface ApiErrorResponse {
     data: {
         success: boolean;
         error_code: number;
@@ -24,7 +24,7 @@ export interface ApiErrorResponse {
     };
 }
 
-export interface AddressRequest {
+interface AddressRequest {
     addressLine1?: string;
     addressLine2?: string;
     city?: string;
@@ -33,12 +33,12 @@ export interface AddressRequest {
     pincode?: number;
 }
 
-export interface AddressResponse extends AddressRequest, BaseSchema {};
+interface AddressResponse extends AddressRequest, BaseSchema {};
 
-export interface DocumentRequest {
+interface DocumentRequest {
   name?: string;
   documentNumber?: string;
   url: string;
 }
 
-export interface DocumentResponse extends BaseSchema, DocumentRequest {}
+interface DocumentResponse extends BaseSchema, DocumentRequest {}

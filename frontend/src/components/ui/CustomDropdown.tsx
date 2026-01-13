@@ -25,7 +25,7 @@ interface Option {
 }
 
 interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
-  label: string;
+  label?: string;
   name?: Path<T>;
   placeholder?: string;
   multiple?: boolean;
@@ -229,6 +229,7 @@ const CustomDropdown = <T extends FieldValues>({
           }
           sx={{
             ...sx,
+            borderRadius: "8px",
             minWidth: 180,
           }}
           renderInput={(params) => (

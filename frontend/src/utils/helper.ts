@@ -10,7 +10,7 @@ export type Cleanable =
   | Cleanable[]
   | { [key: string]: Cleanable };
 
-export const cleanData = <T extends Cleanable>(payload: T): T | undefined => {
+export const cleanData = <T>(payload: T): T | undefined => {
   if (payload === null || payload === undefined || payload === '') {
     return undefined;
   }

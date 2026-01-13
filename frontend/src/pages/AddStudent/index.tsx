@@ -35,7 +35,7 @@ import {
   personalDetailsSchema,
   previousSchoolSchema,
 } from "@/validation/student";
-import { ArrowBack } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, Close } from "@mui/icons-material";
 import PageHeader from "@/components/common/PageHeader";
 import Loader from "@/components/common/Loader";
 
@@ -266,9 +266,7 @@ const AddStudent = () => {
   };
 
   if (fetchingStudent) {
-    return (
-      <Loader height="100vh" />
-    );
+    return <Loader height="100vh" />;
   }
   return (
     <Box mt="52px">
@@ -321,13 +319,22 @@ const AddStudent = () => {
                 <CustomButton
                   label="Exit"
                   variant="outlined"
+                  startIcon={<Close sx={{fontSize: 16}} />}
                   onClick={handleExitClick}
                 />
                 <CustomButton
                   type="submit"
                   variant="contained"
                   color="primary"
+                  endIcon={<ArrowForward />}
                   loading={isLoading}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 4px 12px ${theme.palette.primary.main}40`,
+                    px: 4,
+                    fontWeight: 600,
+                    fontSize: 16
+                  }}
                 >
                   {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
                 </CustomButton>

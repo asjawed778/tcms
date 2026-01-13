@@ -27,7 +27,6 @@ const CreateTimeTable = lazy(() => import("@/pages/CreateTimeTable"));
 const Administration = lazy(() => import("@/pages/Administration"));
 
 const AppRoutes = () => {
-
   return (
     <Suspense fallback={<SplashScreen />}>
       <Routes>
@@ -129,24 +128,6 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="academics/class/create-class"
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.ACADEMICS,
-                      subModule: SubModuleName.CLASS,
-                      operation: Operation.CREATE,
-                    },
-                  ]}
-                >
-                  <CreateClass />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
-          <Route
             path="academics/create-time-table"
             element={
               <ErrorBoundary>
@@ -182,6 +163,24 @@ const AppRoutes = () => {
             }
           />
         </Route>
+        <Route
+          path="academics/class/create-class"
+          element={
+            <ErrorBoundary>
+              <RoleAuthRoute
+                permissions={[
+                  {
+                    module: ModuleName.ACADEMICS,
+                    subModule: SubModuleName.CLASS,
+                    operation: Operation.CREATE,
+                  },
+                ]}
+              >
+                <CreateClass />
+              </RoleAuthRoute>
+            </ErrorBoundary>
+          }
+        />
         <Route
           path="student/add"
           element={

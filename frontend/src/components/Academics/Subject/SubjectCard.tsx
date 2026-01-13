@@ -9,7 +9,6 @@ import {
   TypographyProps,
 } from "@mui/material";
 import { Person, School, ConfirmationNumber, Edit, Delete } from "@mui/icons-material";
-import { SubjectResponse } from "../../../../type";
 import { SubjectType } from "@/utils/enum";
 import SubjectDetailsModal from "./SubjectDetailsModal";
 
@@ -34,7 +33,7 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
   subject,
   onEdit,
   onDelete,
-}) => {
+}) => {  
   const [hover, setHover] = useState(false);
   const [openModal, setOpenModal] = useState(false);
 
@@ -138,21 +137,21 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
             </Box>
             <Box display="flex" alignItems="center" gap={1} mb={0.5}>
               <Person fontSize="small" color="action" />
-              <EllipsisText variant="body2">
-                By {subject.writer || "Unknown"}
-              </EllipsisText>
+              {/* <EllipsisText variant="body2">
+                By {subject || "Unknown"}
+              </EllipsisText> */}
             </Box>
             <Box display="flex" alignItems="center" gap={1} mb={0.5}>
               <School fontSize="small" color="action" />
-              <EllipsisText variant="body2">
+              {/* <EllipsisText variant="body2">
                 {subject.publication || "Unknown"}
-              </EllipsisText>
+              </EllipsisText> */}
             </Box>
             <Box display="flex" alignItems="center" gap={1} mb={1}>
               <ConfirmationNumber fontSize="small" color="action" />
-              <EllipsisText variant="body2">
+              {/* <EllipsisText variant="body2">
                 {subject.ISBN || "ISBN Not Available"}
-              </EllipsisText>
+              </EllipsisText> */}
             </Box>
             <Divider sx={{ my: 1 }} />
           </Box>

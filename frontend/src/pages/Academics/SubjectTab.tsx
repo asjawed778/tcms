@@ -22,7 +22,6 @@ import {
 import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
 import { useState } from "react";
 import AddSubject from "@/components/Academics/Subject/AddSubject";
-import { SubjectResponse } from "../../../type";
 import SubjectCard from "@/components/Academics/Subject/SubjectCard";
 import SubjectDetailsModal from "@/components/Academics/Subject/SubjectDetailsModal";
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
@@ -37,6 +36,7 @@ const subjectColumns = [
   { key: "subjectCategory", label: "Subject Category" },
 ];
 const SubjectTab = () => {
+  const styles = getStyles();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [searchQuery, setSearchQuery] = useState("");
@@ -193,32 +193,14 @@ const SubjectTab = () => {
   return (
     <>
       <Box sx={{ m: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
+        <Box sx={styles.filterWrapper}>
           <CustomSearchField
             placeholder="Search Subject..."
             onSearch={setSearchQuery}
             sx={{ bgcolor: "#fff" }}
           />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography> */}
-
+          <Box sx={styles.dropdownBox}>
             <CustomDropdownField
-              label="Class Name"
               placeholder="-- Select Class --"
               required={false}
               value={classId}
@@ -232,22 +214,24 @@ const SubjectTab = () => {
               SubModuleName.SUBJECTS,
               Operation.CREATE
             ) && (
-                <CustomButton
-                  label="Add Subject"
-                  startIcon={<Add />}
-                  onClick={handleAddSubject}
-                />
-              )}
+              <CustomButton
+                label="Add Subject"
+                startIcon={<Add />}
+                onClick={handleAddSubject}
+              />
+            )}
             <Tooltip
-              title={tableView ? "Switch to Card View" : "Switch to Table View"}
+              title={
+                !tableView ? "Switch to Card View" : "Switch to Table View"
+              }
             >
               <IconButton onClick={() => setTableView(!tableView)}>
-                {tableView ? <ViewModule /> : <ViewList />}
+                {!tableView ? <ViewModule /> : <ViewList />}
               </IconButton>
             </Tooltip>
           </Box>
         </Box>
-        {subjectFetching ? (
+        {subjectFetching && tableView ? (
           <Grid container spacing={2} mt={2}>
             {Array.from({ length: 9 }).map((_, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
@@ -255,31 +239,17 @@ const SubjectTab = () => {
               </Grid>
             ))}
           </Grid>
-        ) : subjectError ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "80vh",
-            }}
-          >
+        ) : subjectError && tableView ? (
+          <Box sx={styles.subjectError}>
             <Typography variant="body1" color="error.main">
               Something went wrong. Please try again.
             </Typography>
           </Box>
-        ) : subjectData?.data?.subjects?.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "70vh",
-            }}
-          >
+        ) : subjectData?.data?.subjects?.length === 0 && tableView ? (
+          <Box sx={styles.noDataCard}>
             <NoDataCard />
           </Box>
-        ) : tableView ? (
+        ) : !tableView ? (
           <Box mt={2}>
             <TableWrapper
               columns={subjectColumns}
@@ -356,3 +326,29 @@ const SubjectTab = () => {
 };
 
 export default SubjectTab;
+
+const getStyles = () => ({
+  filterWrapper: {
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "center",
+    gap: 2,
+  },
+  dropdownBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+  subjectError: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "80vh",
+  },
+  noDataCard: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "70vh",
+  },
+});

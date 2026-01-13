@@ -56,7 +56,7 @@ const ClassTab = () => {
 
   const handleAddFaculty = () => {
     refetch();
-    navigate("/dashboard/academics/class/create-class", {
+    navigate("/academics/class/create-class", {
       state: { fromClassPage: true },
     });
   };

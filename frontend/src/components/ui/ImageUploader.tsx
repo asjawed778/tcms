@@ -14,7 +14,10 @@ interface ImageUploaderProps {
   minWidth?: number;
   minHeight?: number;
   acceptedTypes?: string[];
-  required?: boolean
+  required?: boolean;
+  width?: number;
+  height?:  number
+  placeholder?: string;
 }
 
 const ImageUploader: React.FC<ImageUploaderProps> = ({
@@ -24,11 +27,24 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
   maxSizeMB = 2,
   minWidth = 300,
   minHeight = 300,
+  width = 150,
+  height = 150,
   required = true,
   acceptedTypes = ["image/jpeg", "image/png", "image/jpg"],
+  placeholder = "Click to upload"
 }) => {
-  const { control: contextControl } = useFormContext();
+  // const { control: contextControl } = useFormContext();
+  // const activeControl = control || contextControl;
+  const formContext = useFormContext();
+  const contextControl = formContext?.control;
   const activeControl = control || contextControl;
+
+  if (!activeControl) {
+    throw new Error(
+      "ImageUploader must be used inside FormProvider or control must be passed"
+    );
+  }
+
   const { colors } = useAppTheme();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -126,9 +142,7 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
           {label && (
             <Typography variant="subtitle1">
               {label}
-              {required && (
-                <span style={{ color: colors.error }}>*</span>
-              )}
+              {required && <span style={{ color: colors.error }}>*</span>}
             </Typography>
           )}
           <input
@@ -147,8 +161,8 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               !previewUrl && !isUploading && fileInputRef.current?.click()
             }
             sx={{
-              width: 150,
-              height: 150,
+              width,
+              height,
               border: previewUrl ? "none" : `2px dashed ${colors.primary}`,
               borderRadius: 2,
               display: "flex",
@@ -179,10 +193,10 @@ const ImageUploader: React.FC<ImageUploaderProps> = ({
               <>
                 <CloudUploadOutlined
                   fontSize="large"
-                  sx={{ color: colors.primary, mb: 2 }}
+                  sx={{ color: colors.primary, mb: 1 }}
                 />
-                <Typography variant="body2" sx={{ color: colors.primary }}>
-                  Click to upload
+                <Typography variant="body2" textAlign="center" sx={{ color: colors.primary }}>
+                  {placeholder}
                 </Typography>
               </>
             )}

@@ -1,7 +1,14 @@
 import { useEffect, useState } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { Stepper, Step, StepLabel, Box, CardContent } from "@mui/material";
+import {
+  Stepper,
+  Step,
+  StepLabel,
+  Box,
+  CardContent,
+  Container,
+} from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
@@ -9,7 +16,6 @@ import { cleanData } from "@/utils/helper";
 import CustomButton from "@/components/ui/CustomButton";
 import {
   basicDetailsSchema,
-  bulkSubjectSchema,
   feeStructureSchema,
 } from "@/validation/yup";
 import {
@@ -23,7 +29,8 @@ import { useAppSelector } from "@/store/store";
 import SubjectDetails from "./SubjectDetails";
 import BasicDetails from "./BasicDetails";
 import FeeStructure from "./FeeStructure";
-
+import PageHeader from "@/components/common/PageHeader";
+import { bulkSubjectSchema } from "@/validation/academics";
 
 const steps = [
   {
@@ -64,7 +71,7 @@ const CreateClass = () => {
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
-    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    // resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
     mode: "onChange",
   });
 
@@ -141,6 +148,7 @@ const CreateClass = () => {
       await updateFeeStructure({ classId, payload: cleanData(payload) });
     },
   ];
+  
   const onStepSubmit = async (data: any) => {
     const isValid = await methods.trigger();
     if (!isValid) {
@@ -178,65 +186,71 @@ const CreateClass = () => {
   };
 
   return (
-    <Box>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepLabel
-              onClick={() => handleStepClick(index)}
-              sx={{
-                cursor: "pointer",
-                "& .MuiStepLabel-label": {
-                  color: activeStep === index ? "primary.main" : "inherit",
-                },
-              }}
-            >
-              {step.label}
-            </StepLabel>
-          </Step>
-        ))}
-      </Stepper>
-
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box>
-            <Box>
-              <CardContent>
-                <Box>
-                  <StepComponent />
-                </Box>
-              </CardContent>
-            </Box>
-
-            <Box
-              mx={3}
-              mb={2}
-              display="flex"
-              justifyContent="space-between"
-              gap={2}
-              flexWrap="wrap"
-            >
-              {activeStep > 0 && (
-                <CustomButton
-                  variant="contained"
-                  onClick={() => setActiveStep((s) => s - 1)}
-                >
-                  Back
-                </CustomButton>
-              )}
-              <Box flexGrow={1} />
-              <CustomButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isLoading}
+    <Box mt="52px">
+      <PageHeader
+        title={editClassId ? "Update Class" : "Create New Class"}
+        backTo="/dashboard/academics?tab=class"
+      />
+      <Container maxWidth="lg" sx={{py: 2}}>
+        <Stepper activeStep={activeStep} alternativeLabel>
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel
+                onClick={() => handleStepClick(index)}
+                sx={{
+                  cursor: "pointer",
+                  "& .MuiStepLabel-label": {
+                    color: activeStep === index ? "primary.main" : "inherit",
+                  },
+                }}
               >
-                {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
-              </CustomButton>
+                {step.label}
+              </StepLabel>
+            </Step>
+          ))}
+        </Stepper>
+
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
+            <Box>
+              <Box>
+                <CardContent>
+                  <Box>
+                    <StepComponent />
+                  </Box>
+                </CardContent>
+              </Box>
+
+              <Box
+                mx={3}
+                mb={2}
+                display="flex"
+                justifyContent="space-between"
+                gap={2}
+                flexWrap="wrap"
+              >
+                {activeStep > 0 && (
+                  <CustomButton
+                    variant="contained"
+                    onClick={() => setActiveStep((s) => s - 1)}
+                  >
+                    Back
+                  </CustomButton>
+                )}
+                <Box flexGrow={1} />
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  loading={isLoading}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                </CustomButton>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
+          </form>
+        </FormProvider>
+      </Container>
     </Box>
   );
 };

@@ -6,7 +6,7 @@ import {
   useGetAllSectionQuery,
 } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
-import { Box, Typography } from "@mui/material";
+import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
 import { Add, Delete, Edit, Visibility } from "@mui/icons-material";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
@@ -18,6 +18,7 @@ import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
 import { SectionResponse } from "../../../type";
 import SectionDetailsModal from "../../components/Academics/Section/SectionDetailsModal";
+import { filterProps } from "framer-motion";
 
 const sectionColumns = [
   { key: "sno.", label: "S.No." },
@@ -28,6 +29,7 @@ const sectionColumns = [
   { key: "capacity", label: "Total Capacity" },
 ];
 const SectionTab = () => {
+  const styles = getStyles();
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
@@ -177,33 +179,14 @@ const SectionTab = () => {
   return (
     <>
       <Box sx={{ m: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            gap: 2,
-            mb: 2,
-          }}
-        >
+        <Box sx={styles.filterWrapper}>
           <CustomSearchField
             placeholder="Search Section..."
             onSearch={setSearchQuery}
             sx={{ bgcolor: "#fff" }}
           />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography> */}
-
+          <Box sx={styles.dropdownBox}>
             <CustomDropdownField
-              label="Class Name"
               required={false}
               value={selectedClassId}
               onChange={handleChange}
@@ -288,3 +271,18 @@ const SectionTab = () => {
 };
 
 export default SectionTab;
+
+const getStyles = () => ({
+  filterWrapper: {
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "center",
+    gap: 2,
+    mb: 2,
+  },
+  dropdownBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+});

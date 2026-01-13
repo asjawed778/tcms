@@ -8,13 +8,14 @@ import {
   useAddSubjectMutation,
   useUpdateSubjectMutation,
 } from "@/services/academics.Api";
-import { Resolver, useForm } from "react-hook-form";
+import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { subjectSchema } from "../../../validation/yup";
-import { SubjectRequest, SubjectResponse } from "../../../../type";
 import toast from "react-hot-toast";
-import { Box, Grid } from "@mui/material";
+import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { useAppSelector } from "@/store/store";
+import { AddCircle, MenuBook } from "@mui/icons-material";
+import ImageUploader from "@/components/ui/ImageUploader";
+import { subjectSchema } from "@/validation/academics";
 
 interface AddSubjectProps {
   open: boolean;
@@ -34,30 +35,45 @@ const AddSubject: React.FC<AddSubjectProps> = ({
   const [addSubject, { isLoading }] = useAddSubjectMutation();
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
-
+  const theme = useTheme();
   const methods = useForm<SubjectRequest>({
     resolver: yupResolver(subjectSchema) as Resolver<SubjectRequest>,
     defaultValues: {
       sessionId: selectedSession?._id || "",
       name: subject?.name || "",
-      publication: subject?.publication,
-      writer: subject?.writer,
-      ISBN: subject?.ISBN,
-      subjectType: subject?.subjectType ?? undefined,
-      subjectCategory: subject?.subjectCategory ?? undefined,
+      subjectType: subject?.subjectType,
+      subjectCategory: subject?.subjectCategory,
       syllabus: subject?.syllabus,
+      books: subject?.books || [
+        {
+          coverPhoto: "",
+          title: "",
+          author: "",
+          publication: "",
+          ISBN: "",
+        },
+      ],
     },
   });
 
   const { handleSubmit, control, reset } = methods;
+
+  const {
+    fields: bookFields,
+    append,
+    remove,
+  } = useFieldArray({
+    control,
+    name: "books",
+  });
 
   const onSubmit = async (data: SubjectRequest) => {
     try {
       const payload = cleanData({
         ...data,
         sessionId: selectedSession?._id as string,
-      }) as SubjectRequest;
-
+      });
+      if (!payload) return;
       if (isEditMode && subject) {
         await updateSubject({ payload, subjectId: subject._id }).unwrap();
         toast.success("Subject updated successfully!");
@@ -83,12 +99,11 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       open={open}
       onClose={onClose}
       title="Add New Subject"
-      width="50%"
+      width="900px"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={2}>
-          {/* Subject Name */}
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12 }}>
             <CustomInputField
               name="name"
               label="Subject Name"
@@ -96,10 +111,11 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CustomDropdownField
               name="subjectType"
               label="Subject Type"
+              placeholder="--Select Type--"
               options={Object.values(Enum.SubjectType).map((val) => ({
                 label: val,
                 value: val,
@@ -107,10 +123,11 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={{ xs: 12, md: 6 }}>
             <CustomDropdownField
               name="subjectCategory"
               label="Subject Category"
+              placeholder="--Select Category--"
               options={Object.values(Enum.SubjectCategory).map((val) => ({
                 label: val,
                 value: val,
@@ -118,37 +135,10 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               control={control}
             />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="publication"
-              label="Publication"
-              placeholder="Enter publication name"
-              control={control}
-              required={false}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="writer"
-              label="Writer"
-              placeholder="Enter writer name"
-              control={control}
-              required={false}
-            />
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <CustomInputField
-              name="ISBN"
-              label="ISBN"
-              placeholder="Enter isbn number"
-              control={control}
-              required={false}
-            />
-          </Grid>
           <Grid size={{ xs: 12 }}>
             <CustomInputField
               name="syllabus"
-              label="Syllabus"
+              label="Subject Syllabus"
               placeholder="Enter full syllabus"
               control={control}
               multiline
@@ -156,13 +146,137 @@ const AddSubject: React.FC<AddSubjectProps> = ({
               required={false}
             />
           </Grid>
+          <Box
+            display="flex"
+            justifyContent="space-between"
+            alignItems="center"
+            width="100%"
+          >
+            <Box display="flex" alignItems="center" gap={1}>
+              <MenuBook color="primary" />
+              <Typography fontWeight={600}>Add Textbooks</Typography>
+            </Box>
+            <CustomButton
+              label="Add Another Book"
+              variant="text"
+              startIcon={<AddCircle />}
+              onClick={() =>
+                append({
+                  coverPhoto: "",
+                  title: "",
+                  author: "",
+                  publication: "",
+                  ISBN: "",
+                })
+              }
+            />
+          </Box>
+
+          {bookFields.map((book, index) => (
+            <Box
+              key={book.id}
+              sx={{
+                bgcolor: theme.customColors.background,
+                borderRadius: "16px",
+                p: 2,
+                mb: 2,
+              }}
+            >
+              <Grid container spacing={2}>
+                <Grid
+                  size={{ xs: 12, md: 2 }}
+                  display="flex"
+                  justifyContent="center"
+                  alignItems="flex-start"
+                >
+                  <Box>
+                    <Typography variant="subtitle2" mb={1}>
+                      Cover Image
+                    </Typography>
+                    <ImageUploader
+                    placeholder="Click to upload cover"
+                      name={`books.${index}.coverPhoto`}
+                      control={control}
+                      required={false}
+                      width={110}
+                      height={120}
+                    />
+                  </Box>
+                </Grid>
+                <Grid size={{ xs: 12, md: 10 }}>
+                  <Grid container spacing={2}>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <CustomInputField
+                        name={`books.${index}.title`}
+                        label="Book Title"
+                        placeholder="Enter book title"
+                        control={control}
+                        sx={{bgcolor: "#FFF"}}
+                        required={false}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <CustomInputField
+                        name={`books.${index}.publication`}
+                        label="Publication"
+                        placeholder="Enter publication name"
+                        control={control}
+                        sx={{bgcolor: "#FFF"}}
+                        required={false}
+                      />
+                    </Grid>
+                     <Grid size={{ xs: 12, md: 6 }}>
+                      <CustomInputField
+                        name={`books.${index}.author`}
+                        label="Author"
+                        placeholder="Enter author name"
+                        control={control}
+                        sx={{bgcolor: "#FFF"}}
+                        required={false}
+                      />
+                    </Grid>
+
+                    <Grid size={{ xs: 12, md: 6 }}>
+                      <CustomInputField
+                        name={`books.${index}.ISBN`}
+                        label="ISBN"
+                        placeholder="Enter ISBN number"
+                        control={control}
+                        sx={{bgcolor: "#FFF"}}
+                        required={false}
+                      />
+                    </Grid>
+                    <Grid
+                      size={{ xs: 12 }}
+                      display="flex"
+                      justifyContent="flex-end"
+                    >
+                      {bookFields.length > 1 && (
+                        <CustomButton
+                          variant="text"
+                          color="error"
+                          onClick={() => remove(index)}
+                        >
+                          Remove Book
+                        </CustomButton>
+                      )}
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Box>
+          ))}
         </Grid>
-        <Box mt={3} display="flex" justifyContent="flex-end" gap={2}>
+        <Box mt={1} display="flex" justifyContent="flex-end" gap={2}>
           <CustomButton variant="outlined" onClick={onClose}>
             Cancel
           </CustomButton>
-          <CustomButton type="submit" variant="contained" loading={isLoading || isUpdating}>
-            {subject ? "Update Subject" : "Add Subject" }
+          <CustomButton
+            type="submit"
+            variant="contained"
+            loading={isLoading || isUpdating}
+          >
+            {subject ? "Update Subject" : "Add Subject"}
           </CustomButton>
         </Box>
       </form>

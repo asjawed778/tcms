@@ -1,6 +1,6 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { ApiResponse, SectionRequest, SectionResponse, SectionResponseList, SubjectRequest, SubjectResponse, SubjectResponseList } from "../../type";
+import { ApiResponse, SectionRequest, SectionResponse, SectionResponseList } from "../../type";
 
 export const academicsApi = createApi({
   reducerPath: "academicsApi",

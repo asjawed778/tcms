@@ -6,6 +6,9 @@ import {
   Box,
   TextFieldProps,
   styled,
+  SxProps,
+  Theme,
+  useTheme,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -41,6 +44,7 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   labelPosition?: "outside" | "inside";
   minValue?: number;
   maxValue?: number;
+  sx?: SxProps<Theme>;
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => {
@@ -120,6 +124,7 @@ function CustomInputField<T extends FieldValues>({
   maxValue,
   error: propError,
   helperText: propHelperText,
+  sx = {},
   ...rest
 }: CustomInputFieldProps<T>) {
   const [showPassword, setShowPassword] = useState(false);
@@ -129,6 +134,7 @@ function CustomInputField<T extends FieldValues>({
   const isPassword = type === "password";
   const isDate = type === "date";
   const isNumber = type === "number";
+  const theme = useTheme();
 
   const handleTogglePassword = useCallback(() => {
     setShowPassword((prev) => !prev);
@@ -227,6 +233,13 @@ function CustomInputField<T extends FieldValues>({
                 : maxValue,
             step: "1",
             readOnly,
+          }}
+          sx={{
+            "& .MuiOutlinedInput-root": {
+              backgroundColor:
+                (sx as any)?.bgcolor ??
+                Colors[theme.palette.mode].inputBackground,
+            },
           }}
           {...rest}
         />

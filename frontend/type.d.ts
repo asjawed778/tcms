@@ -326,27 +326,6 @@ interface TimeTableApiResponse {
   message: string;
   success: boolean;
 }
-
-// Subject...................................................................
-export interface SubjectRequest {
-  name: string;
-  sessionId: string;
-  publication?: string;
-  writer?: string;
-  ISBN?: string;
-  subjectType: Enum.SubjectType;
-  subjectCategory: Enum.SubjectCategory;
-  syllabus?: string;
-}
-export interface SubjectResponse extends SubjectRequest, BaseSchema {
-  subjectId: string;
-}
-export interface SubjectResponseList {
-  subjects: SubjectResponse[];
-  currentPage: number;
-  totalPages: number;
-  totalDoc: number;
-}
 export interface SectionRequest {
   name: string;
   classId: string;

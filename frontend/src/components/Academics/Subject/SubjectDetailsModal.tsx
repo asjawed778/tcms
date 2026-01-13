@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Typography, Divider } from "@mui/material";
-import { SubjectResponse } from "../../../../type";
 import ModalWrapper from "@/components/ui/ModalWrapper";
 
 interface SubjectDetailsModalProps {
@@ -24,15 +23,15 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
       // allowOutsideClickDesktop={true}
     >
       <Box display="flex" flexDirection="column" gap={1.5}>
-        <Typography variant="body1">
+        {/* <Typography variant="body1">
           <strong>Publication:</strong> {subject.publication || "N/A"}
-        </Typography>
-        <Typography variant="body1">
+        </Typography> */}
+        {/* <Typography variant="body1">
           <strong>Writer:</strong> {subject.writer || "N/A"}
-        </Typography>
-        <Typography variant="body1">
+        </Typography> */}
+        {/* <Typography variant="body1">
           <strong>ISBN:</strong> {subject.ISBN || "N/A"}
-        </Typography>
+        </Typography> */}
         <Typography variant="body1">
           <strong>Subject Type:</strong> {subject.subjectType || "N/A"}
         </Typography>

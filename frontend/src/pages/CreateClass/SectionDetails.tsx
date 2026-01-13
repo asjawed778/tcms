@@ -62,7 +62,7 @@ const SectionDetails: React.FC = () => {
             borderColor: colors.inputBorder,
           }}
         >
-          {index > 0 && (
+          {fields.length > 1 && (
             <Box sx={{ position: "absolute", top: -10, right: -10, p: 1 }}>
               <IconButton
                 onClick={() => remove(index)}
@@ -72,7 +72,7 @@ const SectionDetails: React.FC = () => {
                 <Close />
               </IconButton>
             </Box>
-          )}
+           )}
           <Grid container spacing={1}>
             <Grid size={{ xs: 12 }}>
               <Typography variant="h6">Section {index + 1}</Typography>

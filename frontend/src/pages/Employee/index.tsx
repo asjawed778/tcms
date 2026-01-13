@@ -257,7 +257,6 @@ const Employee: React.FC = () => {
           />
           <Box sx={styles.contentBox}>
             <CustomDropdownField
-              label="Status"
               placeholder="-- Select Status --"
               required={false}
               value={statusFilter}
