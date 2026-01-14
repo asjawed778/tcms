@@ -229,14 +229,24 @@ export const getAllClass = async (sessionId: string) => {
         as: "subjectDetails",
         pipeline: [
           { $match: { deleted: false } },
-          { $count: "totalSubjects" }
+          {
+            $project: {
+              _id: 0,
+              name: 1
+            }
+          }
         ]
       }
     },
     {
       $addFields: {
-        subjectsCount: {
-          $ifNull: [{ $arrayElemAt: ["$subjectDetails.totalSubjects", 0] }, 0]
+        subjectsCount: { $size: "$subjectDetails" },
+        subjects: {
+          $map: {
+            input: "$subjectDetails",
+            as: "sub",
+            in: "$$sub.name"
+          }
         }
       }
     },
@@ -266,6 +276,62 @@ export const getAllClass = async (sessionId: string) => {
         }
       }
     },
+    {
+      $lookup: {
+        from: "classfeestructures",
+        let: { classId: "$_id", sessionId: "$session" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$classId", "$$classId"] },
+                  { $eq: ["$session", "$$sessionId"] },
+                  { $eq: ["$status", Enum.ActiveStatus.ACTIVE] }
+                ]
+              }
+            }
+          },
+          { $limit: 1 }
+        ],
+        as: "feeStructure"
+      }
+    },
+    {
+      $addFields: {
+        feeStructureAdded: {
+          $gt: [{ $size: "$feeStructure" }, 0]
+        }
+      }
+    },
+    {
+      $lookup: {
+        from: "timetables",
+        let: { classId: "$_id", sessionId: "$session" },
+        pipeline: [
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$class", "$$classId"] },
+                  { $eq: ["$session", "$$sessionId"] },
+                  { $eq: ["$status", Enum.TimeTableStatus.ACTIVE] }
+                ]
+              }
+            }
+          },
+          { $limit: 1 }
+        ],
+        as: "timetable"
+      }
+    },
+    {
+      $addFields: {
+        isTimetableCreated: {
+          $gt: [{ $size: "$timetable" }, 0]
+        }
+      }
+    },
     { $sort: { sortOrder: 1 } },
     {
       $project: {
@@ -278,7 +344,9 @@ export const getAllClass = async (sessionId: string) => {
           name: "$sessionDetails.session"
         },
         subjectsCount: 1,
-        sectionsCount: 1
+        sectionsCount: 1,
+        feeStructureAdded: 1,
+        isTimetableCreated: 1
       }
     }
   ];
