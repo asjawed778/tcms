@@ -3,7 +3,6 @@ import { ClassName, CourseStream } from "@/utils/enum";
 import { Grid, Typography } from "@mui/material";
 import React from "react";
 import SectionDetails from "./SectionDetails";
-// import SubjectDetails from "./SubjectDetails";
 
 const BasicDetails: React.FC = () => {
   const classNameOptions = Object.entries(ClassName).map(([_, value]) => ({
@@ -52,13 +51,6 @@ const BasicDetails: React.FC = () => {
       <Grid size={{ xs: 12 }}>
         <SectionDetails />
       </Grid>
-
-      {/* <Grid size={{ xs: 12 }}>
-        <Divider sx={{ my: 1 }} />
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        <SubjectDetails />
-      </Grid> */}
     </Grid>
   );
 };

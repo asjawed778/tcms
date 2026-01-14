@@ -2,14 +2,11 @@ import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import { useAppTheme } from "@/context/ThemeContext";
-import { AddCircleOutline, Close } from "@mui/icons-material";
+import { Add, Close } from "@mui/icons-material";
 import { Box, Grid, IconButton, Typography } from "@mui/material";
 import React, { useEffect, useRef } from "react";
 import { useFieldArray, useFormContext } from "react-hook-form";
-// interface DropdownOption {
-//   label: string;
-//   value: string;
-// }
+
 const SectionDetails: React.FC = () => {
   const { colors } = useAppTheme();
   // const { data: facultyData, isLoading } = useGetAllFacultyQuery({
@@ -105,12 +102,13 @@ const SectionDetails: React.FC = () => {
           </Grid>
         </Grid>
       ))}
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }} display="flex" justifyContent="flex-end">
         <CustomButton
           label="Add More Section"
-          variant="outlined"
-          startIcon={<AddCircleOutline />}
+          variant="text"
+          startIcon={<Add />}
           onClick={() => append({ name: "", capacity: "", facultyName: null })}
+          sx={{bgcolor: "transparent"}}
         />
       </Grid>
     </Grid>

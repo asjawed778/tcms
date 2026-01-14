@@ -27,6 +27,7 @@ import SubjectDetailsModal from "@/components/Academics/Subject/SubjectDetailsMo
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
 import NoDataCard from "@/components/common/NoDataCard";
 import AlertModal from "@/components/common/AlertModal";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
@@ -153,7 +154,11 @@ const SubjectTab = () => {
         break;
     }
   };
-
+  const handleModalClose = () => {
+    setOpenUpdateSubject(false);
+    setOpenAddSubject(false);
+    setSelectedRow(null);
+  };
   const handleAddSubject = () => {
     setOpenAddSubject(true);
   };
@@ -280,22 +285,28 @@ const SubjectTab = () => {
         )}
       </Box>
       {openAddSubject && (
-        <AddSubject
+        <ModalWrapper
           open={openAddSubject}
-          onClose={() => setOpenAddSubject(false)}
-          refetch={refetch}
-        />
+          onClose={handleModalClose}
+          title="Add New Subject"
+          width="900px"
+        >
+          <AddSubject
+            // open={openAddSubject}
+            onClose={handleModalClose}
+            refetch={refetch}
+          />
+        </ModalWrapper>
       )}
       {openUpdateSubject && (
-        <AddSubject
+        <ModalWrapper
           open={openUpdateSubject}
-          onClose={() => {
-            setOpenUpdateSubject(false);
-            setSelectedRow(null);
-          }}
-          subject={selectedRow}
-          refetch={refetch}
-        />
+          onClose={handleModalClose}
+          title="Add New Subject"
+          width="900px"
+        >
+          <AddSubject subject={selectedRow} refetch={refetch} onClose={handleModalClose}/>
+        </ModalWrapper>
       )}
       {openViewSubject && (
         <SubjectDetailsModal

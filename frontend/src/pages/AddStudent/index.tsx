@@ -6,7 +6,6 @@ import {
   Step,
   StepLabel,
   Box,
-  CircularProgress,
   Container,
 } from "@mui/material";
 import * as yup from "yup";
@@ -309,17 +308,21 @@ const AddStudent = () => {
             >
               {activeStep > 0 && (
                 <CustomButton
+                label="Back"
                   variant="contained"
+                  startIcon={<ArrowBack />}
                   onClick={() => setActiveStep((prev) => prev - 1)}
-                >
-                  Back
-                </CustomButton>
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 4px 12px ${theme.palette.primary.main}40`,
+                  }}
+                />
               )}
               <Box sx={{ display: "flex", gap: 2 }}>
                 <CustomButton
                   label="Exit"
                   variant="outlined"
-                  startIcon={<Close sx={{fontSize: 16}} />}
+                  startIcon={<Close fontSize="small" />}
                   onClick={handleExitClick}
                 />
                 <CustomButton
@@ -331,9 +334,6 @@ const AddStudent = () => {
                   sx={{
                     boxShadow: (theme) =>
                       `0px 4px 12px ${theme.palette.primary.main}40`,
-                    px: 4,
-                    fontWeight: 600,
-                    fontSize: 16
                   }}
                 >
                   {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}

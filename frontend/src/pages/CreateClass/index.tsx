@@ -14,10 +14,7 @@ import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
 import { cleanData } from "@/utils/helper";
 import CustomButton from "@/components/ui/CustomButton";
-import {
-  basicDetailsSchema,
-  feeStructureSchema,
-} from "@/validation/yup";
+import { basicDetailsSchema, feeStructureSchema } from "@/validation/yup";
 import {
   useAddBulkSectionMutation,
   useAddBulkSubjectMutation,
@@ -26,11 +23,12 @@ import {
   useUpdateFeeStructureMutation,
 } from "@/services/academics.Api";
 import { useAppSelector } from "@/store/store";
-import SubjectDetails from "./SubjectDetails";
 import BasicDetails from "./BasicDetails";
 import FeeStructure from "./FeeStructure";
 import PageHeader from "@/components/common/PageHeader";
 import { bulkSubjectSchema } from "@/validation/academics";
+import { ArrowBack, ArrowForward, Close } from "@mui/icons-material";
+import SubjectDetails from "./SubjectDetails";
 
 const steps = [
   {
@@ -81,74 +79,87 @@ const CreateClass = () => {
     }
   }, [editClassId]);
 
+  // const stepApis = [
+  //   async (data: any) => {
+  //     const { sections } = data;
+  //     const classResponse = await createClass({
+  //       payload: {
+  //         name: data.name,
+  //         courseStream: data.courseStream,
+  //         session: selectedSession?._id,
+  //       },
+  //     }).unwrap();
+
+  //     if (!classResponse.success) {
+  //       toast.error(classResponse.message);
+  //       return classResponse;
+  //     }
+  //     const classId = classResponse.data._id;
+  //     setClassId(classId);
+  //     if (sections && sections?.length > 0) {
+  //       const sectionPayload = sections.map((sec: any) => ({
+  //         ...sec,
+  //         classId,
+  //         sessionId: selectedSession?._id,
+  //       }));
+  //       await addSection({
+  //         payload: { sections: cleanData(sectionPayload) },
+  //       }).unwrap();
+  //     }
+  //   },
+  //   async (data: any) => {
+  //     const subjects = data.subjects || [];
+  //     const manualSubjects = subjects.filter((s: any) => !s.preDefinedId);
+  //     const predefinedSubjects = subjects.filter((s: any) => s.preDefinedId);
+  //     let manualIds: string[] = [];
+  //     let bulkResponse;
+  //     if (manualSubjects && manualSubjects?.length > 0) {
+  //       const bulkPayload = manualSubjects.map((sub: any) => ({
+  //         ...sub,
+  //         sessionId: selectedSession?._id,
+  //       }));
+
+  //       bulkResponse = await addBulkSubject({
+  //         payload: { subjects: cleanData(bulkPayload) },
+  //       }).unwrap();
+  //       manualIds = bulkResponse?.data?.map((s: any) => s._id);
+  //     }
+  //     const predefinedSubjectsId = predefinedSubjects
+  //       .filter((s: any) => s.preDefinedId)
+  //       .map((s: any) => s.preDefinedId);
+  //     const allIds = [...manualIds, ...predefinedSubjectsId];
+
+  //     if (allIds.length === 0) {
+  //       toast.error("No subjects to assign. Please add atleast one subject.");
+  //       return { success: true };
+  //     }
+  //     await updateClass({ classId, payload: allIds });
+  //   },
+  //   async (data: any) => {
+  //     const { effectiveFrom, remarks, structures } = data;
+  //     const payload = {
+  //       effectiveFrom,
+  //       remarks,
+  //       structures,
+  //       session: selectedSession?._id,
+  //     };
+  //     await updateFeeStructure({ classId, payload: cleanData(payload) });
+  //   },
+  // ];
   const stepApis = [
     async (data: any) => {
-      const { sections } = data;
-      const classResponse = await createClass({
-        payload: {
-          name: data.name,
-          courseStream: data.courseStream,
-          session: selectedSession?._id,
-        },
-      }).unwrap();
-
-      if (!classResponse.success) {
-        toast.error(classResponse.message);
-        return classResponse;
-      }
-      const classId = classResponse.data._id;
-      setClassId(classId);
-      if (sections && sections?.length > 0) {
-        const sectionPayload = sections.map((sec: any) => ({
-          ...sec,
-          classId,
-          sessionId: selectedSession?._id,
-        }));
-        await addSection({
-          payload: { sections: cleanData(sectionPayload) },
-        }).unwrap();
-      }
+      console.log("step 1 data: ", data);
     },
+
     async (data: any) => {
-      const subjects = data.subjects || [];
-      const manualSubjects = subjects.filter((s: any) => !s.preDefinedId);
-      const predefinedSubjects = subjects.filter((s: any) => s.preDefinedId);
-      let manualIds: string[] = [];
-      let bulkResponse;
-      if (manualSubjects && manualSubjects?.length > 0) {
-        const bulkPayload = manualSubjects.map((sub: any) => ({
-          ...sub,
-          sessionId: selectedSession?._id,
-        }));
-
-        bulkResponse = await addBulkSubject({
-          payload: { subjects: cleanData(bulkPayload) },
-        }).unwrap();
-        manualIds = bulkResponse?.data?.map((s: any) => s._id);
-      }
-      const predefinedSubjectsId = predefinedSubjects
-        .filter((s: any) => s.preDefinedId)
-        .map((s: any) => s.preDefinedId);
-      const allIds = [...manualIds, ...predefinedSubjectsId];
-
-      if (allIds.length === 0) {
-        toast.error("No subjects to assign. Please add atleast one subject.");
-        return { success: true };
-      }
-      await updateClass({ classId, payload: allIds });
+      console.log("step 2 data: ", data);
     },
+
     async (data: any) => {
-      const { effectiveFrom, remarks, structures } = data;
-      const payload = {
-        effectiveFrom,
-        remarks,
-        structures,
-        session: selectedSession?._id,
-      };
-      await updateFeeStructure({ classId, payload: cleanData(payload) });
+      console.log("step 3 data: ", data);
     },
   ];
-  
+
   const onStepSubmit = async (data: any) => {
     const isValid = await methods.trigger();
     if (!isValid) {
@@ -184,6 +195,9 @@ const CreateClass = () => {
       setActiveStep(index);
     }
   };
+  const handleExitClick = () => {
+    navigate("/dashboard/academics?tab=class");
+  };
 
   return (
     <Box mt="52px">
@@ -191,60 +205,70 @@ const CreateClass = () => {
         title={editClassId ? "Update Class" : "Create New Class"}
         backTo="/dashboard/academics?tab=class"
       />
-      <Container maxWidth="lg" sx={{py: 2}}>
-        <Stepper activeStep={activeStep} alternativeLabel>
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
           {steps.map((step, index) => (
-            <Step key={index}>
-              <StepLabel
-                onClick={() => handleStepClick(index)}
-                sx={{
-                  cursor: "pointer",
-                  "& .MuiStepLabel-label": {
-                    color: activeStep === index ? "primary.main" : "inherit",
-                  },
-                }}
-              >
-                {step.label}
-              </StepLabel>
+            <Step key={index} onClick={() => handleStepClick(index)}>
+              <StepLabel>{step.label}</StepLabel>
             </Step>
           ))}
         </Stepper>
 
         <FormProvider {...methods}>
-          <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-            <Box>
-              <Box>
-                <CardContent>
-                  <Box>
-                    <StepComponent />
-                  </Box>
-                </CardContent>
-              </Box>
-
-              <Box
-                mx={3}
-                mb={2}
-                display="flex"
-                justifyContent="space-between"
-                gap={2}
-                flexWrap="wrap"
-              >
-                {activeStep > 0 && (
-                  <CustomButton
-                    variant="contained"
-                    onClick={() => setActiveStep((s) => s - 1)}
-                  >
-                    Back
-                  </CustomButton>
-                )}
-                <Box flexGrow={1} />
+          <form
+            onSubmit={methods.handleSubmit(onStepSubmit)}
+            noValidate
+            style={{ backgroundColor: "#FFF", borderRadius: "8px" }}
+          >
+            <Box
+              sx={{
+                p: 2,
+                minHeight: "70vh",
+              }}
+            >
+              <StepComponent />
+            </Box>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 2,
+                p: 2,
+              }}
+            >
+              {activeStep > 0 && (
+                <CustomButton
+                label="Back"
+                  variant="contained"
+                  startIcon={<ArrowBack />}
+                  onClick={() => setActiveStep((prev) => prev - 1)}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 8px 12px ${theme.palette.primary.main}40`,
+                  }}
+                />
+              )}
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <CustomButton
+                  label="Exit"
+                  variant="outlined"
+                  startIcon={<Close fontSize="small" />}
+                  onClick={handleExitClick}
+                />
                 <CustomButton
                   type="submit"
                   variant="contained"
                   color="primary"
+                  endIcon={(activeStep === steps.length - 1 )? "" : <ArrowForward />}
                   loading={isLoading}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 8px 12px ${theme.palette.primary.main}40`,
+                  }}
                 >
-                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                  {activeStep === steps.length - 1 ? "Submit" : "Save & Next"}
                 </CustomButton>
               </Box>
             </Box>

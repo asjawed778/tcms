@@ -203,6 +203,34 @@ export enum ActiveStatus {
   INACTIVE = "Inactive",
 }
 
+export enum Subject {
+  MATHEMATICS = "mathematics",
+  SCIENCE = "science",
+  PHYSICS = "physics",
+  CHEMISTRY = "chemistry",
+  BIOLOGY = "biology",
+  ENGLISH = "english",
+  HINDI = "hindi",
+  SANSKRIT = "sanskrit",
+  LANGUAGE = "language",
+  HISTORY = "history",
+  GEOGRAPHY = "geography",
+  CIVICS = "civics",
+  SOCIAL_SCIENCE = "social_science",
+  COMPUTER_SCIENCE = "computer_science",
+  INFORMATION_TECHNOLOGY = "information_technology",
+  ECONOMICS = "economics",
+  BUSINESS_STUDIES = "business_studies",
+  ACCOUNTANCY = "accountancy",
+  ART = "art",
+  MUSIC = "music",
+  DANCE = "dance",
+  SPORTS = "sports",
+  YOGA = "yoga",
+
+  OTHER = "other",
+}
+
 // Tabs..................................................................
 export enum AcademicsTabs {
   CLASS = "class",

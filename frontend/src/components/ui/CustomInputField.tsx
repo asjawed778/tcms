@@ -25,7 +25,7 @@ import { Colors } from "@/theme/colors";
 interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   extends Omit<TextFieldProps, "name" | "label" | "onChange" | "value"> {
   name?: Path<T>;
-  label: string;
+  label?: string;
   placeholder?: string;
   type?: string;
   size?: "small" | "medium";

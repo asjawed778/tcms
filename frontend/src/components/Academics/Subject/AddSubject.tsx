@@ -1,4 +1,3 @@
-import ModalWrapper from "@/components/ui/ModalWrapper";
 import CustomInputField from "@/components/ui/CustomInputField";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomButton from "@/components/ui/CustomButton";
@@ -10,21 +9,19 @@ import {
 } from "@/services/academics.Api";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
 import { useAppSelector } from "@/store/store";
 import { AddCircle, MenuBook } from "@mui/icons-material";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { subjectSchema } from "@/validation/academics";
+import { customToast } from "@/components/common/customToast";
 
 interface AddSubjectProps {
-  open: boolean;
-  onClose: () => void;
+  onClose?: () => void;
   refetch?: () => void;
   subject?: SubjectResponse | null;
 }
 const AddSubject: React.FC<AddSubjectProps> = ({
-  open,
   onClose,
   refetch,
   subject,
@@ -76,31 +73,32 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       if (!payload) return;
       if (isEditMode && subject) {
         await updateSubject({ payload, subjectId: subject._id }).unwrap();
-        toast.success("Subject updated successfully!");
+        customToast({
+          type: "success",
+          message: "Subject updated successfully!"
+        });
         refetch?.();
       } else {
         await addSubject({ payload }).unwrap();
-        toast.success("Subject added successfully!");
+        customToast({
+          type: "success",
+          message: "Subject Added successfully!"
+        });        
         refetch?.();
       }
     } catch (error: any) {
-      toast.error(
-        error?.data?.message || "Something went wrong. Please try again!"
-      );
-      console.log("Error: ", error);
+      customToast({
+          type: "success",
+          message: error?.data?.message || "Something went wrong. Please try again!"
+        })
     } finally {
       reset();
-      onClose();
+      onClose?.();
     }
   };
 
   return (
-    <ModalWrapper
-      open={open}
-      onClose={onClose}
-      title="Add New Subject"
-      width="900px"
-    >
+    <Box p={1}>
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
         <Grid container spacing={2}>
           <Grid size={{ xs: 12 }}>
@@ -180,6 +178,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                 borderRadius: "16px",
                 p: 2,
                 mb: 2,
+                width: "100%"
               }}
             >
               <Grid container spacing={2}>
@@ -194,7 +193,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                       Cover Image
                     </Typography>
                     <ImageUploader
-                    placeholder="Click to upload cover"
+                      placeholder="Click to upload cover"
                       name={`books.${index}.coverPhoto`}
                       control={control}
                       required={false}
@@ -211,7 +210,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                         label="Book Title"
                         placeholder="Enter book title"
                         control={control}
-                        sx={{bgcolor: "#FFF"}}
+                        sx={{ bgcolor: "#FFF" }}
                         required={false}
                       />
                     </Grid>
@@ -221,17 +220,17 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                         label="Publication"
                         placeholder="Enter publication name"
                         control={control}
-                        sx={{bgcolor: "#FFF"}}
+                        sx={{ bgcolor: "#FFF" }}
                         required={false}
                       />
                     </Grid>
-                     <Grid size={{ xs: 12, md: 6 }}>
+                    <Grid size={{ xs: 12, md: 6 }}>
                       <CustomInputField
                         name={`books.${index}.author`}
                         label="Author"
                         placeholder="Enter author name"
                         control={control}
-                        sx={{bgcolor: "#FFF"}}
+                        sx={{ bgcolor: "#FFF" }}
                         required={false}
                       />
                     </Grid>
@@ -242,7 +241,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                         label="ISBN"
                         placeholder="Enter ISBN number"
                         control={control}
-                        sx={{bgcolor: "#FFF"}}
+                        sx={{ bgcolor: "#FFF" }}
                         required={false}
                       />
                     </Grid>
@@ -280,7 +279,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
           </CustomButton>
         </Box>
       </form>
-    </ModalWrapper>
+    </Box>
   );
 };
 
