@@ -185,6 +185,10 @@ export enum PeriodType {
   MEETING = "Meeting",
   OTHER = "Other",
 }
+export enum ScheduleType {
+  DAY = "Day",
+  PERIOD = "Period"
+} 
 
 export enum FeeApplicableType {
   RECURRING = "Recurring",

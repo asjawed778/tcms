@@ -1,257 +1,121 @@
-import { useMemo, useState } from "react";
-import { useForm, FormProvider, useWatch } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
+import { useState, useMemo } from "react";
 import {
-  Stepper,
+  Box,
   Step,
   StepLabel,
-  Box,
+  Stepper,
   Button,
-  Typography,
-  CardContent,
-  Grid,
+  Paper,
+  Container,
 } from "@mui/material";
-import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import {
-  useCreateTimeTableMutation,
-  useGetAllClassQuery,
-} from "@/services/academics.Api";
-import { useAppSelector } from "@/store/store";
-import Monday from "./Monday";
-import Tuesday from "./Tuesday";
-import Wednesday from "./Wednesday";
-import Thursday from "./Thursday";
-import Friday from "./Friday";
-import Saturday from "./Saturday";
-import Sunday from "./Sunday";
-import CustomDropdownField from "@/components/ui/CustomDropdown";
-import { WeekDay } from "@/utils/enum";
-import { weeklySchema } from "../../validation/yup";
+import { FormProvider, useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import BasicDetails from "./BasicDetails";
+import Schedule from "./Schedule";
+import Review from "./Review";
+import PageHeader from "@/components/common/PageHeader";
+import CustomButton from "@/components/ui/CustomButton";
+import { ArrowBack, ArrowForward, Drafts, SaveAs } from "@mui/icons-material";
 
-const steps = [
+export const steps = [
   {
-    label: "Monday",
-    component: Monday,
+    label: "Basic Details",
+    component: BasicDetails,
+    // schema: personalDetailsSchema,
   },
   {
-    label: "Tuesday",
-    component: Tuesday,
+    label: "Schedule",
+    component: Schedule,
+    // schema: addressdetailsSchema,
   },
   {
-    label: "Wednesday",
-    component: Wednesday,
-  },
-  {
-    label: "Thursday",
-    component: Thursday,
-  },
-  {
-    label: "Friday",
-    component: Friday,
-  },
-  {
-    label: "Saturday",
-    component: Saturday,
-  },
-  {
-    label: "Sunday",
-    component: Sunday,
+    label: "Review",
+    component: Review,
+    // schema: parentDetailsSchema,
   },
 ];
 
 const CreateTimeTable = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [createTimeTable, { isLoading }] = useCreateTimeTableMutation();
 
-  const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
-  );
-  const navigate = useNavigate();
-  const defaultWeeklySchedule = [
-    { day: WeekDay.MONDAY, isHoliday: false, periods: [] },
-    { day: WeekDay.TUESDAY, isHoliday: false, periods: [] },
-    { day: WeekDay.WEDNESDAY, isHoliday: false, periods: [] },
-    { day: WeekDay.THURSDAY, isHoliday: false, periods: [] },
-    { day: WeekDay.FRIDAY, isHoliday: false, periods: [] },
-    { day: WeekDay.SATURDAY, isHoliday: false, periods: [] },
-    {
-      day: WeekDay.SUNDAY,
-      isHoliday: true,
-      holidayReason: "Weekly Off",
-      periods: [],
-    },
-  ];
+  // const currentSchema = useMemo(() => steps[activeStep].schema, [activeStep]);
 
   const methods = useForm({
+    // resolver: yupResolver(currentSchema),
+    mode: "onTouched",
+    shouldUnregister: false,
     defaultValues: {
-      classId: "",
-      sectionId: "",
-      weeklySchedule: defaultWeeklySchedule,
+      weeklySchedule: [
+        {
+          day: "MONDAY",
+          isHoliday: false,
+          periods: [
+            {
+              periodType: "LECTURE",
+              periodNumber: 1,
+              subject: "",
+              faculty: "",
+              room: "",
+              timeSlot: {
+                startTime: "",
+                endTime: "",
+                duration: "",
+              },
+            },
+          ],
+        },
+      ],
     },
-    resolver: yupResolver(weeklySchema),
-    // resolver: yupResolver(daySchema(activeStep)),
-    //   mode: "onChange",
-    // shouldUnregister: false,
   });
 
-  // const control = methods.control;
-  const { control } = methods;
-
-  const { data: classData } = useGetAllClassQuery({
-    sessionId: selectedSession?._id as string,
-  });
-  const classOptions =
-    classData?.data.classes.map((items: any) => ({
-      label: items.name,
-      value: items._id as string,
-    })) || [];
-
-  const selectedClassId = useWatch({
-    control,
-    name: "classId",
-  });
-  const sectionOptions = useMemo(() => {
-    const foundClass = classData?.data.classes?.find(
-      (cls: any) => cls._id === selectedClassId
-    );
-    return (
-      foundClass?.sections?.map((section: any) => ({
-        label: section.name,
-        value: section._id as string,
-      })) || []
-    );
-  }, [selectedClassId, classData]);
-
-  const subjectOptions = useMemo(() => {
-    const foundClass = classData?.data.classes.find(
-      (cls: any) => cls._id === selectedClassId
-    );
-    return (
-      foundClass?.subjects?.map((subject: any) => ({
-        label: subject.name,
-        value: subject._id as string,
-      })) || []
-    );
-  }, [selectedClassId, classData]);
-
-  const onSubmit = async (data: any) => {
-    // const fieldsToValidate =
-    //   activeStep === 0
-    //     ? ["classId", "sectionId"]
-    //     : [`weeklySchedule.${activeStep - 1}`];
-
-    // const isValid = await methods.trigger(fieldsToValidate);
-    const isValid = await methods.trigger();
-    if (!isValid) {
-      toast.error("Please fill all required fields correctly.");
-      return;
-    }
-
-    if (activeStep < steps.length - 1) {
-      setActiveStep((prev) => prev + 1);
-    } else {
-      try {
-        const payload = {
-          ...data,
-          sessionId: selectedSession?._id,
-        };
-        await createTimeTable(payload).unwrap();
-        toast.success("Time table Created successfully!");
-        navigate("/dashboard/classes/timetable");
-      } catch (error: any) {
-        console.error("Submission failed:", error);
-        toast.error(
-          error?.data?.message || "Submission failed. Please try again!"
-        );
-      }
-    }
+  const handleNext = async () => {
+    // const isValid = await methods.trigger();
+    // if (isValid)
+    setActiveStep((prev) => prev + 1);
   };
+
   const handleBack = () => {
-    setActiveStep((s) => s - 1);
+    setActiveStep((prev) => prev - 1);
+  };
+  const handleDraftTimeTable = () => {};
+
+  const onSubmit = (data: any) => {
+    console.log("FINAL DATA", data);
   };
 
-  const days = Object.values(WeekDay);
   const StepComponent = steps[activeStep].component;
 
   return (
-    <Box m="24px">
-      <Stepper activeStep={activeStep} alternativeLabel   >
-        {steps.map((step, index) => (
-          <Step key={index}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <Box mt="52px">
+      <PageHeader
+        title={"Create Time Table"}
+        backTo="/dashboard/academics?tab=timetable"
+      />
+      <Container sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
+          {steps.map((step, index) => (
+            <Step key={index}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
-          <Box sx={{ width: "100%", bgcolor: "#fff", borderRadius: "8px" }}>
-            {activeStep === 0 && (
-              <Grid container spacing={2} mt={2} px={2} pt={2}>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <CustomDropdownField
-                    name="classId"
-                    label="Select Class"
-                    options={classOptions}
-                  />
-                </Grid>
-                <Grid size={{ xs: 12, md: 6 }}>
-                  <CustomDropdownField
-                    name="sectionId"
-                    label="Select section"
-                    options={sectionOptions}
-                    disabled={!selectedClassId}
-                  />
-                </Grid>
-              </Grid>
-            )}
-            <CardContent >
-              <Typography variant="h6" gutterBottom fontWeight={600}>
-                {steps[activeStep].label}
-              </Typography>
-              <Box>
-                <StepComponent
-                  dayIndex={activeStep}
-                  dayName={days[activeStep]}
-                  subjectOptions={subjectOptions}
-                />
-              </Box>
-            </CardContent>
-          </Box>
-          <Box
-            mt={2}
-            display="flex"
-            justifyContent="space-between"
-            gap={2}
-            flexWrap="wrap"
-          >
-            {activeStep > 0 && (
-              <Button
-                variant="contained"
-                // onClick={() => setActiveStep((s) => s - 1)}
-                onClick={handleBack}
-              >
-                Back
-              </Button>
-            )}
-            <Box flexGrow={1} />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              loading={isLoading}
-              disabled={isLoading}
-            >
-              {activeStep === steps.length - 1 ? "Submit" : "Next"}
-            </Button>
-          </Box>
-        </form>
-      </FormProvider>
+        <FormProvider {...methods}>
+          <form onSubmit={methods.handleSubmit(onSubmit)} noValidate>
+            <Box>
+              <StepComponent
+                handleNext={handleNext}
+                handleBack={handleBack}
+                activeStep={activeStep}
+                isLastStep={activeStep === steps.length - 1}
+                handleDraftTimeTable={handleDraftTimeTable}
+              />
+            </Box>
+          </form>
+        </FormProvider>
+      </Container>
     </Box>
   );
 };
 
 export default CreateTimeTable;
-
-

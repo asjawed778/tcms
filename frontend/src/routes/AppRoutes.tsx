@@ -128,24 +128,6 @@ const AppRoutes = () => {
             }
           />
           <Route
-            path="academics/create-time-table"
-            element={
-              <ErrorBoundary>
-                <RoleAuthRoute
-                  permissions={[
-                    {
-                      module: ModuleName.ACADEMICS,
-                      subModule: SubModuleName.TIMETABLE,
-                      operation: Operation.CREATE,
-                    },
-                  ]}
-                >
-                  <CreateTimeTable />
-                </RoleAuthRoute>
-              </ErrorBoundary>
-            }
-          />
-          <Route
             path="administration"
             element={
               <ErrorBoundary>
@@ -181,6 +163,24 @@ const AppRoutes = () => {
             </ErrorBoundary>
           }
         />
+        <Route
+            path="academics/create-time-table"
+            element={
+              <ErrorBoundary>
+                <RoleAuthRoute
+                  permissions={[
+                    {
+                      module: ModuleName.ACADEMICS,
+                      subModule: SubModuleName.TIMETABLE,
+                      operation: Operation.CREATE,
+                    },
+                  ]}
+                >
+                  <CreateTimeTable />
+                </RoleAuthRoute>
+              </ErrorBoundary>
+            }
+          />
         <Route
           path="student/add"
           element={

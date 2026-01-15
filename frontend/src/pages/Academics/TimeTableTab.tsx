@@ -74,13 +74,13 @@ const TimeTableTab: React.FC = () => {
 
         setSectionOptions(options);
       } else {
-        setSectionOptions([]); // Reset to empty
+        setSectionOptions([]);
       }
     }
   }, [selectedClass, classData]);
 
   const handleCreateTimeTable = () => {
-    navigate("/dashboard/academics/create-time-table");
+    navigate("/academics/create-time-table");
   };
   const handleClassChange = (value: any) => {
     setSelectedClass(value);

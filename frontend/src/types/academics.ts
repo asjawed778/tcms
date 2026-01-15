@@ -24,3 +24,32 @@ interface SubjectResponseList {
   totalPages: number;
   totalDoc: number;
 }
+
+// Time Table..............................................................
+interface TimeSlot {
+  startTime: string;  
+  endTime: string;  
+  duration: string;
+}
+  interface Period {
+  periodType?: string;
+  periodNumber?: number;
+  subject?: string
+  faculty?: string;
+  room?: string;
+  timeSlot?: TimeSlot;
+}
+interface WeeklyScheduleDay {
+  day: string;
+  isHoliday?: boolean;
+  holidayReason?: string;
+  periods?: Period[];
+}
+interface CreateTimeTableRequest {
+  sessionId: string;
+  classId: string;
+  sectionId: string;
+  weeklySchedule: WeeklyScheduleDay[];
+  effectiveFrom?: string;
+  effectiveTo?: string;
+}
