@@ -18,10 +18,14 @@ const periodTypes = [
   { label: "Lecture", value: "LECTURE" },
   { label: "Break", value: "BREAK" },
 ];
+const facultyOptions = [
+  { label: "Mohan Kumar", value: "Mohan Kumar" },
+  { label: "Sohan Kumar", value: "Sohan Kumar" },
+];
 
 const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
   const styles = getStyles();
-  const { control } = useFormContext();
+  const { control, watch, setValue } = useFormContext();
 
   const { fields, append, remove } = useFieldArray({
     control,
@@ -47,66 +51,88 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
         </TableHead>
 
         <TableBody>
-          {fields.map((field, index) => (
-            <TableRow key={field.id} sx={styles.tableRow}>
-              <TableCell>{index + 1}</TableCell>
-              <TableCell>
-                <CustomDropdownField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.periodType`}
-                  options={periodTypes}
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <CustomInputField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.subject`}
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <CustomDropdownField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.faculty`}
-                  options={periodTypes}
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <CustomInputField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.room`}
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <CustomInputField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`}
-                  type="time"
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <CustomInputField
-                  name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`}
-                  type="time"
-                  required={false}
-                  sx={{ m: 0 }}
-                />
-              </TableCell>
-              <TableCell>
-                <IconButton onClick={() => remove(index)}>
-                  <Delete />
-                </IconButton>
-              </TableCell>
-            </TableRow>
-          ))}
+          {fields.map((field, index) => {
+            const startField = `weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`;
+            const endField = `weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`;
+            const startValue = watch(startField);
+            const endValue = watch(endField);
+            return (
+              <TableRow key={field.id} sx={styles.tableRow}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  <CustomDropdownField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.periodType`}
+                    options={periodTypes}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.subject`}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomDropdownField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.faculty`}
+                    options={facultyOptions}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.room`}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`}
+                    type="time"
+                    required={false}
+                    onFocus={() => {
+                      if (!startValue) {
+                        setValue(startField, "08:00", {
+                          shouldDirty: false,
+                          shouldTouch: false,
+                          shouldValidate: false,
+                        });
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`}
+                    type="time"
+                    required={false}
+                    onFocus={() => {
+                      if (!endValue) {
+                        setValue(endField, "08:45", {
+                          shouldDirty: false,
+                          shouldTouch: false,
+                          shouldValidate: false,
+                        });
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => remove(index)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
 
-      <Box sx={{ p: 1, display: "flex", justifyContent: "flex-end" }}>
+      <Box p={1} display="flex" justifyContent="flex-end">
         <CustomButton
           label="Add New Period"
           startIcon={<Add />}

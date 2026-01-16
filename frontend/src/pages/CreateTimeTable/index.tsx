@@ -12,10 +12,10 @@ import { FormProvider, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import BasicDetails from "./BasicDetails";
 import Schedule from "./Schedule";
-import Review from "./Review";
 import PageHeader from "@/components/common/PageHeader";
 import CustomButton from "@/components/ui/CustomButton";
 import { ArrowBack, ArrowForward, Drafts, SaveAs } from "@mui/icons-material";
+import Review from "./Review";
 
 export const steps = [
   {
@@ -91,8 +91,8 @@ const CreateTimeTable = () => {
         title={"Create Time Table"}
         backTo="/dashboard/academics?tab=timetable"
       />
-      <Container sx={{ py: 2 }}>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
+      <Box sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 2, maxWidth: "lg", mx: "auto"}}>
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>{step.label}</StepLabel>
@@ -113,7 +113,7 @@ const CreateTimeTable = () => {
             </Box>
           </form>
         </FormProvider>
-      </Container>
+      </Box>
     </Box>
   );
 };

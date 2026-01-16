@@ -1,5 +1,5 @@
 import { ScheduleType } from "@/utils/enum";
-import { Box, Typography } from "@mui/material";
+import { Box, Container, Typography } from "@mui/material";
 import { useFormContext } from "react-hook-form";
 
 import ScheduleByDay from "./ScheduleByDay";
@@ -34,7 +34,7 @@ const Schedule = ({
   };
 
   return (
-    <Box>
+    <Container>
       <Box sx={styles.wrapper}>
         <Box onClick={toggleScheduleType} sx={styles.toggleWrapper}>
           <Box sx={styles.titleWrapper} />
@@ -86,7 +86,7 @@ const Schedule = ({
           </CustomButton>
         </Box>
       </Box>
-    </Box>
+    </Container>
   );
 };
 

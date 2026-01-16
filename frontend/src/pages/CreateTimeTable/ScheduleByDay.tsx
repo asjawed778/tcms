@@ -16,19 +16,17 @@ const DAYS = [
 
 const ScheduleByDay = () => {
   const { control, watch } = useFormContext();
-
   const [selectedDay, setSelectedDay] = useState<string>("MONDAY");
-
   const { fields: dayFields, append: appendDay } = useFieldArray({
     control,
     name: "weeklySchedule",
   });
-
-  const selectedDayIndex = dayFields.findIndex((d) => d.day === selectedDay);
+  const selectedDayIndex = dayFields.findIndex(
+    (d: any) => d.day === selectedDay
+  );
 
   const ensureDayExists = (dayValue: string) => {
-    const exists = dayFields.some((d) => d.day === dayValue);
-
+    const exists = dayFields.some((d: any) => d.day === dayValue);
     if (!exists) {
       appendDay({
         day: dayValue,
@@ -36,14 +34,22 @@ const ScheduleByDay = () => {
         periods: [],
       });
     }
-
     setSelectedDay(dayValue);
   };
 
   if (selectedDayIndex === -1) return null;
 
   const isHoliday = watch(`weeklySchedule.${selectedDayIndex}.isHoliday`);
-
+  const weeklySchedule = watch("weeklySchedule") || [];
+  const isDayHasPeriod = (
+    dayValue: string,
+    weeklySchedule: any[],
+    selectedDay: string
+  ): boolean => {
+    const dayData = weeklySchedule?.find((d) => d.day === dayValue);
+    const hasPeriod = dayData?.periods?.length > 0;
+    return hasPeriod || selectedDay === dayValue;
+  };
   return (
     <Box>
       <Box display="flex" justifyContent="center" gap={2} mb={3}>
@@ -55,13 +61,18 @@ const ScheduleByDay = () => {
             sx={{
               px: 2,
               fontSize: 16,
-              bgcolor: selectedDay === day.value ? "primary.main" : "#fff",
-              color: selectedDay === day.value ? "#fff" : "text.primary",
+              bgcolor: isDayHasPeriod(day.value, weeklySchedule, selectedDay)
+                ? "primary.main"
+                : "#fff",
+              color: isDayHasPeriod(day.value, weeklySchedule, selectedDay)
+                ? "#fff"
+                : "text.primary",
             }}
             onClick={() => ensureDayExists(day.value)}
           />
         ))}
       </Box>
+
       <Box
         sx={{
           borderRadius: 2,
@@ -111,7 +122,7 @@ const ScheduleByDay = () => {
             />
           </Box>
         ) : (
-          <PeriodTable dayIndex={selectedDayIndex} />
+          <PeriodTable key={selectedDayIndex} dayIndex={selectedDayIndex} />
         )}
       </Box>
     </Box>
