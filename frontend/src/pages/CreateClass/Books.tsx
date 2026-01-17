@@ -24,7 +24,8 @@ import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import ImageUploader from "@/components/ui/ImageUploader";
 import * as Enum from "@/utils/enum";
-import {ReactComponent as DeleteIcon} from "@/assets/svg/delete-icon.svg";
+import DeleteIcon from "@/assets/svg/delete-icon.svg?react";
+
 
 interface BooksProps {
   subjectIndex: number;
@@ -65,7 +66,7 @@ const Books: React.FC<BooksProps> = ({
       elevation={0}
       square
       TransitionProps={{
-        timeout: 1000,
+        timeout: 800,
         easing: "ease-in-out",
       }}
       sx={{

@@ -214,6 +214,12 @@ export enum ActiveStatus {
   INACTIVE = "Inactive"
 };
 
+export enum ClassStatus {
+  ACTIVE = "Active",
+  INACTIVE = "Inactive",
+  DRAFT = "Draft"
+}
+
 // roles permissions and modules enums
 // Operatioin,  Module and SubModule Names for Role-Based Access Control
 

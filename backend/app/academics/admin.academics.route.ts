@@ -10,7 +10,7 @@ const router = Router();
 router
     // subject routes
     .post(
-        "/subject",
+        "/class/:classId/add-subject",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
         AcademicValidation.createSubject,
         catchError,

@@ -57,7 +57,7 @@ export const getAllSubjects = async (sessionId: string, page?: number, limit?: n
     if (!classDoc) {
       throw createHttpError(404, "Class not found");
     }
-    query._id = { $in: classDoc.subjects };
+    // query._id = { $in: classDoc.subjects };
   }
   if (search) {
     query.name = { $regex: search, $options: "i" };

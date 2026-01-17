@@ -23,8 +23,7 @@ const textBook = new mongoose.Schema<TextBook>({
         type: String,
         required: false
     },
-}, { timestamps: true });
-
+}, { _id: false });
 
 const subjectSchema = new mongoose.Schema<ISubject>({
     name: {
@@ -36,6 +35,11 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         unique: true,
         required: true
     },
+    classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
+        required: true
+    },
     sessionId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Session",
@@ -44,11 +48,6 @@ const subjectSchema = new mongoose.Schema<ISubject>({
     subjectType: {
         type: String,
         enum: Object.values(Enum.SubjectType),
-        required: true
-    },
-    subjectCategory: {
-        type: String,
-        enum: Object.values(Enum.SubjectCategory),
         required: true
     },
     syllabus: {

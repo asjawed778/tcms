@@ -119,7 +119,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ display: "flex", position: "relative" }}>
+    <Box sx={{ position: "relative" }}>
       {isMobile && (
         <Box sx={{ p: 1 }}>
           <IconButton onClick={() => dispatch(setMobileOpen(true))}>
@@ -282,16 +282,21 @@ const Sidebar: React.FC = () => {
           onClick={handleToggle}
           size="small"
           sx={(theme) => ({
-            position: "absolute",
+            position: "fixed",
             top: "50%",
-            left: open ? drawerWidth - 12 : collapsedWidth - 12,
+            left: open ? drawerWidth - 14 : collapsedWidth - 14,
             transform: "translateY(-50%)",
             zIndex: 2000,
-            backgroundColor: colors.sidebarBg,
+            backgroundColor: "white",
             boxShadow: 2,
-
+            "&:hover": {
+              backgroundColor: "white",
+            },
+            width: 28,
+            height: 28,
+            padding: 0,
             transition: theme.transitions.create(
-              ["left", "transform", "background-color"],
+              ["left"],
               {
                 easing: theme.transitions.easing.sharp,
                 duration: theme.transitions.duration.standard,

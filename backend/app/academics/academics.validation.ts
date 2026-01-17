@@ -281,6 +281,65 @@ export const createClass = [
         .isIn(Object.values(Enum.CourseStream)).withMessage(`Course stream must be one of: ${Object.values(Enum.CourseStream).join(", ")}`),
 ];
 
+// create class : step - 2
+export const upsertSubjectBulk = [
+    body("subjects")
+        .isArray({ min: 1 })
+        .withMessage("Subjects must be a non-empty array"),
+
+    body("subjects.*.name")
+        .notEmpty().withMessage("Subject name is required")
+        .isString().withMessage("Subject name must be a string"),
+
+    body("subjects.*._id")
+        .optional()
+        .isString().withMessage("Subject ID must be a string"),
+
+    body("subjects.*.classId")
+        .notEmpty().withMessage("Class ID is required")
+        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
+
+    body("subjects.*.sessionId")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
+
+    body("subjects.*.subjectType")
+        .notEmpty().withMessage("Subject type is required")
+        .isIn(Object.values(Enum.SubjectType))
+        .withMessage(`Invalid subject type`),
+
+    body("subjects.*.syllabus")
+        .optional()
+        .isString().withMessage("Syllabus must be a string"),
+
+    // books array (optional)
+    body("subjects.*.books")
+        .optional()
+        .isArray().withMessage("Books must be an array"),
+
+    body("subjects.*.books.*.title")
+        .if(body("subjects.*.books").exists())
+        .notEmpty().withMessage("Book title is required")
+        .isString().withMessage("Book title must be a string"),
+
+    body("subjects.*.books.*.coverPhoto")
+        .optional()
+        .isString().withMessage("Cover photo must be a string"),
+
+    body("subjects.*.books.*.publication")
+        .optional()
+        .isString().withMessage("Publication must be a string"),
+
+    body("subjects.*.books.*.author")
+        .optional()
+        .isString().withMessage("Author must be a string"),
+
+    body("subjects.*.books.*.ISBN")
+        .optional()
+        .isString().withMessage("ISBN must be a string"),
+];
+
+
 // create class : step - 3
 export const upsertClassFeeStructure = [
     param("classId")
@@ -295,39 +354,25 @@ export const upsertClassFeeStructure = [
         .notEmpty().withMessage("Effective From date is required")
         .isISO8601().withMessage("Effective From must be a valid date"),
 
-    body("structures")
-        .isArray({ min: 1 }).withMessage("At least one structure is required"),
+    body("feeDetails")
+        .isArray({ min: 1 })
+        .withMessage("Fee details must be an array with at least one item"),
 
-    body("structures.*.frequency")
-        .notEmpty().withMessage("Frequency is required")
-        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Frequency type"),
-
-    body("structures.*.totalAmount")
-        .notEmpty().withMessage("Total amount is required")
-        .isNumeric().withMessage("Total amount must be a number"),
-
-    body("structures.*.feeDetails")
-        .isArray({ min: 1 }).withMessage("Fee details must be an array with at least one item"),
-
-    body("structures.*.feeDetails.*.feeType")
+    body("feeDetails.*.feeType")
         .notEmpty().withMessage("Fee type is required")
-        .isString().withMessage("Fee Type Must be sring"),
+        .isString().withMessage("Fee type must be a string"),
 
-    body("structures.*.feeDetails.*.amount")
+    body("feeDetails.*.amount")
         .notEmpty().withMessage("Amount is required")
         .isNumeric().withMessage("Amount must be a number"),
 
-    body("structures.*.feeDetails.*.isOptional")
+    body("feeDetails.*.isOptional")
         .optional()
         .isBoolean().withMessage("isOptional must be a boolean value"),
 
-    body("structures.*.feeDetails.*.applicableType")
+    body("feeDetails.*.billingFrequency")
         .optional()
-        .isIn(Object.values(Enum.FeeApplicableType)).withMessage("Invalid Applicable Type"),
-
-    body("structures.*.feeDetails.*.applicableFrequency")
-        .optional()
-        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid Applicable Frequency"),
+        .isIn(Object.values(Enum.FeeFrequency)).withMessage("Invalid billing frequency"),
 
     body("remarks")
         .optional()
@@ -335,8 +380,9 @@ export const upsertClassFeeStructure = [
 
     body("status")
         .optional()
-        .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid Status value"),
+        .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid status value"),
 ];
+
 
 export const updateClass = [
     param("classId")

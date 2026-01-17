@@ -25,9 +25,9 @@ export interface TextBook {
 export interface ISubject extends BaseSchema {
     name: string;
     subjectId: string;
+    classId: Types.ObjectId;
     sessionId: Types.ObjectId;
     subjectType: Enum.SubjectType;
-    subjectCategory: Enum.SubjectCategory;
     syllabus?: string;
     books?: TextBook[];
 };
@@ -39,9 +39,8 @@ export interface IClass extends BaseSchema {
     name: string;
     classId: string;
     session: Types.ObjectId;
-    subjects: Types.ObjectId[];
     courseStream?: Enum.CourseStream;
-    deleted: boolean;
+    status: Enum.ClassStatus;
 };
 
 export interface ICreateClass extends Omit<IClass, "sections" | "subjects" | "deleted" | "_id" | "createdAt" | "updatedAt"> {
@@ -86,24 +85,16 @@ export interface ICreateTimeTable extends Omit<ITimeTable, "_id" | "createdAt" |
 // class fee structure dto
 export interface IFeeDetails {
     feeType: string;
-    otherFeeType?: string;
     amount: number;
     isOptional?: boolean;
-    applicableType?: Enum.FeeApplicableType;
-    applicableFrequency?: Enum.FeeFrequency;
-};
-
-export interface IFrequencyWiseStructure {
-    frequency: Enum.FeeFrequency;
-    feeDetails: IFeeDetails[];
-    totalAmount: number;
+    billingFrequency?: Enum.FeeFrequency;
 };
 
 export interface IClassFeeStructure extends BaseSchema {
     classId: Types.ObjectId;
     session: Types.ObjectId;
     effectiveFrom: Date;
-    structures: IFrequencyWiseStructure[];
+    feeDetails: IFeeDetails[];
     remarks?: string;
     status?: Enum.ActiveStatus;
 };

@@ -4,9 +4,10 @@ import path from "path"
 import svgr from "vite-plugin-svgr";
 
 export default defineConfig({
-  plugins: [react(), svgr({
-    exportAsDefault: false,
-  }),],
+  plugins: [
+    react(),
+    svgr(),
+  ],
   server: {
     port: 3000,
   },

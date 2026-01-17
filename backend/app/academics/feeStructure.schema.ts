@@ -15,30 +15,11 @@ const feeDetailsSchema = new mongoose.Schema<AcademicDto.IFeeDetails>({
         type: Boolean,
         default: false,
     },
-    applicableType: {
-        type: String,
-        enum: Object.values(Enum.FeeApplicableType),
-        default: Enum.FeeApplicableType.RECURRING,
-    },
-    applicableFrequency: {
+    billingFrequency: {
         type: String,
         enum: Object.values(Enum.FeeFrequency),
         required: false,
     },
-}, { _id: false });
-
-
-const frequencyWiseSchema = new mongoose.Schema<AcademicDto.IFrequencyWiseStructure>({
-    frequency: {
-        type: String,
-        enum: Object.values(Enum.FeeFrequency),
-        required: true,
-    },
-    feeDetails: [feeDetailsSchema],
-    totalAmount: {
-        type: Number,
-        required: true,
-    }
 }, { _id: false });
 
 const classFeeStructureSchema = new mongoose.Schema<AcademicDto.IClassFeeStructure>({
@@ -56,7 +37,7 @@ const classFeeStructureSchema = new mongoose.Schema<AcademicDto.IClassFeeStructu
         type: Date,
         required: true,
     },
-    structures: [frequencyWiseSchema],
+    feeDetails: [feeDetailsSchema],
     remarks: {
         type: String,
     },
