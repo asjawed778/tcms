@@ -13,6 +13,7 @@ import classFeeStructureSchema from "./feeStructure.schema";
 
 
 // subjects service functions
+// need to remove
 export const createSubject = async (data: ClassDto.ICreateSubject) => {
   const subjectId = await AcademicUtils.generateUniqueSubjectId(data.name);
   const newSubject = await subjectSchema.create({ ...data, subjectId });
@@ -22,6 +23,7 @@ export const createSubject = async (data: ClassDto.ICreateSubject) => {
   return newSubject;
 };
 
+// will use this function
 export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) => {
   const bulkOperations: any[] = [];
   const createdIds: any[] = [];
@@ -69,6 +71,7 @@ export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) 
   return subjectsData;
 };
 
+// will use this function
 export const getSubjectsByClass = async ({
   classId,
   sessionId,
@@ -97,6 +100,8 @@ export const getSubjectsByClass = async ({
   return subjects;
 };
 
+
+// need to remove
 export const editSubject = async (subjectId: string, data: Partial<ClassDto.ISubject>) => {
   const subject = await subjectSchema.findByIdAndUpdate(subjectId, data, { new: true });
   if (!subject) {
@@ -105,6 +110,7 @@ export const editSubject = async (subjectId: string, data: Partial<ClassDto.ISub
   return subject;
 };
 
+// need to remove
 export const deleteSubject = async (subjectId: string) => {
   const subject = await subjectSchema.findByIdAndDelete(subjectId);
   if (!subject) throw createHttpError(404, "Subject not found");
@@ -122,6 +128,7 @@ export const deleteSubject = async (subjectId: string) => {
   return subject;
 };
 
+// need to remove
 export const getAllSubjects = async (sessionId: string, page?: number, limit?: number, search?: string, classId?: string) => {
   const query: any = {};
   if (sessionId) {

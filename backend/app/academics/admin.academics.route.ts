@@ -119,7 +119,7 @@ router
     )
     // class subjects
     .get(
-        "class/:classId/subjects",
+        "/class/:classId/subjects",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
         AcademicValidation.getSubjectsByClass,
         catchError,
