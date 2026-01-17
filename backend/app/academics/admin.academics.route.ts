@@ -10,7 +10,7 @@ const router = Router();
 router
     // subject routes
     .post(
-        "/class/:classId/add-subject",
+        "/class",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
         AcademicValidation.createSubject,
         catchError,
@@ -97,6 +97,13 @@ router
         catchError,
         ClassControler.updateClass
     )
+    .post(
+        "/class/:classId/upsert-subjects",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.CREATE }),
+        AcademicValidation.upsertSubjectBulk,
+        catchError,
+        ClassControler.upsertSubjectBulk
+    )
     .put("/class/:classId/fee-structure",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
         AcademicValidation.upsertClassFeeStructure,
@@ -109,6 +116,14 @@ router
         AcademicValidation.getAllClass,
         catchError,
         ClassControler.getAllClass
+    )
+    // class subjects
+    .get(
+        "class/:classId/subjects",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getSubjectsByClass,
+        catchError,
+        ClassControler.getSubjectsByClass
     )
     .get(
         "/:classId",

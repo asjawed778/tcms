@@ -15,6 +15,32 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
     res.send(createResponse(result, "Subject created successfully"));
 });
 
+export const upsertSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
+    const { subjects } = req.body;
+    const { classId } = req.params;
+    const payload = subjects.map((subject: any) => ({
+        ...subject,
+        classId
+    }));
+    const result = await AcademicService.upsertSubjectBulk(payload);
+    res.send(createResponse(result, "Subjects created/updated successfully"));
+});
+
+export const getSubjectsByClass = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { classId } = req.params;
+        const { sessionId, subjectType } = req.query;
+        const result = await AcademicService.getSubjectsByClass({
+            classId,
+            sessionId: sessionId as string | undefined,
+            subjectType: subjectType as string | undefined
+        });
+
+        res.send(createResponse(result, "Subjects fetched successfully"));
+    }
+);
+
+
 export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
     const result = [];

@@ -296,7 +296,7 @@ export const upsertSubjectBulk = [
         .isString().withMessage("Subject ID must be a string"),
 
     body("subjects.*.classId")
-        .notEmpty().withMessage("Class ID is required")
+        .optional()
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 
     body("subjects.*.sessionId")
@@ -338,7 +338,6 @@ export const upsertSubjectBulk = [
         .optional()
         .isString().withMessage("ISBN must be a string"),
 ];
-
 
 // create class : step - 3
 export const upsertClassFeeStructure = [
@@ -383,7 +382,6 @@ export const upsertClassFeeStructure = [
         .isIn(Object.values(Enum.ActiveStatus)).withMessage("Invalid status value"),
 ];
 
-
 export const updateClass = [
     param("classId")
         .notEmpty().withMessage("Class ID is required")
@@ -407,6 +405,22 @@ export const getAllClass = [
     query("sessionId")
         .notEmpty().withMessage("Session ID is required")
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
+];
+
+// class subjects
+export const getSubjectsByClass = [
+    param("classId")
+        .notEmpty().withMessage("Class ID is required")
+        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
+
+    query("sessionId")
+        .optional()
+        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
+
+    query("subjectType")
+        .optional()
+        .isIn(Object.values(Enum.SubjectType))
+        .withMessage("Invalid subject type")
 ];
 
 // ------------ Class Timetable Validation --------------

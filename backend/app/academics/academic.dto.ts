@@ -34,6 +34,11 @@ export interface ISubject extends BaseSchema {
 
 export interface ICreateSubject extends Omit<ISubject, "_id" | "createdAt" | "updatedAt"> { }
 
+export interface GetSubjectsByClassParams {
+    classId: string;
+    sessionId?: string;
+    subjectType?: string;
+}
 
 export interface IClass extends BaseSchema {
     name: string;

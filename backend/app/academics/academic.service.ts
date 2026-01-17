@@ -22,6 +22,81 @@ export const createSubject = async (data: ClassDto.ICreateSubject) => {
   return newSubject;
 };
 
+export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) => {
+  const bulkOperations: any[] = [];
+  const createdIds: any[] = [];
+  const updatedIds: any[] = [];
+  for (const subject of subjects) {
+    if (subject._id) {
+      updatedIds.push(subject._id);
+      bulkOperations.push({
+        updateOne: {
+          filter: { _id: subject._id },
+          update: {
+            $set: {
+              name: subject.name,
+              classId: subject.classId,
+              sessionId: subject.sessionId,
+              subjectType: subject.subjectType,
+              syllabus: subject.syllabus,
+              books: subject.books || [],
+            }
+          }
+        }
+      });
+    } else {
+      const subjectId = await AcademicUtils.generateUniqueSubjectId(subject.name!);
+      bulkOperations.push({
+        insertOne: {
+          document: {
+            ...subject,
+            subjectId
+          }
+        }
+      });
+    }
+  }
+
+  if (!bulkOperations.length) {
+    throw createHttpError(400, "No subjects to upsert");
+  }
+  const writeResult = await subjectSchema.bulkWrite(bulkOperations);
+  const insertedIds = Object.values(writeResult.insertedIds || {});
+  createdIds.push(...insertedIds);
+  const subjectsData = await subjectSchema.find({
+    _id: { $in: [...createdIds, ...updatedIds] }
+  });
+  return subjectsData;
+};
+
+export const getSubjectsByClass = async ({
+  classId,
+  sessionId,
+  subjectType
+}: ClassDto.GetSubjectsByClassParams) => {
+
+  const filter: any = {
+    classId
+  };
+
+  if (sessionId) {
+    filter.sessionId = sessionId;
+  }
+
+  if (subjectType) {
+    filter.subjectType = subjectType;
+  }
+
+  const subjects = await subjectSchema
+    .find(filter)
+    .sort({ createdAt: 1 });
+
+  if (!subjects.length) {
+    return [];
+  }
+  return subjects;
+};
+
 export const editSubject = async (subjectId: string, data: Partial<ClassDto.ISubject>) => {
   const subject = await subjectSchema.findByIdAndUpdate(subjectId, data, { new: true });
   if (!subject) {
