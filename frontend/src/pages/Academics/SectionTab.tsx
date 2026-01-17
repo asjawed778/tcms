@@ -4,7 +4,7 @@ import {
   useDeleteSectionMutation,
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { Box } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -200,12 +200,12 @@ const SectionTab = () => {
               SubModuleName.SECTION,
               Operation.CREATE
             ) && (
-              <CustomButton
-                label="Add Section"
-                startIcon={<Add />}
-                onClick={() => setOpenAddSection(true)}
-              />
-            )}
+                <CustomButton
+                  label="Add Section"
+                  startIcon={<Add />}
+                  onClick={() => setOpenAddSection(true)}
+                />
+              )}
           </Box>
         </Box>
         <TableWrapper

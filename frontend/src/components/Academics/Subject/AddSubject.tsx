@@ -6,7 +6,7 @@ import { cleanData } from "@/utils/helper";
 import {
   useAddSubjectMutation,
   useUpdateSubjectMutation,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { Box, Grid, Typography, useTheme } from "@mui/material";
@@ -83,14 +83,14 @@ const AddSubject: React.FC<AddSubjectProps> = ({
         customToast({
           type: "success",
           message: "Subject Added successfully!"
-        });        
+        });
         refetch?.();
       }
     } catch (error: any) {
       customToast({
-          type: "success",
-          message: error?.data?.message || "Something went wrong. Please try again!"
-        })
+        type: "success",
+        message: error?.data?.message || "Something went wrong. Please try again!"
+      })
     } finally {
       reset();
       onClose?.();

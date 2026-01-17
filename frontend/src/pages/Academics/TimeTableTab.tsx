@@ -1,6 +1,6 @@
 import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
-import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academics.Api";
+import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { Alarm } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
@@ -67,7 +67,7 @@ const TimeTableTab: React.FC = () => {
       );
 
       if (matchedClass?.sections) {
-        const options = matchedClass.sections.map((section:any) => ({
+        const options = matchedClass.sections.map((section: any) => ({
           label: section.name,
           value: section._id as string,
         }));
@@ -139,7 +139,7 @@ const TimeTableTab: React.FC = () => {
             onChange={handleClassChange}
             options={classOptions}
             labelPosition="inside"
-            sx={{bgcolor: "#FFF"}}
+            sx={{ bgcolor: "#FFF" }}
           />
           <CustomDropdownField
             label="Select Section"
@@ -149,7 +149,7 @@ const TimeTableTab: React.FC = () => {
             options={sectionOptions}
             disabled={!selectedClass}
             labelPosition="inside"
-            sx={{bgcolor: "#FFF"}}
+            sx={{ bgcolor: "#FFF" }}
           />
         </Box>
 
@@ -165,12 +165,12 @@ const TimeTableTab: React.FC = () => {
             SubModuleName.TIMETABLE,
             Operation.CREATE
           ) && (
-            <CustomButton
-              label="Create Timetable"
-              startIcon={<Alarm />}
-              onClick={handleCreateTimeTable}
-            />
-          )}
+              <CustomButton
+                label="Create Timetable"
+                startIcon={<Alarm />}
+                onClick={handleCreateTimeTable}
+              />
+            )}
         </Box>
       </Box>
 
@@ -193,7 +193,7 @@ const TimeTableTab: React.FC = () => {
         isLoading={isLoading}
         actions={actionsList}
         isError={isError}
-        message={(!selectedClass || !selectedSection)? "Please select Class and Section to view timetable." : ""}
+        message={(!selectedClass || !selectedSection) ? "Please select Class and Section to view timetable." : ""}
       />
     </Box>
   );

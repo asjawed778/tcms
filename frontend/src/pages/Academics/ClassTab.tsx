@@ -1,13 +1,12 @@
 import CustomButton from "@/components/ui/CustomButton";
 import TableWrapper from "@/components/ui/TableWrapper";
 import { useCan } from "@/hooks/useCan";
-import { useGetAllClassQuery } from "@/services/academics.Api";
+import { useGetAllClassQuery } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import { Add } from "@mui/icons-material";
 import { Box } from "@mui/material";
-import { useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const classColumns = [
   { key: "sno.", label: "S.No." },
@@ -25,7 +24,6 @@ const actionsList = [
 ];
 const ClassTab = () => {
   const navigate = useNavigate();
-  const location = useLocation();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
@@ -35,7 +33,6 @@ const ClassTab = () => {
     data: classData,
     isFetching,
     isError,
-    refetch,
   } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id as string,
@@ -55,16 +52,10 @@ const ClassTab = () => {
   };
 
   const handleAddFaculty = () => {
-    refetch();
     navigate("/academics/class/create-class", {
       state: { fromClassPage: true },
     });
   };
-  useEffect(() => {
-    if (location.state?.refetch) {
-      refetch();
-    }
-  }, [location.state]);
 
   const updatedClasses =
     classData?.data.classes?.map((cls: any) => ({

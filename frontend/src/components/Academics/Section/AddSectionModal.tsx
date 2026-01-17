@@ -13,7 +13,7 @@ import {
   useUpdateSectionMutation,
   useGetAllClassQuery,
   useAddSectionMutation,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
 import { addSectionSchema } from "../../../validation/yup";
@@ -95,10 +95,11 @@ const AddSection: React.FC<AddSectionProps> = ({
   }, [section, selectedSession?._id, reset]);
 
   const onSubmit = async (data: SectionRequest) => {
-    
+
     try {
       const payload = cleanData({
-         ...data, sessionId: selectedSession?._id }) as SectionRequest;
+        ...data, sessionId: selectedSession?._id
+      }) as SectionRequest;
 
       if (isEditMode && section?._id) {
         await updateSection({ payload, sectionId: section._id }).unwrap();

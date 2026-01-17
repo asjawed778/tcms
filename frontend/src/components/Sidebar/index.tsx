@@ -119,7 +119,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <>
+    <Box sx={{ display: "flex", position: "relative" }}>
       {isMobile && (
         <Box sx={{ p: 1 }}>
           <IconButton onClick={() => dispatch(setMobileOpen(true))}>
@@ -137,22 +137,6 @@ const Sidebar: React.FC = () => {
             position: "relative",
           }}
         >
-          {!isMobile && (
-            <IconButton
-              onClick={handleToggle}
-              size="small"
-              sx={{
-                position: "absolute",
-                right: "-12px",
-                top: "20px",
-                zIndex: 2,
-                backgroundColor: colors.sidebarBg,
-                boxShadow: 2,
-              }}
-            >
-              {open ? <ChevronLeft /> : <ChevronRight />}
-            </IconButton>
-          )}
 
           <List sx={{ mt: 1, flexGrow: 1 }}>
             {sidebarItems.map(({ label, icon, path, children }) => {
@@ -293,7 +277,32 @@ const Sidebar: React.FC = () => {
           </List>
         </Box>
       </Drawer>
-    </>
+      {!isMobile && (
+        <IconButton
+          onClick={handleToggle}
+          size="small"
+          sx={(theme) => ({
+            position: "absolute",
+            top: "50%",
+            left: open ? drawerWidth - 12 : collapsedWidth - 12,
+            transform: "translateY(-50%)",
+            zIndex: 2000,
+            backgroundColor: colors.sidebarBg,
+            boxShadow: 2,
+
+            transition: theme.transitions.create(
+              ["left", "transform", "background-color"],
+              {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.standard,
+              }
+            ),
+          })}
+        >
+          {open ? <ChevronLeft /> : <ChevronRight />}
+        </IconButton>
+      )}
+    </Box>
   );
 };
 

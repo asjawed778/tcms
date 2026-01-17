@@ -21,7 +21,7 @@ import {
   useCreateClassMutation,
   useUpdateclassMutation,
   useUpdateFeeStructureMutation,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import BasicDetails from "./BasicDetails";
 import FeeStructure from "./FeeStructure";
@@ -240,7 +240,7 @@ const CreateClass = () => {
             >
               {activeStep > 0 && (
                 <CustomButton
-                label="Back"
+                  label="Back"
                   variant="contained"
                   startIcon={<ArrowBack />}
                   onClick={() => setActiveStep((prev) => prev - 1)}
@@ -261,7 +261,7 @@ const CreateClass = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  endIcon={(activeStep === steps.length - 1 )? "" : <ArrowForward />}
+                  endIcon={(activeStep === steps.length - 1) ? "" : <ArrowForward />}
                   loading={isLoading}
                   sx={{
                     boxShadow: (theme) =>

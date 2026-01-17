@@ -7,7 +7,7 @@ import {
   useDeleteSubjectMutation,
   useGetAllClassQuery,
   useGetAllSubjectQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import toast from "react-hot-toast";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
@@ -219,12 +219,12 @@ const SubjectTab = () => {
               SubModuleName.SUBJECTS,
               Operation.CREATE
             ) && (
-              <CustomButton
-                label="Add Subject"
-                startIcon={<Add />}
-                onClick={handleAddSubject}
-              />
-            )}
+                <CustomButton
+                  label="Add Subject"
+                  startIcon={<Add />}
+                  onClick={handleAddSubject}
+                />
+              )}
             <Tooltip
               title={
                 !tableView ? "Switch to Card View" : "Switch to Table View"
@@ -305,7 +305,7 @@ const SubjectTab = () => {
           title="Add New Subject"
           width="900px"
         >
-          <AddSubject subject={selectedRow} refetch={refetch} onClose={handleModalClose}/>
+          <AddSubject subject={selectedRow} refetch={refetch} onClose={handleModalClose} />
         </ModalWrapper>
       )}
       {openViewSubject && (

@@ -32,7 +32,7 @@ import StudentDetails from "@/components/Student/StudentDetails";
 import {
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import SegmentTabs from "@/components/ui/SegmentTabs";
 import { StudentDetailsResponse } from "@/types/student";
 import toast from "react-hot-toast";
@@ -257,7 +257,7 @@ const Student: React.FC = () => {
   };
   const handleBulkUpload = () => {
     setOpenBulkUpload(true);
-    setMenuOpen(false); 
+    setMenuOpen(false);
   };
   const handleStatusChange = (val: any) => {
     setStatus(val);
