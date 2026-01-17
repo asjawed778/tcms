@@ -197,8 +197,8 @@ export enum FeeApplicableType {
 
 export enum FeeFrequency {
   MONTHLY = "Monthly",
-  QUARTERLY = "Quarterly",
-  HALF_YEARLY = "Half-Yearly",
+  // QUARTERLY = "Quarterly",
+  // HALF_YEARLY = "Half-Yearly",
   YEARLY = "Yearly",
 }
 

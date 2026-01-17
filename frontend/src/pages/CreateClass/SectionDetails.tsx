@@ -44,7 +44,6 @@ const SectionDetails: React.FC = () => {
         bgcolor: "#fff",
         borderRadius: "8px",
         minHeight: "20px",
-        p: 1,
       }}
     >
       {fields.map((field, index) => (
@@ -93,7 +92,8 @@ const SectionDetails: React.FC = () => {
             <Grid size={{ xs: 12, md: 4 }}>
               <CustomDropdownField
                 name={`sections.${index}.facultyName`}
-                label="Select Class Teacher"
+                label="Class Teacher"
+                placeholder="-- Select Class Teacher --"
                 options={[]}
                 // loading={isLoading}
                 required={false}

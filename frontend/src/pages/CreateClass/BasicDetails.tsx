@@ -5,6 +5,7 @@ import React from "react";
 import SectionDetails from "./SectionDetails";
 
 const BasicDetails: React.FC = () => {
+  const styles = getStyles();
   const classNameOptions = Object.entries(ClassName).map(([_, value]) => ({
     label: value,
     value: value,
@@ -13,38 +14,27 @@ const BasicDetails: React.FC = () => {
     ([_, value]) => ({
       label: value,
       value: value,
-    })
+    }),
   );
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        width: "100%",
-        bgcolor: "#fff",
-        borderRadius: "8px",
-        minHeight: "20px",
-        p: 1,
-      }}
-    >
+    <Grid container spacing={2} sx={styles.wrapper}>
       <Grid size={{ md: 12 }}>
-        <Typography fontWeight={600} sx={{ fontSize: "18px" }}>
-          Basic Details
-        </Typography>
+        <Typography sx={styles.title}>Basic Details</Typography>
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="name"
           label="Class Name"
+          placeholder="-- Select Class --"
           options={classNameOptions}
         />
       </Grid>
       <Grid size={{ xs: 12, md: 6 }}>
         <CustomDropdownField
           name="courseStream"
-          label="Select Course Stream"
-          required={false}
+          label="Course Stream"
+          placeholder="-- Select Course Stream --"
           options={courseStreamOptions}
         />
       </Grid>
@@ -55,3 +45,14 @@ const BasicDetails: React.FC = () => {
   );
 };
 export default BasicDetails;
+
+const getStyles = () => ({
+  wrapper: {
+    width: "100%",
+    bgcolor: "#fff",
+    borderRadius: "8px",
+    minHeight: "20px",
+    p: 1,
+  },
+  title: { fontSize: "18px", fontWeight: 600 },
+});

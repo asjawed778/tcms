@@ -45,6 +45,7 @@ interface CustomInputFieldProps<T extends FieldValues = FieldValues>
   minValue?: number;
   maxValue?: number;
   sx?: SxProps<Theme>;
+  step?: number;
 }
 
 const StyledTextField = styled(TextField)(({ theme }) => {
@@ -124,6 +125,7 @@ function CustomInputField<T extends FieldValues>({
   maxValue,
   error: propError,
   helperText: propHelperText,
+  step = 1,
   sx = {},
   ...rest
 }: CustomInputFieldProps<T>) {
@@ -231,7 +233,7 @@ function CustomInputField<T extends FieldValues>({
               isDate && maxDate
                 ? new Date(maxDate).toISOString().split("T")[0]
                 : maxValue,
-            step: "1",
+            step,
             readOnly,
           }}
           sx={{

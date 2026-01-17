@@ -8,6 +8,7 @@ import {
   Box,
   CardContent,
   Container,
+  useTheme,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -29,6 +30,8 @@ import PageHeader from "@/components/common/PageHeader";
 import { bulkSubjectSchema } from "@/validation/academics";
 import { ArrowBack, ArrowForward, Close } from "@mui/icons-material";
 import SubjectDetails from "./SubjectDetails";
+import { customToast } from "@/components/common/customToast";
+import { FeeFrequency } from "@/utils/enum";
 
 const steps = [
   {
@@ -49,11 +52,12 @@ const steps = [
 ];
 
 const CreateClass = () => {
+  const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const [classId, setClassId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
   const navigate = useNavigate();
   const { id: editClassId } = useParams();
@@ -71,6 +75,46 @@ const CreateClass = () => {
   const methods = useForm({
     // resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
     mode: "onChange",
+    shouldUnregister: false,
+    defaultValues: {
+      name: "",
+      courseStream: "",
+      session: "",
+      effectiveFrom: new Date(),
+      sections: [
+        {
+          name: "",
+          capacity: "",
+          facultyName: "",
+        },
+      ],
+      subjects: [
+        {
+          name: "",
+          subjectType: "",
+          subjectCategory: "",
+          syllabus: "",
+          books: [
+            {
+              coverPhoto: "",
+              title: "",
+              author: "",
+              publication: "",
+              ISBN: "",
+            },
+          ],
+        },
+      ],
+      structures: [
+        {
+          amount: "",
+          frequency: FeeFrequency.MONTHLY,
+          isOptional: false,
+          type: "",
+        },
+      ],
+      totalAmount: 0,
+    },
   });
 
   useEffect(() => {
@@ -81,30 +125,40 @@ const CreateClass = () => {
 
   // const stepApis = [
   //   async (data: any) => {
-  //     const { sections } = data;
-  //     const classResponse = await createClass({
-  //       payload: {
-  //         name: data.name,
-  //         courseStream: data.courseStream,
-  //         session: selectedSession?._id,
-  //       },
-  //     }).unwrap();
-
-  //     if (!classResponse.success) {
-  //       toast.error(classResponse.message);
-  //       return classResponse;
-  //     }
-  //     const classId = classResponse.data._id;
-  //     setClassId(classId);
-  //     if (sections && sections?.length > 0) {
-  //       const sectionPayload = sections.map((sec: any) => ({
-  //         ...sec,
-  //         classId,
-  //         sessionId: selectedSession?._id,
-  //       }));
-  //       await addSection({
-  //         payload: { sections: cleanData(sectionPayload) },
+  //     try {
+  //       const { sections } = data;
+  //       const classResponse = await createClass({
+  //         payload: {
+  //           name: data.name,
+  //           courseStream: data.courseStream,
+  //           session: selectedSession?._id,
+  //         },
   //       }).unwrap();
+
+  //       if (!classResponse.success) {
+  //         toast.error(classResponse.message);
+  //         return classResponse;
+  //       }
+  //       const classId = classResponse.data._id;
+  //       setClassId(classId);
+  //       if (sections && sections?.length > 0) {
+  //         const sectionPayload = sections.map((sec: any) => ({
+  //           ...sec,
+  //           classId,
+  //           sessionId: selectedSession?._id,
+  //         }));
+  //         await addSection({
+  //           payload: { sections: cleanData(sectionPayload) },
+  //         }).unwrap();
+  //       }
+  //     } catch (error: any) {
+  //       const errorMsg =
+  //         error?.data?.message || "Fail to create fee structure!";
+  //       customToast({
+  //         type: "error",
+  //         message: errorMsg,
+  //       });
+  //       throw error;
   //     }
   //   },
   //   async (data: any) => {
@@ -133,19 +187,33 @@ const CreateClass = () => {
   //       toast.error("No subjects to assign. Please add atleast one subject.");
   //       return { success: true };
   //     }
-  //     await updateClass({ classId, payload: allIds });
+  //     await updateClass({ classId, payload: allIds }).unwrap();
   //   },
   //   async (data: any) => {
-  //     const { effectiveFrom, remarks, structures } = data;
-  //     const payload = {
-  //       effectiveFrom,
-  //       remarks,
-  //       structures,
-  //       session: selectedSession?._id,
-  //     };
-  //     await updateFeeStructure({ classId, payload: cleanData(payload) });
+  //     try {
+  //       const { effectiveFrom, remarks, structures } = data;
+  //       const payload = {
+  //         effectiveFrom,
+  //         remarks,
+  //         structures,
+  //         session: selectedSession?._id,
+  //       };
+  //       await updateFeeStructure({
+  //         classId,
+  //         payload: cleanData(payload),
+  //       }).unwrap();
+  //     } catch (error: any) {
+  //       const errorMsg =
+  //         error?.data?.message || "Fail to create fee structure!";
+  //       customToast({
+  //         type: "error",
+  //         message: errorMsg,
+  //       });
+  //       throw error;
+  //     }
   //   },
   // ];
+
   const stepApis = [
     async (data: any) => {
       console.log("step 1 data: ", data);
@@ -173,12 +241,15 @@ const CreateClass = () => {
       if (activeStep < steps.length - 1) {
         setActiveStep((prev) => prev + 1);
       } else {
-        toast.success("Student details added successfully!");
+        customToast({
+          type: "success",
+          message: "Class create successfully!",
+        });
         navigate("/dashboard/academics");
       }
     } catch (error: any) {
       console.error("Error: ", error);
-      toast.error(error?.data?.message || "Step submission failed!");
+      // toast.error(error?.data?.message || "Step submission failed!");
     }
   };
 
@@ -201,11 +272,8 @@ const CreateClass = () => {
 
   return (
     <Box mt="52px">
-      <PageHeader
-        title={editClassId ? "Update Class" : "Create New Class"}
-        backTo="/dashboard/academics?tab=class"
-      />
-      <Container maxWidth="lg" sx={{ py: 2 }}>
+      <PageHeader backTo="/dashboard/academics?tab=class" />
+      <Container maxWidth="md" sx={{ py: 2 }}>
         <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
           {steps.map((step, index) => (
             <Step key={index} onClick={() => handleStepClick(index)}>
@@ -245,7 +313,7 @@ const CreateClass = () => {
                   startIcon={<ArrowBack />}
                   onClick={() => setActiveStep((prev) => prev - 1)}
                   sx={{
-                    boxShadow: (theme) =>
+                    boxShadow: 
                       `0px 8px 12px ${theme.palette.primary.main}40`,
                   }}
                 />
@@ -261,7 +329,9 @@ const CreateClass = () => {
                   type="submit"
                   variant="contained"
                   color="primary"
-                  endIcon={(activeStep === steps.length - 1) ? "" : <ArrowForward />}
+                  endIcon={
+                    activeStep === steps.length - 1 ? "" : <ArrowForward />
+                  }
                   loading={isLoading}
                   sx={{
                     boxShadow: (theme) =>

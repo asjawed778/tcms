@@ -196,7 +196,7 @@ export const documentUploadSchema = yup.object({
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
 
-  courseStream: yup.string().optional(),
+  courseStream: yup.string().required("Course stream is required"),
   sections: yup
     .array()
     .min(1, "At least one section is required")
@@ -215,7 +215,7 @@ export const basicDetailsSchema = yup.object({
     ),
 });
 export const feeStructureSchema = yup.object({
-  effectiveFrom: yup.date().required("Effective date is required"),
+  effectiveFrom: yup.string().required("Effective date is required"),
   structures: yup
     .array()
     .of(

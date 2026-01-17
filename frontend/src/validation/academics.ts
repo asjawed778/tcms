@@ -34,9 +34,6 @@ export const bulkSubjectSchema = yup.object({
         name: yup.string().required("Subject name is required"),
         subjectType: yup.string().required("Subject type is required"),
         subjectCategory: yup.string().required("Subject category is required"),
-        publication: yup.string().optional(),
-        writer: yup.string().optional(),
-        ISBN: yup.string().optional(),
         syllabus: yup.string().optional(),
       })
     )

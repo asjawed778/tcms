@@ -10,37 +10,72 @@ import {
 } from "@mui/material";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
-import { useMemo, useState } from "react";
-import { Controller, useFieldArray, useFormContext } from "react-hook-form";
+import { useEffect, useMemo, useState } from "react";
+import {
+  Controller,
+  useFieldArray,
+  useFormContext,
+  useWatch,
+} from "react-hook-form";
 import { Add, CalendarMonth, Delete } from "@mui/icons-material";
 import CustomButton from "@/components/ui/CustomButton";
+import { ClassName, FeeFrequency } from "@/utils/enum";
+import { useAppSelector } from "@/store/store";
 
-const frequencies = [
-  { label: "Monthly (Recurring)", value: "Monthly" },
-  { label: "One-Time (Yearly)", value: "One-Time" },
-];
+const feeFrequencyOptions = Object.values(FeeFrequency).map((val) => ({
+  label: val,
+  value: val,
+}));
 
 const FeeStructure = () => {
   const [active, setActive] = useState(true);
-  const { control, getValues } = useFormContext();
+  const { control, setValue } = useFormContext();
   const styles = getStyles();
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession,
+  );
 
+  const classNameOptions = Object.entries(ClassName).map(([_, value]) => ({
+    label: value,
+    value: value,
+  }));
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "fees",
+    name: "structures",
   });
 
-  const fees = fields.map((f) => ({ ...f }));
+  const watchedStructures = useWatch({
+    control,
+    name: "structures",
+  });
+  const totalAmount = useMemo(() => {
+    if (!watchedStructures) return 0;
+    return watchedStructures.reduce((total, item) => {
+      const amount = Number(item?.amount || 0);
+      if (item?.frequency === "Monthly") {
+        return total + amount * 12;
+      }
+      if (item?.frequency === "Yearly") {
+        return total + amount;
+      }
+      return total;
+    }, 0);
+  }, [watchedStructures]);
 
-  const totalMonthly = useMemo(() => {
-    return fees
-      .filter((f) => f.frequency === "Monthly")
-      .reduce((acc, f) => acc + Number(f.amount || 0), 0);
-  }, [fees]);
+  useEffect(() => {
+    if (selectedSession?.session) {
+      setValue("session", selectedSession.session);
+    }
+  }, [selectedSession, setValue]);
+  useEffect(() => {
+    setValue("totalAmount", totalAmount, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  }, [totalAmount, setValue]);
 
   return (
     <Box>
-      {/* Step 1 */}
       <Box sx={styles.sectionWrapper}>
         <Box sx={styles.headerRow}>
           <Box sx={styles.stepTitle}>
@@ -49,7 +84,6 @@ const FeeStructure = () => {
               Basic Information
             </Typography>
           </Box>
-
           <FormControlLabel
             control={
               <Switch
@@ -72,9 +106,7 @@ const FeeStructure = () => {
             }
           />
         </Box>
-
         <Divider sx={styles.divider} />
-
         <Grid container spacing={2}>
           <Grid size={{ xs: 12, md: 4 }}>
             <CustomDropdownField
@@ -82,26 +114,23 @@ const FeeStructure = () => {
               name="name"
               required
               placeholder="Select Class"
-              options={[
-                { label: "Grade 9", value: "9" },
-                { label: "Grade 10", value: "10" },
-              ]}
+              options={classNameOptions}
+              disabled
             />
           </Grid>
-
           <Grid size={{ xs: 12, md: 4 }}>
             <CustomDropdownField
               label="Academic Session"
-              name="session"
-              required
-              placeholder="Select Session"
+              value={selectedSession?.session}
               options={[
-                { label: "2023-2024", value: "2023-2024" },
-                { label: "2024-2025", value: "2024-2025" },
+                {
+                  label: selectedSession?.session as string,
+                  value: selectedSession?.session as string,
+                },
               ]}
+              disabled
             />
           </Grid>
-
           <Grid size={{ xs: 12, md: 4 }}>
             <CustomInputField
               label="Effective From"
@@ -112,15 +141,12 @@ const FeeStructure = () => {
           </Grid>
         </Grid>
       </Box>
-
-      {/* Step 2 */}
       <Box sx={styles.stepHeader}>
         <Chip label="2" sx={styles.stepChip} />
         <Typography fontSize={18} fontWeight={600}>
           Fee Structure Configuration
         </Typography>
       </Box>
-
       <Box sx={styles.feeWrapper}>
         <Box sx={styles.planHeader}>
           <CalendarMonth color="primary" />
@@ -128,51 +154,51 @@ const FeeStructure = () => {
             Standard Plan
           </Typography>
         </Box>
-
         <Divider />
-
-        <Grid container spacing={6} sx={styles.tableHeader}>
+        <Grid container spacing={3} sx={styles.tableHeader}>
           <Grid size={{ xs: 3 }}>Fee Type</Grid>
           <Grid size={{ xs: 3 }}>Amount</Grid>
           <Grid size={{ xs: 2 }}>Optional?</Grid>
           <Grid size={{ xs: 3 }}>Frequency</Grid>
           <Grid size={{ xs: 1 }}>Action</Grid>
         </Grid>
-
         <Divider sx={{ mb: 1 }} />
-
         <Box sx={styles.rowsWrapper}>
           {fields.map((field, index) => (
             <Grid
               container
-              spacing={6}
+              spacing={4}
               alignItems="center"
               key={field.id}
               sx={styles.row}
             >
               <Grid size={{ xs: 3 }}>
                 <CustomInputField
-                  name={`fees.${index}.type`}
+                  name={`structures.${index}.type`}
                   placeholder="Enter fee type"
                   variant="standard"
-                  InputProps={{ disableUnderline: true }}
+                  InputProps={{
+                    sx: styles.standardStyles,
+                  }}
                   required={false}
                 />
               </Grid>
-
               <Grid size={{ xs: 3 }}>
                 <CustomInputField
-                  name={`fees.${index}.amount`}
+                  name={`structures.${index}.amount`}
                   placeholder="Enter amount"
                   type="number"
                   required={false}
+                  variant="standard"
+                  InputProps={{
+                    sx: styles.standardStyles,
+                  }}
                 />
               </Grid>
-
               <Grid size={{ xs: 2 }}>
                 <Controller
                   control={control}
-                  name={`fees.${index}.optional`}
+                  name={`structures.${index}.isOptional`}
                   render={({ field }) => (
                     <Switch
                       checked={field.value}
@@ -181,16 +207,14 @@ const FeeStructure = () => {
                   )}
                 />
               </Grid>
-
               <Grid size={{ xs: 3 }}>
                 <CustomDropdownField
-                  name={`fees.${index}.frequency`}
-                  options={frequencies}
+                  name={`structures.${index}.frequency`}
+                  options={feeFrequencyOptions}
                   showClearIcon={false}
                   required={false}
                 />
               </Grid>
-
               <Grid size={{ xs: 1 }}>
                 <IconButton onClick={() => remove(index)}>
                   <Delete />
@@ -199,7 +223,6 @@ const FeeStructure = () => {
             </Grid>
           ))}
         </Box>
-
         <Box sx={styles.addButtonWrapper}>
           <CustomButton
             label="Add Fee Details"
@@ -208,24 +231,21 @@ const FeeStructure = () => {
             onClick={() =>
               append({
                 type: "",
-                amount: 0,
+                amount: null,
                 optional: false,
-                frequency: "Monthly",
+                frequency: FeeFrequency.MONTHLY,
               })
             }
             sx={styles.transparentBtn}
           />
         </Box>
-
         <Divider />
-
         <Box sx={styles.totalWrapper}>
           <Typography variant="subtitle1" fontWeight={600}>
-            Total Monthly Amount: ₹{totalMonthly.toFixed(2)}
+            Total Amount: ₹{totalAmount.toFixed(2)}
           </Typography>
         </Box>
       </Box>
-
       <Box mt={2}>
         <CustomInputField
           name="remarks"
@@ -317,5 +337,17 @@ const getStyles = () => ({
     justifyContent: "flex-end",
     mt: 1,
     p: 0.5,
+  },
+  standardStyles: {
+    "&:before": {
+      borderBottom: "none",
+    },
+    "&:hover:not(.Mui-disabled):before": {
+      borderBottom: "none",
+    },
+    "&.Mui-focused:after": {
+      transform: "scaleX(1)",
+      borderBottom: "2px solid primary",
+    },
   },
 });

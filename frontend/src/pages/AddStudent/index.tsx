@@ -270,7 +270,6 @@ const AddStudent = () => {
   return (
     <Box mt="52px">
       <PageHeader
-        title={studentId ? "Update Student" : "Add New Student"}
         backTo="/dashboard/student"
       />
       <Container maxWidth="lg" sx={{ py: 2 }}>

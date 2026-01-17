@@ -7,22 +7,21 @@ import {
   Divider,
   Theme,
   useTheme,
+  Avatar,
 } from "@mui/material";
 import { ArrowBack } from "@mui/icons-material";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "@/components/ui/CustomButton";
-import { useAppTheme } from "@/context/ThemeContext";
+import logo from "@/assets/images/logo.png";
 
 type PageHeaderProps = {
-  title: string;
   backTo: string;
   backLabel?: string;
 };
 
 const PageHeader: React.FC<PageHeaderProps> = ({
-  title,
   backTo,
-  backLabel = "Back to dashboard",
+  backLabel = "Return to dashboard",
 }) => {
   const navigate = useNavigate();
   const theme = useTheme();
@@ -31,6 +30,20 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   return (
     <AppBar position="fixed" elevation={0} sx={styles.appBar}>
       <Toolbar sx={styles.toolbar}>
+        <Box display="flex" alignItems="center" gap={2}>
+          <Avatar src={logo} alt="Logo" sx={{ width: 36, height: 36 }} />
+          <Typography
+            variant="h6"
+            sx={{
+              cursor: "pointer",
+              fontWeight: 800,
+            }}
+            onClick={() => navigate("/")}
+          >
+            TCMS
+          </Typography>
+        </Box>
+        <Divider orientation="vertical" flexItem sx={styles.divider} />
         <CustomButton
           startIcon={<ArrowBack />}
           variant="text"
@@ -39,12 +52,6 @@ const PageHeader: React.FC<PageHeaderProps> = ({
         >
           {backLabel}
         </CustomButton>
-
-        <Divider orientation="vertical" flexItem sx={styles.divider} />
-
-        <Box>
-          <Typography sx={styles.title}>{title}</Typography>
-        </Box>
       </Toolbar>
     </AppBar>
   );

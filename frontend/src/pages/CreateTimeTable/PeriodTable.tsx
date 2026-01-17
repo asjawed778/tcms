@@ -94,6 +94,7 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
                     name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`}
                     type="time"
                     required={false}
+                    step={60}
                     onFocus={() => {
                       if (!startValue) {
                         setValue(startField, "08:00", {
@@ -110,6 +111,7 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
                     name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`}
                     type="time"
                     required={false}
+                    step={60}
                     onFocus={() => {
                       if (!endValue) {
                         setValue(endField, "08:45", {

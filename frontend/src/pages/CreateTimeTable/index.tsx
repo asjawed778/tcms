@@ -88,7 +88,6 @@ const CreateTimeTable = () => {
   return (
     <Box mt="52px">
       <PageHeader
-        title={"Create Time Table"}
         backTo="/dashboard/academics?tab=timetable"
       />
       <Box sx={{ py: 2 }}>

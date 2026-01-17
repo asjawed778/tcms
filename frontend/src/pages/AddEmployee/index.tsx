@@ -284,7 +284,6 @@ const AddEmployee = () => {
   return (
     <Box mt="52px">
       <PageHeader
-        title={editEmployeeId ? "Update Employee" : "Add New Employee"}
         backTo="/dashboard/employee"
       />
       <Container maxWidth="lg" sx={{ py: 2 }}>
