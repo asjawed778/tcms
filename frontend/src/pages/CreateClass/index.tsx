@@ -6,9 +6,9 @@ import {
   Step,
   StepLabel,
   Box,
-  CardContent,
   Container,
   useTheme,
+  Theme,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -54,6 +54,7 @@ const steps = [
 const CreateClass = () => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
+  const styles = getStyles(theme, activeStep);
   const [classId, setClassId] = useState<string | null>(null);
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const selectedSession = useAppSelector(
@@ -61,7 +62,6 @@ const CreateClass = () => {
   );
   const navigate = useNavigate();
   const { id: editClassId } = useParams();
-
   const [createClass, { isLoading: creatingClass }] = useCreateClassMutation();
   const [addSection, { isLoading: addingSection }] =
     useAddBulkSectionMutation();
@@ -73,7 +73,7 @@ const CreateClass = () => {
 
   const currentSchema = steps[activeStep].schema;
   const methods = useForm({
-    // resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
+    resolver: yupResolver(currentSchema as yup.ObjectSchema<any>),
     mode: "onChange",
     shouldUnregister: false,
     defaultValues: {
@@ -123,108 +123,94 @@ const CreateClass = () => {
     }
   }, [editClassId]);
 
-  // const stepApis = [
-  //   async (data: any) => {
-  //     try {
-  //       const { sections } = data;
-  //       const classResponse = await createClass({
-  //         payload: {
-  //           name: data.name,
-  //           courseStream: data.courseStream,
-  //           session: selectedSession?._id,
-  //         },
-  //       }).unwrap();
-
-  //       if (!classResponse.success) {
-  //         toast.error(classResponse.message);
-  //         return classResponse;
-  //       }
-  //       const classId = classResponse.data._id;
-  //       setClassId(classId);
-  //       if (sections && sections?.length > 0) {
-  //         const sectionPayload = sections.map((sec: any) => ({
-  //           ...sec,
-  //           classId,
-  //           sessionId: selectedSession?._id,
-  //         }));
-  //         await addSection({
-  //           payload: { sections: cleanData(sectionPayload) },
-  //         }).unwrap();
-  //       }
-  //     } catch (error: any) {
-  //       const errorMsg =
-  //         error?.data?.message || "Fail to create fee structure!";
-  //       customToast({
-  //         type: "error",
-  //         message: errorMsg,
-  //       });
-  //       throw error;
-  //     }
-  //   },
-  //   async (data: any) => {
-  //     const subjects = data.subjects || [];
-  //     const manualSubjects = subjects.filter((s: any) => !s.preDefinedId);
-  //     const predefinedSubjects = subjects.filter((s: any) => s.preDefinedId);
-  //     let manualIds: string[] = [];
-  //     let bulkResponse;
-  //     if (manualSubjects && manualSubjects?.length > 0) {
-  //       const bulkPayload = manualSubjects.map((sub: any) => ({
-  //         ...sub,
-  //         sessionId: selectedSession?._id,
-  //       }));
-
-  //       bulkResponse = await addBulkSubject({
-  //         payload: { subjects: cleanData(bulkPayload) },
-  //       }).unwrap();
-  //       manualIds = bulkResponse?.data?.map((s: any) => s._id);
-  //     }
-  //     const predefinedSubjectsId = predefinedSubjects
-  //       .filter((s: any) => s.preDefinedId)
-  //       .map((s: any) => s.preDefinedId);
-  //     const allIds = [...manualIds, ...predefinedSubjectsId];
-
-  //     if (allIds.length === 0) {
-  //       toast.error("No subjects to assign. Please add atleast one subject.");
-  //       return { success: true };
-  //     }
-  //     await updateClass({ classId, payload: allIds }).unwrap();
-  //   },
-  //   async (data: any) => {
-  //     try {
-  //       const { effectiveFrom, remarks, structures } = data;
-  //       const payload = {
-  //         effectiveFrom,
-  //         remarks,
-  //         structures,
-  //         session: selectedSession?._id,
-  //       };
-  //       await updateFeeStructure({
-  //         classId,
-  //         payload: cleanData(payload),
-  //       }).unwrap();
-  //     } catch (error: any) {
-  //       const errorMsg =
-  //         error?.data?.message || "Fail to create fee structure!";
-  //       customToast({
-  //         type: "error",
-  //         message: errorMsg,
-  //       });
-  //       throw error;
-  //     }
-  //   },
-  // ];
-
   const stepApis = [
     async (data: any) => {
-      console.log("step 1 data: ", data);
-    },
+      try {
+        const { sections } = data;
+        const classResponse = await createClass({
+          payload: {
+            name: data.name,
+            courseStream: data.courseStream,
+            session: selectedSession?._id,
+          },
+        }).unwrap();
 
-    async (data: any) => {
-      console.log("step 2 data: ", data);
+        if (!classResponse.success) {
+          toast.error(classResponse.message);
+          return classResponse;
+        }
+        const classId = classResponse.data._id;
+        setClassId(classId);
+        if (sections && sections?.length > 0) {
+          const sectionPayload = sections.map((sec: any) => ({
+            ...sec,
+            classId,
+            sessionId: selectedSession?._id,
+          }));
+          await addSection({
+            payload: { sections: cleanData(sectionPayload) },
+          }).unwrap();
+        }
+      } catch (error: any) {
+        const errorMsg =
+          error?.data?.message || "Fail to create fee structure!";
+        customToast({
+          type: "error",
+          message: errorMsg,
+        });
+        throw error;
+      }
     },
-
     async (data: any) => {
-      console.log("step 3 data: ", data);
+      const subjects = data.subjects || [];
+      const manualSubjects = subjects.filter((s: any) => !s.preDefinedId);
+      const predefinedSubjects = subjects.filter((s: any) => s.preDefinedId);
+      let manualIds: string[] = [];
+      let bulkResponse;
+      if (manualSubjects && manualSubjects?.length > 0) {
+        const bulkPayload = manualSubjects.map((sub: any) => ({
+          ...sub,
+          sessionId: selectedSession?._id,
+        }));
+
+        bulkResponse = await addBulkSubject({
+          payload: { subjects: cleanData(bulkPayload) },
+        }).unwrap();
+        manualIds = bulkResponse?.data?.map((s: any) => s._id);
+      }
+      const predefinedSubjectsId = predefinedSubjects
+        .filter((s: any) => s.preDefinedId)
+        .map((s: any) => s.preDefinedId);
+      const allIds = [...manualIds, ...predefinedSubjectsId];
+
+      if (allIds.length === 0) {
+        toast.error("No subjects to assign. Please add atleast one subject.");
+        return { success: true };
+      }
+      await updateClass({ classId, payload: allIds }).unwrap();
+    },
+    async (data: any) => {
+      try {
+        const { effectiveFrom, remarks, structures } = data;
+        const payload = {
+          effectiveFrom,
+          remarks,
+          structures,
+          session: selectedSession?._id,
+        };
+        await updateFeeStructure({
+          classId,
+          payload: cleanData(payload),
+        }).unwrap();
+      } catch (error: any) {
+        const errorMsg =
+          error?.data?.message || "Fail to create fee structure!";
+        customToast({
+          type: "error",
+          message: errorMsg,
+        });
+        throw error;
+      }
     },
   ];
 
@@ -288,37 +274,20 @@ const CreateClass = () => {
             noValidate
             style={{ backgroundColor: "#FFF", borderRadius: "8px" }}
           >
-            <Box
-              sx={{
-                p: 2,
-                minHeight: "70vh",
-              }}
-            >
+            <Box p={2} minHeight="70vh">
               <StepComponent />
             </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: activeStep > 0 ? "space-between" : "flex-end",
-                alignItems: "center",
-                flexWrap: "wrap",
-                gap: 2,
-                p: 2,
-              }}
-            >
+            <Box sx={styles.buttonWrapper}>
               {activeStep > 0 && (
                 <CustomButton
                   label="Back"
                   variant="contained"
                   startIcon={<ArrowBack />}
                   onClick={() => setActiveStep((prev) => prev - 1)}
-                  sx={{
-                    boxShadow: 
-                      `0px 8px 12px ${theme.palette.primary.main}40`,
-                  }}
+                  sx={styles.buttonShadow}
                 />
               )}
-              <Box sx={{ display: "flex", gap: 2 }}>
+              <Box display="flex" gap={2}>
                 <CustomButton
                   label="Exit"
                   variant="outlined"
@@ -333,10 +302,7 @@ const CreateClass = () => {
                     activeStep === steps.length - 1 ? "" : <ArrowForward />
                   }
                   loading={isLoading}
-                  sx={{
-                    boxShadow: (theme) =>
-                      `0px 8px 12px ${theme.palette.primary.main}40`,
-                  }}
+                  sx={styles.buttonShadow}
                 >
                   {activeStep === steps.length - 1 ? "Submit" : "Save & Next"}
                 </CustomButton>
@@ -350,3 +316,17 @@ const CreateClass = () => {
 };
 
 export default CreateClass;
+
+const getStyles = (theme: Theme, activeStep: number) => ({
+  buttonWrapper: {
+    display: "flex",
+    justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 2,
+    p: 2,
+  },
+  buttonShadow: {
+    boxShadow: `0px 8px 12px ${theme.palette.primary.main}40`,
+  },
+});

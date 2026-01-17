@@ -85,3 +85,28 @@ export const getSubjectColors = (subject: string): SubjectColor => {
       return { color: "#374151", bgcolor: "#E5E7EB" };
   }
 };
+
+export const getStatusColors = (status: string) => {
+  switch (status.toUpperCase()) {
+    case "COMPLETE":
+      return {
+        color: "#269b2eff",
+        bgcolor: "#E6F4EA",
+      };
+    case "INCOMPLETE":
+      return {
+        color: "#E65100",
+        bgcolor: "#FFF4E5",
+      };
+    case "DRAFT":
+      return {
+        color: "#041e45ff",
+        bgcolor: "#e9eef1ff",
+      };
+    default:
+      return {
+        color: "#616161",
+        bgcolor: "#F5F5F5",
+      };
+  }
+};

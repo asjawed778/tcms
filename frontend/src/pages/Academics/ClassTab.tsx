@@ -3,18 +3,153 @@ import TableWrapper from "@/components/ui/TableWrapper";
 import { useCan } from "@/hooks/useCan";
 import { useGetAllClassQuery } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
+import { getStatusColors, getSubjectColors } from "@/utils/academics";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
-import { Add } from "@mui/icons-material";
-import { Box } from "@mui/material";
+import { Add, CheckCircle, Error, Info } from "@mui/icons-material";
+import { Box, Chip, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+const subjects: string[] = [
+  "Mathematics",
+  "Physics",
+  "Chemistry",
+  "Biology",
+  "English",
+  "History",
+  "Geography",
+  "Computer Science",
+  "Economics",
+  "Political Science",
+];
 
-const classColumns = [
-  { key: "sno.", label: "S.No." },
-  { key: "classId", label: "Class Id" },
+const classColumns = () => [
+  {
+    key: "sno.",
+    label: "S.No.",
+  },
+  {
+    key: "classId",
+    label: "Class Id",
+  },
   { key: "name", label: "Class Name" },
+  {
+    key: "totalSubjects",
+    label: "Total Subject",
+    width: "25%",
+    render: (row: any) => {
+      const maxDisplay = 2;
+      const rowSubjects: string[] = subjects || [];
+      const displaySubjects = rowSubjects.slice(0, maxDisplay);
+      const remainingCount = rowSubjects.length - displaySubjects.length;
+      return (
+        <Box sx={{ display: "flex", gap: 0.5, flexWrap: "wrap" }}>
+          {displaySubjects.map((subj) => {
+            const { color, bgcolor } = getSubjectColors(subj);
+            return (
+              <Chip
+                key={subj}
+                label={subj}
+                size="small"
+                sx={{
+                  fontWeight: 600,
+                  color: color,
+                  bgcolor: bgcolor,
+                }}
+              />
+            );
+          })}
+          {remainingCount > 0 && (
+            <Chip
+              label={`+${remainingCount} More`}
+              size="small"
+              sx={{
+                fontWeight: 600,
+                color: "#1976d2",
+                bgcolor: "#E3F2FD",
+                cursor: "pointer",
+                "&:hover": {
+                  color: "#E3F2FD",
+                  bgcolor: "#1976d2",
+                },
+              }}
+              onClick={(e) => {
+                alert("This module is under progress...");
+                e.stopPropagation();
+              }}
+            />
+          )}
+        </Box>
+      );
+    },
+  },
+  {
+    key: "totalSections",
+    label: "Total Section",
+    render: (row: any) => (
+      <Box>
+        <Chip
+          label={
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 0.5,
+              }}
+              onClick={(e) => {
+                e.stopPropagation();
+                alert("This module is under progress...");
+              }}
+            >
+              {row.sectionsCount}
+              <Info
+                fontSize="small"
+                sx={{ color: "text.secondary", cursor: "pointer" }}
+                onClick={(e) => {
+                  alert("This module is under progress...");
+                  e.stopPropagation();
+                }}
+              />
+            </Box>
+          }
+        />
+      </Box>
+    ),
+  },
   { key: "courseStream", label: "Stream" },
-  { key: "totalSubjects", label: "Total Subject" },
-  { key: "totalSections", label: "Total Section" },
+  {
+    key: "status",
+    label: "Status",
+    render: (row: any) => {
+      const { color, bgcolor } = getStatusColors(row.status || "Draft");
+      return (
+        <Chip
+          label={row.status || "Draft"}
+          size="small"
+          sx={{
+            color: color,
+            bgcolor: bgcolor,
+            fontWeight: 600,
+          }}
+        />
+      );
+    },
+  },
+  {
+    key: "feeStructure",
+    label: "Fee Structure",
+    width: "12%",
+    render: (row: any) =>
+      row.feeStructureAdded ? (
+        <Box display="flex" alignItems="center" gap={1}>
+          <CheckCircle fontSize="small" color="success" />
+          <Typography color="success" fontWeight={600}>Linked</Typography>
+        </Box>
+      ) : (
+        <Box display="flex" alignItems="center" gap={1}>
+          <Error fontSize="small" color="error" />
+          <Typography color="error" fontWeight={600}>Missing</Typography>
+        </Box>
+      ),
+  },
 ];
 const actionsList = [
   {
@@ -25,7 +160,7 @@ const actionsList = [
 const ClassTab = () => {
   const navigate = useNavigate();
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
   const can = useCan();
 
@@ -39,7 +174,7 @@ const ClassTab = () => {
     },
     {
       skip: !selectedSession?._id,
-    }
+    },
   );
 
   const handleActionClick = (action: string) => {
@@ -69,7 +204,7 @@ const ClassTab = () => {
         sx={{
           display: "flex",
           justifyContent: "flex-end",
-          mb: 2
+          mb: 2,
         }}
       >
         {can(ModuleName.ACADEMICS, SubModuleName.CLASS, Operation.CREATE) && (
@@ -82,7 +217,7 @@ const ClassTab = () => {
       </Box>
 
       <TableWrapper
-        columns={classColumns}
+        columns={classColumns()}
         rows={updatedClasses || []}
         onActionClick={handleActionClick}
         isLoading={isFetching}

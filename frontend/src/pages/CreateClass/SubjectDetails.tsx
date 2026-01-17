@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import { Grid } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useFieldArray, useFormContext } from "react-hook-form";
@@ -7,6 +7,7 @@ import CustomButton from "@/components/ui/CustomButton";
 import Books from "./Books";
 
 const SubjectDetails: React.FC = () => {
+  const styles = getStyles();
   const { control } = useFormContext();
   const [expandedIndex, setExpandedIndex] = React.useState<number | null>(0);
 
@@ -16,17 +17,7 @@ const SubjectDetails: React.FC = () => {
   });
 
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        width: "100%",
-        bgcolor: "#fff",
-        borderRadius: "8px",
-        minHeight: "20px",
-        p: 1,
-      }}
-    >
+    <Grid container spacing={2} sx={styles.wrapper}>
       {fields.map((field, index) => (
         <Books
           key={field.id}
@@ -42,7 +33,8 @@ const SubjectDetails: React.FC = () => {
 
       <Grid
         size={{ xs: 12 }}
-        sx={{ display: "flex", justifyContent: "flex-end", mt: 2 }}
+        textAlign="center"
+        mt={2}
       >
         <CustomButton
           label="Add Another Subject"
@@ -64,7 +56,6 @@ const SubjectDetails: React.FC = () => {
                 },
               ],
             });
-
             setExpandedIndex(fields.length);
           }}
         />
@@ -74,3 +65,13 @@ const SubjectDetails: React.FC = () => {
 };
 
 export default SubjectDetails;
+
+const getStyles = () => ({
+  wrapper: {
+    width: "100%",
+    bgcolor: "#fff",
+    borderRadius: "8px",
+    minHeight: "20px",
+    p: 1,
+  },
+});

@@ -11,13 +11,7 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
-import {
-  Close,
-  MenuBook,
-  AddCircle,
-  ExpandMore,
-  DeleteOutline,
-} from "@mui/icons-material";
+import { MenuBook, AddCircle, ExpandMore } from "@mui/icons-material";
 import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
@@ -25,7 +19,6 @@ import CustomInputField from "@/components/ui/CustomInputField";
 import ImageUploader from "@/components/ui/ImageUploader";
 import * as Enum from "@/utils/enum";
 import DeleteIcon from "@/assets/svg/delete-icon.svg?react";
-
 
 interface BooksProps {
   subjectIndex: number;
@@ -61,31 +54,18 @@ const Books: React.FC<BooksProps> = ({
   return (
     <Accordion
       expanded={expanded}
-      onChange={(_, ) => onToggle()}
+      onChange={(_) => onToggle()}
       disableGutters
       elevation={0}
       square
       TransitionProps={{
-        timeout: 800,
+        timeout: 700,
         easing: "ease-in-out",
       }}
-      sx={{
-        borderRadius: 2,
-        bgcolor: (theme) => alpha(theme.palette.primary.main, 0.06),
-        "&:before": { display: "none" },
-        border: "1px solid #ccc",
-      }}
+      sx={styles.accordianWrapper}
     >
       <AccordionSummary expandIcon={<ExpandMore />}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 1,
-            width: "100%",
-          }}
-        >
+        <Box sx={styles.accordianSummary}>
           <Typography fontWeight={600}>
             {subjectName?.trim() ? subjectName : `Subject ${subjectIndex + 1}`}
           </Typography>
@@ -93,7 +73,6 @@ const Books: React.FC<BooksProps> = ({
           {showRemoveButton && (
             <IconButton
               size="small"
-              color="error"
               onClick={(e) => {
                 e.stopPropagation();
                 onRemove();
@@ -298,5 +277,18 @@ const getStyles = (theme: Theme) => ({
   },
   removeBookWrapper: {
     textAlign: "right",
+  },
+  accordianWrapper: {
+    borderRadius: 2,
+    bgcolor: alpha(theme.palette.primary.main, 0.06),
+    "&:before": { display: "none" },
+    border: "1px solid #ccc",
+  },
+  accordianSummary: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "space-between",
+    gap: 1,
+    width: "100%",
   },
 });
