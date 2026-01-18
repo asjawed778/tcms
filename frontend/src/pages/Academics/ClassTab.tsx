@@ -288,7 +288,7 @@ const ClassTab = () => {
             open: false,
             classId: "",
           })}
-          title="Add New Subject"
+          title="Add Subject"
           width="900px"
         >
           <AddSubject

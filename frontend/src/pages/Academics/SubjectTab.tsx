@@ -288,7 +288,7 @@ const SubjectTab = () => {
         <ModalWrapper
           open={openAddSubject}
           onClose={handleModalClose}
-          title="Add New Subject"
+          title="Add Subject"
           width="900px"
         >
           <AddSubject
@@ -302,7 +302,7 @@ const SubjectTab = () => {
         <ModalWrapper
           open={openUpdateSubject}
           onClose={handleModalClose}
-          title="Add New Subject"
+          title="Add Subject"
           width="900px"
         >
           <AddSubject subject={selectedRow} refetch={refetch} onClose={handleModalClose} />

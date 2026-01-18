@@ -121,7 +121,7 @@ const AddSection: React.FC<AddSectionProps> = ({
     <CustomModalWrapper
       open={open}
       onClose={onClose}
-      title={isEditMode ? "Edit Section" : "Add New Section"}
+      title={isEditMode ? "Edit Section" : "Add Section"}
       width="50%"
     >
       <form onSubmit={handleSubmit(onSubmit)} noValidate>
