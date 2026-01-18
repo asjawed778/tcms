@@ -24,7 +24,11 @@ export const createSubject = async (data: ClassDto.ICreateSubject) => {
 };
 
 // will use this function
-export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) => {
+export const upsertSubjectBulk = async (classId: string, subjects: Partial<ClassDto.ISubject>[]) => {
+  const classDoc = await classSchema.findById(classId);
+  if (!classDoc) {
+    throw createHttpError(404, "Class not found");
+  }
   const bulkOperations: any[] = [];
   const createdIds: any[] = [];
   const updatedIds: any[] = [];
@@ -37,8 +41,8 @@ export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) 
           update: {
             $set: {
               name: subject.name,
-              classId: subject.classId,
-              sessionId: subject.sessionId,
+              classId: classId,
+              sessionId: classDoc.session,
               subjectType: subject.subjectType,
               syllabus: subject.syllabus,
               books: subject.books || [],
@@ -52,7 +56,9 @@ export const upsertSubjectBulk = async (subjects: Partial<ClassDto.ISubject>[]) 
         insertOne: {
           document: {
             ...subject,
-            subjectId
+            sessionId: classDoc.session,
+            subjectId,
+            classId: classId
           }
         }
       });
@@ -282,80 +288,51 @@ export const updateClassFeeStructure = async (classId: string, data: Partial<Cla
 
 export const getAllClass = async (sessionId: string) => {
   const classOrder = Object.values(Enum.ClassName);
+
   const pipeline: PipelineStage[] = [
     {
       $match: {
         session: new mongoose.Types.ObjectId(sessionId),
-        deleted: false
       }
-    },
-    {
-      $lookup: {
-        from: "sessions",
-        localField: "session",
-        foreignField: "_id",
-        as: "sessionDetails",
-        pipeline: [
-          { $project: { _id: 1, session: 1 } }
-        ]
-      }
-    },
-    {
-      $unwind: { path: "$sessionDetails", preserveNullAndEmptyArrays: true }
     },
     {
       $lookup: {
         from: "subjects",
-        localField: "subjects",
-        foreignField: "_id",
-        as: "subjectDetails",
+        let: { classId: "$_id", sessionId: "$session" },
         pipeline: [
-          { $match: { deleted: false } },
           {
-            $project: {
-              _id: 0,
-              name: 1
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$classId", "$$classId"] },
+                  { $eq: ["$sessionId", "$$sessionId"] }
+                ]
+              }
             }
-          }
-        ]
-      }
-    },
-    {
-      $addFields: {
-        subjectsCount: { $size: "$subjectDetails" },
-        subjects: {
-          $map: {
-            input: "$subjectDetails",
-            as: "sub",
-            in: "$$sub.name"
-          }
-        }
+          },
+          { $project: { _id: 0, name: 1 } }
+        ],
+        as: "subjectNames"
       }
     },
     {
       $lookup: {
         from: "sections",
-        localField: "sections",
-        foreignField: "_id",
-        as: "sectionDetails",
+        let: { classId: "$_id", sessionId: "$session" },
         pipeline: [
-          { $match: { deleted: false } },
-          { $count: "totalSections" }
-        ]
-      }
-    },
-    {
-      $addFields: {
-        sectionsCount: {
-          $ifNull: [{ $arrayElemAt: ["$sectionDetails.totalSections", 0] }, 0]
-        }
-      }
-    },
-    {
-      $addFields: {
-        sortOrder: {
-          $indexOfArray: [classOrder, "$name"]
-        }
+          {
+            $match: {
+              $expr: {
+                $and: [
+                  { $eq: ["$classId", "$$classId"] },
+                  { $eq: ["$sessionId", "$$sessionId"] }
+                ]
+              }
+            }
+          },
+          { $project: { _id: 0, name: 1 } }
+        ],
+        as: "sectionNames"
       }
     },
     {
@@ -381,36 +358,25 @@ export const getAllClass = async (sessionId: string) => {
     },
     {
       $addFields: {
+        subjectNames: {
+          $map: {
+            input: "$subjectNames",
+            as: "sub",
+            in: "$$sub.name"
+          }
+        },
+        sectionNames: {
+          $map: {
+            input: "$sectionNames",
+            as: "sec",
+            in: "$$sec.name"
+          }
+        },
         feeStructureAdded: {
           $gt: [{ $size: "$feeStructure" }, 0]
-        }
-      }
-    },
-    {
-      $lookup: {
-        from: "timetables",
-        let: { classId: "$_id", sessionId: "$session" },
-        pipeline: [
-          {
-            $match: {
-              $expr: {
-                $and: [
-                  { $eq: ["$class", "$$classId"] },
-                  { $eq: ["$session", "$$sessionId"] },
-                  { $eq: ["$status", Enum.TimeTableStatus.ACTIVE] }
-                ]
-              }
-            }
-          },
-          { $limit: 1 }
-        ],
-        as: "timetable"
-      }
-    },
-    {
-      $addFields: {
-        isTimetableCreated: {
-          $gt: [{ $size: "$timetable" }, 0]
+        },
+        sortOrder: {
+          $indexOfArray: [classOrder, "$name"]
         }
       }
     },
@@ -421,20 +387,18 @@ export const getAllClass = async (sessionId: string) => {
         name: 1,
         classId: 1,
         courseStream: 1,
-        session: {
-          _id: "$sessionDetails._id",
-          name: "$sessionDetails.session"
-        },
-        subjectsCount: 1,
-        sectionsCount: 1,
-        feeStructureAdded: 1,
-        isTimetableCreated: 1
+        subjectNames: 1,
+        sectionNames: 1,
+        feeStructureAdded: 1
       }
     }
   ];
+
   const classes = await classSchema.aggregate(pipeline);
-  return { classes: classes || [] };
+  return { classes };
 };
+
+
 
 export const getClassById = async (classId: string) => {
   const pipeline: PipelineStage[] = [

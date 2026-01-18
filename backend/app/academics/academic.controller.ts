@@ -18,11 +18,7 @@ export const createSubject = asyncHandler(async (req: Request, res: Response) =>
 export const upsertSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
     const { classId } = req.params;
-    const payload = subjects.map((subject: any) => ({
-        ...subject,
-        classId
-    }));
-    const result = await AcademicService.upsertSubjectBulk(payload);
+    const result = await AcademicService.upsertSubjectBulk(classId, subjects);
     res.send(createResponse(result, "Subjects created/updated successfully"));
 });
 

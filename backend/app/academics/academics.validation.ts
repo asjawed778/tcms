@@ -299,10 +299,6 @@ export const upsertSubjectBulk = [
         .optional()
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 
-    body("subjects.*.sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-
     body("subjects.*.subjectType")
         .notEmpty().withMessage("Subject type is required")
         .isIn(Object.values(Enum.SubjectType))
@@ -344,10 +340,6 @@ export const upsertClassFeeStructure = [
     param("classId")
         .notEmpty().withMessage("Class ID is required")
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
-
-    body("session")
-        .notEmpty().withMessage("Academic Session ID is required")
-        .isMongoId().withMessage("Academic Session ID must be a valid Mongo ID"),
 
     body("effectiveFrom")
         .notEmpty().withMessage("Effective From date is required")
