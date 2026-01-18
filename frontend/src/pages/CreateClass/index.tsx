@@ -13,7 +13,7 @@ import {
 import * as yup from "yup";
 import toast from "react-hot-toast";
 import { useNavigate, useParams } from "react-router-dom";
-import { cleanData } from "@/utils/helper";
+import { cleanData, getTodayDate } from "@/utils/helper";
 import CustomButton from "@/components/ui/CustomButton";
 import { basicDetailsSchema, feeStructureSchema } from "@/validation/yup";
 import {
@@ -80,19 +80,17 @@ const CreateClass = () => {
       name: "",
       courseStream: "",
       session: "",
-      effectiveFrom: new Date(),
       sections: [
         {
           name: "",
           capacity: "",
-          facultyName: "",
+          classTeacher: "",
         },
       ],
       subjects: [
         {
           name: "",
           subjectType: "",
-          subjectCategory: "",
           syllabus: "",
           books: [
             {
@@ -105,15 +103,17 @@ const CreateClass = () => {
           ],
         },
       ],
-      structures: [
+      effectiveFrom: getTodayDate(),
+      remarks: "",
+      status: true,
+      feeDetails: [
         {
           amount: "",
-          frequency: FeeFrequency.MONTHLY,
+          billingFrequency: FeeFrequency.MONTHLY,
           isOptional: false,
-          type: "",
+          feeType: "",
         },
       ],
-      totalAmount: 0,
     },
   });
 
@@ -127,14 +127,16 @@ const CreateClass = () => {
     async (data: any) => {
       try {
         const { sections } = data;
+        const payload = {
+          name: data.name,
+          courseStream: data.courseStream,
+          session: selectedSession!._id,
+        }
+        const freshData = cleanData(payload);
+        if(!freshData) return;
         const classResponse = await createClass({
-          payload: {
-            name: data.name,
-            courseStream: data.courseStream,
-            session: selectedSession?._id,
-          },
+          payload: cleanData(payload),
         }).unwrap();
-
         if (!classResponse.success) {
           toast.error(classResponse.message);
           return classResponse;
@@ -152,8 +154,7 @@ const CreateClass = () => {
           }).unwrap();
         }
       } catch (error: any) {
-        const errorMsg =
-          error?.data?.message || "Fail to create fee structure!";
+        const errorMsg = error?.data?.message || "Fail to create class!";
         customToast({
           type: "error",
           message: errorMsg,
@@ -162,41 +163,28 @@ const CreateClass = () => {
       }
     },
     async (data: any) => {
-      const subjects = data.subjects || [];
-      const manualSubjects = subjects.filter((s: any) => !s.preDefinedId);
-      const predefinedSubjects = subjects.filter((s: any) => s.preDefinedId);
-      let manualIds: string[] = [];
-      let bulkResponse;
-      if (manualSubjects && manualSubjects?.length > 0) {
-        const bulkPayload = manualSubjects.map((sub: any) => ({
-          ...sub,
-          sessionId: selectedSession?._id,
-        }));
-
-        bulkResponse = await addBulkSubject({
-          payload: { subjects: cleanData(bulkPayload) },
+      try {
+        const subjects = data.subjects || [];
+        await addBulkSubject({
+          classId,
+          payload: { subjects: cleanData(subjects) },
         }).unwrap();
-        manualIds = bulkResponse?.data?.map((s: any) => s._id);
+      } catch (error: any) {
+        const errorMsg = error?.data?.message || "Failed to create subjects!";
+        customToast({
+          type: "error",
+          message: errorMsg,
+        });
+        throw error;
       }
-      const predefinedSubjectsId = predefinedSubjects
-        .filter((s: any) => s.preDefinedId)
-        .map((s: any) => s.preDefinedId);
-      const allIds = [...manualIds, ...predefinedSubjectsId];
-
-      if (allIds.length === 0) {
-        toast.error("No subjects to assign. Please add atleast one subject.");
-        return { success: true };
-      }
-      await updateClass({ classId, payload: allIds }).unwrap();
     },
     async (data: any) => {
       try {
-        const { effectiveFrom, remarks, structures } = data;
+        const { effectiveFrom, remarks, feeDetails } = data;
         const payload = {
           effectiveFrom,
           remarks,
-          structures,
-          session: selectedSession?._id,
+          feeDetails,
         };
         await updateFeeStructure({
           classId,
@@ -213,7 +201,6 @@ const CreateClass = () => {
       }
     },
   ];
-
   const onStepSubmit = async (data: any) => {
     const isValid = await methods.trigger();
     if (!isValid) {

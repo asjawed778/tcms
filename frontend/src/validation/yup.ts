@@ -195,8 +195,6 @@ export const documentUploadSchema = yup.object({
 // Academics Schema....................................................
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
-
-  courseStream: yup.string().required("Course stream is required"),
   sections: yup
     .array()
     .min(1, "At least one section is required")

@@ -86,7 +86,7 @@ const Books: React.FC<BooksProps> = ({
       <AccordionDetails>
         <Grid size={{ xs: 12 }} px={1}>
           <Grid container spacing={2.5}>
-            <Grid size={{ xs: 12 }}>
+            <Grid size={{ xs: 12, md: 6 }}>
               <CustomInputField
                 name={`subjects.${subjectIndex}.name`}
                 label="Subject Name"
@@ -100,18 +100,6 @@ const Books: React.FC<BooksProps> = ({
                 label="Subject Type"
                 placeholder="-- Select Type --"
                 options={Object.values(Enum.SubjectType).map((val) => ({
-                  label: val,
-                  value: val,
-                }))}
-                control={control}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, md: 6 }}>
-              <CustomDropdownField
-                name={`subjects.${subjectIndex}.subjectCategory`}
-                label="Subject Category"
-                placeholder="-- Select Category --"
-                options={Object.values(Enum.SubjectCategory).map((val) => ({
                   label: val,
                   value: val,
                 }))}

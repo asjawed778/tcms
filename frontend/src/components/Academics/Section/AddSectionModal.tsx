@@ -17,7 +17,6 @@ import {
 import { cleanData } from "@/utils/helper";
 import { useAppSelector } from "@/store/store";
 import { addSectionSchema } from "../../../validation/yup";
-import { SectionRequest, SectionResponse } from "../../../../type";
 import { useGetAllEmployeeQuery } from "@/services/employeeApi";
 
 interface AddSectionProps {
@@ -25,6 +24,7 @@ interface AddSectionProps {
   onClose: () => void;
   refetch?: () => void;
   section?: SectionResponse | null;
+  classId?: null
 }
 
 const AddSection: React.FC<AddSectionProps> = ({
@@ -32,7 +32,8 @@ const AddSection: React.FC<AddSectionProps> = ({
   onClose,
   refetch,
   section = null,
-}) => {
+  classId
+}) => {  
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession
   );
@@ -86,7 +87,7 @@ const AddSection: React.FC<AddSectionProps> = ({
     } else {
       reset({
         name: "",
-        classId: "",
+        classId: classId || "",
         classTeacher: "",
         capacity: undefined,
         sessionId: selectedSession?._id || "",
@@ -99,8 +100,7 @@ const AddSection: React.FC<AddSectionProps> = ({
     try {
       const payload = cleanData({
         ...data, sessionId: selectedSession?._id
-      }) as SectionRequest;
-
+      }) as SectionRequest;      
       if (isEditMode && section?._id) {
         await updateSection({ payload, sectionId: section._id }).unwrap();
         toast.success("Section updated successfully!");

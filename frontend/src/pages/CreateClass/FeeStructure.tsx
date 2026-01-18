@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Controller,
   useFieldArray,
@@ -28,8 +28,7 @@ const feeFrequencyOptions = Object.values(FeeFrequency).map((val) => ({
 }));
 
 const FeeStructure = () => {
-  const [active, setActive] = useState(true);
-  const { control, setValue } = useFormContext();
+  const { control } = useFormContext();
   const styles = getStyles();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
@@ -41,39 +40,28 @@ const FeeStructure = () => {
   }));
   const { fields, append, remove } = useFieldArray({
     control,
-    name: "structures",
+    name: "feeDetails",
   });
 
   const watchedStructures = useWatch({
     control,
-    name: "structures",
+    name: "feeDetails",
   });
   const totalAmount = useMemo(() => {
     if (!watchedStructures) return 0;
-    return watchedStructures.reduce((total, item) => {
+    return watchedStructures.reduce((total: number, item: any) => {
       const amount = Number(item?.amount || 0);
-      if (item?.frequency === "Monthly") {
+      if (item?.billingFrequency === "Monthly") {
         return total + amount * 12;
       }
-      if (item?.frequency === "Yearly") {
+      if (item?.billingFrequency === "Yearly") {
         return total + amount;
       }
       return total;
     }, 0);
   }, [watchedStructures]);
-
-  useEffect(() => {
-    if (selectedSession?.session) {
-      setValue("session", selectedSession.session);
-    }
-  }, [selectedSession, setValue]);
-  useEffect(() => {
-    setValue("totalAmount", totalAmount, {
-      shouldValidate: true,
-      shouldDirty: true,
-    });
-  }, [totalAmount, setValue]);
-
+  console.log("Total: ", totalAmount);
+  
   return (
     <Box>
       <Box sx={styles.sectionWrapper}>
@@ -84,26 +72,32 @@ const FeeStructure = () => {
               Basic Information
             </Typography>
           </Box>
-          <FormControlLabel
-            control={
-              <Switch
-                checked={active}
-                onChange={(e) => setActive(e.target.checked)}
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={field.value}
+                    onChange={(e) => field.onChange(e.target.checked)}
+                  />
+                }
+                label={
+                  <Typography fontWeight={500} color="text.secondary">
+                    Status:
+                    <Typography
+                      component="span"
+                      ml={0.5}
+                      fontWeight={600}
+                      color={field.value ? "success.main" : "text.disabled"}
+                    >
+                      {field.value ? "Active" : "Inactive"}
+                    </Typography>
+                  </Typography>
+                }
               />
-            }
-            label={
-              <Typography fontWeight={500} color="text.secondary">
-                Status:
-                <Typography
-                  component="span"
-                  ml={0.5}
-                  fontWeight={600}
-                  color={active ? "success.main" : "text.disabled"}
-                >
-                  {active ? "Active" : "Inactive"}
-                </Typography>
-              </Typography>
-            }
+            )}
           />
         </Box>
         <Divider sx={styles.divider} />
@@ -174,7 +168,7 @@ const FeeStructure = () => {
             >
               <Grid size={{ xs: 3 }}>
                 <CustomInputField
-                  name={`structures.${index}.type`}
+                  name={`feeDetails.${index}.feeType`}
                   placeholder="Enter fee type"
                   variant="standard"
                   InputProps={{
@@ -185,7 +179,7 @@ const FeeStructure = () => {
               </Grid>
               <Grid size={{ xs: 3 }}>
                 <CustomInputField
-                  name={`structures.${index}.amount`}
+                  name={`feeDetails.${index}.amount`}
                   placeholder="Enter amount"
                   type="number"
                   required={false}
@@ -198,7 +192,7 @@ const FeeStructure = () => {
               <Grid size={{ xs: 2 }}>
                 <Controller
                   control={control}
-                  name={`structures.${index}.isOptional`}
+                  name={`feeDetails.${index}.isOptional`}
                   render={({ field }) => (
                     <Switch
                       checked={field.value}
@@ -209,7 +203,7 @@ const FeeStructure = () => {
               </Grid>
               <Grid size={{ xs: 3 }}>
                 <CustomDropdownField
-                  name={`structures.${index}.frequency`}
+                  name={`feeDetails.${index}.billingFrequency`}
                   options={feeFrequencyOptions}
                   showClearIcon={false}
                   required={false}
@@ -230,10 +224,10 @@ const FeeStructure = () => {
             variant="text"
             onClick={() =>
               append({
-                type: "",
+                feeType: "",
                 amount: null,
-                optional: false,
-                frequency: FeeFrequency.MONTHLY,
+                isOptional: false,
+                billingFrequency: FeeFrequency.MONTHLY,
               })
             }
             sx={styles.transparentBtn}

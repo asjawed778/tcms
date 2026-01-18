@@ -35,9 +35,6 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
         <Typography variant="body1">
           <strong>Subject Type:</strong> {subject.subjectType || "N/A"}
         </Typography>
-        <Typography variant="body1">
-          <strong>Subject Category:</strong> {subject.subjectCategory || "N/A"}
-        </Typography>
         <Divider />
         <Typography variant="body1">
           <strong>Syllabus:</strong>

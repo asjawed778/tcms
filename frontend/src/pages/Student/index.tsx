@@ -89,7 +89,7 @@ const Student: React.FC = () => {
   const [deleteStudent, { isLoading: isDelete }] = useDeleteStudentMutation();
   const { data: classData } = useGetAllClassQuery(
     {
-      sessionId: selectedSession?._id,
+      sessionId: selectedSession?._id as string,
     },
     { skip: !selectedSession?._id }
   );

@@ -4,16 +4,13 @@ import * as Enum from "@/utils/enum";
 
 // Subject..........................................................................
 export const subjectSchema = yup.object({
+  classId: yup.string().required("Class name is required"),
   sessionId: yup.string().required("Session is required"),
   name: yup.string().required("Subject name is required"),
   subjectType: yup
     .mixed<Enum.SubjectType>()
     .oneOf(Object.values(Enum.SubjectType))
     .required("Subject type is required"),
-  subjectCategory: yup
-    .mixed<Enum.SubjectCategory>()
-    .oneOf(Object.values(Enum.SubjectCategory))
-    .required("Subject category is required"),
   syllabus: yup.string().optional(),
   books: yup.array()
     .of(
@@ -33,7 +30,6 @@ export const bulkSubjectSchema = yup.object({
       yup.object({
         name: yup.string().required("Subject name is required"),
         subjectType: yup.string().required("Subject type is required"),
-        subjectCategory: yup.string().required("Subject category is required"),
         syllabus: yup.string().optional(),
       })
     )

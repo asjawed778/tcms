@@ -44,7 +44,6 @@ const SubjectDetails: React.FC = () => {
             append({
               name: "",
               subjectType: "",
-              subjectCategory: "",
               syllabus: "",
               books: [
                 {

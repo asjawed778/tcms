@@ -36,6 +36,7 @@ const BasicDetails: React.FC = () => {
           label="Course Stream"
           placeholder="-- Select Course Stream --"
           options={courseStreamOptions}
+          required={false}
         />
       </Grid>
       <Grid size={{ xs: 12 }}>

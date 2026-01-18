@@ -79,7 +79,7 @@ const SectionDetails: React.FC = () => {
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
               <CustomDropdownField
-                name={`sections.${index}.facultyName`}
+                name={`sections.${index}.classTeacher`}
                 label="Class Teacher"
                 placeholder="-- Select Class Teacher --"
                 options={[]}

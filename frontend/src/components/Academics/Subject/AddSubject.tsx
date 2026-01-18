@@ -5,6 +5,7 @@ import * as Enum from "@/utils/enum";
 import { cleanData } from "@/utils/helper";
 import {
   useAddSubjectMutation,
+  useGetAllClassQuery,
   useUpdateSubjectMutation,
 } from "@/services/academicsApi";
 import { Resolver, useFieldArray, useForm } from "react-hook-form";
@@ -15,20 +16,32 @@ import { AddCircle, MenuBook } from "@mui/icons-material";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { subjectSchema } from "@/validation/academics";
 import { customToast } from "@/components/common/customToast";
+import { useState } from "react";
 
 interface AddSubjectProps {
   onClose?: () => void;
   refetch?: () => void;
   subject?: SubjectResponse | null;
+  classId?: string;
 }
 const AddSubject: React.FC<AddSubjectProps> = ({
   onClose,
   refetch,
   subject,
+  classId,
 }) => {
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
+  const { data: classData } = useGetAllClassQuery(
+    { sessionId: selectedSession?._id as string },
+    { skip: !selectedSession?._id },
+  );
+  const classOptions =
+    classData?.data?.classes?.map((cls: any) => ({
+      label: cls.name,
+      value: cls._id,
+    })) || [];
   const [addSubject, { isLoading }] = useAddSubjectMutation();
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
@@ -37,9 +50,9 @@ const AddSubject: React.FC<AddSubjectProps> = ({
     resolver: yupResolver(subjectSchema) as Resolver<SubjectRequest>,
     defaultValues: {
       sessionId: selectedSession?._id || "",
+      classId: classId || "",
       name: subject?.name || "",
       subjectType: subject?.subjectType,
-      subjectCategory: subject?.subjectCategory,
       syllabus: subject?.syllabus,
       books: subject?.books || [
         {
@@ -72,28 +85,34 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       });
       if (!payload) return;
       if (isEditMode && subject) {
-        await updateSubject({ payload, subjectId: subject._id }).unwrap();
+        await updateSubject({
+          payload,
+          subjectId: subject._id,
+          classId: payload.classId,
+        }).unwrap();
         customToast({
           type: "success",
-          message: "Subject updated successfully!"
+          message: "Subject updated successfully!",
         });
         refetch?.();
+        reset();
+        onClose?.();
       } else {
-        await addSubject({ payload }).unwrap();
+        await addSubject({ payload, classId: payload.classId }).unwrap();
         customToast({
           type: "success",
-          message: "Subject Added successfully!"
+          message: "Subject Added successfully!",
         });
         refetch?.();
+        reset();
+        onClose?.();
       }
     } catch (error: any) {
       customToast({
-        type: "success",
-        message: error?.data?.message || "Something went wrong. Please try again!"
-      })
-    } finally {
-      reset();
-      onClose?.();
+        type: "error",
+        message:
+          error?.data?.message || "Something went wrong. Please try again!",
+      });
     }
   };
 
@@ -123,13 +142,10 @@ const AddSubject: React.FC<AddSubjectProps> = ({
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
             <CustomDropdownField
-              name="subjectCategory"
-              label="Subject Category"
-              placeholder="--Select Category--"
-              options={Object.values(Enum.SubjectCategory).map((val) => ({
-                label: val,
-                value: val,
-              }))}
+              name="classId"
+              label="Class Name"
+              placeholder="-- Select Class --"
+              options={classOptions}
               control={control}
             />
           </Grid>
@@ -178,7 +194,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
                 borderRadius: "16px",
                 p: 2,
                 mb: 2,
-                width: "100%"
+                width: "100%",
               }}
             >
               <Grid container spacing={2}>

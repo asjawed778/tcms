@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { ApiResponse, SectionRequest, SectionResponse, SectionResponseList } from "../../type";
 
 export const academicsApi = createApi({
   reducerPath: "academicsApi",
@@ -8,7 +7,7 @@ export const academicsApi = createApi({
   tagTypes: ["CLASS_LIST", "SECTION_LIST", "SUBJECT_LIST"],
   endpoints: (builder) => ({
     // Class............................................................
-    getAllClass: builder.query({
+    getAllClass: builder.query<ApiResponse<ClassResponse>, { sessionId: string }>({
       query: ({ sessionId }) => ({
         url: `/admin/academics/class/all`,
         params: {
@@ -44,7 +43,7 @@ export const academicsApi = createApi({
     updateFeeStructure: builder.mutation({
       query: ({ classId, payload }) => ({
         url: `/admin/academics/class/${classId}/fee-structure`,
-        method: "PUT",
+        method: "POST",
         body: payload,
       }),
     }),
@@ -69,7 +68,7 @@ export const academicsApi = createApi({
         method: "POST",
         body: payload,
       }),
-      invalidatesTags: ["SECTION_LIST"],
+      invalidatesTags: ["SECTION_LIST", "CLASS_LIST"],
     }),
     addBulkSection: builder.mutation({
       query: ({ payload }) => ({
@@ -105,21 +104,23 @@ export const academicsApi = createApi({
         method: "GET",
       })
     }),
-    addSubject: builder.mutation<SubjectResponse, { payload: SubjectRequest }>({
+    addSubject: builder.mutation<SubjectResponse, { payload: SubjectRequest, classId: string }>({
       query: ({ payload }) => ({
         url: `/admin/academics/subject`,
         method: "POST",
         body: payload,
-      })
+      }),
+      invalidatesTags: ["CLASS_LIST"],
     }),
     addBulkSubject: builder.mutation({
-      query: ({ payload }) => ({
-        url: `/admin/academics/subject/bulk`,
+      query: ({ payload, classId }) => ({
+        url: `/admin/academics/class/${classId}/upsert-subjects`,
         method: "POST",
         body: payload,
-      })
+      }),
+      invalidatesTags: ["CLASS_LIST"],
     }),
-    updateSubject: builder.mutation<SubjectResponse, { subjectId: string; payload: SubjectRequest }>({
+    updateSubject: builder.mutation<SubjectResponse, { subjectId: string; payload: SubjectRequest, classId: string }>({
       query: ({ subjectId, payload }) => ({
         url: `/admin/academics/subject/${subjectId}`,
         method: "PUT",
