@@ -295,10 +295,6 @@ export const upsertSubjectBulk = [
         .optional()
         .isString().withMessage("Subject ID must be a string"),
 
-    body("subjects.*.classId")
-        .optional()
-        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
-
     body("subjects.*.subjectType")
         .notEmpty().withMessage("Subject type is required")
         .isIn(Object.values(Enum.SubjectType))

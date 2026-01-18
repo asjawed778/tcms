@@ -312,7 +312,7 @@ export const getAllClass = async (sessionId: string) => {
           },
           { $project: { _id: 0, name: 1 } }
         ],
-        as: "subjectNames"
+        as: "subjects"
       }
     },
     {
@@ -332,7 +332,7 @@ export const getAllClass = async (sessionId: string) => {
           },
           { $project: { _id: 0, name: 1 } }
         ],
-        as: "sectionNames"
+        as: "sections"
       }
     },
     {
@@ -358,16 +358,16 @@ export const getAllClass = async (sessionId: string) => {
     },
     {
       $addFields: {
-        subjectNames: {
+        subjects: {
           $map: {
-            input: "$subjectNames",
+            input: "$subjects",
             as: "sub",
             in: "$$sub.name"
           }
         },
-        sectionNames: {
+        sections: {
           $map: {
-            input: "$sectionNames",
+            input: "$sections",
             as: "sec",
             in: "$$sec.name"
           }
@@ -387,8 +387,8 @@ export const getAllClass = async (sessionId: string) => {
         name: 1,
         classId: 1,
         courseStream: 1,
-        subjectNames: 1,
-        sectionNames: 1,
+        subjects: 1,
+        sections: 1,
         feeStructureAdded: 1
       }
     }
