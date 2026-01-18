@@ -100,7 +100,7 @@ const ClassTab = () => {
             >
               <AutoStories fontSize="small" />
               <Typography variant="body1" fontWeight={500}>
-                No subjects added ye.
+                No subjects added yet
               </Typography>
 
               <Box

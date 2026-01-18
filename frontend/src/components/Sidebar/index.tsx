@@ -119,7 +119,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <Box sx={{ position: "relative" }}>
+    <Box sx={{ position: "relative", zIndex: 0 }}>
       {isMobile && (
         <Box sx={{ p: 1 }}>
           <IconButton onClick={() => dispatch(setMobileOpen(true))}>
@@ -286,7 +286,7 @@ const Sidebar: React.FC = () => {
             top: "50%",
             left: open ? drawerWidth - 14 : collapsedWidth - 14,
             transform: "translateY(-50%)",
-            zIndex: 2000,
+            zIndex: 9999,
             backgroundColor: "white",
             boxShadow: 2,
             "&:hover": {
