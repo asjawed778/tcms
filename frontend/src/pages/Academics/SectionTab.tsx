@@ -17,8 +17,7 @@ import AddSection from "../../components/Academics/Section/AddSectionModal";
 import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
 import { SectionResponse } from "../../../type";
-import SectionDetailsModal from "../../components/Academics/Section/SectionDetailsModal";
-import { filterProps } from "framer-motion";
+import SectionDetailsModal from "@/components/Academics/Section/SectionDetailsModal";
 
 const sectionColumns = [
   { key: "sno.", label: "S.No." },
