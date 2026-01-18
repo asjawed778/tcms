@@ -16,7 +16,6 @@ import { AddCircle, MenuBook } from "@mui/icons-material";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { subjectSchema } from "@/validation/academics";
 import { customToast } from "@/components/common/customToast";
-import { useState } from "react";
 
 interface AddSubjectProps {
   onClose?: () => void;

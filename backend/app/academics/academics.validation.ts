@@ -3,114 +3,6 @@ import * as Enum from '../common/utils/enum';
 import mongoose from 'mongoose';
 
 // ------------ Subject Validation --------------
-export const createSubject = [
-    // subject fields
-    body("name")
-        .notEmpty().withMessage("Subject name is required")
-        .isString().withMessage("Subject name must be a string"),
-
-    body("sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-
-    body("subjectType")
-        .notEmpty().withMessage("Subject type is required")
-        .isIn(Object.values(Enum.SubjectType))
-        .withMessage(`Subject type must be one of: ${Object.values(Enum.SubjectType).join(", ")}`),
-
-    body("subjectCategory")
-        .notEmpty().withMessage("Subject category is required")
-        .isIn(Object.values(Enum.SubjectCategory))
-        .withMessage(`Subject category must be one of: ${Object.values(Enum.SubjectCategory).join(", ")}`),
-
-    body("syllabus")
-        .optional()
-        .isString().withMessage("Syllabus must be a string"),
-
-    // books array
-    body("books")
-        .optional()
-        .isArray().withMessage("Books must be an array"),
-
-    body("books.*.title")
-        .notEmpty().withMessage("Book title is required")
-        .isString().withMessage("Book title must be a string"),
-
-    body("books.*.coverPhoto")
-        .optional()
-        .isString().withMessage("Cover photo must be a string"),
-
-    body("books.*.publication")
-        .optional()
-        .isString().withMessage("Publication must be a string"),
-
-    body("books.*.author")
-        .optional()
-        .isString().withMessage("Author must be a string"),
-
-    body("books.*.ISBN")
-        .optional()
-        .isString().withMessage("ISBN must be a string"),
-];
-
-export const createSubjectBulk = [
-    body("subjects")
-        .isArray({ min: 1 })
-        .withMessage("Subjects must be a non-empty array"),
-
-    // subject fields
-    body("subjects.*.name")
-        .notEmpty().withMessage("Subject name is required")
-        .isString().withMessage("Subject name must be a string"),
-
-    body("subjects.*.sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-
-    body("subjects.*.subjectType")
-        .notEmpty().withMessage("Subject type is required")
-        .isIn(Object.values(Enum.SubjectType))
-        .withMessage(
-            `Subject type must be one of: ${Object.values(Enum.SubjectType).join(", ")}`
-        ),
-
-    body("subjects.*.subjectCategory")
-        .notEmpty().withMessage("Subject category is required")
-        .isIn(Object.values(Enum.SubjectCategory))
-        .withMessage(
-            `Subject category must be one of: ${Object.values(Enum.SubjectCategory).join(", ")}`
-        ),
-
-    body("subjects.*.syllabus")
-        .optional()
-        .isString().withMessage("Syllabus must be a string"),
-
-    // books
-    body("subjects.*.books")
-        .optional()
-        .isArray().withMessage("Books must be an array"),
-
-    body("subjects.*.books.*.title")
-        .notEmpty().withMessage("Book title is required")
-        .isString().withMessage("Book title must be a string"),
-
-    body("subjects.*.books.*.coverPhoto")
-        .optional()
-        .isString().withMessage("Cover photo must be a string"),
-
-    body("subjects.*.books.*.publication")
-        .optional()
-        .isString().withMessage("Publication must be a string"),
-
-    body("subjects.*.books.*.author")
-        .optional()
-        .isString().withMessage("Author must be a string"),
-
-    body("subjects.*.books.*.ISBN")
-        .optional()
-        .isString().withMessage("ISBN must be a string"),
-];
-
 export const editSubject = [
     param("subjectId")
         .notEmpty().withMessage("Subject ID is required")
@@ -173,23 +65,6 @@ export const deleteSubject = [
         .isMongoId().withMessage("Subject ID must be a valid Mongo ID"),
 ];
 
-export const getAllSubjects = [
-    query("sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-    query("page")
-        .optional()
-        .isInt({ min: 1 }).withMessage("Page must be a positive integer"),
-    query("limit")
-        .optional()
-        .isInt({ min: 1 }).withMessage("Limit must be a positive integer"),
-    query("search")
-        .optional()
-        .isString().withMessage("Search must be a string"),
-    query("classId")
-        .optional()
-        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
-];
 
 // section validation
 export const createSection = [

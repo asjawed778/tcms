@@ -8,21 +8,7 @@ import { roleAuth } from "../common/middleware/role-auth.middleware";
 const router = Router();
 
 router
-    // subject routes
-    .post(
-        "/subject",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSubject,
-        catchError,
-        ClassControler.createSubject
-    )
-    .post(
-        "/subject/bulk",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSubjectBulk,
-        catchError,
-        ClassControler.createSubjectBulk
-    )
+    // subject routes - need to review and deleted
     .put(
         "/subject/:subjectId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.UPDATE }),
@@ -36,13 +22,6 @@ router
         AcademicValidation.deleteSubject,
         catchError,
         ClassControler.deleteSubject
-    )
-    .get(
-        "/subject/all",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.READ }),
-        AcademicValidation.getAllSubjects,
-        catchError,
-        ClassControler.getAllSubjects
     )
 
     // section routes

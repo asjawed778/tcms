@@ -9,12 +9,6 @@ import * as UserService from "../user/user.service";
 import * as AcademicUtils from "./academic.utils";
 
 // subject controllers
-export const createSubject = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createSubject(data);
-    res.send(createResponse(result, "Subject created successfully"));
-});
-
 export const upsertSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
     const { subjects } = req.body;
     const { classId } = req.params;
@@ -36,17 +30,6 @@ export const getSubjectsByClass = asyncHandler(
     }
 );
 
-
-export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
-    const { subjects } = req.body;
-    const result = [];
-    for (const subject of subjects) {
-        const response = await AcademicService.createSubject(subject);
-        result.push(response);
-    }
-    res.send(createResponse(result, "Subjects created successfully"));
-});
-
 export const editSubject = asyncHandler(async (req: Request, res: Response) => {
     const { subjectId } = req.params;
     const data = req.body;
@@ -58,16 +41,6 @@ export const deleteSubject = asyncHandler(async (req: Request, res: Response) =>
     const { subjectId } = req.params;
     await AcademicService.deleteSubject(subjectId);
     res.send(createResponse({}, "Subject deleted successfully"));
-});
-
-export const getAllSubjects = asyncHandler(async (req: Request, res: Response) => {
-    const sessionId = req.query.sessionId as string;
-    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
-    const search = req.query.search ? (req.query.search as string) : "";
-    const classId = req.query.classId ? (req.query.classId as string) : undefined;
-    const result = await AcademicService.getAllSubjects(sessionId, page, limit, search, classId);
-    res.send(createResponse(result, "Subjects fetched successfully"));
 });
 
 // section controllers

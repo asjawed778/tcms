@@ -13,15 +13,6 @@ import classFeeStructureSchema from "./feeStructure.schema";
 
 
 // subjects service functions
-// need to remove
-export const createSubject = async (data: ClassDto.ICreateSubject) => {
-  const subjectId = await AcademicUtils.generateUniqueSubjectId(data.name);
-  const newSubject = await subjectSchema.create({ ...data, subjectId });
-  if (!newSubject) {
-    throw createHttpError(500, "Failed to create subject");
-  }
-  return newSubject;
-};
 
 // will use this function
 export const upsertSubjectBulk = async (classId: string, subjects: Partial<ClassDto.ISubject>[]) => {
@@ -132,29 +123,6 @@ export const deleteSubject = async (subjectId: string) => {
   );
 
   return subject;
-};
-
-// need to remove
-export const getAllSubjects = async (sessionId: string, page?: number, limit?: number, search?: string, classId?: string) => {
-  const query: any = {};
-  if (sessionId) {
-    query.sessionId = sessionId;
-  }
-  if (classId) {
-    const classDoc = await classSchema.findById(classId);
-    if (!classDoc) {
-      throw createHttpError(404, "Class not found");
-    }
-    // query._id = { $in: classDoc.subjects };
-  }
-  if (search) {
-    query.name = { $regex: search, $options: "i" };
-  }
-  const subjects = await subjectSchema.find(query)
-    .skip(page && limit ? (page - 1) * limit : 0)
-    .limit(limit || 0);
-  const total = await subjectSchema.countDocuments(query);
-  return { subjects, totalDoc: total, currentPage: page || 1, totalPages: limit ? Math.ceil(total / limit) : 1 };
 };
 
 // section service functions
