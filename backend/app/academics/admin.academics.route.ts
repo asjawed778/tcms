@@ -117,13 +117,20 @@ router
         catchError,
         ClassControler.getAllClass
     )
-    // class subjects
+    // class subjects, fee structure, sections
     .get(
         "/class/:classId/subjects",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
         AcademicValidation.getSubjectsByClass,
         catchError,
         ClassControler.getSubjectsByClass
+    )
+    .get(
+        "/class/:classId/fee-structure",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getClassFeeStructure,
+        catchError,
+        ClassControler.getClassFeeStructure
     )
     .get(
         "/:classId",

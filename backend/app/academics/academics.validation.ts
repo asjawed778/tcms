@@ -399,6 +399,12 @@ export const getAllClass = [
         .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
 ];
 
+export const getClassFeeStructure = [
+    param("classId")
+        .notEmpty().withMessage("Class ID is required")
+        .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
+]
+
 // class subjects
 export const getSubjectsByClass = [
     param("classId")

@@ -158,6 +158,12 @@ export const upsertClassFeeStructure = asyncHandler(async (req: Request, res: Re
     res.send(createResponse(result, "Fee Structure Updated successfully"));
 });
 
+export const getClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
+    const classId = req.params.classId;
+    const result = await AcademicService.getClassFeeStructure(classId);
+    res.send(createResponse(result, "Fee Structure fetched successfully"));
+});
+
 // Timetable controllers
 export const createTimeTable = asyncHandler(async (req: Request, res: Response) => {
     const { sessionId, classId, sectionId } = req.body;

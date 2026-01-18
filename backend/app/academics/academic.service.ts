@@ -237,7 +237,7 @@ export const getAllSections = async (sessionId: string, classId?: string) => {
   return { sections: result };
 };
 
-// class service functions
+// class service functions - updated will use
 export const getClassByUniqueId = async (classUniqueId: string) => {
   const classDoc = await classSchema.findOne({ classId: classUniqueId, deleted: false });
   if (!classDoc) {
@@ -483,7 +483,7 @@ export const getClassById = async (classId: string) => {
 };
 
 export const getClassFeeStructure = async (classId: string) => {
-  const result = await classFeeStructureSchema.findOne({ classId, status: Enum.ActiveStatus.ACTIVE });
+  const result = await classFeeStructureSchema.findOne({ classId });
   return result;
 };
 
