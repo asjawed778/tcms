@@ -44,27 +44,20 @@ export const deleteSubject = asyncHandler(async (req: Request, res: Response) =>
 });
 
 // section controllers
-export const createSection = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createSection(data);
-    res.send(createResponse(result, "Section created successfully"));
-});
-
-export const createSectionsBulk = asyncHandler(async (req: Request, res: Response) => {
+export const upsertSectionsBulk = asyncHandler(async (req: Request, res: Response) => {
     const { sections } = req.body;
+    const { classId } = req.params;
     const result = [];
     for (const section of sections) {
-        const response = await AcademicService.createSection(section);
-        result.push(response);
+        if (section._id) {
+            const updatedSection = await AcademicService.editSection(section._id, section);
+            result.push(updatedSection);
+        } else {
+            const response = await AcademicService.createSection(classId, section);
+            result.push(response);
+        }
     }
     res.send(createResponse(result, "Sections created successfully"));
-});
-
-export const editSection = asyncHandler(async (req: Request, res: Response) => {
-    const { sectionId } = req.params;
-    const data = req.body;
-    const result = await AcademicService.editSection(sectionId, data);
-    res.send(createResponse(result, "Section edited successfully"));
 });
 
 export const deleteSection = asyncHandler(async (req: Request, res: Response) => {
@@ -74,9 +67,8 @@ export const deleteSection = asyncHandler(async (req: Request, res: Response) =>
 });
 
 export const getAllSections = asyncHandler(async (req: Request, res: Response) => {
-    const classId = req.query.classId as string || "";
-    const sessionId = req.query.sessionId as string;
-    const result = await AcademicService.getAllSections(sessionId, classId);
+    const { classId } = req.params;
+    const result = await AcademicService.getClassSections(classId);
     res.send(createResponse(result, "Sections fetched successfully"));
 });
 

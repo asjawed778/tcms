@@ -134,13 +134,13 @@ export const getSectionByUniqueId = async (sectionUniqueId: string) => {
   return sectionDoc;
 };
 
-export const createSection = async (data: ClassDto.ICreateSection) => {
-  const classDoc = await classSchema.findById(data.classId);
+export const createSection = async (classId: string, data: ClassDto.ICreateSection) => {
+  const classDoc = await classSchema.findById(classId);
   if (!classDoc) {
     throw createHttpError(404, "Class not found");
   }
   const sectionId = await AcademicUtils.generateSectionId(classDoc.name, data.name);
-  const newSection = await sectionSchema.create({ ...data, sectionId });
+  const newSection = await sectionSchema.create({ ...data, classId, sectionId });
   if (!newSection) {
     throw createHttpError(500, "Failed to create section");
   }
@@ -176,34 +176,48 @@ export const deleteSection = async (sectionId: string) => {
   return section;
 };
 
-export const getAllSections = async (sessionId: string, classId?: string) => {
+export const getClassSections = async (classId: string) => {
   const query: any = {};
-  if (sessionId) query.sessionId = sessionId;
   if (classId) query.classId = classId;
 
   const sections = await sectionSchema.find(query).lean();
 
   const result = await Promise.all(
     sections.map(async (sec) => {
-      const classDoc = await classSchema.findById(sec.classId).select("_id classId name").lean();
-      const totalAdmissions = await admissionSchema.countDocuments({
-        section: sec._id,
-        session: sec.sessionId,
-        admissionStatus: "ACTIVE",
-        deleted: false,
-      });
+      const [classDoc, totalAdmissions, timeTableExists] = await Promise.all([
+        classSchema
+          .findById(sec.classId)
+          .select("_id classId name")
+          .lean(),
+
+        admissionSchema.countDocuments({
+          section: sec._id,
+          session: sec.sessionId,
+          admissionStatus: Enum.AdmissionStatus.ACTIVE,
+          deleted: false,
+        }),
+
+        classTimetableSchema.exists({
+          section: sec._id,
+          class: sec.classId,
+          session: sec.sessionId,
+          status: Enum.TimeTableStatus.ACTIVE,
+        }),
+      ]);
 
       return {
         ...sec,
         class: classDoc ? { id: classDoc.classId, name: classDoc.name } : null,
         totalAdmissions,
         classTeacher: sec.classTeacher || null,
+        isTimeTableCreated: Boolean(timeTableExists),
       };
     })
   );
 
   return { sections: result };
 };
+
 
 // class service functions - updated will use
 export const getClassByUniqueId = async (classUniqueId: string) => {
