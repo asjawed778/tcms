@@ -1,6 +1,11 @@
 import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdown from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
+import {
+  useGetAllClassQuery,
+  useGetAllSectionQuery,
+} from "@/services/academicsApi";
+import { useAppSelector } from "@/store/store";
 import { ArrowBack, ArrowForward, Info, SaveAs } from "@mui/icons-material";
 import {
   Box,
@@ -10,6 +15,8 @@ import {
   Typography,
   useTheme,
 } from "@mui/material";
+import { useEffect, useMemo } from "react";
+import { useFormContext } from "react-hook-form";
 
 const BasicDetails = ({
   handleBack,
@@ -20,6 +27,60 @@ const BasicDetails = ({
 }: any) => {
   const theme = useTheme();
   const styles = getStyles(theme, activeStep);
+  const { watch, setValue } = useFormContext();
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession,
+  );
+  const selectedClass = watch("classId");
+  const { data: classData } = useGetAllClassQuery({
+    sessionId: selectedSession?._id as string,
+  });
+  const { data: sectionData } = useGetAllSectionQuery(
+    {
+      classId: selectedClass,
+      sessionId: selectedSession?._id as string,
+    },
+    { skip: !selectedClass || !selectedSession?._id },
+  );
+
+  const classOptions = useMemo(() => {
+    if (!classData?.data?.classes) return [];
+    return classData.data.classes.map(
+      (item: { _id: string; name: string }) => ({
+        label: item.name,
+        value: item._id,
+      }),
+    );
+  }, [classData]);
+  const sectionOptions = useMemo(() => {
+    if (!sectionData?.data?.sections) return [];
+    return sectionData.data.sections.map(
+      (item: { _id: string; name: string }) => ({
+        label: item.name,
+        value: item._id,
+      }),
+    );
+  }, [sectionData, selectedClass]);
+
+  useEffect(() => {
+    if (selectedSession?._id) {
+      setValue("sessionId", selectedSession._id, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: true,
+      });
+    }
+  }, [selectedSession, setValue]);
+  const sessionOptions = useMemo(() => {
+    if (!selectedSession) return [];
+    return [
+      {
+        label: selectedSession.session,
+        value: selectedSession._id,
+      },
+    ];
+  }, [selectedSession]);
+
   return (
     <Container maxWidth="md">
       <Box sx={styles.wrapper}>
@@ -34,6 +95,7 @@ const BasicDetails = ({
               label="Class"
               placeholder="-- Select Class --"
               labelPosition="outside"
+              options={classOptions}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 6 }}>
@@ -42,6 +104,8 @@ const BasicDetails = ({
               label="Section"
               placeholder="-- Select Section --"
               labelPosition="outside"
+              options={sectionOptions}
+              disabled={!selectedClass}
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
@@ -50,6 +114,8 @@ const BasicDetails = ({
               label="Session"
               placeholder="-- Select Session --"
               labelPosition="outside"
+              options={sessionOptions}
+              disabled
             />
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>

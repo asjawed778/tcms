@@ -35,3 +35,28 @@ export const bulkSubjectSchema = yup.object({
     )
     .min(1, "At least one subject is required"),
 });
+
+// Tiem table..........................................
+export const timeTableBasicDetailsSchema = yup.object({
+  classId: yup
+    .string()
+    .required("Class is required"),
+  sectionId: yup
+    .string()
+    .required("Section is required"),
+  sessionId: yup
+    .string()
+    .required("Session is required"),
+  effectiveFrom: yup
+    .date()
+    .typeError("Effective From date is required")
+    .required("Effective From is required"),
+  effectiveTo: yup
+    .date()
+    .typeError("Effective To date is required")
+    .required("Effective To is required")
+    .min(
+      yup.ref("effectiveFrom"),
+      "Effective To must be after Effective From",
+    ),
+});

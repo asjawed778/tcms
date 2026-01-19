@@ -13,11 +13,12 @@ import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import { Add, Delete } from "@mui/icons-material";
 import CustomButton from "@/components/ui/CustomButton";
+import { PeriodType } from "@/utils/enum";
 
-const periodTypes = [
-  { label: "Lecture", value: "LECTURE" },
-  { label: "Break", value: "BREAK" },
-];
+const periodTypeOptions = Object.values(PeriodType).map((type) => ({
+  label: type,
+  value: type,
+}));
 const facultyOptions = [
   { label: "Mohan Kumar", value: "Mohan Kumar" },
   { label: "Sohan Kumar", value: "Sohan Kumar" },
@@ -62,7 +63,7 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
                 <TableCell>
                   <CustomDropdownField
                     name={`weeklySchedule.${dayIndex}.periods.${index}.periodType`}
-                    options={periodTypes}
+                    options={periodTypeOptions}
                     required={false}
                     sx={{ m: 0 }}
                   />
@@ -141,7 +142,7 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
           variant="outlined"
           onClick={() =>
             append({
-              periodType: "LECTURE",
+              periodType: "",
               periodNumber: fields.length + 1,
               timeSlot: {
                 startTime: "",

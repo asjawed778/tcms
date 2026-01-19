@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import { useLogoutUserMutation } from "@/services/authApi";
 import CustomButton from "../ui/CustomButton";
 import { resetSession } from "@/store/reducers/sessionSlice";
+import { customToast } from "../common/customToast";
 
 const menuItems = [
   { icon: <Dashboard />, label: "Dashboard", route: "/dashboard" },
@@ -45,12 +46,18 @@ const Profile: React.FC = () => {
       handleClose();
       dispatch(logout());
       dispatch(resetSession());
-      toast.success("Logged out successfully");
+      customToast({
+        type: "success",
+        message: "Logged out successfully!",
+      });
       navigate("/login");
     } catch (error) {
       dispatch(logout());
       dispatch(resetSession());
-      toast.success("Logged out successfully");
+      customToast({
+        type: "success",
+        message: "Logged out successfully!",
+      });
     }
   };
 
@@ -99,7 +106,9 @@ const Profile: React.FC = () => {
         <Box display="flex" alignItems="center" gap={1} px={1.5} py={1}>
           <Avatar src={user?.profilePic} />
           <Box>
-            <Typography fontWeight="bold">{user?.firstName} {user?.lastName}</Typography>
+            <Typography fontWeight="bold">
+              {user?.firstName} {user?.lastName}
+            </Typography>
             <Typography variant="body2" color="text.secondary">
               {user?.role?.name}
             </Typography>
@@ -108,7 +117,7 @@ const Profile: React.FC = () => {
 
         <Divider sx={{ my: 1 }} />
 
-        {menuItems.map(({ icon, label, route  }) => (
+        {menuItems.map(({ icon, label, route }) => (
           <MenuItem
             key={label}
             onClick={() => {

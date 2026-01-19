@@ -17,7 +17,7 @@ const DAYS = [
 
 const SubjectCell = ({ period }: any) => {
   if (!period) return null;
-  const { color, bgcolor } = getSubjectColors(period.subject);
+  const { color, bgcolor } = getSubjectColors(period.subject || "");
   return (
     <Box textAlign="center">
       <Chip

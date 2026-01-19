@@ -4,27 +4,38 @@ import { useState } from "react";
 import CustomInputField from "@/components/ui/CustomInputField";
 import PeriodTable from "./PeriodTable";
 import { CalendarMonth } from "@mui/icons-material";
+import { WeekDay } from "@/utils/enum";
+import { useGetSubjectsQuery } from "@/services/academicsApi";
 
 const DAYS = [
-  { label: "Monday", value: "MONDAY" },
-  { label: "Tuesday", value: "TUESDAY" },
-  { label: "Wednesday", value: "WEDNESDAY" },
-  { label: "Thursday", value: "THURSDAY" },
-  { label: "Friday", value: "FRIDAY" },
-  { label: "Saturday", value: "SATURDAY" },
+  { label: "Monday", value: WeekDay.MONDAY },
+  { label: "Tuesday", value: WeekDay.TUESDAY },
+  { label: "Wednesday", value: WeekDay.WEDNESDAY },
+  { label: "Thursday", value: WeekDay.THURSDAY },
+  { label: "Friday", value: WeekDay.FRIDAY },
+  { label: "Saturday", value: WeekDay.SATURDAY },
+  { label: "Sunday", value: WeekDay.SUNDAY },
 ];
 
 const ScheduleByDay = () => {
-  const { control, watch } = useFormContext();
-  const [selectedDay, setSelectedDay] = useState<string>("MONDAY");
+  const { control, watch, getValues } = useFormContext();
+  const [selectedDay, setSelectedDay] = useState<string>(WeekDay.MONDAY);
   const { fields: dayFields, append: appendDay } = useFieldArray({
     control,
     name: "weeklySchedule",
   });
   const selectedDayIndex = dayFields.findIndex(
-    (d: any) => d.day === selectedDay
+    (d: any) => d.day === selectedDay,
   );
-
+  const { classId } = watch("classId");
+  const { data: allSubjects } = useGetSubjectsQuery(
+    {
+      classId,
+    },
+    { skip: !classId },
+  );
+  console.log("subject: ", allSubjects);
+  
   const ensureDayExists = (dayValue: string) => {
     const exists = dayFields.some((d: any) => d.day === dayValue);
     if (!exists) {
@@ -40,16 +51,6 @@ const ScheduleByDay = () => {
   if (selectedDayIndex === -1) return null;
 
   const isHoliday = watch(`weeklySchedule.${selectedDayIndex}.isHoliday`);
-  const weeklySchedule = watch("weeklySchedule") || [];
-  const isDayHasPeriod = (
-    dayValue: string,
-    weeklySchedule: any[],
-    selectedDay: string
-  ): boolean => {
-    const dayData = weeklySchedule?.find((d) => d.day === dayValue);
-    const hasPeriod = dayData?.periods?.length > 0;
-    return hasPeriod || selectedDay === dayValue;
-  };
   return (
     <Box>
       <Box display="flex" justifyContent="center" gap={2} mb={3}>
@@ -61,12 +62,13 @@ const ScheduleByDay = () => {
             sx={{
               px: 2,
               fontSize: 16,
-              bgcolor: isDayHasPeriod(day.value, weeklySchedule, selectedDay)
-                ? "primary.main"
-                : "#fff",
-              color: isDayHasPeriod(day.value, weeklySchedule, selectedDay)
-                ? "#fff"
-                : "text.primary",
+              bgcolor: selectedDay === day.value ? "primary.main" : "#fff",
+              color: selectedDay === day.value ? "#fff" : "text.primary",
+              "&:hover": {
+                bgcolor:
+                  selectedDay === day.value ? "primary.dark" : "primary.light",
+                color: "#fff",
+              },
             }}
             onClick={() => ensureDayExists(day.value)}
           />

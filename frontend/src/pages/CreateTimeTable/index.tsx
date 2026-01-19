@@ -16,38 +16,41 @@ import PageHeader from "@/components/common/PageHeader";
 import CustomButton from "@/components/ui/CustomButton";
 import { ArrowBack, ArrowForward, Drafts, SaveAs } from "@mui/icons-material";
 import Review from "./Review";
+import { timeTableBasicDetailsSchema } from "@/validation/academics";
+import * as yup from "yup";
+import { WeekDay } from "@/utils/enum";
 
 export const steps = [
   {
     label: "Basic Details",
     component: BasicDetails,
-    // schema: personalDetailsSchema,
+    schema: timeTableBasicDetailsSchema,
   },
   {
     label: "Schedule",
     component: Schedule,
-    // schema: addressdetailsSchema,
+    schema: yup.object({}),
   },
   {
     label: "Review",
     component: Review,
-    // schema: parentDetailsSchema,
+    schema: yup.object({}),
   },
 ];
 
 const CreateTimeTable = () => {
   const [activeStep, setActiveStep] = useState(0);
 
-  // const currentSchema = useMemo(() => steps[activeStep].schema, [activeStep]);
+  const currentSchema = useMemo(() => steps[activeStep].schema, [activeStep]);
 
   const methods = useForm({
     // resolver: yupResolver(currentSchema),
-    mode: "onTouched",
+    mode: "onChange",
     shouldUnregister: false,
     defaultValues: {
       weeklySchedule: [
         {
-          day: "MONDAY",
+          day: WeekDay.MONDAY,
           isHoliday: false,
           periods: [
             {
@@ -69,8 +72,8 @@ const CreateTimeTable = () => {
   });
 
   const handleNext = async () => {
-    // const isValid = await methods.trigger();
-    // if (isValid)
+    const isValid = await methods.trigger();
+    if (isValid)
     setActiveStep((prev) => prev + 1);
   };
 
@@ -87,11 +90,13 @@ const CreateTimeTable = () => {
 
   return (
     <Box mt="52px">
-      <PageHeader
-        backTo="/dashboard/academics?tab=timetable"
-      />
+      <PageHeader backTo="/dashboard/academics?tab=timetable" />
       <Box sx={{ py: 2 }}>
-        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 2, maxWidth: "lg", mx: "auto"}}>
+        <Stepper
+          activeStep={activeStep}
+          alternativeLabel
+          sx={{ mb: 2, maxWidth: "lg", mx: "auto" }}
+        >
           {steps.map((step, index) => (
             <Step key={index}>
               <StepLabel>{step.label}</StepLabel>

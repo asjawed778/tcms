@@ -104,6 +104,12 @@ export const academicsApi = createApi({
         method: "GET",
       })
     }),
+    getSubjects: builder.query({
+      query: ({ classId }) => ({
+        url: `/admin/academics/class/${classId}/subjects`,
+        method: "GET",
+      })
+    }),
     addSubject: builder.mutation<SubjectResponse, { payload: SubjectRequest, classId: string }>({
       query: ({ payload }) => ({
         url: `/admin/academics/subject`,
@@ -112,7 +118,7 @@ export const academicsApi = createApi({
       }),
       invalidatesTags: ["CLASS_LIST"],
     }),
-    addBulkSubject: builder.mutation({
+    addBulkSubject: builder.mutation<ApiResponse<SubjectResponse[]>, {payload: {subjects: SubjectRequest[]}, classId: string;}>({
       query: ({ payload, classId }) => ({
         url: `/admin/academics/class/${classId}/upsert-subjects`,
         method: "POST",
@@ -187,5 +193,6 @@ export const {
   useAddSubjectMutation,
   useDeleteSubjectMutation,
   useGetAllSubjectQuery,
+  useGetSubjectsQuery,
   useUpdateSubjectMutation,
 } = academicsApi;

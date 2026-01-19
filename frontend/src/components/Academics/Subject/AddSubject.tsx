@@ -4,7 +4,7 @@ import CustomButton from "@/components/ui/CustomButton";
 import * as Enum from "@/utils/enum";
 import { cleanData } from "@/utils/helper";
 import {
-  useAddSubjectMutation,
+  useAddBulkSubjectMutation,
   useGetAllClassQuery,
   useUpdateSubjectMutation,
 } from "@/services/academicsApi";
@@ -41,7 +41,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       label: cls.name,
       value: cls._id,
     })) || [];
-  const [addSubject, { isLoading }] = useAddSubjectMutation();
+  const [addSubject, { isLoading }] = useAddBulkSubjectMutation();
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
   const theme = useTheme();
@@ -97,7 +97,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
         reset();
         onClose?.();
       } else {
-        await addSubject({ payload, classId: payload.classId }).unwrap();
+        await addSubject({ payload: {subjects: [payload]}, classId: payload.classId }).unwrap();
         customToast({
           type: "success",
           message: "Subject Added successfully!",

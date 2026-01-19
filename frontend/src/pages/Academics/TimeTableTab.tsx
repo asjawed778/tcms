@@ -1,10 +1,14 @@
 import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
-import { useGetAllClassQuery, useGetTimeTableQuery } from "@/services/academicsApi";
+import {
+  useGetAllClassQuery,
+  useGetAllSectionQuery,
+  useGetTimeTableQuery,
+} from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { Alarm } from "@mui/icons-material";
 import { Box, Typography } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCan } from "@/hooks/useCan";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
@@ -29,16 +33,22 @@ const TimeTableTab: React.FC = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedSection, setSelectedSecton] = useState("");
-  const [sectionOptions, setSectionOptions] = useState<
-    { label: string; value: string }[]
-  >([]);
+ 
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
   const can = useCan();
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
   });
+  const { data: sectionData } = useGetAllSectionQuery(
+    {
+      classId: selectedClass,
+      sessionId: selectedSession?._id as string,
+    },
+    { skip: !selectedClass || !selectedSession?._id },
+  );
+
   const {
     data: timeTable,
     isLoading,
@@ -51,34 +61,27 @@ const TimeTableTab: React.FC = () => {
     },
     {
       skip: !selectedSection || !selectedClass,
-    }
+    },
   );
 
-  const classOptions =
-    classData?.data?.classes?.map((item: any) => ({
-      label: item.name,
-      value: item._id as string,
-    })) || [];
-
-  useEffect(() => {
-    if (selectedClass && classData?.data?.classes) {
-      const matchedClass = classData.data.classes.find(
-        (cls: any) => cls._id === selectedClass
-      );
-
-      if (matchedClass?.sections) {
-        const options = matchedClass.sections.map((section: any) => ({
-          label: section.name,
-          value: section._id as string,
-        }));
-
-        setSectionOptions(options);
-      } else {
-        setSectionOptions([]);
-      }
-    }
-  }, [selectedClass, classData]);
-
+  const classOptions = useMemo(() => {
+    if (!classData?.data?.classes) return [];
+    return classData.data.classes.map(
+      (item: { _id: string; name: string }) => ({
+        label: item.name,
+        value: item._id,
+      }),
+    );
+  }, [classData]);
+  const sectionOptions = useMemo(() => {
+    if (!sectionData?.data?.sections) return [];
+    return sectionData.data.sections.map(
+      (item: { _id: string; name: string }) => ({
+        label: item.name,
+        value: item._id,
+      }),
+    );
+  }, [sectionData, selectedClass]);
   const handleCreateTimeTable = () => {
     navigate("/academics/create-time-table");
   };
@@ -163,14 +166,14 @@ const TimeTableTab: React.FC = () => {
           {can(
             ModuleName.ACADEMICS,
             SubModuleName.TIMETABLE,
-            Operation.CREATE
+            Operation.CREATE,
           ) && (
-              <CustomButton
-                label="Create Timetable"
-                startIcon={<Alarm />}
-                onClick={handleCreateTimeTable}
-              />
-            )}
+            <CustomButton
+              label="Create Timetable"
+              startIcon={<Alarm />}
+              onClick={handleCreateTimeTable}
+            />
+          )}
         </Box>
       </Box>
 
@@ -193,7 +196,11 @@ const TimeTableTab: React.FC = () => {
         isLoading={isLoading}
         actions={actionsList}
         isError={isError}
-        message={(!selectedClass || !selectedSection) ? "Please select Class and Section to view timetable." : ""}
+        message={
+          !selectedClass || !selectedSection
+            ? "Please select Class and Section to view timetable."
+            : ""
+        }
       />
     </Box>
   );
