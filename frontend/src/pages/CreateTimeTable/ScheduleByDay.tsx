@@ -27,15 +27,14 @@ const ScheduleByDay = () => {
   const selectedDayIndex = dayFields.findIndex(
     (d: any) => d.day === selectedDay,
   );
-  const { classId } = watch("classId");
+  const classId = watch("classId");
   const { data: allSubjects } = useGetSubjectsQuery(
     {
       classId,
     },
     { skip: !classId },
   );
-  console.log("subject: ", allSubjects);
-  
+
   const ensureDayExists = (dayValue: string) => {
     const exists = dayFields.some((d: any) => d.day === dayValue);
     if (!exists) {
