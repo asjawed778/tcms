@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Autocomplete,
   TextField,
@@ -21,6 +21,7 @@ import { Colors } from "@/theme/colors";
 
 interface Option {
   label: string;
+  dropdownItem?: React.ReactNode;
   value: string;
 }
 
@@ -253,6 +254,16 @@ const CustomDropdown = <T extends FieldValues>({
               }}
             />
           )}
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              {...props}
+              key={option.value}
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              {option.dropdownItem ?? option.label}
+            </Box>
+          )}
         />
       </Box>
     );
@@ -272,7 +283,7 @@ const CustomDropdown = <T extends FieldValues>({
 
   return renderAutocomplete(
     propValue ?? null,
-    propOnChange ?? (() => {}),
+    propOnChange ?? (() => { }),
     undefined
   );
 };
