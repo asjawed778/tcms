@@ -38,7 +38,7 @@ const subjectOptions = [
   { label: "Chemistry", value: "Chemistry" },
 ];
 const DAYS = [
-  { label: "Mon", value: WeekDay.MONDAY},
+  { label: "Mon", value: WeekDay.MONDAY },
   { label: "Tue", value: WeekDay.TUESDAY },
   { label: "Wed", value: WeekDay.WEDNESDAY },
   { label: "Thu", value: WeekDay.THURSDAY },
@@ -46,13 +46,15 @@ const DAYS = [
   { label: "Sat", value: WeekDay.SATURDAY },
   { label: "Sun", value: WeekDay.SUNDAY },
 ];
+interface ScheduleByPeriodProps {
+  subjectOptions: DropdownOption[];
+}
 
-const ScheduleByPeriod = () => {
-  const { getValues, setValue } = useFormContext();
+const ScheduleByPeriod = ({ subjectOptions }: ScheduleByPeriodProps) => {
+  const { getValues, setValue, watch } = useFormContext();
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
-
+  const template = watch("periodTemplate");
   const handleAddPeriod = () => {
-    const template = getValues("periodTemplate");
     if (!template || selectedDays.length === 0) return;
     const weeklySchedule = getValues("weeklySchedule") || [];
     const newPeriod = {
@@ -100,7 +102,14 @@ const ScheduleByPeriod = () => {
 
     setSelectedDays([]);
   };
-
+  const isAddDisabled =
+    !template?.periodType ||
+    !template?.subject ||
+    !template?.faculty ||
+    !template?.room ||
+    !template?.startTime ||
+    !template?.endTime ||
+    selectedDays.length === 0;
   return (
     <Grid container spacing={3}>
       <Grid size={{ xs: 12, md: 5 }}>
@@ -154,7 +163,6 @@ const ScheduleByPeriod = () => {
                 name="periodTemplate.startTime"
                 label="Start Time"
                 type="time"
-                required={false}
                 step={60}
                 onFocus={() => {
                   const current = getValues("periodTemplate.startTime");
@@ -173,7 +181,6 @@ const ScheduleByPeriod = () => {
                 name="periodTemplate.endTime"
                 label="End Time"
                 type="time"
-                required={false}
                 step={60}
                 onFocus={() => {
                   const current = getValues("periodTemplate.endTime");
@@ -214,10 +221,9 @@ const ScheduleByPeriod = () => {
                     ? "#fff"
                     : "text.primary",
                   "&:hover": {
-                    bgcolor:
-                      selectedDays.includes(day.value)
-                        ? "primary.dark"
-                        : "primary.light",
+                    bgcolor: selectedDays.includes(day.value)
+                      ? "primary.dark"
+                      : "primary.light",
                     color: "#fff",
                   },
                 }}
@@ -231,6 +237,7 @@ const ScheduleByPeriod = () => {
             startIcon={<Add />}
             sx={{ borderRadius: 2, py: 1.2 }}
             onClick={handleAddPeriod}
+            disabled={isAddDisabled}
           >
             Add Period to Schedule
           </Button>

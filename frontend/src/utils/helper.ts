@@ -143,10 +143,6 @@ interface MapToDropdownOptionsParams<T> {
   labelKey?: keyof T;
   valueKey?: keyof T;
 }
-export interface DropdownOption {
-  label: string;
-  value: string;
-}
 export function mapToDropdownOptions<T extends Record<string, any>>({
   data = [],
   labelKey = "name" as keyof T,

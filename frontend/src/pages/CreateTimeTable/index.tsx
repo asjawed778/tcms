@@ -18,7 +18,7 @@ import { ArrowBack, ArrowForward, Drafts, SaveAs } from "@mui/icons-material";
 import Review from "./Review";
 import { timeTableBasicDetailsSchema } from "@/validation/academics";
 import * as yup from "yup";
-import { WeekDay } from "@/utils/enum";
+import { PeriodType, WeekDay } from "@/utils/enum";
 
 export const steps = [
   {
@@ -54,7 +54,7 @@ const CreateTimeTable = () => {
           isHoliday: false,
           periods: [
             {
-              periodType: "LECTURE",
+              periodType: PeriodType.LECTURE,
               periodNumber: 1,
               subject: "",
               faculty: "",

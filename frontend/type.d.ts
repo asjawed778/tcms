@@ -79,11 +79,6 @@ interface SignupRequest {
 interface SignupResponse extends User {}
 
 //  General data..................................................
-interface DropdownOptions {
-  label: string;
-  value: string;
-}
-
 interface ForgotPasswordFormValues {
   email: string;
 }

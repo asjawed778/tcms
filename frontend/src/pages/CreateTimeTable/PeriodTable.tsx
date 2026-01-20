@@ -9,7 +9,7 @@ import {
   Box,
 } from "@mui/material";
 import { useFieldArray, useFormContext } from "react-hook-form";
-import CustomDropdownField from "@/components/ui/CustomDropdown";
+import CustomDropdown from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import { Add, Delete } from "@mui/icons-material";
 import CustomButton from "@/components/ui/CustomButton";
@@ -23,11 +23,13 @@ const facultyOptions = [
   { label: "Mohan Kumar", value: "Mohan Kumar" },
   { label: "Sohan Kumar", value: "Sohan Kumar" },
 ];
-
-const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
+interface PeriodTableProps {
+  dayIndex: number;
+  subjectOptions: DropdownOption[];
+}
+const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
   const styles = getStyles();
   const { control, watch, setValue } = useFormContext();
-
   const { fields, append, remove } = useFieldArray({
     control,
     name: `weeklySchedule.${dayIndex}.periods`,
@@ -40,12 +42,12 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
           <TableRow sx={{ bgcolor: "#F5F5F5" }}>
             <TableCell sx={{ width: "4%" }}>#</TableCell>
             <TableCell sx={{ width: "16%" }}>Period Type</TableCell>
-            <TableCell sx={{ width: "14%" }}>Subject</TableCell>
+            <TableCell sx={{ width: "16%" }}>Subject</TableCell>
             <TableCell sx={{ width: "16%" }}>Faculty</TableCell>
             <TableCell sx={{ width: "10%" }}>Room</TableCell>
             <TableCell sx={{ width: "15%" }}>Start</TableCell>
             <TableCell sx={{ width: "15%" }}>End</TableCell>
-            <TableCell sx={{ width: "6%" }} align="center">
+            <TableCell sx={{ width: "5%" }} align="center">
               Action
             </TableCell>
           </TableRow>
@@ -61,7 +63,7 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
               <TableRow key={field.id} sx={styles.tableRow}>
                 <TableCell>{index + 1}</TableCell>
                 <TableCell>
-                  <CustomDropdownField
+                  <CustomDropdown
                     name={`weeklySchedule.${dayIndex}.periods.${index}.periodType`}
                     options={periodTypeOptions}
                     required={false}
@@ -69,14 +71,15 @@ const PeriodTable = ({ dayIndex }: { dayIndex: number }) => {
                   />
                 </TableCell>
                 <TableCell>
-                  <CustomInputField
+                  <CustomDropdown
                     name={`weeklySchedule.${dayIndex}.periods.${index}.subject`}
                     required={false}
                     sx={{ m: 0 }}
+                    options={subjectOptions}
                   />
                 </TableCell>
                 <TableCell>
-                  <CustomDropdownField
+                  <CustomDropdown
                     name={`weeklySchedule.${dayIndex}.periods.${index}.faculty`}
                     options={facultyOptions}
                     required={false}

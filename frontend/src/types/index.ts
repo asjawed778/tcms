@@ -1,4 +1,3 @@
-
 interface ApiResponse<T> {
     data: T;
     message: string;
@@ -33,12 +32,17 @@ interface AddressRequest {
     pincode?: number;
 }
 
-interface AddressResponse extends AddressRequest, BaseSchema {};
+interface AddressResponse extends AddressRequest, BaseSchema { };
 
 interface DocumentRequest {
-  name?: string;
-  documentNumber?: string;
-  url: string;
+    name?: string;
+    documentNumber?: string;
+    url: string;
 }
 
-interface DocumentResponse extends BaseSchema, DocumentRequest {}
+interface DocumentResponse extends BaseSchema, DocumentRequest { }
+
+interface DropdownOption {
+    label: string;
+    value: string
+}

@@ -12,6 +12,8 @@ import {
   CalendarMonth,
   ViewWeek,
 } from "@mui/icons-material";
+import { useGetSubjectsQuery } from "@/services/academicsApi";
+import { useMemo } from "react";
 
 const Schedule = ({
   handleBack,
@@ -29,9 +31,24 @@ const Schedule = ({
     setValue(
       "scheduleType",
       isPeriod ? ScheduleType.DAY : ScheduleType.PERIOD,
-      { shouldDirty: true }
+      { shouldDirty: true },
     );
   };
+  const classId = watch("classId");
+  const { data: allSubjects } = useGetSubjectsQuery(
+    {
+      classId,
+    },
+    { skip: !classId },
+  );
+  const subjectOptions = useMemo(() => {
+    return (
+      allSubjects?.data?.map((item: SubjectResponse) => ({
+        label: item.name,
+        value: item._id,
+      })) ?? []
+    );
+  }, [allSubjects]);
 
   return (
     <Container>
@@ -50,7 +67,11 @@ const Schedule = ({
           </Box>
         </Box>
       </Box>
-      {isPeriod ? <ScheduleByPeriod /> : <ScheduleByDay />}
+      {isPeriod ? (
+        <ScheduleByPeriod subjectOptions={subjectOptions} />
+      ) : (
+        <ScheduleByDay subjectOptions={subjectOptions} />
+      )}
       <Box sx={styles.buttonWrapper}>
         {activeStep > 0 && (
           <CustomButton

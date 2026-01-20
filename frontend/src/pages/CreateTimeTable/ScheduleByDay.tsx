@@ -16,9 +16,11 @@ const DAYS = [
   { label: "Saturday", value: WeekDay.SATURDAY },
   { label: "Sunday", value: WeekDay.SUNDAY },
 ];
-
-const ScheduleByDay = () => {
-  const { control, watch, getValues } = useFormContext();
+interface ScheduleByDayProps {
+  subjectOptions: DropdownOption[]
+}
+const ScheduleByDay = ({ subjectOptions }: ScheduleByDayProps) => {
+  const { control, watch } = useFormContext();
   const [selectedDay, setSelectedDay] = useState<string>(WeekDay.MONDAY);
   const { fields: dayFields, append: appendDay } = useFieldArray({
     control,
@@ -27,15 +29,7 @@ const ScheduleByDay = () => {
   const selectedDayIndex = dayFields.findIndex(
     (d: any) => d.day === selectedDay,
   );
-  const { classId } = watch("classId");
-  const { data: allSubjects } = useGetSubjectsQuery(
-    {
-      classId,
-    },
-    { skip: !classId },
-  );
-  console.log("subject: ", allSubjects);
-  
+
   const ensureDayExists = (dayValue: string) => {
     const exists = dayFields.some((d: any) => d.day === dayValue);
     if (!exists) {
@@ -124,7 +118,11 @@ const ScheduleByDay = () => {
             />
           </Box>
         ) : (
-          <PeriodTable key={selectedDayIndex} dayIndex={selectedDayIndex} />
+          <PeriodTable
+            key={selectedDayIndex}
+            dayIndex={selectedDayIndex}
+            subjectOptions={subjectOptions}
+          />
         )}
       </Box>
     </Box>
