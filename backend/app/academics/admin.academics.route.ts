@@ -25,27 +25,6 @@ router
     )
 
     // section routes
-    .post(
-        "/section",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSection,
-        catchError,
-        ClassControler.createSection
-    )
-    .post(
-        "/section/bulk",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSectionsBulk,
-        catchError,
-        ClassControler.createSectionsBulk
-    )
-    .put(
-        "/section/:sectionId",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.UPDATE }),
-        AcademicValidation.editSection,
-        catchError,
-        ClassControler.editSection
-    )
     .delete(
         "/section/:sectionId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.DELETE }),
@@ -53,13 +32,7 @@ router
         catchError,
         ClassControler.deleteSection
     )
-    .get(
-        "/section/all",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.READ }),
-        AcademicValidation.getAllSections,
-        catchError,
-        ClassControler.getAllSections
-    )
+
 
     // class routes
     .post(
@@ -75,6 +48,13 @@ router
         AcademicValidation.updateClass,
         catchError,
         ClassControler.updateClass
+    )
+    .post(
+        "/class/:classId/upsert-section",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
+        AcademicValidation.upsertSectionsBulk,
+        catchError,
+        ClassControler.upsertSectionsBulk
     )
     .post(
         "/class/:classId/upsert-subjects",
@@ -110,6 +90,13 @@ router
         AcademicValidation.getClassFeeStructure,
         catchError,
         ClassControler.getClassFeeStructure
+    )
+    .get(
+        "/class/:classId/sections",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.READ }),
+        AcademicValidation.getClassSections,
+        catchError,
+        ClassControler.getAllSections
     )
     .get(
         "/:classId",

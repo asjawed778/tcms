@@ -28,9 +28,7 @@ const BasicDetails = ({
   const theme = useTheme();
   const styles = getStyles(theme, activeStep);
   const { watch, setValue } = useFormContext();
-  const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession,
-  );
+  const { selectedSession } = useAppSelector((state) => state.session);
   const selectedClass = watch("classId");
   const { data: classData } = useGetAllClassQuery({
     sessionId: selectedSession?._id as string,
@@ -62,15 +60,15 @@ const BasicDetails = ({
     );
   }, [sectionData, selectedClass]);
 
-  useEffect(() => {
-    if (selectedSession?._id) {
-      setValue("sessionId", selectedSession._id, {
-        shouldDirty: false,
-        shouldTouch: false,
-        shouldValidate: true,
-      });
-    }
-  }, [selectedSession, setValue]);
+  // useEffect(() => {
+  //   if (selectedSession?._id) {
+  //     setValue("sessionId", selectedSession._id, {
+  //       shouldDirty: false,
+  //       shouldTouch: false,
+  //       shouldValidate: true,
+  //     });
+  //   }
+  // }, [selectedSession, setValue]);
   const sessionOptions = useMemo(() => {
     if (!selectedSession) return [];
     return [

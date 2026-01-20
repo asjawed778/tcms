@@ -67,60 +67,28 @@ export const deleteSubject = [
 
 
 // section validation
-export const createSection = [
-    body("name")
-        .notEmpty().withMessage("Section name is required")
-        .isString().withMessage("Section name must be a string"),
-    body("classId")
+export const upsertSectionsBulk = [
+    param("classId")
         .notEmpty().withMessage("Class ID is required")
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
-    body("classTeacher")
-        .optional()
-        .isMongoId().withMessage("Class Teacher must be a valid Mongo ID"),
-    body("capacity")
-        .optional()
-        .isNumeric().withMessage("Section Capacity must be a number"),
-];
 
-export const createSectionsBulk = [
     body("sections")
         .isArray({ min: 1 })
         .withMessage("Sections must be a non-empty array"),
 
     body("sections.*.name")
-        .notEmpty()
-        .withMessage("Section name is required")
-        .isString()
-        .withMessage("Section name must be a string"),
+        .notEmpty().withMessage("Section name is required")
+        .isString().withMessage("Section name must be a string"),
 
-    body("sections.*.classId")
-        .notEmpty()
-        .withMessage("Class ID is required")
-        .isMongoId()
-        .withMessage("Class ID must be a valid Mongo ID"),
+    body("sections.*._id")
+        .optional()
+        .isMongoId().withMessage("_id must be a valid Mongo ID"),
 
     body("sections.*.classTeacher")
         .optional()
-        .isMongoId()
-        .withMessage("Class Teacher must be a valid Mongo ID"),
+        .isMongoId().withMessage("Class Teacher must be a valid Mongo ID"),
 
     body("sections.*.capacity")
-        .optional()
-        .isNumeric()
-        .withMessage("Section Capacity must be a number"),
-];
-
-export const editSection = [
-    param("sectionId")
-        .notEmpty().withMessage("Section ID is required")
-        .isMongoId().withMessage("Section ID must be a valid Mongo ID"),
-    body("name")
-        .optional()
-        .isString().withMessage("Section name must be a string"),
-    body("classTeacher")
-        .optional()
-        .isMongoId().withMessage("Class Teacher must be a valid Mongo ID"),
-    body("capacity")
         .optional()
         .isNumeric().withMessage("Section Capacity must be a number"),
 ];
@@ -131,11 +99,8 @@ export const deleteSection = [
         .isMongoId().withMessage("Section ID must be a valid Mongo ID"),
 ];
 
-export const getAllSections = [
-    query("sessionId")
-        .notEmpty().withMessage("Session ID is required")
-        .isMongoId().withMessage("Session ID must be a valid Mongo ID"),
-    query("classId")
+export const getClassSections = [
+    param("classId")
         .notEmpty().withMessage("Class ID is required")
         .isMongoId().withMessage("Class ID must be a valid Mongo ID"),
 ];
