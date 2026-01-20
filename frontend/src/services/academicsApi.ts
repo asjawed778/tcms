@@ -49,15 +49,8 @@ export const academicsApi = createApi({
     }),
     // Section.............................................................
     getAllSection: builder.query<ApiResponse<SectionResponseList>, { sessionId?: string; classId?: string; page?: number; limit?: number; search?: string; }>({
-      query: ({ sessionId, classId, page = 1, limit = 10, search = "" }) => ({
-        url: `/admin/academics/section/all`,
-        params: {
-          page,
-          limit,
-          ...(search && { search }),
-          ...(sessionId && { sessionId }),
-          ...(classId && { classId })
-        },
+      query: ({ classId }) => ({
+        url: `/admin/academics/class/${classId}/sections`,
         method: "GET",
       }),
       providesTags: ["SECTION_LIST"],
@@ -71,11 +64,12 @@ export const academicsApi = createApi({
       invalidatesTags: ["SECTION_LIST", "CLASS_LIST"],
     }),
     addBulkSection: builder.mutation({
-      query: ({ payload }) => ({
-        url: `/admin/academics/section/bulk`,
+      query: ({ payload, classId }) => ({
+        url: `/admin/academics/class/${classId}/upsert-section`,
         method: "POST",
         body: payload,
-      })
+      }),
+      invalidatesTags: ["SECTION_LIST", "CLASS_LIST"],
     }),
     updateSection: builder.mutation<ApiResponse<SectionResponse>, { sectionId: string; payload: SectionRequest }>({
       query: ({ sectionId, payload }) => ({

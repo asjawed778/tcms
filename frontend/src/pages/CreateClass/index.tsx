@@ -55,7 +55,7 @@ const CreateClass = () => {
   const theme = useTheme();
   const [activeStep, setActiveStep] = useState(0);
   const styles = getStyles(theme, activeStep);
-  const [classId, setClassId] = useState<string | null>(null);
+  const [classId, setClassId] = useState("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
@@ -131,9 +131,9 @@ const CreateClass = () => {
           name: data.name,
           courseStream: data.courseStream,
           session: selectedSession!._id,
-        }
+        };
         const freshData = cleanData(payload);
-        if(!freshData) return;
+        if (!freshData) return;
         const classResponse = await createClass({
           payload: cleanData(payload),
         }).unwrap();
@@ -144,13 +144,9 @@ const CreateClass = () => {
         const classId = classResponse.data._id;
         setClassId(classId);
         if (sections && sections?.length > 0) {
-          const sectionPayload = sections.map((sec: any) => ({
-            ...sec,
-            classId,
-            sessionId: selectedSession?._id,
-          }));
           await addSection({
-            payload: { sections: cleanData(sectionPayload) },
+            classId,
+            payload: { sections: cleanData(sections) },
           }).unwrap();
         }
       } catch (error: any) {
@@ -163,7 +159,7 @@ const CreateClass = () => {
       }
     },
     async (data: any) => {
-      try {
+     try {
         const subjects = data.subjects || [];
         await addBulkSubject({
           classId,

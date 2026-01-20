@@ -28,19 +28,16 @@ const sectionColumns = [
 ];
 const SectionTab = () => {
   const styles = getStyles();
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
   const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [selectedRow, setSelectedRow] = useState<SectionResponse | null>(null);
   const [openAddSection, setOpenAddSection] = useState(false);
   const [openUpdateSection, setOpenUpdateSection] = useState(false);
   const [openDeleteSection, setOpenDeleteSection] = useState(false);
   const [openViewSection, setOpenViewSection] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
   const can = useCan();
 
@@ -51,15 +48,11 @@ const SectionTab = () => {
     refetch,
   } = useGetAllSectionQuery(
     {
-      page,
-      limit,
-      search: searchQuery,
-      sessionId: selectedSession?._id,
       classId: selectedClassId,
     },
     {
-      skip: !selectedSession?._id || !selectedClassId,
-    }
+      skip: !selectedClassId,
+    },
   );
 
   const [deleteSection] = useDeleteSectionMutation();
@@ -70,7 +63,7 @@ const SectionTab = () => {
     },
     {
       skip: !selectedSession?._id,
-    }
+    },
   );
   const actionsList = () => {
     const ACTIONS = [
@@ -114,16 +107,9 @@ const SectionTab = () => {
         can(
           action.permission.module,
           action.permission.subModule,
-          action.permission.operation
-        )
+          action.permission.operation,
+        ),
     );
-  };
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-  const handleRowsPerPageChange = (newRowsPerPage: number) => {
-    setLimit(newRowsPerPage);
-    setPage(1);
   };
   const handleRowClick = (row: any) => {
     setSelectedRow(row);
@@ -178,11 +164,6 @@ const SectionTab = () => {
     <>
       <Box sx={{ m: 2 }}>
         <Box sx={styles.filterWrapper}>
-          <CustomSearchField
-            placeholder="Search Section..."
-            onSearch={setSearchQuery}
-            sx={{ bgcolor: "#fff" }}
-          />
           <Box sx={styles.dropdownBox}>
             <CustomDropdownField
               required={false}
@@ -196,29 +177,26 @@ const SectionTab = () => {
             {can(
               ModuleName.ACADEMICS,
               SubModuleName.SECTION,
-              Operation.CREATE
+              Operation.CREATE,
             ) && (
-                <CustomButton
-                  label="Add Section"
-                  startIcon={<Add />}
-                  onClick={() => setOpenAddSection(true)}
-                />
-              )}
+              <CustomButton
+                label="Add Section"
+                startIcon={<Add />}
+                onClick={() => setOpenAddSection(true)}
+              />
+            )}
           </Box>
         </Box>
         <TableWrapper
           columns={sectionColumns}
           rows={sectionData?.data?.sections || []}
           totalCount={sectionData?.data?.sections.length || 0}
-          page={page}
-          rowsPerPage={limit}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
           onActionClick={handleActionClick}
           actions={actionsList}
           isFetching={sectionFetching}
           isError={sectionError}
           onRowClick={handleRowClick}
+          showPagination={false}
         />
       </Box>
       {openAddSection && (
@@ -273,6 +251,7 @@ export default SectionTab;
 const getStyles = () => ({
   filterWrapper: {
     display: "flex",
+    justifyContent: "flex-end",
     flexDirection: { xs: "column", md: "row" },
     alignItems: "center",
     gap: 2,
