@@ -209,6 +209,12 @@ const CustomDropdown = <T extends FieldValues>({
           }}
           limitTags={2}
           value={getDisplayValue(fieldValue)}
+          // onChange={(_, newValue) => {
+          //   const selected = multiple
+          //     ? (newValue as Option[]).map((opt) => opt.value)
+          //     : ((newValue as Option)?.value ?? null);
+          //   onFieldChange(selected);
+          // }}
           onChange={(_, newValue) => {
             const selectedOption = multiple
               ? (newValue as Option[])

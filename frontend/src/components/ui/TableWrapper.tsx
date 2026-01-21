@@ -183,9 +183,9 @@ function TableWrapper<T extends { _id?: string | number }>({
             }}
             sx={{
               cursor: onRowClick ? "pointer" : "default",
-              // "&:hover": {
-              //   backgroundColor: onRowClick ? "#f0f0f0" : undefined,
-              // },
+              "&:hover": {
+                backgroundColor: onRowClick ? "#f0f0f0" : undefined,
+              },
               "& td:not(:last-child)": {
                 py: 1,
                 pl: "10px",

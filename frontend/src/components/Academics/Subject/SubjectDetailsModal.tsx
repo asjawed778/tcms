@@ -13,25 +13,16 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
   onClose,
   subject,
 }) => {
-    if (!subject) return null;
+  const styles = getStyles();
+  if (!subject) return null;
   return (
     <ModalWrapper
       open={open}
       onClose={onClose}
       title={`Subject Details - ${subject.name}`}
       width="60%"
-      // allowOutsideClickDesktop={true}
     >
       <Box display="flex" flexDirection="column" gap={1.5}>
-        {/* <Typography variant="body1">
-          <strong>Publication:</strong> {subject.publication || "N/A"}
-        </Typography> */}
-        {/* <Typography variant="body1">
-          <strong>Writer:</strong> {subject.writer || "N/A"}
-        </Typography> */}
-        {/* <Typography variant="body1">
-          <strong>ISBN:</strong> {subject.ISBN || "N/A"}
-        </Typography> */}
         <Typography variant="body1">
           <strong>Subject Type:</strong> {subject.subjectType || "N/A"}
         </Typography>
@@ -39,16 +30,7 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
         <Typography variant="body1">
           <strong>Syllabus:</strong>
         </Typography>
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 1,
-            whiteSpace: "pre-wrap",
-            backgroundColor: "#f9f9f9",
-            p: 1.5,
-            borderRadius: 1.5,
-          }}
-        >
+        <Typography variant="body2" sx={styles.syllabus}>
           {subject.syllabus || "No syllabus provided."}
         </Typography>
       </Box>
@@ -57,3 +39,13 @@ const SubjectDetailsModal: React.FC<SubjectDetailsModalProps> = ({
 };
 
 export default SubjectDetailsModal;
+
+const getStyles = () => ({
+  syllabus: {
+    mt: 1,
+    whiteSpace: "pre-wrap",
+    backgroundColor: "#f9f9f9",
+    p: 1.5,
+    borderRadius: 1.5,
+  },
+});

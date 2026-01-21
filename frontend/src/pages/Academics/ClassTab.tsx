@@ -1,5 +1,6 @@
 import AddSection from "@/components/Academics/Section/AddSectionModal";
 import AddSubject from "@/components/Academics/Subject/AddSubject";
+import ComingSoon from "@/components/common/ComingSoon";
 import CustomButton from "@/components/ui/CustomButton";
 import ModalWrapper from "@/components/ui/ModalWrapper";
 import TableWrapper from "@/components/ui/TableWrapper";
@@ -38,6 +39,7 @@ const ClassTab = () => {
     classId: "",
     open: false,
   });
+  const [openSubjectDetails, setOpenSubjectDetails] = useState(false);
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
   );
@@ -143,11 +145,23 @@ const ClassTab = () => {
                 size="small"
                 sx={styles.subjectRemainingCount}
                 onClick={(e) => {
-                  alert("This module is under progress...");
                   e.stopPropagation();
+                  setOpenSubjectDetails(true);
                 }}
               />
             )}
+            <Box
+              sx={getSubjectAddIconWrapper(row)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenAddSubject({
+                  open: true,
+                  classId: row._id,
+                });
+              }}
+            >
+              <Add sx={styles.addIcon} />
+            </Box>
           </Box>
         );
       },
@@ -284,20 +298,34 @@ const ClassTab = () => {
       {openAddSubject.open && (
         <ModalWrapper
           open={openAddSubject.open}
-          onClose={() => setOpenAddSubject({
-            open: false,
-            classId: "",
-          })}
+          onClose={() =>
+            setOpenAddSubject({
+              open: false,
+              classId: "",
+            })
+          }
           title="Add Subject"
           width="900px"
         >
           <AddSubject
-            onClose={() => setOpenAddSubject({
-            open: false,
-            classId: "",
-          })}
-          classId={openAddSubject.classId}
+            onClose={() =>
+              setOpenAddSubject({
+                open: false,
+                classId: "",
+              })
+            }
+            classId={openAddSubject.classId}
           />
+        </ModalWrapper>
+      )}
+      {openSubjectDetails && (
+        <ModalWrapper
+          title="Subject Details"
+          open={openSubjectDetails}
+          onClose={() => setOpenSubjectDetails(false)}
+          width="50%"
+        >
+          <ComingSoon />
         </ModalWrapper>
       )}
     </>
@@ -316,7 +344,7 @@ const getStyles = () => ({
   subjectWrapper: {
     display: "flex",
     gap: 0.5,
-    flexWrap: "wrap",
+    alignItems: "center",
   },
   subjectRemainingCount: {
     fontWeight: 600,

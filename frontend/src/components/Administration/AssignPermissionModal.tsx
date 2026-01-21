@@ -40,16 +40,17 @@ interface AssignPermissionProps {
 }
 
 const AssignPermission: React.FC<AssignPermissionProps> = ({
-  // title,
   role,
   onClose,
   refetch,
 }) => {
   const [permissions, setPermissions] = useState<PermissionModule[]>([]);
   const theme = useTheme();
+  const styles = getStyles();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const [updateRolePermissions, { isLoading }] = useUpdateRolePermissionsMutation();
+  const [updateRolePermissions, { isLoading }] =
+    useUpdateRolePermissionsMutation();
 
   useEffect(() => {
     if (role?.permissions?.length) {
@@ -63,7 +64,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
     moduleName: string,
     subName: string | null,
     action: string,
-    checked: boolean
+    checked: boolean,
   ) => {
     setPermissions((prev) =>
       prev.map((mod) => {
@@ -90,18 +91,17 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                   operations: {
                     ...sub.operations,
                     [action]: checked,
-                    ...(checked &&
-                    (action === "create" || action === "update")
+                    ...(checked && (action === "create" || action === "update")
                       ? { read: true }
                       : {}),
                   },
                 }
-              : sub
+              : sub,
           );
 
           // If any submodule has any operation true, mark the module as readable
           const anySubHasAction = updatedSubModules.some((sub) =>
-            Object.values(sub.operations).some((val) => val === true)
+            Object.values(sub.operations).some((val) => val === true),
           );
 
           return {
@@ -114,7 +114,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
           };
         }
         return mod;
-      })
+      }),
     );
   };
 
@@ -131,29 +131,16 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
     } catch (error: any) {
       toast.error(
         error?.data?.message ||
-          "Failed to update permissions. Please try again!"
+          "Failed to update permissions. Please try again!",
       );
     }
   };
 
   return (
     <Box display="flex" flexDirection="column" gap={3}>
-      {/* {title && (
-        <Typography variant="h6" align="center" sx={{ fontWeight: "bold" }}>
-        {title}
-      </Typography>
-      )} */}
       {permissions.map((module) => (
-        <Paper
-          key={module.name}
-          sx={{
-            p: 1,
-            borderRadius: 2,
-            bgcolor: "grey.100",
-            overflowX: "auto",
-          }}
-        >
-          <Typography variant="h6" sx={{ mb: 1 }}>
+        <Paper key={module.name} sx={styles.paperWrapper}>
+          <Typography variant="h6" mb={1}>
             {module.name}
           </Typography>
           <Divider sx={{ mb: 2 }} />
@@ -162,10 +149,10 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
             <Grid container spacing={isMobile ? 1 : 2} ml={isMobile ? 0 : 4}>
               {Object.keys(module.operations)
                 .filter((action) =>
-                  module.name === "Dashboard" ? action === "read" : true
+                  module.name === "Dashboard" ? action === "read" : true,
                 )
                 .map((action) => (
-                  <Grid key={action} size={{xs: 6, sm: 3}}>
+                  <Grid key={action} size={{ xs: 6, sm: 3 }}>
                     <FormControlLabel
                       control={
                         <Switch
@@ -176,7 +163,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                               module.name,
                               null,
                               action,
-                              e.target.checked
+                              e.target.checked,
                             )
                           }
                         />
@@ -191,18 +178,11 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
             module.subModules.map((sub) => (
               <Box key={sub.name} sx={{ mb: 2, ml: isMobile ? 0 : 2 }}>
                 <Grid container spacing={2} ml={isMobile ? 0 : 1}>
-                    <Typography
-                      variant="subtitle1"
-                      sx={{
-                        fontWeight: 600,
-                        mt: { xs: 0, sm: 1 },
-                        textAlign: "center",
-                      }}
-                    >
-                      {sub.name}:
-                    </Typography>
+                  <Typography variant="subtitle1" sx={styles.subModuleTitle}>
+                    {sub.name}:
+                  </Typography>
                   {Object.keys(sub.operations).map((action) => (
-                    <Grid key={action} size={{xs: 2}}>
+                    <Grid key={action} size={{ xs: 2 }}>
                       <FormControlLabel
                         control={
                           <Switch
@@ -213,7 +193,7 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
                                 module.name,
                                 sub.name,
                                 action,
-                                e.target.checked
+                                e.target.checked,
                               )
                             }
                           />
@@ -247,3 +227,17 @@ const AssignPermission: React.FC<AssignPermissionProps> = ({
 };
 
 export default AssignPermission;
+
+const getStyles = () => ({
+  paperWrapper: {
+    p: 1,
+    borderRadius: 2,
+    bgcolor: "grey.100",
+    overflowX: "auto",
+  },
+  subModuleTitle: {
+    fontWeight: 600,
+    mt: { xs: 0, sm: 1 },
+    textAlign: "center",
+  },
+});

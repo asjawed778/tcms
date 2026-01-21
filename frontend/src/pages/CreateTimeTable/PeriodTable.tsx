@@ -23,10 +23,10 @@ const periodTypeOptions = Object.values(PeriodType).map((type) => ({
   label: type,
   value: type,
 }));
-// const facultyOptions = [
-//   { label: "Mohan Kumar", value: "Mohan Kumar" },
-//   { label: "Sohan Kumar", value: "Sohan Kumar" },
-// ];
+const facultyOptions = [
+  { label: "Mohan Kumar", value: "Mohan Kumar" },
+  { label: "Sohan Kumar", value: "Sohan Kumar" },
+];
 interface PeriodTableProps {
   dayIndex: number;
   subjectOptions: DropdownOption[];
@@ -59,19 +59,11 @@ const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
   }, [day, startTime, endTime]);
   const periodsForApi = latestPeriod ? [latestPeriod] : [];
 
-  const { facultyOptions } = useUnAssignFaculty({
-    sessionId: selectedSession?._id,
-    day,
-    periods: periodsForApi,
-  });
-
-  // const [faculty] = useUnAssignFacultyMutation({
-  //   sessionId: selectedSession?._id ,
+  // const { facultyOptions } = useUnAssignFaculty({
+  //   sessionId: selectedSession?._id,
   //   day,
-  //   startTime,
-  //   endTime
-  // })
-  console.log("facluty: ", facultyOptions);
+  //   periods: periodsForApi,
+  // });
 
   return (
     <TableContainer>
@@ -119,7 +111,7 @@ const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
                 <TableCell>
                   <CustomDropdown
                     name={`weeklySchedule.${dayIndex}.periods.${index}.faculty`}
-                    options={[]}
+                    options={facultyOptions}
                     required={false}
                     sx={{ m: 0 }}
                   />

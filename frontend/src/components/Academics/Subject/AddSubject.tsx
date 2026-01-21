@@ -16,6 +16,7 @@ import { AddCircle, MenuBook } from "@mui/icons-material";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { subjectSchema } from "@/validation/academics";
 import { customToast } from "@/components/common/customToast";
+import { useMemo } from "react";
 
 interface AddSubjectProps {
   onClose?: () => void;
@@ -36,11 +37,14 @@ const AddSubject: React.FC<AddSubjectProps> = ({
     { sessionId: selectedSession?._id as string },
     { skip: !selectedSession?._id },
   );
-  const classOptions =
-    classData?.data?.classes?.map((cls: any) => ({
-      label: cls.name,
-      value: cls._id,
-    })) || [];
+  const classOptions = useMemo(() => {
+    return (
+      classData?.data?.classes?.map((cls: any) => ({
+        label: cls.name,
+        value: cls._id,
+      })) || []
+    );
+  }, [classData]);
   const [addSubject, { isLoading }] = useAddBulkSubjectMutation();
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
@@ -97,7 +101,10 @@ const AddSubject: React.FC<AddSubjectProps> = ({
         reset();
         onClose?.();
       } else {
-        await addSubject({ payload: {subjects: [payload]}, classId: payload.classId }).unwrap();
+        await addSubject({
+          payload: { subjects: [payload] },
+          classId: payload.classId,
+        }).unwrap();
         customToast({
           type: "success",
           message: "Subject Added successfully!",

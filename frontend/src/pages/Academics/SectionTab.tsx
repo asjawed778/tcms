@@ -6,9 +6,16 @@ import {
   useGetAllSectionQuery,
 } from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Add, Delete, Edit, Visibility } from "@mui/icons-material";
+import {
+  Add,
+  CheckCircle,
+  Delete,
+  Edit,
+  Error,
+  Visibility,
+} from "@mui/icons-material";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import { useCan } from "@/hooks/useCan";
@@ -17,15 +24,16 @@ import AddSection from "../../components/Academics/Section/AddSectionModal";
 import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
 import SectionDetailsModal from "@/components/Academics/Section/SectionDetailsModal";
+import { useNavigate } from "react-router-dom";
 
-const sectionColumns = [
-  { key: "sno.", label: "S.No." },
-  { key: "sectionId", label: "Section Id" },
-  { key: "name", label: "Section Name" },
-  { key: "classTeacher", label: "Class Teacher" },
-  { key: "totalAdmissions", label: "Total Admission" },
-  { key: "capacity", label: "Total Capacity" },
-];
+// const sectionColumns = [
+//   { key: "sno.", label: "S.No." },
+//   { key: "sectionId", label: "Section Id" },
+//   { key: "name", label: "Section Name" },
+//   { key: "classTeacher", label: "Class Teacher" },
+//   { key: "totalAdmissions", label: "Total Admission" },
+//   { key: "capacity", label: "Total Capacity" },
+// ];
 const SectionTab = () => {
   const styles = getStyles();
   const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
@@ -40,6 +48,7 @@ const SectionTab = () => {
     (state) => state.session.selectedSession,
   );
   const can = useCan();
+  const navigate = useNavigate();
 
   const {
     data: sectionData,
@@ -65,6 +74,47 @@ const SectionTab = () => {
       skip: !selectedSession?._id,
     },
   );
+  const sectionColumns = () => [
+    { key: "sno.", label: "S.No." },
+    { key: "sectionId", label: "Section Id" },
+    { key: "name", label: "Section Name" },
+    { key: "classTeacher", label: "Class Teacher" },
+    { key: "totalAdmissions", label: "Total Admission" },
+    { key: "capacity", label: "Total Capacity" },
+    {
+      key: "timeTable",
+      label: "TimeTable",
+      width: "12%",
+      render: (row: any) =>
+        row.feeStructureAdded ? (
+          <Box
+            sx={styles.timeTableTitleWrapper}
+            onClick={(e) => {
+              e.stopPropagation();
+              alert("This is under progress...");
+            }}
+          >
+            <CheckCircle sx={styles.timeTableCheckIcon} />
+            <Typography color="success" fontWeight={600}>
+              Linked
+            </Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={styles.timeTableTitleWrapper}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/academics/create-time-table");
+            }}
+          >
+            <Error sx={styles.timeTableErrorIcon} />
+            <Typography color="error" fontWeight={600}>
+              Missing
+            </Typography>
+          </Box>
+        ),
+    },
+  ];
   const actionsList = () => {
     const ACTIONS = [
       {
@@ -188,7 +238,7 @@ const SectionTab = () => {
           </Box>
         </Box>
         <TableWrapper
-          columns={sectionColumns}
+          columns={sectionColumns()}
           rows={sectionData?.data?.sections || []}
           totalCount={sectionData?.data?.sections.length || 0}
           onActionClick={handleActionClick}
@@ -262,4 +312,7 @@ const getStyles = () => ({
     alignItems: "center",
     gap: 1,
   },
+  timeTableTitleWrapper: { display: "flex", alignItems: "center", gap: 0.5 },
+  timeTableCheckIcon: { fontSize: 16, color: "success.main" },
+  timeTableErrorIcon: { fontSize: 16, color: "error.main" },
 });

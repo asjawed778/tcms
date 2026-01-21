@@ -2,17 +2,13 @@ import React, { useEffect, useMemo } from "react";
 import { Box, Grid } from "@mui/material";
 import { Resolver, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import toast from "react-hot-toast";
-
 import CustomModalWrapper from "@/components/ui/ModalWrapper";
 import CustomInputField from "@/components/ui/CustomInputField";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
 import CustomButton from "@/components/ui/CustomButton";
-
 import {
   useUpdateSectionMutation,
   useGetAllClassQuery,
-  useAddSectionMutation,
   useAddBulkSectionMutation,
 } from "@/services/academicsApi";
 import { cleanData } from "@/utils/helper";
@@ -56,13 +52,14 @@ const AddSection: React.FC<AddSectionProps> = ({
       value: cls._id,
     }));
   }, [classData]);
-
-  const facultyOptions =
-    employeeData?.data?.employees?.map((emp: any) => ({
-      label: emp.name,
-      value: emp._id,
-    })) || [];
-
+  const facultyOptions = useMemo(() => {
+    return (
+      employeeData?.data?.employees?.map((emp: any) => ({
+        label: emp.name,
+        value: emp._id,
+      })) || []
+    );
+  }, [employeeData]);
   const isEditMode = Boolean(section);
 
   const { handleSubmit, control, reset, watch } = useForm<SectionRequest>({
