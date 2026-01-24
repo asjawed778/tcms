@@ -359,7 +359,7 @@ const ClassTab = () => {
           open={openAddFeeStructure.open}
           onClose={handleFeeStructureClose}
           title="Add Fee Structure"
-          width="70%"
+          width="80%"
         >
           <FeeStructure
             classId={openAddFeeStructure?.data?._id}

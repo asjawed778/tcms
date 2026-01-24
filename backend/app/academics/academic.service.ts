@@ -142,7 +142,7 @@ export const createSection = async (classId: string, data: ClassDto.ICreateSecti
     throw createHttpError(404, "Class not found");
   }
   const sectionId = await AcademicUtils.generateSectionId(classDoc.name, data.name);
-  const newSection = await sectionSchema.create({ ...data, classId, sectionId });
+  const newSection = await sectionSchema.create({ ...data, classId, sectionId, sessionId: classDoc.session });
   if (!newSection) {
     throw createHttpError(500, "Failed to create section");
   }
