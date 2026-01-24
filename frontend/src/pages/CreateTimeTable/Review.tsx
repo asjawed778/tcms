@@ -4,15 +4,16 @@ import { useMemo } from "react";
 import CustomButton from "@/components/ui/CustomButton";
 import { ArrowBack, ArrowForward, SaveAs } from "@mui/icons-material";
 import { getSubjectColors } from "@/utils/academics";
+import { WeekDay } from "@/utils/enum";
 
 const DAYS = [
-  "MONDAY",
-  "TUESDAY",
-  "WEDNESDAY",
-  "THURSDAY",
-  "FRIDAY",
-  "SATURDAY",
-  "SUNDAY",
+  WeekDay.MONDAY,
+  WeekDay.TUESDAY,
+  WeekDay.WEDNESDAY,
+  WeekDay.THURSDAY,
+  WeekDay.FRIDAY,
+  WeekDay.SATURDAY,
+  WeekDay.SUNDAY,
 ];
 
 const SubjectCell = ({ period }: any) => {
@@ -69,7 +70,7 @@ const renderDayRow = (day: string, dayData: any, allPeriods: number[]) => (
     ) : (
       allPeriods.map((num) => {
         const period = dayData?.periods?.find(
-          (p: any) => p.periodNumber === num
+          (p: any) => p.periodNumber === num,
         );
         return (
           <Box
@@ -103,7 +104,7 @@ const Review = ({
     control,
     name: "weeklySchedule",
   });
-
+  
   const allPeriods = useMemo(() => {
     if (!weeklySchedule?.length) return [];
     const set = new Set<number>();
@@ -119,7 +120,7 @@ const Review = ({
   const getPeriodTime = (periodNumber: number) => {
     for (const day of weeklySchedule || []) {
       const period = day?.periods?.find(
-        (p: any) => p.periodNumber === periodNumber
+        (p: any) => p.periodNumber === periodNumber,
       );
 
       if (period?.timeSlot?.startTime && period?.timeSlot?.endTime) {
@@ -172,8 +173,8 @@ const Review = ({
           renderDayRow(
             day,
             weeklySchedule.find((d: any) => d.day === day),
-            allPeriods
-          )
+            allPeriods,
+          ),
         )}
       </Box>
       <Box sx={styles.buttonWrapper}>

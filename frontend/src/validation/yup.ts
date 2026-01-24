@@ -213,28 +213,27 @@ export const basicDetailsSchema = yup.object({
     ),
 });
 export const feeStructureSchema = yup.object({
-  effectiveFrom: yup.string().required("Effective date is required"),
-  structures: yup
+  effectiveFrom: yup
+    .string()
+    .required("Effective date is required"),
+  remarks: yup.string().optional(),
+  status: yup.string().optional(),
+  feeDetails: yup
     .array()
     .of(
       yup.object({
-        frequency: yup.string().required("Frequency is required"),
-        feeDetails: yup
-          .array()
-          .of(
-            yup.object({
-              feeType: yup.string().required("Fee type is required"),
-              amount: yup.string().required("Amount is required"),
-              isOptional: yup.boolean().default(false),
-              applicableType: yup.string().nullable(),
-              applicableFrequency: yup.string().nullable(),
-            })
-          )
-          .min(1, "At least one fee detail is required"),
+        feeType: yup.string().optional(),
+        amount: yup
+          .number()
+          .typeError("Amount must be a number")
+          .nullable()
+          .optional(),
+        billingFrequency: yup.string()
+          .optional(),
+        isOptional: yup.boolean().optional(),
       })
     )
-    .min(1, "At least one structure is required"),
-  remarks: yup.string().optional(),
+    .optional(),
 });
 export const addSectionSchema = yup.object({
   name: yup.string().required("Section name is required").trim(),

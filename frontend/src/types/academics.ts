@@ -12,7 +12,7 @@ interface ClassRequest {
   courseStream: string;
   effectiveFrom: string;
   remarks: string;
-  status: boolean;
+  status: string;
   sections: SectionRequest[];
   subjects: SubjectRequest[];
   feeDetails: FeeDetail[];
@@ -50,16 +50,15 @@ interface SectionResponseList {
 }
 // Subject...................................................................
 interface Book {
-  coverPhoto: string;
-  title: string;
-  publication: string;
-  author: string;
-  ISBN: string;
+  coverPhoto?: string;
+  title?: string;
+  publication?: string;
+  author?: string;
+  ISBN?: string;
 }
 interface SubjectRequest {
   classId: string;
   name: string;
-  sessionId: string;
   subjectType: string;
   syllabus?: string;
   books: Book[];

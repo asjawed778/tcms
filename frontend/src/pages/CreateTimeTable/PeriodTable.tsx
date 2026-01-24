@@ -8,12 +8,16 @@ import {
   TableRow,
   Box,
 } from "@mui/material";
-import { useFieldArray, useFormContext } from "react-hook-form";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
 import CustomDropdown from "@/components/ui/CustomDropdown";
 import CustomInputField from "@/components/ui/CustomInputField";
 import { Add, Delete } from "@mui/icons-material";
 import CustomButton from "@/components/ui/CustomButton";
 import { PeriodType } from "@/utils/enum";
+import { useEffect } from "react";
+import { useUnAssignFaculty } from "@/hooks/useUnAssignFaculty";
+import { useAppSelector } from "@/store/store";
+import { useUnAssignFacultyMutation } from "@/services/employeeApi";
 
 const periodTypeOptions = Object.values(PeriodType).map((type) => ({
   label: type,
@@ -28,12 +32,38 @@ interface PeriodTableProps {
   subjectOptions: DropdownOption[];
 }
 const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession,
+  );
   const styles = getStyles();
   const { control, watch, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
     name: `weeklySchedule.${dayIndex}.periods`,
   });
+  const dayData = useWatch({
+    name: `weeklySchedule.${dayIndex}`,
+    control,
+  });
+
+  const latestPeriod = dayData?.periods;
+
+  const day = dayData?.day;
+  const startTime = latestPeriod?.timeSlot?.startTime;
+  const endTime = latestPeriod?.timeSlot?.endTime;
+
+  useEffect(() => {
+    if (day && startTime && endTime) {
+      console.log("Latest:", { day, startTime, endTime });
+    }
+  }, [day, startTime, endTime]);
+  const periodsForApi = latestPeriod ? [latestPeriod] : [];
+
+  // const { facultyOptions } = useUnAssignFaculty({
+  //   sessionId: selectedSession?._id,
+  //   day,
+  //   periods: periodsForApi,
+  // });
 
   return (
     <TableContainer>
@@ -168,7 +198,7 @@ export default PeriodTable;
 
 const getStyles = () => ({
   tableWrapper: {
-    tableLayout: "fixed",
+    // tableLayout: "fixed",
     width: "100%",
     borderCollapse: "separate",
     borderSpacing: "0 12px",

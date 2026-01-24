@@ -177,13 +177,6 @@ const TimeTableTab: React.FC = () => {
         </Box>
       </Box>
 
-      {/* Render TimeTable if available */}
-      {/* {timeTable && (
-        <Box>
-          <ShowTimeTable data={timeTable?.data} />
-        </Box>
-      )} */}
-
       <TableWrapper
         columns={timeTableColumns}
         rows={timeTable?.data || []}

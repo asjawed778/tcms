@@ -1,5 +1,6 @@
 import AddSection from "@/components/Academics/Section/AddSectionModal";
 import AddSubject from "@/components/Academics/Subject/AddSubject";
+import ComingSoon from "@/components/common/ComingSoon";
 import CustomButton from "@/components/ui/CustomButton";
 import ModalWrapper from "@/components/ui/ModalWrapper";
 import TableWrapper from "@/components/ui/TableWrapper";
@@ -20,7 +21,11 @@ import {
 import { Box, Chip, Typography } from "@mui/material";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
+import FeeStructure from "../CreateClass/FeeStructure";
+interface ClassData {
+  _id: string;
+  name: string;
+}
 const actionsList = [
   {
     action: "update",
@@ -34,10 +39,19 @@ const ClassTab = () => {
     classId: null,
     open: false,
   });
+  const [openAddFeeStructure, setOpenAddFeeStructure] = useState<{
+    open: boolean;
+    data: ClassData | null;
+  }>({
+    open: false,
+    data: null,
+  });
+
   const [openAddSubject, setOpenAddSubject] = useState({
     classId: "",
     open: false,
   });
+  const [openSubjectDetails, setOpenSubjectDetails] = useState(false);
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
   );
@@ -143,11 +157,23 @@ const ClassTab = () => {
                 size="small"
                 sx={styles.subjectRemainingCount}
                 onClick={(e) => {
-                  alert("This module is under progress...");
                   e.stopPropagation();
+                  setOpenSubjectDetails(true);
                 }}
               />
             )}
+            <Box
+              sx={getSubjectAddIconWrapper(row)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setOpenAddSubject({
+                  open: true,
+                  classId: row._id,
+                });
+              }}
+            >
+              <Add sx={styles.addIcon} />
+            </Box>
           </Box>
         );
       },
@@ -237,7 +263,15 @@ const ClassTab = () => {
             </Typography>
           </Box>
         ) : (
-          <Box sx={styles.feeTitleWrapper}>
+          <Box
+            sx={styles.feeTitleWrapper}
+            onClick={() =>
+              setOpenAddFeeStructure({
+                open: true,
+                data: row,
+              })
+            }
+          >
             <Error sx={styles.feeErrorIcon} />
             <Typography color="error" fontWeight={600}>
               Missing
@@ -246,6 +280,12 @@ const ClassTab = () => {
         ),
     },
   ];
+  const handleFeeStructureClose = () => {
+    setOpenAddFeeStructure({
+      open: false,
+      data: null,
+    });
+  };
   return (
     <>
       <Box m={2}>
@@ -284,19 +324,48 @@ const ClassTab = () => {
       {openAddSubject.open && (
         <ModalWrapper
           open={openAddSubject.open}
-          onClose={() => setOpenAddSubject({
-            open: false,
-            classId: "",
-          })}
+          onClose={() =>
+            setOpenAddSubject({
+              open: false,
+              classId: "",
+            })
+          }
           title="Add Subject"
           width="900px"
         >
           <AddSubject
-            onClose={() => setOpenAddSubject({
-            open: false,
-            classId: "",
-          })}
-          classId={openAddSubject.classId}
+            onClose={() =>
+              setOpenAddSubject({
+                open: false,
+                classId: "",
+              })
+            }
+            classId={openAddSubject.classId}
+          />
+        </ModalWrapper>
+      )}
+      {openSubjectDetails && (
+        <ModalWrapper
+          title="Subject Details"
+          open={openSubjectDetails}
+          onClose={() => setOpenSubjectDetails(false)}
+          width="50%"
+        >
+          <ComingSoon />
+        </ModalWrapper>
+      )}
+      {openAddFeeStructure.open && (
+        <ModalWrapper
+          open={openAddFeeStructure.open}
+          onClose={handleFeeStructureClose}
+          title="Add Fee Structure"
+          width="70%"
+        >
+          <FeeStructure
+            classId={openAddFeeStructure?.data?._id}
+            className={openAddFeeStructure.data?.name}
+            onExit={handleFeeStructureClose}
+            onClose={handleFeeStructureClose}
           />
         </ModalWrapper>
       )}
@@ -316,6 +385,7 @@ const getStyles = () => ({
   subjectWrapper: {
     display: "flex",
     gap: 0.5,
+    alignItems: "center",
     flexWrap: "wrap",
   },
   subjectRemainingCount: {
@@ -336,7 +406,12 @@ const getStyles = () => ({
   },
   sectionInfoIcon: { fontSize: 20, color: "text.secondary", cursor: "pointer" },
   addIcon: { color: "#fff", fontSize: 14 },
-  feeTitleWrapper: { display: "flex", alignItems: "center", gap: 0.5 },
+  feeTitleWrapper: {
+    display: "flex",
+    alignItems: "center",
+    gap: 0.5,
+    cursor: "pointer",
+  },
   feeCheckIcon: { fontSize: 16, color: "success.main" },
   feeErrorIcon: { fontSize: 16, color: "error.main" },
 });
