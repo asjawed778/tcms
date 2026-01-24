@@ -106,6 +106,15 @@ router
         ClassControler.getClassById
     )
 
+    // ----- Timetable routes -----
+    .post(
+        "/available-faculty/:sessionId",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getAvailaleFaculty,
+        catchError,
+        ClassControler.getAvailaleFaculty
+    )
+
 
 
 

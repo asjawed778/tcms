@@ -8,6 +8,8 @@ import * as Enum from "../common/utils/enum";
 import mongoose, { PipelineStage } from "mongoose";
 import * as AcademicUtils from "./academic.utils";
 import * as AcademicDto from "./academic.dto";
+import * as UserService from "../user/user.service";
+import * as EmployeeService from "../employee/employee.service";
 import admissionSchema from "../student/admission.schema";
 import classFeeStructureSchema from "./feeStructure.schema";
 
@@ -554,54 +556,55 @@ export const updateTimeTable = async (
   return updated;
 };
 
+export const getAvailableFaculty = async (
+  sessionId: string,
+  day: string,
+  startTime: string,
+  endTime: string
+) => {
+
+  const busyFacultyIds = await classTimetableSchema.aggregate([
+    {
+      $match: {
+        session: new mongoose.Types.ObjectId(sessionId),
+        status: "Published",
+        "weeklySchedule.day": day,
+        "weeklySchedule.isHoliday": false
+      }
+    },
+    { $unwind: "$weeklySchedule" },
+    { $match: { "weeklySchedule.day": day } },
+    { $unwind: "$weeklySchedule.periods" },
+    {
+      $match: {
+        $expr: {
+          $and: [
+            { $lt: ["$weeklySchedule.periods.timeSlot.startTime", endTime] },
+            { $gt: ["$weeklySchedule.periods.timeSlot.endTime", startTime] }
+          ]
+        }
+      }
+    },
+    {
+      $group: {
+        _id: "$weeklySchedule.periods.faculty"
+      }
+    }
+  ]);
+
+  const busyFacultySet = busyFacultyIds.map(f => f._id).filter(Boolean);
+
+  const facultyRole = await UserService.getRoleByName(Enum.UserRole.FACULTY);
+
+  if (!facultyRole) return [];
+
+  const availableFaculty = await EmployeeService.getAvailableFacultyEmployees(busyFacultySet, facultyRole._id);
+  return availableFaculty;
+};
+
+
 
 // old class service functions
-
-
-// export const getAssignedFaculyIds = async (sessionId: mongoose.Types.ObjectId,
-//   day: Enum.WeekDay,
-//   startTime: { hour: number; minute: number },
-//   endTime: { hour: number; minute: number }
-// ) => {
-//   const timeTable = await classTimetableSchema.find({
-//     session: sessionId,
-//     "weeklySchedule.day": day,
-//     "weeklySchedule.periods": {
-//       $elemMatch: {
-//         "timeSlot.start.hour": startTime.hour,
-//         "timeSlot.start.minute": startTime.minute,
-//         "timeSlot.end.hour": endTime.hour,
-//         "timeSlot.end.minute": endTime.minute,
-//         faculty: { $ne: null }
-//       }
-//     }
-//   });
-//   const assignedFacultyIds = new Set<string>();
-//   timeTable.forEach((timetable) => {
-//     timetable.weeklySchedule.forEach((schedule) => {
-//       if (schedule.day !== day) return;
-
-//       schedule.periods?.forEach((period) => {
-//         if (!period.faculty || !period.timeSlot) return;
-
-//         const periodStart = period.timeSlot.start.hour * 60 + period.timeSlot.start.minute;
-//         const periodEnd = period.timeSlot.end.hour * 60 + period.timeSlot.end.minute;
-
-//         const startTotalMinutes = startTime.hour * 60 + startTime.minute;
-//         const endTotalMinutes = endTime.hour * 60 + endTime.minute;
-
-//         const buffer = 5;
-//         const isOverlap = (startTotalMinutes - buffer) < periodEnd && periodStart < (endTotalMinutes + buffer);
-
-//         if (isOverlap && period.faculty) {
-//           assignedFacultyIds.add(String(period.faculty));
-//         }
-//       });
-//     });
-//   })
-//   return Array.from(assignedFacultyIds);
-
-// };
 
 
 

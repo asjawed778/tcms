@@ -129,7 +129,19 @@ export const getClassFeeStructure = asyncHandler(async (req: Request, res: Respo
     res.send(createResponse(result, "Fee Structure fetched successfully"));
 });
 
-// Timetable controllers
+// ------ Timetable controllers -----
+export const getAvailaleFaculty = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const { startTime, endTime, day } = req.body;
+    const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
+    if (!isSessionCurrentOrUpcoming) {
+        throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const result = await AcademicService.getAvailableFaculty(sessionId, day, startTime, endTime);
+    res.send(createResponse(result, "Available faculty fetched successfully"));
+});
+
+
 export const createTimeTable = asyncHandler(async (req: Request, res: Response) => {
     const { sessionId, classId, sectionId } = req.body;
     const data = req.body;

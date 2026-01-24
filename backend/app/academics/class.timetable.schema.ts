@@ -42,7 +42,7 @@ const timeTableSchema = new mongoose.Schema<ITimeTable>({
             },
             faculty: {
                 type: mongoose.Schema.Types.ObjectId,
-                ref: "Employee",
+                ref: "User",
                 required: false,
             },
             room: {

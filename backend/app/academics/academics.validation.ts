@@ -258,6 +258,34 @@ export const getSubjectsByClass = [
 ];
 
 // ------------ Class Timetable Validation --------------
+export const getAvailaleFaculty = [
+    param("sessionId")
+        .notEmpty().withMessage("Session ID is required")
+        .isMongoId().withMessage("Session ID must be a valid MongoDB ObjectId"),
+
+    body("day")
+        .notEmpty().withMessage("Day is required")
+        .isIn(Object.values(Enum.WeekDay)).withMessage(`Day must be one of: ${Object.values(Enum.WeekDay).join(", ")}`),
+
+    body("startTime")
+        .notEmpty().withMessage("Start time is required")
+        .isString().withMessage("Start time must be string")
+        .matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
+        .withMessage("Start time must be in HH:mm format"),
+
+    body("endTime")
+        .notEmpty().withMessage("End time is required")
+        .isString().withMessage("End time must be string")
+        .matches(/^([01]\d|2[0-3]):([0-5]\d)$/)
+        .withMessage("End time must be in HH:mm format")
+        .custom((endTime, { req }) => {
+            if (endTime <= req.body.startTime) {
+                throw new Error("End time must be after start time");
+            }
+            return true;
+        }),
+];
+
 export const createTimeTable = [
     body("sessionId")
         .notEmpty().withMessage("Session is required")
