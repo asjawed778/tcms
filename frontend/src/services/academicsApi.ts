@@ -40,12 +40,13 @@ export const academicsApi = createApi({
         method: "GET",
       }),
     }),
-    updateFeeStructure: builder.mutation({
+    addFeeStructure: builder.mutation({
       query: ({ classId, payload }) => ({
         url: `/admin/academics/class/${classId}/fee-structure`,
         method: "POST",
         body: payload,
       }),
+      invalidatesTags: ["CLASS_LIST"],
     }),
     // Section.............................................................
     getAllSection: builder.query<ApiResponse<SectionResponseList>, { sessionId?: string; classId?: string; page?: number; limit?: number; search?: string; }>({
@@ -173,7 +174,7 @@ export const {
   useCreateClassMutation,
   useUpdateclassMutation,
   useGetClassDetailsQuery,
-  useUpdateFeeStructureMutation,
+  useAddFeeStructureMutation,
   useCreateTimeTableMutation,
   useGetTimeTableQuery,
   useAssignClassTeacherMutation,

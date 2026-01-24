@@ -198,7 +198,7 @@ export default PeriodTable;
 
 const getStyles = () => ({
   tableWrapper: {
-    tableLayout: "fixed",
+    // tableLayout: "fixed",
     width: "100%",
     borderCollapse: "separate",
     borderSpacing: "0 12px",

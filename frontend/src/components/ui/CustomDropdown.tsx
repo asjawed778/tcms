@@ -24,7 +24,7 @@ interface Option {
   dropdownItem?: React.ReactNode;
   value: string;
 }
-
+type OnChangeMode = "value" | "option";
 interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   label?: string;
   name?: Path<T>;
@@ -37,7 +37,8 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   showClearIcon?: boolean;
   control?: Control<T>;
   value?: string | string[] | Option | Option[] | null;
-  onChange?: (value: Option | Option[] | null) => void;
+  onChange?: (value: string | string[] | Option | Option[] | null) => void;
+  onChangeMode?: OnChangeMode;
   options?: (Option | string)[];
   labelPosition?: "inside" | "outside";
   sx?: SxProps<Theme>;
@@ -137,6 +138,7 @@ const CustomDropdown = <T extends FieldValues>({
   control: incomingControl,
   value: propValue,
   onChange: propOnChange,
+  onChangeMode = "value",
   options = [],
   labelPosition = "outside",
   sx = {},
@@ -219,12 +221,16 @@ const CustomDropdown = <T extends FieldValues>({
             const selectedOption = multiple
               ? (newValue as Option[])
               : (newValue as Option | null);
-            const rhfValue =
+            const selectedValue =
               multiple && Array.isArray(newValue)
                 ? newValue.map((o) => o.value)
                 : ((newValue as Option | null)?.value ?? null);
-            onFieldChange(rhfValue);
-            propOnChange?.(selectedOption);
+            onFieldChange(selectedValue);
+            if (propOnChange) {
+              propOnChange(
+                onChangeMode === "option" ? selectedOption : selectedValue,
+              );
+            }
           }}
           getOptionLabel={(option) => option.label}
           isOptionEqualToValue={(option, value) => option.value === value.value}

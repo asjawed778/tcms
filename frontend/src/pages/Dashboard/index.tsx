@@ -10,16 +10,10 @@ export const subjectOptions = [
 ];
 
 const Dashboard: React.FC = () => {
-  const [subject, setSubject] = useState<DropdownOption[]>([]);
+  const [subject, setSubject] = useState<DropdownOption>();
 
-  const handleSubject = (value: DropdownOption | DropdownOption[] | null) => {
-    if (Array.isArray(value)) {
-      setSubject(value);
-    } else if (value) {
-      setSubject([value]);
-    } else {
-      setSubject([]);
-    }
+  const handleSubject = (value: any) => {
+    setSubject(value);
   };
 
   console.log("Selected subjects: ", subject);
@@ -27,12 +21,12 @@ const Dashboard: React.FC = () => {
   return (
     <Stack spacing={2} p={2}>
       <Typography>This is dashboard</Typography>
-      <CustomDropdown
+      {/* <CustomDropdown
         label="Subject"
         options={subjectOptions}
         value={subject}
         onChange={handleSubject}
-      />
+      /> */}
     </Stack>
   );
 };

@@ -17,6 +17,7 @@ import {
 } from "@mui/material";
 import { useEffect, useMemo } from "react";
 import { useFormContext } from "react-hook-form";
+import { useLocation } from "react-router-dom";
 
 const BasicDetails = ({
   handleBack,
@@ -27,6 +28,8 @@ const BasicDetails = ({
 }: any) => {
   const theme = useTheme();
   const styles = getStyles(theme, activeStep);
+  const location = useLocation();
+  const navigateClassData = location.state?.classData;
   const { watch, setValue } = useFormContext();
   const { selectedSession } = useAppSelector((state) => state.session);
   const selectedClass = watch("classId");
@@ -59,25 +62,11 @@ const BasicDetails = ({
       }),
     );
   }, [sectionData, selectedClass]);
-
-  // useEffect(() => {
-  //   if (selectedSession?._id) {
-  //     setValue("sessionId", selectedSession._id, {
-  //       shouldDirty: false,
-  //       shouldTouch: false,
-  //       shouldValidate: true,
-  //     });
-  //   }
-  // }, [selectedSession, setValue]);
-  const sessionOptions = useMemo(() => {
-    if (!selectedSession) return [];
-    return [
-      {
-        label: selectedSession.session,
-        value: selectedSession._id,
-      },
-    ];
-  }, [selectedSession]);
+  useEffect(() => {
+    if (!navigateClassData) return;
+    setValue("classId", navigateClassData.classId);
+    setValue("sectionId", navigateClassData._id);
+  }, [navigateClassData, setValue]);
 
   return (
     <Container maxWidth="md">
@@ -108,11 +97,14 @@ const BasicDetails = ({
           </Grid>
           <Grid size={{ xs: 12, md: 4 }}>
             <CustomDropdown
-              name="sessionId"
               label="Session"
               placeholder="-- Select Session --"
               labelPosition="outside"
-              options={sessionOptions}
+              value={selectedSession?._id}
+              options={[
+                {label: selectedSession?.session as string,
+                value: selectedSession?._id as string}
+              ]}
               disabled
             />
           </Grid>

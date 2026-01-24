@@ -31,6 +31,19 @@ export const bulkSubjectSchema = yup.object({
         name: yup.string().required("Subject name is required"),
         subjectType: yup.string().required("Subject type is required"),
         syllabus: yup.string().optional(),
+
+        books: yup
+          .array()
+          .of(
+            yup.object({
+              coverPhoto: yup.string().optional(),
+              title: yup.string().optional(),
+              author: yup.string().optional(),
+              publication: yup.string().optional(),
+              ISBN: yup.string().optional(),
+            })
+          )
+          .optional(),
       })
     )
     .min(1, "At least one subject is required"),

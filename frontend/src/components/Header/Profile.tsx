@@ -18,7 +18,6 @@ import { useLogoutUserMutation } from "@/services/authApi";
 import CustomButton from "../ui/CustomButton";
 import { resetSession } from "@/store/reducers/sessionSlice";
 import { customToast } from "../common/customToast";
-
 const menuItems = [
   { icon: <Dashboard />, label: "Dashboard", route: "/dashboard" },
 ];

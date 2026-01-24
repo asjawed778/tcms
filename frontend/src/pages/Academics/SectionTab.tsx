@@ -21,19 +21,9 @@ import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import { useCan } from "@/hooks/useCan";
 import toast from "react-hot-toast";
 import AddSection from "../../components/Academics/Section/AddSectionModal";
-import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
 import SectionDetailsModal from "@/components/Academics/Section/SectionDetailsModal";
 import { useNavigate } from "react-router-dom";
-
-// const sectionColumns = [
-//   { key: "sno.", label: "S.No." },
-//   { key: "sectionId", label: "Section Id" },
-//   { key: "name", label: "Section Name" },
-//   { key: "classTeacher", label: "Class Teacher" },
-//   { key: "totalAdmissions", label: "Total Admission" },
-//   { key: "capacity", label: "Total Capacity" },
-// ];
 const SectionTab = () => {
   const styles = getStyles();
   const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
@@ -47,6 +37,7 @@ const SectionTab = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
   );
+
   const can = useCan();
   const navigate = useNavigate();
 
@@ -86,7 +77,7 @@ const SectionTab = () => {
       label: "TimeTable",
       width: "12%",
       render: (row: any) =>
-        row.feeStructureAdded ? (
+        row.isTimeTableCreated ? (
           <Box
             sx={styles.timeTableTitleWrapper}
             onClick={(e) => {
@@ -104,7 +95,11 @@ const SectionTab = () => {
             sx={styles.timeTableTitleWrapper}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("/academics/create-time-table");
+              navigate("/academics/create-time-table", {
+                state: {
+                  classData: row,
+                },
+              });
             }}
           >
             <Error sx={styles.timeTableErrorIcon} />
