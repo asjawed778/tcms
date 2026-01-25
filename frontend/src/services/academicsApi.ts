@@ -153,6 +153,15 @@ export const academicsApi = createApi({
         };
       },
     }),
+    getAvailableFaculty: builder.mutation({
+      query: ({sessionId, payload}) => ({
+        url: `/admin/academics/available-faculty/${sessionId}`,
+        method: "POST",
+        body: payload
+      })
+    }),
+
+
     assignClassTeacher: builder.mutation({
       query: ({ sessionId, ...body }) => ({
         url: `/admin/academics/assign-faculty/${sessionId}`,
@@ -177,6 +186,7 @@ export const {
   useAddFeeStructureMutation,
   useCreateTimeTableMutation,
   useGetTimeTableQuery,
+  useGetAvailableFacultyMutation,
   useAssignClassTeacherMutation,
   useRemoveClassTeacherMutation,
   useGetAllSectionQuery,
