@@ -74,7 +74,6 @@ const SectionDetails: React.FC = () => {
                 label="Total Capacity"
                 placeholder="Enter total capacity of a sections"
                 type="number"
-                required={false}
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

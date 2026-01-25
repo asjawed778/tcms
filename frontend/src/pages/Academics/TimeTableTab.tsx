@@ -83,7 +83,8 @@ const TimeTableTab: React.FC = () => {
     );
   }, [sectionData, selectedClass]);
   const handleCreateTimeTable = () => {
-    navigate("/academics/create-time-table");
+    // navigate("/academics/create-time-table");
+    alert("This module is under progress...");
   };
   const handleClassChange = (value: any) => {
     setSelectedClass(value);

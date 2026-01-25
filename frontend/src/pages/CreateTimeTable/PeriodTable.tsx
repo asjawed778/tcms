@@ -15,9 +15,8 @@ import { Add, Delete } from "@mui/icons-material";
 import CustomButton from "@/components/ui/CustomButton";
 import { PeriodType } from "@/utils/enum";
 import { useEffect } from "react";
-import { useUnAssignFaculty } from "@/hooks/useUnAssignFaculty";
 import { useAppSelector } from "@/store/store";
-import { useUnAssignFacultyMutation } from "@/services/employeeApi";
+import { useGetAvailableFacultyMutation } from "@/services/academicsApi";
 
 const periodTypeOptions = Object.values(PeriodType).map((type) => ({
   label: type,
@@ -32,10 +31,13 @@ interface PeriodTableProps {
   subjectOptions: DropdownOption[];
 }
 const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
+  const styles = getStyles();
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
   );
-  const styles = getStyles();
+  const [getAvailableFaculty, { data, isLoading }] =
+    useGetAvailableFacultyMutation();
+
   const { control, watch, setValue } = useFormContext();
   const { fields, append, remove } = useFieldArray({
     control,
@@ -46,24 +48,27 @@ const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
     control,
   });
 
-  const latestPeriod = dayData?.periods;
+  const latestPeriod = dayData?.periods?.[dayData.periods.length - 1];
 
   const day = dayData?.day;
   const startTime = latestPeriod?.timeSlot?.startTime;
   const endTime = latestPeriod?.timeSlot?.endTime;
 
+  // useEffect(() => {
+  //   if (day && startTime && endTime) {
+  //     console.log("Latest:", { day, startTime, endTime });
+  //   }
+  // }, [day, startTime, endTime]);
+  console.log("available faculty: ", data);
+  
   useEffect(() => {
     if (day && startTime && endTime) {
-      console.log("Latest:", { day, startTime, endTime });
+      getAvailableFaculty({
+        sessionId: selectedSession?._id,
+        payload: { day, startTime, endTime },
+      });
     }
   }, [day, startTime, endTime]);
-  const periodsForApi = latestPeriod ? [latestPeriod] : [];
-
-  // const { facultyOptions } = useUnAssignFaculty({
-  //   sessionId: selectedSession?._id,
-  //   day,
-  //   periods: periodsForApi,
-  // });
 
   return (
     <TableContainer>

@@ -5,7 +5,6 @@ import * as Enum from "@/utils/enum";
 // Subject..........................................................................
 export const subjectSchema = yup.object({
   classId: yup.string().required("Class name is required"),
-  sessionId: yup.string().required("Session is required"),
   name: yup.string().required("Subject name is required"),
   subjectType: yup
     .mixed<Enum.SubjectType>()
@@ -72,4 +71,28 @@ export const timeTableBasicDetailsSchema = yup.object({
       yup.ref("effectiveFrom"),
       "Effective To must be after Effective From",
     ),
+});
+const timeSlotSchema = yup.object({
+  startTime: yup
+    .string()
+    .required("Start time is required"),
+  endTime: yup
+    .string()
+    .required("End time is required")
+    .test(
+      "is-after-start",
+      "End time must be after start time",
+      function (endTime) {
+        const { startTime } = this.parent;
+        if (!startTime || !endTime) return true;
+        return endTime > startTime;
+      }
+    ),
+});
+export const periodSchema = yup.object({
+  periodType: yup.string().required(),
+  subject: yup.string().nullable(),
+  faculty: yup.string().nullable(),
+  room: yup.string().nullable(),
+  timeSlot: timeSlotSchema,
 });

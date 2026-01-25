@@ -16,7 +16,7 @@ import PageHeader from "@/components/common/PageHeader";
 import CustomButton from "@/components/ui/CustomButton";
 import { ArrowBack, ArrowForward, Drafts, SaveAs } from "@mui/icons-material";
 import Review from "./Review";
-import { timeTableBasicDetailsSchema } from "@/validation/academics";
+import { periodSchema, timeTableBasicDetailsSchema } from "@/validation/academics";
 import * as yup from "yup";
 import { PeriodType, WeekDay } from "@/utils/enum";
 
@@ -29,6 +29,7 @@ export const steps = [
   {
     label: "Schedule",
     component: Schedule,
+    // schema: periodSchema,
     schema: yup.object({}),
   },
   {
@@ -44,9 +45,9 @@ const CreateTimeTable = () => {
   const currentSchema = useMemo(() => steps[activeStep].schema, [activeStep]);
 
   const methods = useForm({
-    // resolver: yupResolver(currentSchema),
+    resolver: yupResolver(currentSchema),
     mode: "onChange",
-    shouldUnregister: false,
+    shouldUnregister: true,
     defaultValues: {
       weeklySchedule: [
         {

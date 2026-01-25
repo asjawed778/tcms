@@ -66,7 +66,7 @@ const PreviousSchoolDetails: React.FC = () => {
       setValue("session", selectedSession._id);
     }
   }, [selectedSession]);
-  const handleSessionChange = (value: string | string[] | null) => {
+  const handleSessionChange = (value: any) => {
     setSelectedSessionId(value);
     setValue("session", value);
   };
