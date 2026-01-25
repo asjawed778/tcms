@@ -15,13 +15,13 @@ import CloseIcon from "@mui/icons-material/Close";
 
 const SlideUpTransition = forwardRef(function SlideUpTransition(
   props: SlideProps & { children?: ReactNode },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Slide direction="up" ref={ref} {...props} timeout={400} />;
 });
 const ZoomTransition = forwardRef(function ZoomTransition(
   props: SlideProps & { children?: ReactNode },
-  ref: React.Ref<unknown>
+  ref: React.Ref<unknown>,
 ) {
   return <Grow ref={ref} {...props} timeout={400} />;
 });
@@ -29,7 +29,7 @@ const ZoomTransition = forwardRef(function ZoomTransition(
 interface ModalWrapperProps {
   open: boolean;
   onClose?: (event: {}, reason: "backdropClick" | "escapeKeyDown") => void;
-  title?: string;
+  title?: ReactNode;
   children?: ReactNode;
   width?: number | string;
   height?: number | string;
@@ -54,7 +54,7 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
 
   const handleClose = (
     event: {},
-    reason: "backdropClick" | "escapeKeyDown"
+    reason: "backdropClick" | "escapeKeyDown",
   ) => {
     if (reason === "backdropClick") {
       if (isMobile && !allowOutsideClickMobile) return;
@@ -103,9 +103,15 @@ const ModalWrapper: React.FC<ModalWrapperProps> = ({
         }}
       >
         {title && (
-          <Typography fontWeight="bold" component="h2" fontSize="24px">
-            {title}
-          </Typography>
+          <Box sx={{ flex: 1 }}>
+            {typeof title === "string" ? (
+              <Typography fontWeight="bold" component="h2" fontSize="24px">
+                {title}
+              </Typography>
+            ) : (
+              title
+            )}
+          </Box>
         )}
         {closeIcon && (
           <IconButton

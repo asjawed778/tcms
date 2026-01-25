@@ -58,6 +58,11 @@ const SubjectTab = () => {
   const selectedSession = useAppSelector(
     (state) => state.session.selectedSession,
   );
+  const [selectedClass, setSelectedClass] = useState<{
+    _id: string;
+    name: string;
+  } | null>(null);
+
   const can = useCan();
   const { data: classData } = useGetAllClassQuery(
     {
@@ -80,15 +85,16 @@ const SubjectTab = () => {
     { skip: !classId },
   );
   const [deleteSubject] = useDeleteSubjectMutation();
-
   const classOptions =
     classData?.data?.classes?.map((cls: any) => ({
       label: cls.name,
       value: cls._id,
+      original: cls,
     })) || [];
   useEffect(() => {
     if (!classId && classOptions.length > 0) {
       setClassId(classOptions[0].value);
+      setSelectedClass(classOptions[0].original);
     }
   }, [classOptions, classId]);
 
@@ -285,10 +291,12 @@ const SubjectTab = () => {
       toast.error(errorMsg);
     }
   };
-
   const handleChange = (val: any) => {
     setClassId(val);
+    const foundClass = classOptions.find((cls) => cls.value === val);
+    setSelectedClass(foundClass?.original || null);
   };
+
   if (!selectedSession || !selectedSession._id) {
     return (
       <Box
@@ -415,6 +423,7 @@ const SubjectTab = () => {
           open={openViewSubject}
           onClose={() => setOpenViewSubject(false)}
           subject={selectedRow}
+          className={selectedClass?.name}
         />
       )}
       {openDeleteSubject && (
