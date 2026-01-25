@@ -95,11 +95,12 @@ const SectionTab = () => {
             sx={styles.timeTableTitleWrapper}
             onClick={(e) => {
               e.stopPropagation();
-              navigate("/academics/create-time-table", {
-                state: {
-                  classData: row,
-                },
-              });
+              // navigate("/academics/create-time-table", {
+              //   state: {
+              //     classData: row,
+              //   },
+              // });
+              alert("This module is under progress....");
             }}
           >
             <Error sx={styles.timeTableErrorIcon} />

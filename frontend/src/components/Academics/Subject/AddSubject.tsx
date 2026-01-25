@@ -52,7 +52,6 @@ const AddSubject: React.FC<AddSubjectProps> = ({
   const methods = useForm<SubjectRequest>({
     resolver: yupResolver(subjectSchema) as Resolver<SubjectRequest>,
     defaultValues: {
-      sessionId: selectedSession?._id || "",
       classId: classId || "",
       name: subject?.name || "",
       subjectType: subject?.subjectType,
