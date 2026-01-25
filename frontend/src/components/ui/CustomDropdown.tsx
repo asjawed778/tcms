@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import React, { useMemo } from "react";
 import {
   Autocomplete,
   TextField,
@@ -21,11 +21,12 @@ import { Colors } from "@/theme/colors";
 
 interface Option {
   label: string;
+  dropdownItem?: React.ReactNode;
   value: string;
 }
-
+type OnChangeMode = "value" | "option";
 interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
-  label: string;
+  label?: string;
   name?: Path<T>;
   placeholder?: string;
   multiple?: boolean;
@@ -36,22 +37,36 @@ interface CustomDropdownFieldProps<T extends FieldValues = FieldValues> {
   showClearIcon?: boolean;
   control?: Control<T>;
   value?: string | string[] | Option | Option[] | null;
-  onChange?: (value: string | string[] | null) => void;
+  onChange?: (value: string | string[] | Option | Option[] | null) => void;
+  onChangeMode?: OnChangeMode;
   options?: (Option | string)[];
   labelPosition?: "inside" | "outside";
   sx?: SxProps<Theme>;
 }
-
-const StyledTextField = styled(TextField)(({ theme }) => {
+interface StyledTextFieldOwnerState {
+  multiple?: boolean;
+}
+const StyledTextField = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "ownerState",
+})<{ ownerState: StyledTextFieldOwnerState }>(({ theme, ownerState }) => {
   const palette = Colors[theme.palette.mode];
+  const multiple = ownerState?.multiple;
   return {
     "& .MuiOutlinedInput-root": {
-      height: "42px",
+      minHeight: "40px",
+      height: multiple ? "auto" : "40px",
+      alignItems: "center",
       backgroundColor: palette.inputBackground,
       borderRadius: "8px",
       transition: "all 0.2s ease-in-out",
+
+      "& .MuiAutocomplete-tag": {
+        height: "24px",
+        fontSize: "14px",
+        margin: "1px",
+      },
       "& .MuiOutlinedInput-input": {
-        padding: "8px 10px !important",
+        padding: "2px 10px !important",
         fontSize: "15px",
         color: palette.inputText,
         "::placeholder": {
@@ -123,6 +138,7 @@ const CustomDropdown = <T extends FieldValues>({
   control: incomingControl,
   value: propValue,
   onChange: propOnChange,
+  onChangeMode = "value",
   options = [],
   labelPosition = "outside",
   sx = {},
@@ -134,13 +150,13 @@ const CustomDropdown = <T extends FieldValues>({
   const combinedOptions: Option[] = useMemo(
     () =>
       options.map((opt) =>
-        typeof opt === "string" ? { label: opt, value: opt } : opt
+        typeof opt === "string" ? { label: opt, value: opt } : opt,
       ),
-    [options]
+    [options],
   );
 
   const getDisplayValue = (
-    val: string | string[] | Option | Option[] | null
+    val: string | string[] | Option | Option[] | null,
   ): Option | Option[] | null => {
     if (multiple && Array.isArray(val)) {
       return combinedOptions.filter((opt) =>
@@ -149,7 +165,7 @@ const CustomDropdown = <T extends FieldValues>({
           if (v && typeof v === "object" && "value" in v)
             return v.value === opt.value;
           return false;
-        })
+        }),
       );
     }
     if (!multiple && val !== null && val !== undefined) {
@@ -170,7 +186,7 @@ const CustomDropdown = <T extends FieldValues>({
   const renderAutocomplete = (
     fieldValue: any,
     onFieldChange: (v: any) => void,
-    error?: FieldError
+    error?: FieldError,
   ) => {
     const hasError = !!error?.message;
 
@@ -190,12 +206,31 @@ const CustomDropdown = <T extends FieldValues>({
         <Autocomplete
           multiple={multiple}
           options={combinedOptions}
+          ChipProps={{
+            size: "small",
+          }}
+          limitTags={2}
           value={getDisplayValue(fieldValue)}
+          // onChange={(_, newValue) => {
+          //   const selected = multiple
+          //     ? (newValue as Option[]).map((opt) => opt.value)
+          //     : ((newValue as Option)?.value ?? null);
+          //   onFieldChange(selected);
+          // }}
           onChange={(_, newValue) => {
-            const selected = multiple
-              ? (newValue as Option[]).map((opt) => opt.value)
-              : (newValue as Option)?.value ?? null;
-            onFieldChange(selected);
+            const selectedOption = multiple
+              ? (newValue as Option[])
+              : (newValue as Option | null);
+            const selectedValue =
+              multiple && Array.isArray(newValue)
+                ? newValue.map((o) => o.value)
+                : ((newValue as Option | null)?.value ?? null);
+            onFieldChange(selectedValue);
+            if (propOnChange) {
+              propOnChange(
+                onChangeMode === "option" ? selectedOption : selectedValue,
+              );
+            }
           }}
           getOptionLabel={(option) => option.label}
           isOptionEqualToValue={(option, value) => option.value === value.value}
@@ -212,6 +247,7 @@ const CustomDropdown = <T extends FieldValues>({
           }
           sx={{
             ...sx,
+            borderRadius: "8px",
             minWidth: 180,
           }}
           renderInput={(params) => (
@@ -220,19 +256,46 @@ const CustomDropdown = <T extends FieldValues>({
               id={name}
               label={labelPosition === "inside" ? label : undefined}
               placeholder={placeholder}
+              ownerState={{ multiple }}
               required={required}
-              error={hasError} 
+              error={hasError}
               helperText={error?.message}
               size="small"
               InputLabelProps={{ shrink: true }}
               sx={{
                 "& .MuiOutlinedInput-root": {
                   backgroundColor:
-                    (sx as any)?.bgcolor ?? Colors[theme.palette.mode].inputBackground,
+                    (sx as any)?.bgcolor ??
+                    Colors[theme.palette.mode].inputBackground,
                 },
               }}
             />
           )}
+          renderOption={(props, option) => (
+            <Box
+              component="li"
+              {...props}
+              key={option.value}
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                gap: 1,
+                borderRadius: "4px",
+              }}
+            >
+              {option.dropdownItem ?? option.label}
+            </Box>
+          )}
+          slotProps={{
+            paper: {
+              sx: {
+                borderRadius: "8px",
+                marginTop: "4px",
+                boxShadow: "0 12px 30px rgba(0, 0, 0, 0.18)",
+                padding: "4px",
+              },
+            },
+          }}
         />
       </Box>
     );
@@ -253,7 +316,7 @@ const CustomDropdown = <T extends FieldValues>({
   return renderAutocomplete(
     propValue ?? null,
     propOnChange ?? (() => {}),
-    undefined
+    undefined,
   );
 };
 

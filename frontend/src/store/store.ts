@@ -12,7 +12,7 @@ import { userApi } from "@/services/userApi";
 import { sessionApi } from "@/services/sessionApi";
 import { facultyApi } from "@/services/employeeApi";
 import { commonApi } from "@/services/commonApi";
-import { academicsApi } from "@/services/academics.Api";
+import { academicsApi } from "@/services/academicsApi";
 import { studentApi } from "@/services/studentApi";
 
 export const store = configureStore({

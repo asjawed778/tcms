@@ -8,21 +8,7 @@ import { roleAuth } from "../common/middleware/role-auth.middleware";
 const router = Router();
 
 router
-    // subject routes
-    .post(
-        "/subject",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSubject,
-        catchError,
-        ClassControler.createSubject
-    )
-    .post(
-        "/subject/bulk",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSubjectBulk,
-        catchError,
-        ClassControler.createSubjectBulk
-    )
+    // subject routes - need to review and deleted
     .put(
         "/subject/:subjectId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.UPDATE }),
@@ -37,36 +23,8 @@ router
         catchError,
         ClassControler.deleteSubject
     )
-    .get(
-        "/subject/all",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SUBJECTS, operation: Enum.Operation.READ }),
-        AcademicValidation.getAllSubjects,
-        catchError,
-        ClassControler.getAllSubjects
-    )
 
     // section routes
-    .post(
-        "/section",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSection,
-        catchError,
-        ClassControler.createSection
-    )
-    .post(
-        "/section/bulk",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
-        AcademicValidation.createSectionsBulk,
-        catchError,
-        ClassControler.createSectionsBulk
-    )
-    .put(
-        "/section/:sectionId",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.UPDATE }),
-        AcademicValidation.editSection,
-        catchError,
-        ClassControler.editSection
-    )
     .delete(
         "/section/:sectionId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.DELETE }),
@@ -74,13 +32,7 @@ router
         catchError,
         ClassControler.deleteSection
     )
-    .get(
-        "/section/all",
-        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.READ }),
-        AcademicValidation.getAllSections,
-        catchError,
-        ClassControler.getAllSections
-    )
+
 
     // class routes
     .post(
@@ -97,7 +49,21 @@ router
         catchError,
         ClassControler.updateClass
     )
-    .put("/class/:classId/fee-structure",
+    .post(
+        "/class/:classId/upsert-section",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.CREATE }),
+        AcademicValidation.upsertSectionsBulk,
+        catchError,
+        ClassControler.upsertSectionsBulk
+    )
+    .post(
+        "/class/:classId/upsert-subjects",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.CREATE }),
+        AcademicValidation.upsertSubjectBulk,
+        catchError,
+        ClassControler.upsertSubjectBulk
+    )
+    .post("/class/:classId/fee-structure",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.UPDATE }),
         AcademicValidation.upsertClassFeeStructure,
         catchError,
@@ -110,12 +76,43 @@ router
         catchError,
         ClassControler.getAllClass
     )
+    // class subjects, fee structure, sections
+    .get(
+        "/class/:classId/subjects",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getSubjectsByClass,
+        catchError,
+        ClassControler.getSubjectsByClass
+    )
+    .get(
+        "/class/:classId/fee-structure",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getClassFeeStructure,
+        catchError,
+        ClassControler.getClassFeeStructure
+    )
+    .get(
+        "/class/:classId/sections",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.SECTION, operation: Enum.Operation.READ }),
+        AcademicValidation.getClassSections,
+        catchError,
+        ClassControler.getAllSections
+    )
     .get(
         "/:classId",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
         AcademicValidation.getClassById,
         catchError,
         ClassControler.getClassById
+    )
+
+    // ----- Timetable routes -----
+    .post(
+        "/available-faculty/:sessionId",
+        roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.CLASS, operation: Enum.Operation.READ }),
+        AcademicValidation.getAvailaleFaculty,
+        catchError,
+        ClassControler.getAvailaleFaculty
     )
 
 
@@ -141,7 +138,7 @@ router
         ClassControler.removeAssignedTeacher
     )
     .post(
-        "/timetable/:sessionId/:classId/:sectionId",
+        "/timetable",
         roleAuth({ module: Enum.ModuleName.ACADEMICS, subModule: Enum.SubModuleName.TIMETABLE, operation: Enum.Operation.CREATE }),
         AcademicValidation.createTimeTable,
         catchError,

@@ -3,7 +3,6 @@ import { Box, Grid, Theme, useTheme } from "@mui/material";
 import DocumentCard from "@/components/common/DocumentCard";
 import NoDataCard from "@/components/common/NoDataCard";
 import { DescriptionOutlined } from "@mui/icons-material";
-import { DocumentRequest } from "@/types";
 
 interface DocumentsProps {
   documents: DocumentRequest[];

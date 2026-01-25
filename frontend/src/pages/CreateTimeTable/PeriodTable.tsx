@@ -1,0 +1,234 @@
+import {
+  TableContainer,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Box,
+} from "@mui/material";
+import { useFieldArray, useFormContext, useWatch } from "react-hook-form";
+import CustomDropdown from "@/components/ui/CustomDropdown";
+import CustomInputField from "@/components/ui/CustomInputField";
+import { Add, Delete } from "@mui/icons-material";
+import CustomButton from "@/components/ui/CustomButton";
+import { PeriodType } from "@/utils/enum";
+import { useEffect } from "react";
+import { useUnAssignFaculty } from "@/hooks/useUnAssignFaculty";
+import { useAppSelector } from "@/store/store";
+import { useUnAssignFacultyMutation } from "@/services/employeeApi";
+
+const periodTypeOptions = Object.values(PeriodType).map((type) => ({
+  label: type,
+  value: type,
+}));
+const facultyOptions = [
+  { label: "Mohan Kumar", value: "Mohan Kumar" },
+  { label: "Sohan Kumar", value: "Sohan Kumar" },
+];
+interface PeriodTableProps {
+  dayIndex: number;
+  subjectOptions: DropdownOption[];
+}
+const PeriodTable = ({ dayIndex, subjectOptions }: PeriodTableProps) => {
+  const selectedSession = useAppSelector(
+    (state) => state.session.selectedSession,
+  );
+  const styles = getStyles();
+  const { control, watch, setValue } = useFormContext();
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: `weeklySchedule.${dayIndex}.periods`,
+  });
+  const dayData = useWatch({
+    name: `weeklySchedule.${dayIndex}`,
+    control,
+  });
+
+  const latestPeriod = dayData?.periods;
+
+  const day = dayData?.day;
+  const startTime = latestPeriod?.timeSlot?.startTime;
+  const endTime = latestPeriod?.timeSlot?.endTime;
+
+  useEffect(() => {
+    if (day && startTime && endTime) {
+      console.log("Latest:", { day, startTime, endTime });
+    }
+  }, [day, startTime, endTime]);
+  const periodsForApi = latestPeriod ? [latestPeriod] : [];
+
+  // const { facultyOptions } = useUnAssignFaculty({
+  //   sessionId: selectedSession?._id,
+  //   day,
+  //   periods: periodsForApi,
+  // });
+
+  return (
+    <TableContainer>
+      <Table size="small" sx={styles.tableWrapper}>
+        <TableHead sx={styles.tableHead}>
+          <TableRow sx={{ bgcolor: "#F5F5F5" }}>
+            <TableCell sx={{ width: "4%" }}>#</TableCell>
+            <TableCell sx={{ width: "16%" }}>Period Type</TableCell>
+            <TableCell sx={{ width: "16%" }}>Subject</TableCell>
+            <TableCell sx={{ width: "16%" }}>Faculty</TableCell>
+            <TableCell sx={{ width: "10%" }}>Room</TableCell>
+            <TableCell sx={{ width: "15%" }}>Start</TableCell>
+            <TableCell sx={{ width: "15%" }}>End</TableCell>
+            <TableCell sx={{ width: "5%" }} align="center">
+              Action
+            </TableCell>
+          </TableRow>
+        </TableHead>
+
+        <TableBody>
+          {fields.map((field, index) => {
+            const startField = `weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`;
+            const endField = `weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`;
+            const startValue = watch(startField);
+            const endValue = watch(endField);
+            return (
+              <TableRow key={field.id} sx={styles.tableRow}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>
+                  <CustomDropdown
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.periodType`}
+                    options={periodTypeOptions}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomDropdown
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.subject`}
+                    required={false}
+                    sx={{ m: 0 }}
+                    options={subjectOptions}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomDropdown
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.faculty`}
+                    options={facultyOptions}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.room`}
+                    required={false}
+                    sx={{ m: 0 }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.startTime`}
+                    type="time"
+                    required={false}
+                    step={60}
+                    onFocus={() => {
+                      if (!startValue) {
+                        setValue(startField, "08:00", {
+                          shouldDirty: false,
+                          shouldTouch: false,
+                          shouldValidate: false,
+                        });
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <CustomInputField
+                    name={`weeklySchedule.${dayIndex}.periods.${index}.timeSlot.endTime`}
+                    type="time"
+                    required={false}
+                    step={60}
+                    onFocus={() => {
+                      if (!endValue) {
+                        setValue(endField, "08:45", {
+                          shouldDirty: false,
+                          shouldTouch: false,
+                          shouldValidate: false,
+                        });
+                      }
+                    }}
+                  />
+                </TableCell>
+                <TableCell>
+                  <IconButton onClick={() => remove(index)}>
+                    <Delete />
+                  </IconButton>
+                </TableCell>
+              </TableRow>
+            );
+          })}
+        </TableBody>
+      </Table>
+
+      <Box p={1} display="flex" justifyContent="flex-end">
+        <CustomButton
+          label="Add New Period"
+          startIcon={<Add />}
+          variant="outlined"
+          onClick={() =>
+            append({
+              periodType: "",
+              periodNumber: fields.length + 1,
+              timeSlot: {
+                startTime: "",
+                endTime: "",
+                duration: "",
+              },
+            })
+          }
+          fullWidth
+          sx={{
+            borderStyle: "dashed",
+          }}
+        />
+      </Box>
+    </TableContainer>
+  );
+};
+
+export default PeriodTable;
+
+const getStyles = () => ({
+  tableWrapper: {
+    // tableLayout: "fixed",
+    width: "100%",
+    borderCollapse: "separate",
+    borderSpacing: "0 12px",
+    "& td, & th": {
+      borderBottom: "none",
+    },
+  },
+  tableHead: {
+    "& th": {
+      fontWeight: 700,
+      textTransform: "uppercase",
+      fontSize: "12px",
+      color: "text.secondary",
+    },
+  },
+  tableRow: {
+    "& td": {
+      backgroundColor: "#fff",
+      borderTop: "1px solid #E5E7EB",
+      borderBottom: "1px solid #E5E7EB",
+    },
+    "& td:first-of-type": {
+      borderLeft: "1px solid #E5E7EB",
+      borderTopLeftRadius: "12px",
+      borderBottomLeftRadius: "12px",
+    },
+    "& td:last-of-type": {
+      borderRight: "1px solid #E5E7EB",
+      borderTopRightRadius: "12px",
+      borderBottomRightRadius: "12px",
+    },
+  },
+});

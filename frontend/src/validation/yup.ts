@@ -195,8 +195,6 @@ export const documentUploadSchema = yup.object({
 // Academics Schema....................................................
 export const basicDetailsSchema = yup.object({
   name: yup.string().required("Class name is required"),
-
-  courseStream: yup.string().optional(),
   sections: yup
     .array()
     .min(1, "At least one section is required")
@@ -214,61 +212,28 @@ export const basicDetailsSchema = yup.object({
       })
     ),
 });
-export const subjectSchema = yup.object({
-  sessionId: yup.string().required("Session is required"),
-  name: yup.string().required("Subject name is required"),
-  publication: yup.string().optional(),
-  writer: yup.string().optional(),
-  ISBN: yup.string().optional(),
-  subjectType: yup
-    .mixed<Enum.SubjectType>()
-    .oneOf(Object.values(Enum.SubjectType))
-    .required("Subject type is required"),
-  subjectCategory: yup
-    .mixed<Enum.SubjectCategory>()
-    .oneOf(Object.values(Enum.SubjectCategory))
-    .required("Subject category is required"),
-  syllabus: yup.string().optional(),
-});
-export const bulkSubjectSchema = yup.object({
-  subjects: yup
-    .array()
-    .of(
-      yup.object({
-        name: yup.string().required("Subject name is required"),
-        subjectType: yup.string().required("Subject type is required"),
-        subjectCategory: yup.string().required("Subject category is required"),
-        publication: yup.string().optional(),
-        writer: yup.string().optional(),
-        ISBN: yup.string().optional(),
-        syllabus: yup.string().optional(),
-      })
-    )
-    .min(1, "At least one subject is required"),
-});
 export const feeStructureSchema = yup.object({
-  effectiveFrom: yup.date().required("Effective date is required"),
-  structures: yup
+  effectiveFrom: yup
+    .string()
+    .required("Effective date is required"),
+  remarks: yup.string().optional(),
+  status: yup.string().optional(),
+  feeDetails: yup
     .array()
     .of(
       yup.object({
-        frequency: yup.string().required("Frequency is required"),
-        feeDetails: yup
-          .array()
-          .of(
-            yup.object({
-              feeType: yup.string().required("Fee type is required"),
-              amount: yup.string().required("Amount is required"),
-              isOptional: yup.boolean().default(false),
-              applicableType: yup.string().nullable(),
-              applicableFrequency: yup.string().nullable(),
-            })
-          )
-          .min(1, "At least one fee detail is required"),
+        feeType: yup.string().optional(),
+        amount: yup
+          .number()
+          .typeError("Amount must be a number")
+          .nullable()
+          .optional(),
+        billingFrequency: yup.string()
+          .optional(),
+        isOptional: yup.boolean().optional(),
       })
     )
-    .min(1, "At least one structure is required"),
-  remarks: yup.string().optional(),
+    .optional(),
 });
 export const addSectionSchema = yup.object({
   name: yup.string().required("Section name is required").trim(),

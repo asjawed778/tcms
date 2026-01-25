@@ -1,13 +1,12 @@
 import CustomButton from "@/components/ui/CustomButton";
 import CustomDropdownField from "@/components/ui/CustomDropdown";
-import CustomSearchField from "@/components/ui/CustomSearchField";
 import TableWrapper from "@/components/ui/TableWrapper";
 import { useCan } from "@/hooks/useCan";
 import {
   useDeleteSubjectMutation,
   useGetAllClassQuery,
-  useGetAllSubjectQuery,
-} from "@/services/academics.Api";
+  useGetSubjectsQuery,
+} from "@/services/academicsApi";
 import toast from "react-hot-toast";
 import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
@@ -20,26 +19,24 @@ import {
   Visibility,
 } from "@mui/icons-material";
 import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import AddSubject from "@/components/Academics/Subject/AddSubject";
-import { SubjectResponse } from "../../../type";
 import SubjectCard from "@/components/Academics/Subject/SubjectCard";
 import SubjectDetailsModal from "@/components/Academics/Subject/SubjectDetailsModal";
 import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
 import NoDataCard from "@/components/common/NoDataCard";
 import AlertModal from "@/components/common/AlertModal";
+import ModalWrapper from "@/components/ui/ModalWrapper";
 
 const subjectColumns = [
   { key: "sno.", label: "S.No." },
   { key: "subjectId", label: "Subject Id" },
   { key: "name", label: "Subject Name" },
   { key: "subjectType", label: "Subject Type" },
-  { key: "subjectCategory", label: "Subject Category" },
+  { key: "totalBooks", label: "Total Books" },
 ];
 const SubjectTab = () => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-  const [searchQuery, setSearchQuery] = useState("");
+  const styles = getStyles();
   const [classId, setClassId] = useState();
   const [openAddSubject, setOpenAddSubject] = useState(false);
   const [openUpdateSubject, setOpenUpdateSubject] = useState(false);
@@ -48,32 +45,27 @@ const SubjectTab = () => {
   const [selectedRow, setSelectedRow] = useState<SubjectResponse | null>(null);
   const [tableView, setTableView] = useState(false);
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
   const can = useCan();
-
   const { data: classData } = useGetAllClassQuery(
     {
       sessionId: selectedSession?._id as string,
     },
     {
       skip: !selectedSession?._id,
-    }
+    },
   );
   const {
-    data: subjectData,
+    data: classSubjects,
+    refetch,
     isFetching: subjectFetching,
     isError: subjectError,
-    refetch,
-  } = useGetAllSubjectQuery(
+  } = useGetSubjectsQuery(
     {
-      sessionId: selectedSession?._id as string,
-      page,
-      limit,
-      search: searchQuery,
       classId,
     },
-    { skip: !selectedSession?._id }
+    { skip: !classId },
   );
   const [deleteSubject] = useDeleteSubjectMutation();
 
@@ -82,6 +74,20 @@ const SubjectTab = () => {
       label: cls.name,
       value: cls._id,
     })) || [];
+  const subjects = useMemo(() => {
+    if (!classSubjects?.data) return;
+    return classSubjects.data.map((item: any) => ({
+      subjectId: item.subjectId,
+      name: item.name,
+      subjectType: item.subjectType,
+      totalBooks: item.books.length ?? 0,
+    }));
+  }, [classSubjects]);
+  useEffect(() => {
+    if (!classId && classOptions.length > 0) {
+      setClassId(classOptions[0].value);
+    }
+  }, [classOptions, classId]);
 
   const actionsList = () => {
     const ACTIONS = [
@@ -125,16 +131,9 @@ const SubjectTab = () => {
         can(
           action.permission.module,
           action.permission.subModule,
-          action.permission.operation
-        )
+          action.permission.operation,
+        ),
     );
-  };
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-  const handleRowsPerPageChange = (newRowsPerPage: number) => {
-    setLimit(newRowsPerPage);
-    setPage(1);
   };
 
   const handleActionClick = (action: string, row: SubjectResponse) => {
@@ -153,7 +152,11 @@ const SubjectTab = () => {
         break;
     }
   };
-
+  const handleModalClose = () => {
+    setOpenUpdateSubject(false);
+    setOpenAddSubject(false);
+    setSelectedRow(null);
+  };
   const handleAddSubject = () => {
     setOpenAddSubject(true);
   };
@@ -193,61 +196,40 @@ const SubjectTab = () => {
   return (
     <>
       <Box sx={{ m: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            gap: 2,
-          }}
-        >
-          <CustomSearchField
-            placeholder="Search Subject..."
-            onSearch={setSearchQuery}
-            sx={{ bgcolor: "#fff" }}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography> */}
-
+        <Box sx={styles.filterWrapper}>
+          <Box sx={styles.dropdownBox}>
             <CustomDropdownField
-              label="Class Name"
               placeholder="-- Select Class --"
               required={false}
               value={classId}
               onChange={handleChange}
               options={classOptions}
-              labelPosition="inside"
               sx={{ bgcolor: "#FFF" }}
+              showClearIcon={false}
             />
             {can(
               ModuleName.ACADEMICS,
               SubModuleName.SUBJECTS,
-              Operation.CREATE
+              Operation.CREATE,
             ) && (
-                <CustomButton
-                  label="Add Subject"
-                  startIcon={<Add />}
-                  onClick={handleAddSubject}
-                />
-              )}
+              <CustomButton
+                label="Add Subject"
+                startIcon={<Add />}
+                onClick={handleAddSubject}
+              />
+            )}
             <Tooltip
-              title={tableView ? "Switch to Card View" : "Switch to Table View"}
+              title={
+                !tableView ? "Switch to Card View" : "Switch to Table View"
+              }
             >
               <IconButton onClick={() => setTableView(!tableView)}>
-                {tableView ? <ViewModule /> : <ViewList />}
+                {!tableView ? <ViewModule /> : <ViewList />}
               </IconButton>
             </Tooltip>
           </Box>
         </Box>
-        {subjectFetching ? (
+        {subjectFetching && tableView ? (
           <Grid container spacing={2} mt={2}>
             {Array.from({ length: 9 }).map((_, index) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={index}>
@@ -255,49 +237,31 @@ const SubjectTab = () => {
               </Grid>
             ))}
           </Grid>
-        ) : subjectError ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "80vh",
-            }}
-          >
+        ) : subjectError && tableView ? (
+          <Box sx={styles.subjectError}>
             <Typography variant="body1" color="error.main">
               Something went wrong. Please try again.
             </Typography>
           </Box>
-        ) : subjectData?.data?.subjects?.length === 0 ? (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "70vh",
-            }}
-          >
+        ) : subjects?.length === 0 && tableView ? (
+          <Box sx={styles.noDataCard}>
             <NoDataCard />
           </Box>
-        ) : tableView ? (
+        ) : !tableView ? (
           <Box mt={2}>
             <TableWrapper
               columns={subjectColumns}
-              rows={subjectData?.data?.subjects || []}
-              totalCount={subjectData?.data?.totalDoc || 0}
-              page={page}
-              rowsPerPage={limit}
-              onPageChange={handlePageChange}
-              onRowsPerPageChange={handleRowsPerPageChange}
+              rows={subjects || []}
               onActionClick={handleActionClick}
               actions={actionsList}
               isFetching={subjectFetching}
               isError={subjectError}
+              showPagination={false}
             />
           </Box>
         ) : (
           <Grid container spacing={2} mt={2}>
-            {subjectData?.data?.subjects?.map((subject) => (
+            {subjects?.map((subject: any) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={subject._id}>
                 <SubjectCard
                   subject={subject}
@@ -310,22 +274,28 @@ const SubjectTab = () => {
         )}
       </Box>
       {openAddSubject && (
-        <AddSubject
+        <ModalWrapper
           open={openAddSubject}
-          onClose={() => setOpenAddSubject(false)}
-          refetch={refetch}
-        />
+          onClose={handleModalClose}
+          title="Add Subject"
+          width="900px"
+        >
+          <AddSubject onClose={handleModalClose} refetch={refetch} />
+        </ModalWrapper>
       )}
       {openUpdateSubject && (
-        <AddSubject
+        <ModalWrapper
           open={openUpdateSubject}
-          onClose={() => {
-            setOpenUpdateSubject(false);
-            setSelectedRow(null);
-          }}
-          subject={selectedRow}
-          refetch={refetch}
-        />
+          onClose={handleModalClose}
+          title="Add Subject"
+          width="900px"
+        >
+          <AddSubject
+            subject={selectedRow}
+            refetch={refetch}
+            onClose={handleModalClose}
+          />
+        </ModalWrapper>
       )}
       {openViewSubject && (
         <SubjectDetailsModal
@@ -356,3 +326,30 @@ const SubjectTab = () => {
 };
 
 export default SubjectTab;
+
+const getStyles = () => ({
+  filterWrapper: {
+    display: "flex",
+    justifyContent: "flex-end",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "center",
+    gap: 2,
+  },
+  dropdownBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+  subjectError: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "80vh",
+  },
+  noDataCard: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    height: "70vh",
+  },
+});

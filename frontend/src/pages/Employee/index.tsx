@@ -15,7 +15,7 @@ import {
   PersonAdd,
   VisibilityOutlined,
 } from "@mui/icons-material";
-import { alpha, Box, Button, useStepContext, useTheme } from "@mui/material";
+import { Box, Button, useTheme } from "@mui/material";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import SideDrawerWrapper from "@/components/ui/SideDrawerWrapper";
@@ -202,7 +202,7 @@ const Employee: React.FC = () => {
   const handleActionClick = (action: string, row: EmployeeDetailsResponse) => {
     switch (action) {
       case "update":
-        navigate(`/dashboard/employee/${row._id}/update`);
+        navigate(`/employee/${row._id}/update`);
         break;
       case "view":
         handleEmployeeRowClick(row._id);
@@ -217,7 +217,7 @@ const Employee: React.FC = () => {
   };
 
   const handleAddEmployee = () => {
-    navigate("/dashboard/employee/add");
+    navigate("/employee/add");
   };
   const handleEmployeeDelete = async () => {
     if (!selectedEmployee) return;
@@ -257,7 +257,6 @@ const Employee: React.FC = () => {
           />
           <Box sx={styles.contentBox}>
             <CustomDropdownField
-              label="Status"
               placeholder="-- Select Status --"
               required={false}
               value={statusFilter}

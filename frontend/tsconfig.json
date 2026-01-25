@@ -14,5 +14,5 @@
       "@/*": ["*"]
     }
   },
-  // "include": ["src", "vite.config.ts", "type.d.ts", "svg.d.ts"]
+  "include": ["src", "vite.config.ts", "global.d.ts", "type.d.ts"]
 }

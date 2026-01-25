@@ -4,7 +4,7 @@ import FileUploader from "@/components/ui/FileUploader";
 import {
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { useGetSessionsQuery } from "@/services/sessionApi";
 import { useAppSelector } from "@/store/store";
 import mapToDropdownOptions from "@/utils/helper";

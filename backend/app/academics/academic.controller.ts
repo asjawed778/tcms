@@ -9,21 +9,26 @@ import * as UserService from "../user/user.service";
 import * as AcademicUtils from "./academic.utils";
 
 // subject controllers
-export const createSubject = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createSubject(data);
-    res.send(createResponse(result, "Subject created successfully"));
+export const upsertSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
+    const { subjects } = req.body;
+    const { classId } = req.params;
+    const result = await AcademicService.upsertSubjectBulk(classId, subjects);
+    res.send(createResponse(result, "Subjects created/updated successfully"));
 });
 
-export const createSubjectBulk = asyncHandler(async (req: Request, res: Response) => {
-    const { subjects } = req.body;
-    const result = [];
-    for (const subject of subjects) {
-        const response = await AcademicService.createSubject(subject);
-        result.push(response);
+export const getSubjectsByClass = asyncHandler(
+    async (req: Request, res: Response) => {
+        const { classId } = req.params;
+        const { sessionId, subjectType } = req.query;
+        const result = await AcademicService.getSubjectsByClass({
+            classId,
+            sessionId: sessionId as string | undefined,
+            subjectType: subjectType as string | undefined
+        });
+
+        res.send(createResponse(result, "Subjects fetched successfully"));
     }
-    res.send(createResponse(result, "Subjects created successfully"));
-});
+);
 
 export const editSubject = asyncHandler(async (req: Request, res: Response) => {
     const { subjectId } = req.params;
@@ -38,64 +43,21 @@ export const deleteSubject = asyncHandler(async (req: Request, res: Response) =>
     res.send(createResponse({}, "Subject deleted successfully"));
 });
 
-export const getAllSubjects = asyncHandler(async (req: Request, res: Response) => {
-    const sessionId = req.query.sessionId as string;
-    const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
-    const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
-    const search = req.query.search ? (req.query.search as string) : "";
-    const classId = req.query.classId ? (req.query.classId as string) : undefined;
-    const result = await AcademicService.getAllSubjects(sessionId, page, limit, search, classId);
-    res.send(createResponse(result, "Subjects fetched successfully"));
-});
-
-export const createBook = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createBook(data);
-    res.send(createResponse(result, "Book created successfully"));
-});
-
-export const creatBookBulk = asyncHandler(async (req: Request, res: Response) => {
-    const { books } = req.body;
-    const booksResult = AcademicService.createBookBulk(books);
-    res.send(createResponse(booksResult, "Books created successfully"));
-});
-
-export const editBook = asyncHandler(async (req: Request, res: Response) => {
-    const { bookId } = req.params;
-    const data = req.body;
-    const result = await AcademicService.editBook(bookId, data);
-    res.send(createResponse(result, "Book edited successfully"));
-});
-
-export const deleteBook = asyncHandler(async (req: Request, res: Response) => {
-    const { bookId } = req.params;
-    await AcademicService.deleteBook(bookId);
-    res.send(createResponse({}, "Book deleted successfully"));
-});
-
-
 // section controllers
-export const createSection = asyncHandler(async (req: Request, res: Response) => {
-    const data = req.body;
-    const result = await AcademicService.createSection(data);
-    res.send(createResponse(result, "Section created successfully"));
-});
-
-export const createSectionsBulk = asyncHandler(async (req: Request, res: Response) => {
+export const upsertSectionsBulk = asyncHandler(async (req: Request, res: Response) => {
     const { sections } = req.body;
+    const { classId } = req.params;
     const result = [];
     for (const section of sections) {
-        const response = await AcademicService.createSection(section);
-        result.push(response);
+        if (section._id) {
+            const updatedSection = await AcademicService.editSection(section._id, section);
+            result.push(updatedSection);
+        } else {
+            const response = await AcademicService.createSection(classId, section);
+            result.push(response);
+        }
     }
     res.send(createResponse(result, "Sections created successfully"));
-});
-
-export const editSection = asyncHandler(async (req: Request, res: Response) => {
-    const { sectionId } = req.params;
-    const data = req.body;
-    const result = await AcademicService.editSection(sectionId, data);
-    res.send(createResponse(result, "Section edited successfully"));
 });
 
 export const deleteSection = asyncHandler(async (req: Request, res: Response) => {
@@ -105,9 +67,8 @@ export const deleteSection = asyncHandler(async (req: Request, res: Response) =>
 });
 
 export const getAllSections = asyncHandler(async (req: Request, res: Response) => {
-    const classId = req.query.classId as string || "";
-    const sessionId = req.query.sessionId as string;
-    const result = await AcademicService.getAllSections(sessionId, classId);
+    const { classId } = req.params;
+    const result = await AcademicService.getClassSections(classId);
     res.send(createResponse(result, "Sections fetched successfully"));
 });
 
@@ -162,9 +123,27 @@ export const upsertClassFeeStructure = asyncHandler(async (req: Request, res: Re
     res.send(createResponse(result, "Fee Structure Updated successfully"));
 });
 
-// Timetable controllers
+export const getClassFeeStructure = asyncHandler(async (req: Request, res: Response) => {
+    const classId = req.params.classId;
+    const result = await AcademicService.getClassFeeStructure(classId);
+    res.send(createResponse(result, "Fee Structure fetched successfully"));
+});
+
+// ------ Timetable controllers -----
+export const getAvailaleFaculty = asyncHandler(async (req: Request, res: Response) => {
+    const { sessionId } = req.params;
+    const { startTime, endTime, day } = req.body;
+    const isSessionCurrentOrUpcoming = await SessionService.isSessionCurrentOrFuture(sessionId);
+    if (!isSessionCurrentOrUpcoming) {
+        throw createHttpError(400, "Session is not current or upcoming");
+    }
+    const result = await AcademicService.getAvailableFaculty(sessionId, day, startTime, endTime);
+    res.send(createResponse(result, "Available faculty fetched successfully"));
+});
+
+
 export const createTimeTable = asyncHandler(async (req: Request, res: Response) => {
-    const { sessionId, classId, sectionId } = req.params;
+    const { sessionId, classId, sectionId } = req.body;
     const data = req.body;
     const timeTableData: AcademicDto.IDaySchedule = {
         day: data.day,

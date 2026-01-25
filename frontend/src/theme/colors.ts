@@ -60,7 +60,7 @@ export const Colors: Record<ThemeMode, ThemeColors> = {
   light: {
     primary: "#0173f5",
     secondary: "#d624ca",
-    background: "#F7F7F7",
+    background: "#f3f4f6",
     text: "#1e2329",
     icon: "#687076",
     tint: tintColorLight,

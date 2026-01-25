@@ -18,7 +18,6 @@ import {
   InsertDriveFile as FileIcon,
 } from "@mui/icons-material";
 import download from "@/assets/svg/download.svg";
-import { DocumentRequest } from "@/types";
 
 interface DocumentCardProps {
   document: DocumentRequest;
