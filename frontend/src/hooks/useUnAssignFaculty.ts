@@ -1,16 +1,20 @@
 import { useEffect, useState } from "react";
 import { useUnAssignFacultyMutation } from "@/services/employeeApi";
-import { DropdownOptions } from "../../type";
+const parseTimeString = (time: string): { hour: number; minute: number } => {
+  const [hour, minute] = time.split(":").map(Number);
+  return { hour, minute };
+};
 
-interface Time {
+interface TimeSlot {
+  startTime: string;
+  endTime: string;
+}
+
+interface ApiTime {
   hour: number;
   minute: number;
 }
 
-interface TimeSlot {
-  start: Time;
-  end: Time;
-}
 
 export const useUnAssignFaculty = ({
   sessionId,
@@ -21,11 +25,10 @@ export const useUnAssignFaculty = ({
   day: string;
   periods: { timeSlot: TimeSlot }[];
 }) => {
-  const [facultyMap, setFacultyMap] = useState<
-    Record<number, DropdownOptions[]>
+  const [facultyOptions, setFacultyOptions] = useState<
+    Record<number, DropdownOption[]>
   >({});
   const [unAssignFaculty, { isLoading }] = useUnAssignFacultyMutation();
-  const [durationMinutes, setDurationMinutes] = useState<number | null>(null);
   useEffect(() => {
     const fetchFaculty = async (
       index: number,
@@ -39,32 +42,17 @@ export const useUnAssignFaculty = ({
           startTime: start,
           endTime: end,
         }).unwrap();
-
-        // if (result?.data?.length > 1) {
-        //   const options: DropdownOptions[] =
-        //     result?.data?.map((f: any) => ({
-        //       label: f.name,
-        //       value: f._id,
-        //     })) || [];
-        //     setFacultyMap((prev) => ({ ...prev, [index]: options }));
-        // } else{
-        //   const options: DropdownOptions[] = [{
-        //     label: result?.data?.name,
-        //     value: result?.data?._id
-        //   }]
-        //   setFacultyMap((prev) => ({ ...prev, [index]: options }));
-        // }
         if (Array.isArray(result.data)) {
-          const options: DropdownOptions[] = result.data.map((f) => ({
+          const options: DropdownOption[] = result.data.map((f) => ({
             label: f.name,
             value: f._id,
           }));
-          setFacultyMap((prev) => ({ ...prev, [index]: options }));
+          setFacultyOptions((prev) => ({ ...prev, [index]: options }));
         } else if (result.data) {
-          const options: DropdownOptions[] = [
+          const options: DropdownOption[] = [
             { label: result.data.name, value: result.data._id },
           ];
-          setFacultyMap((prev) => ({ ...prev, [index]: options }));
+          setFacultyOptions((prev) => ({ ...prev, [index]: options }));
         }
       } catch (err) {
         console.error("Failed to fetch faculty:", err);
@@ -73,27 +61,18 @@ export const useUnAssignFaculty = ({
 
     if (Array.isArray(periods) && sessionId) {
       periods.forEach((period, index) => {
-        const { start, end } = period?.timeSlot;
-        const isValidTime =
-          start?.hour != null &&
-          start?.minute != null &&
-          end?.hour != null &&
-          end?.minute != null;
-
-        if (isValidTime) {
-          const duration = calculateDurationMinutes({ start, end });
-          setDurationMinutes(duration);
-          fetchFaculty(index, start, end);
+        const { startTime, endTime } = period?.timeSlot;
+        if (startTime && endTime) {
+          fetchFaculty(
+            index,
+            parseTimeString(startTime),
+            parseTimeString(endTime)
+          );
         }
       });
     }
   }, [periods, sessionId, day, unAssignFaculty]);
 
-  return { facultyMap, isLoading, durationMinutes };
+  return { facultyOptions, isLoading };
 };
 
-export const calculateDurationMinutes = ({ start, end }: TimeSlot): number => {
-  const startMinutes = start.hour * 60 + start.minute;
-  const endMinutes = end.hour * 60 + end.minute;
-  return endMinutes - startMinutes;
-};

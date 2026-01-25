@@ -1,5 +1,4 @@
 import * as Enum from "@/utils/enum";
-import * as CommonTypes from "@/types";
 
 export interface Experience {
   organisationName: string;
@@ -41,7 +40,7 @@ export interface SalaryStructureRequest {
 }
 
 export interface EmployeeDetailsResponse
-  extends CommonTypes.BaseSchema,
+  extends BaseSchema,
   EmployeeBasicDetailsRequest,
   ProfessionalDetailsRequest {
   employeeId: string;
@@ -50,8 +49,8 @@ export interface EmployeeDetailsResponse
   roleName: string;
   lastWorkingDate?: string;
   status: Enum.EmployeeStatus;
-  documents: CommonTypes.DocumentRequest[];
-  address: CommonTypes.AddressResponse;
+  documents: DocumentRequest[];
+  address: AddressResponse;
 }
 
 export interface EmployeeDetailsResponseList {

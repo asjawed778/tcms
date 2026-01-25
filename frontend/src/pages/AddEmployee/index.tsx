@@ -12,8 +12,7 @@ import {
   Step,
   StepLabel,
   Box,
-  CardContent,
-  CircularProgress,
+  Container,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -35,6 +34,9 @@ import {
   useUpdateProfessionalDetailsMutation,
   useUpdateSalaryStructureMutation,
 } from "@/services/employeeApi";
+import PageHeader from "@/components/common/PageHeader";
+import Loader from "@/components/common/Loader";
+import { ArrowBack, ArrowForward, Close } from "@mui/icons-material";
 
 const steps = [
   {
@@ -76,6 +78,7 @@ const AddEmployee = () => {
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
   const { employeeId: editEmployeeId } = useParams();
+  const styles = getStyles(activeStep);
 
   const [addBasicDetails, { isLoading: addingBasicDetails }] =
     useAddBasicDetailsMutation();
@@ -123,11 +126,11 @@ const AddEmployee = () => {
     if (!employeeId && editEmployeeId) return;
     const stepName = stepSlugs[activeStep];
     if (!editEmployeeId && !employeeId) {
-      navigate(`/dashboard/employee/add?step=${stepName}`, { replace: true });
+      navigate(`/employee/add?step=${stepName}`, { replace: true });
       return;
     }
     if (employeeId) {
-      navigate(`/dashboard/employee/${employeeId}/update?step=${stepName}`, {
+      navigate(`/employee/${employeeId}/update?step=${stepName}`, {
         replace: true,
       });
     }
@@ -275,83 +278,88 @@ const AddEmployee = () => {
     }
   };
 
-  if (fetchingEmployee || salaryFetching ) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+  if (fetchingEmployee || salaryFetching) {
+    return <Loader height="100vh" />;
   }
   return (
-    <Box p={2}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index} onClick={() => handleStepClick(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <Box mt="52px">
+      <PageHeader
+        backTo="/dashboard/employee"
+      />
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
+          {steps.map((step, index) => (
+            <Step key={index} onClick={() => handleStepClick(index)}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={methods.handleSubmit(onStepSubmit)}
+            noValidate
+            style={{ backgroundColor: "#FFF", borderRadius: "8px" }}
+          >
             <Box
               sx={{
-                width: "100%",
-                bgcolor: "#fff",
-                borderRadius: "8px",
-                mt: 1,
+                p: 2,
+                minHeight: "70vh",
               }}
             >
-              <CardContent>
-                <Box>
-                  <StepComponent />
-                </Box>
-              </CardContent>
+              <StepComponent />
             </Box>
-
-            <Box
-              mt={2}
-              display="flex"
-              justifyContent="space-between"
-              gap={2}
-              flexWrap="wrap"
-            >
+            <Box sx={styles.buttonWrapper}>
               {activeStep > 0 && (
                 <CustomButton
+                label="Back"
                   variant="contained"
-                  onClick={() => setActiveStep((s) => s - 1)}
-                >
-                  Back
-                </CustomButton>
+                  startIcon={<ArrowBack />}
+                  onClick={() => setActiveStep((prev) => prev - 1)}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 8px 12px ${theme.palette.primary.main}40`,
+                  }}
+                />
               )}
-              <Box flexGrow={1} />
-              <CustomButton
-                label="Exit"
-                variant="outlined"
-                onClick={handleExitClick}
-              />
-              <CustomButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isLoading}
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
-              </CustomButton>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <CustomButton
+                  label="Exit"
+                  variant="outlined"
+                  onClick={handleExitClick}
+                  startIcon={<Close fontSize="small" />}
+                />
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  endIcon={<ArrowForward />}
+                  loading={isLoading}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 8px 12px ${theme.palette.primary.main}40`,
+                  }}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                </CustomButton>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
+          </form>
+        </FormProvider>
+      </Container>
     </Box>
   );
 };
 
 export default AddEmployee;
+
+const getStyles = (activeStep: number) => ({
+  buttonWrapper: {
+    display: "flex",
+    justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+    alignItems: "center",
+    flexWrap: "wrap",
+    gap: 2,
+    p: 2,
+  },
+});

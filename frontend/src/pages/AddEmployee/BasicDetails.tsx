@@ -21,7 +21,7 @@ const BasicDetails: React.FC = () => {
           Personal Details
         </Typography>
       </Grid>
-      <Grid size={{ xs: 6, md: 10 }}>
+      <Grid size={{ xs: 12, md: 10 }}>
         <Grid container spacing={3}>
           <Grid size={{ xs: 12, md: 6 }}>
             <CustomInputField

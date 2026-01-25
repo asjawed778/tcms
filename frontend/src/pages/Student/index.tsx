@@ -11,8 +11,8 @@ import {
   VisibilityOutlined,
 } from "@mui/icons-material";
 import { Box, Button, Menu, MenuItem, useTheme } from "@mui/material";
-import React, { useEffect, useState } from "react";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import AddRemark from "@/components/Student/AddRemarkModal";
 import {
   useDeleteStudentMutation,
@@ -32,30 +32,20 @@ import StudentDetails from "@/components/Student/StudentDetails";
 import {
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import SegmentTabs from "@/components/ui/SegmentTabs";
 import { StudentDetailsResponse } from "@/types/student";
 import toast from "react-hot-toast";
 import AlertModal from "@/components/common/AlertModal";
 
 const Student: React.FC = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [page, setPage] = useState(() => Number(searchParams.get("page")) || 1);
-  const [rowsPerPage, setRowsPerPage] = useState(
-    () => Number(searchParams.get("limit")) || 10
-  );
-  const [searchQuery, setSearchQuery] = useState(
-    () => searchParams.get("search") || ""
-  );
-  const [status, setStatus] = useState(
-    () => searchParams.get("status") || StudentStatus.ACTIVE
-  );
-  const [classFilter, setClassFilter] = useState(
-    () => searchParams.get("class") || ""
-  );
-  const [sectionFilter, setSectionFilter] = useState(
-    () => searchParams.get("section") || ""
-  );
+  const styles = getStyles();
+  const [page, setPage] = useState(1);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [status, setStatus] = useState(StudentStatus.ACTIVE);
+  const [classFilter, setClassFilter] = useState("");
+  const [sectionFilter, setSectionFilter] = useState("");
   const [selectedStudent, setSelectedStudent] =
     useState<StudentDetailsResponse | null>(null);
   const [openRemarksModal, setOpenRemarksModal] = useState(false);
@@ -92,14 +82,14 @@ const Student: React.FC = () => {
     },
     {
       skip: !selectedSession?._id,
-      // refetchOnMountOrArgChange: true,
+      refetchOnMountOrArgChange: true,
     }
   );
 
-  const [deleteStudent, {isLoading: isDelete}] = useDeleteStudentMutation();
+  const [deleteStudent, { isLoading: isDelete }] = useDeleteStudentMutation();
   const { data: classData } = useGetAllClassQuery(
     {
-      sessionId: selectedSession?._id,
+      sessionId: selectedSession?._id as string,
     },
     { skip: !selectedSession?._id }
   );
@@ -122,27 +112,6 @@ const Student: React.FC = () => {
       value: s._id,
     })),
   ];
-
-  useEffect(() => {
-      setSearchParams({
-        // tab: ToolsTabs.ROLES_AND_PERMISSIONS,
-        page: String(page),
-        limit: String(rowsPerPage),
-      });
-    }, [page, rowsPerPage, setSearchParams]);
-  // useEffect(() => {
-  //   const params = new URLSearchParams();
-
-  //   if (page) params.set("page", String(page));
-  //   if (rowsPerPage) params.set("limit", String(rowsPerPage));
-  //   if (searchQuery) params.set("search", searchQuery);
-  //   if (status) params.set("status", status);
-  //   if (classFilter) params.set("class", classFilter);
-  //   if (sectionFilter) params.set("section", sectionFilter);
-
-  //   setSearchParams(params);
-  // }, [page, rowsPerPage, searchQuery, status, classFilter, sectionFilter]);
-
 
   const handleImageClick = (url: string) => {
     if (!url) return;
@@ -171,8 +140,7 @@ const Student: React.FC = () => {
               endIcon={<EditOutlined fontSize="small" />}
               onClick={(e) => {
                 e.stopPropagation();
-                // handleActionClick("update", row);
-                navigate(`/dashboard/student/${row._id}/update`);
+                navigate(`/student/${row._id}/update`);
               }}
               sx={{
                 backgroundColor: theme.customColors.primary + "20",
@@ -247,7 +215,7 @@ const Student: React.FC = () => {
   const handleActionClick = (action: string, row: any) => {
     switch (action) {
       case "update":
-        navigate(`/dashboard/student/${row.student._id}/update`);
+        navigate(`/student/${row.student._id}/update`);
         break;
       case "view":
         handleRowClick(row.student._id);
@@ -272,7 +240,7 @@ const Student: React.FC = () => {
     setPage(1);
   };
   const handleAddStudent = () => {
-    navigate("/dashboard/student/add");
+    navigate("/student/add");
   };
   const handleStudentDelete = async () => {
     if (!selectedStudent?._id) return;
@@ -289,6 +257,7 @@ const Student: React.FC = () => {
   };
   const handleBulkUpload = () => {
     setOpenBulkUpload(true);
+    setMenuOpen(false);
   };
   const handleStatusChange = (val: any) => {
     setStatus(val);
@@ -313,31 +282,16 @@ const Student: React.FC = () => {
   return (
     <Box p={2}>
       <Box mb="4px">
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: { xs: "stretch", md: "center" },
-            gap: 2,
-            flexWrap: "wrap",
-          }}
-        >
-          <Box sx={{ flex: { xs: "1 1 100%", md: "1 1 300px" } }}>
+        <Box sx={styles.filterWrapper}>
+          <Box sx={styles.searchBox}>
             <CustomSearchField
               placeholder="Search Student..."
               onSearch={handleSearch}
               sx={{ bgcolor: "#fff" }}
             />
           </Box>
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
+          <Box sx={styles.dropdownBox}>
             <CustomDropdownField
-              label="Class"
               placeholder="-- Select Class --"
               required={false}
               value={classFilter}
@@ -348,7 +302,6 @@ const Student: React.FC = () => {
               sx={{ bgcolor: "#fff" }}
             />
             <CustomDropdownField
-              label="Status"
               placeholder="-- Select Status --"
               required={false}
               value={status}
@@ -360,7 +313,7 @@ const Student: React.FC = () => {
             />
           </Box>
           {can(ModuleName.STUDENTS, null, Operation.CREATE) && (
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <Box sx={styles.buttonWrapper}>
               <Box
                 sx={{
                   display: "flex",
@@ -501,3 +454,20 @@ const Student: React.FC = () => {
 };
 
 export default Student;
+
+const getStyles = () => ({
+  filterWrapper: {
+    display: "flex",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: { xs: "stretch", md: "center" },
+    gap: 2,
+    flexWrap: "wrap",
+  },
+  searchBox: { flex: { xs: "1 1 100%", md: "1 1 300px" } },
+  dropdownBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+  buttonWrapper: { display: "flex", alignItems: "center", gap: 1 },
+});

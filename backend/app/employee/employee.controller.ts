@@ -1,16 +1,17 @@
-import asyncHandler from "express-async-handler";
 import { type Request, type Response } from "express";
+import asyncHandler from "express-async-handler";
+import { createResponse } from "../common/helper/response.hepler";
+import { Types } from "mongoose";
 import createHttpError from "http-errors";
 import * as EmployeeService from "./employee.service";
-import { createResponse } from "../common/helper/response.hepler";
 import * as AddressService from "../common/services/address.service";
 import * as EmployeeDto from "./employee.dto";
 import * as UserService from "../user/user.service";
 import * as EmplyoeeUtils from "./employee.utils";
-import { Types } from "mongoose";
 import * as Enum from "../common/utils/enum";
 
-// new controllers
+
+
 export const createEmployee = asyncHandler(async (req: Request, res: Response) => {
     const data: EmployeeDto.ICreateEmployee = req.body;
     const user = await UserService.getUserByEmail(data.email);
@@ -163,20 +164,4 @@ export const deleteDraftEmployee = asyncHandler(async (req: Request, res: Respon
     }
     await EmployeeService.deleteDraftEmployee(employeeId);
     res.send(createResponse({}, "Employee deleted successfully"));
-});
-
-
-
-
-// old controllers
-
-
-
-
-export const getUnassignedFaculty = asyncHandler(async (req: Request, res: Response) => {
-    const { sessionId } = req.params;
-    const { day, startTime, endTime } = req.body;
-
-    const unassignedFaculty = await EmployeeService.getUnassignedFaculty(new Types.ObjectId(sessionId), day, startTime, endTime);
-    res.send(createResponse(unassignedFaculty, "Unassigned faculty fetched successfully"));
 });

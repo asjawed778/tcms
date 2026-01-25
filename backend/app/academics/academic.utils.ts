@@ -33,7 +33,7 @@ export const isClassAndSectionValid = async (
     return true;
 };
 
-const getFixedClassCode = (className: string): string => {
+const getUniqueClassCode = (className: string): string => {
     const name = className.toLowerCase();
 
     if (name.includes("nursery")) return "NR";
@@ -49,7 +49,7 @@ const getFixedClassCode = (className: string): string => {
 };
 
 export const generateClassId = async (className: string, year: string): Promise<string> => {
-    const classCode = getFixedClassCode(className);
+    const classCode = getUniqueClassCode(className);
     let classId: string;
     let exists = true;
     while (exists) {
@@ -61,7 +61,7 @@ export const generateClassId = async (className: string, year: string): Promise<
 };
 
 export const generateSectionId = async (className: string, sectionName: string): Promise<string> => {
-    const classCode = getFixedClassCode(className);
+    const classCode = getUniqueClassCode(className);
     const sectionCode = sectionName.replace(/\s+/g, "").substring(0, 1).toUpperCase(); // single letter (A, B, C)
     const year = new Date().getFullYear().toString().slice(-2);
 

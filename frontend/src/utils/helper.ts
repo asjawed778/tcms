@@ -10,7 +10,7 @@ export type Cleanable =
   | Cleanable[]
   | { [key: string]: Cleanable };
 
-export const cleanData = <T extends Cleanable>(payload: T): T | undefined => {
+export const cleanData = <T>(payload: T): T | undefined => {
   if (payload === null || payload === undefined || payload === '') {
     return undefined;
   }
@@ -143,10 +143,6 @@ interface MapToDropdownOptionsParams<T> {
   labelKey?: keyof T;
   valueKey?: keyof T;
 }
-export interface DropdownOption {
-  label: string;
-  value: string;
-}
 export function mapToDropdownOptions<T extends Record<string, any>>({
   data = [],
   labelKey = "name" as keyof T,
@@ -207,4 +203,10 @@ export const formatDate = (
   } catch {
     return fallback;
   }
+};
+
+// yyyy-mm-dd
+export const getTodayDate = () => {
+  const today = new Date();
+  return today.toISOString().split("T")[0];
 };

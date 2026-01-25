@@ -278,33 +278,52 @@ export const deleteDraftEmployee = async (employeeId: string) => {
     }
 };
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// old empl services
-
-export const getUnassignedFaculty = async (
-    sessionId: mongoose.Types.ObjectId,
-    day: Enum.WeekDay,
-    startTime: { hour: number; minute: number },
-    endTime: { hour: number; minute: number }
-) => {
-
-    // const assignedFacultyIds = await getAssignedFaculyIds(sessionId, day, startTime, endTime);
-
-    // const result = await UserService.getUnassignedFaculty(assignedFacultyIds);
-    return [];
-};
-
+export const getAvailableFacultyEmployees = async (busyFacultySet: string[], facultyRole: string) => {
+    const availableFaculty = await employeeSchema.aggregate([
+        {
+            $match: {
+                user: { $nin: busyFacultySet }
+            }
+        },
+        {
+            $lookup: {
+                from: "users",
+                localField: "user",
+                foreignField: "_id",
+                as: "user"
+            }
+        },
+        { $unwind: "$user" },
+        {
+            $match: {
+                "user.role": facultyRole,
+                "user.isActive": true
+            }
+        },
+        {
+            $lookup: {
+                from: "roles",
+                localField: "user.role",
+                foreignField: "_id",
+                as: "role"
+            }
+        },
+        { $unwind: "$role" },
+        {
+            $project: {
+                _id: "$user._id",
+                firstName: "$user.firstName",
+                lastName: "$user.lastName",
+                email: "$user.email",
+                role: {
+                    _id: "$role._id",
+                    name: "$role.name"
+                },
+                designation: 1,
+                expertise: 1,
+                photo: 1
+            }
+        }
+    ]);
+    return availableFaculty;
+}

@@ -4,45 +4,42 @@ import {
   useDeleteSectionMutation,
   useGetAllClassQuery,
   useGetAllSectionQuery,
-} from "@/services/academics.Api";
+} from "@/services/academicsApi";
 import { useAppSelector } from "@/store/store";
 import { Box, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { Add, Delete, Edit, Visibility } from "@mui/icons-material";
+import {
+  Add,
+  CheckCircle,
+  Delete,
+  Edit,
+  Error,
+  Visibility,
+} from "@mui/icons-material";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import DialogBoxWrapper from "@/components/ui/DialogBoxWrapper";
 import { useCan } from "@/hooks/useCan";
 import toast from "react-hot-toast";
 import AddSection from "../../components/Academics/Section/AddSectionModal";
-import CustomSearchField from "@/components/ui/CustomSearchField";
 import CustomButton from "@/components/ui/CustomButton";
-import { SectionResponse } from "../../../type";
-import SectionDetailsModal from "../../components/Academics/Section/SectionDetailsModal";
-
-const sectionColumns = [
-  { key: "sno.", label: "S.No." },
-  { key: "sectionId", label: "Section Id" },
-  { key: "name", label: "Section Name" },
-  { key: "classTeacher", label: "Class Teacher" },
-  { key: "totalAdmissions", label: "Total Admission" },
-  { key: "capacity", label: "Total Capacity" },
-];
+import SectionDetailsModal from "@/components/Academics/Section/SectionDetailsModal";
+import { useNavigate } from "react-router-dom";
 const SectionTab = () => {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const styles = getStyles();
   const [selectedClassId, setSelectedClassId] = useState<string | undefined>(
-    undefined
+    undefined,
   );
   const [selectedRow, setSelectedRow] = useState<SectionResponse | null>(null);
   const [openAddSection, setOpenAddSection] = useState(false);
   const [openUpdateSection, setOpenUpdateSection] = useState(false);
   const [openDeleteSection, setOpenDeleteSection] = useState(false);
   const [openViewSection, setOpenViewSection] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
   const selectedSession = useAppSelector(
-    (state) => state.session.selectedSession
+    (state) => state.session.selectedSession,
   );
+
   const can = useCan();
+  const navigate = useNavigate();
 
   const {
     data: sectionData,
@@ -51,15 +48,11 @@ const SectionTab = () => {
     refetch,
   } = useGetAllSectionQuery(
     {
-      page,
-      limit,
-      search: searchQuery,
-      sessionId: selectedSession?._id,
       classId: selectedClassId,
     },
     {
-      skip: !selectedSession?._id || !selectedClassId,
-    }
+      skip: !selectedClassId,
+    },
   );
 
   const [deleteSection] = useDeleteSectionMutation();
@@ -70,8 +63,53 @@ const SectionTab = () => {
     },
     {
       skip: !selectedSession?._id,
-    }
+    },
   );
+  const sectionColumns = () => [
+    { key: "sno.", label: "S.No." },
+    { key: "sectionId", label: "Section Id" },
+    { key: "name", label: "Section Name" },
+    { key: "classTeacher", label: "Class Teacher" },
+    { key: "totalAdmissions", label: "Total Admission" },
+    { key: "capacity", label: "Total Capacity" },
+    {
+      key: "timeTable",
+      label: "TimeTable",
+      width: "12%",
+      render: (row: any) =>
+        row.isTimeTableCreated ? (
+          <Box
+            sx={styles.timeTableTitleWrapper}
+            onClick={(e) => {
+              e.stopPropagation();
+              alert("This is under progress...");
+            }}
+          >
+            <CheckCircle sx={styles.timeTableCheckIcon} />
+            <Typography color="success" fontWeight={600}>
+              Linked
+            </Typography>
+          </Box>
+        ) : (
+          <Box
+            sx={styles.timeTableTitleWrapper}
+            onClick={(e) => {
+              e.stopPropagation();
+              navigate("/academics/create-time-table", {
+                state: {
+                  classData: row,
+                },
+              });
+            }}
+          >
+            <Error sx={styles.timeTableErrorIcon} />
+            <Typography color="error" fontWeight={600}>
+              Missing
+            </Typography>
+          </Box>
+        ),
+    },
+  ];
   const actionsList = () => {
     const ACTIONS = [
       {
@@ -114,16 +152,9 @@ const SectionTab = () => {
         can(
           action.permission.module,
           action.permission.subModule,
-          action.permission.operation
-        )
+          action.permission.operation,
+        ),
     );
-  };
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-  };
-  const handleRowsPerPageChange = (newRowsPerPage: number) => {
-    setLimit(newRowsPerPage);
-    setPage(1);
   };
   const handleRowClick = (row: any) => {
     setSelectedRow(row);
@@ -177,33 +208,9 @@ const SectionTab = () => {
   return (
     <>
       <Box sx={{ m: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: { xs: "column", md: "row" },
-            alignItems: "center",
-            gap: 2,
-            mb: 2,
-          }}
-        >
-          <CustomSearchField
-            placeholder="Search Section..."
-            onSearch={setSearchQuery}
-            sx={{ bgcolor: "#fff" }}
-          />
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              gap: 1,
-            }}
-          >
-            {/* <Typography variant="body2" sx={{ whiteSpace: "nowrap" }}>
-              Filter By:
-            </Typography> */}
-
+        <Box sx={styles.filterWrapper}>
+          <Box sx={styles.dropdownBox}>
             <CustomDropdownField
-              label="Class Name"
               required={false}
               value={selectedClassId}
               onChange={handleChange}
@@ -215,7 +222,7 @@ const SectionTab = () => {
             {can(
               ModuleName.ACADEMICS,
               SubModuleName.SECTION,
-              Operation.CREATE
+              Operation.CREATE,
             ) && (
               <CustomButton
                 label="Add Section"
@@ -226,18 +233,15 @@ const SectionTab = () => {
           </Box>
         </Box>
         <TableWrapper
-          columns={sectionColumns}
+          columns={sectionColumns()}
           rows={sectionData?.data?.sections || []}
           totalCount={sectionData?.data?.sections.length || 0}
-          page={page}
-          rowsPerPage={limit}
-          onPageChange={handlePageChange}
-          onRowsPerPageChange={handleRowsPerPageChange}
           onActionClick={handleActionClick}
           actions={actionsList}
           isFetching={sectionFetching}
           isError={sectionError}
           onRowClick={handleRowClick}
+          showPagination={false}
         />
       </Box>
       {openAddSection && (
@@ -288,3 +292,22 @@ const SectionTab = () => {
 };
 
 export default SectionTab;
+
+const getStyles = () => ({
+  filterWrapper: {
+    display: "flex",
+    justifyContent: "flex-end",
+    flexDirection: { xs: "column", md: "row" },
+    alignItems: "center",
+    gap: 2,
+    mb: 2,
+  },
+  dropdownBox: {
+    display: "flex",
+    alignItems: "center",
+    gap: 1,
+  },
+  timeTableTitleWrapper: { display: "flex", alignItems: "center", gap: 0.5 },
+  timeTableCheckIcon: { fontSize: 16, color: "success.main" },
+  timeTableErrorIcon: { fontSize: 16, color: "error.main" },
+});

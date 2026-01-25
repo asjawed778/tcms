@@ -1,6 +1,5 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { baseQueryWithReauth } from "./api";
-import { AddressRequest, ApiResponse, DocumentRequest } from "@/types";
 import {
   EmployeeBasicDetailsRequest,
   EmployeeDetailsResponse,

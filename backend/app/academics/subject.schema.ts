@@ -1,6 +1,29 @@
 import mongoose from "mongoose";
-import { ISubject } from "./academic.dto";
+import { ISubject, TextBook } from "./academic.dto";
 import * as Enum from "../common/utils/enum";
+
+const textBook = new mongoose.Schema<TextBook>({
+    title: {
+        type: String,
+        required: true
+    },
+    coverPhoto: {
+        type: String,
+        required: false
+    },
+    publication: {
+        type: String,
+        required: false
+    },
+    author: {
+        type: String,
+        required: false
+    },
+    ISBN: {
+        type: String,
+        required: false
+    },
+}, { _id: false });
 
 const subjectSchema = new mongoose.Schema<ISubject>({
     name: {
@@ -10,6 +33,11 @@ const subjectSchema = new mongoose.Schema<ISubject>({
     subjectId: {
         type: String,
         unique: true,
+        required: true
+    },
+    classId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Class",
         required: true
     },
     sessionId: {
@@ -22,19 +50,11 @@ const subjectSchema = new mongoose.Schema<ISubject>({
         enum: Object.values(Enum.SubjectType),
         required: true
     },
-    subjectCategory: {
-        type: String,
-        enum: Object.values(Enum.SubjectCategory),
-        required: true
-    },
     syllabus: {
         type: String,
         required: false
     },
-    books: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Book'
-    }]
+    books: [textBook]
 }, { timestamps: true });
 
 export default mongoose.model<ISubject>('Subject', subjectSchema);

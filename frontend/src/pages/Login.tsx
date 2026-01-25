@@ -21,6 +21,7 @@ import { login } from "@/store/reducers/authSlice";
 import { LoginFormValues } from "../../type";
 import { loginSchema } from "../validation/yup";
 import AuthImageSlider from "@/components/common/AuthImageSlider";
+import { customToast } from "@/components/common/customToast";
 
 const Login: React.FC = () => {
   const theme = useTheme();
@@ -45,16 +46,25 @@ const Login: React.FC = () => {
             user,
             accessToken,
             refreshToken,
-          })
+          }),
         );
         navigate("/dashboard");
-        toast.success("Login successful!");
+        customToast({
+          type: "success",
+          message: "Login successful!",
+        });
       } else {
-        toast.error(response.message || "Invalid email or password");
+        customToast({
+          type: "error",
+          message: response.message || "Invalid email or password",
+        });
       }
     } catch (err: any) {
       const msg = err?.data?.message || "Login failed. Try again.";
-      toast.error(msg);
+      customToast({
+        type: "error",
+        message: msg,
+      });
     }
   };
 

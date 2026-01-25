@@ -18,19 +18,15 @@ const classSchema = new mongoose.Schema<IClass>({
         ref: "Session",
         required: true
     },
-    subjects: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Subject'
-    }],
     courseStream: {
         type: String,
         enum: Object.values(Enum.CourseStream),
         default: Enum.CourseStream.GENERAL
     },
-    deleted: {
-        type: Boolean,
-        required: true,
-        default: false
+    status: {
+        type: String,
+        enum: Object.values(Enum.ClassStatus),
+        default: Enum.ClassStatus.DRAFT
     }
 }, { timestamps: true });
 

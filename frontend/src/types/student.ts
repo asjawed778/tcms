@@ -7,7 +7,6 @@ import {
   RemarkType,
   StudentStatus,
 } from "@/utils/enum";
-import * as CommonTypes from "@/types";
 
 export interface BasicDetailsRequest {
   firstName: string;
@@ -46,8 +45,8 @@ export interface PreviousSchool {
   address?: string;
   reasonForLeaving?: string;
   dateOfLeaving?: string;
-  schoolLeavingCertificate: CommonTypes.DocumentRequest;
-  transferCertificate: CommonTypes.DocumentRequest;
+  schoolLeavingCertificate: DocumentRequest;
+  transferCertificate: DocumentRequest;
 }
 
 export interface AdmissionDetailsRequest {
@@ -59,7 +58,7 @@ export interface AdmissionDetailsRequest {
   previousSchool?: PreviousSchool;
 }
 
-export interface AdmissionDetailsResponse extends CommonTypes.BaseSchema {
+export interface AdmissionDetailsResponse extends BaseSchema {
   admissionStatus: AdmissionStatus;
   rollNumber: number;
   class: {
@@ -76,13 +75,13 @@ export interface AdmissionDetailsResponse extends CommonTypes.BaseSchema {
   }
 }
 export interface StudentDetailsResponse
-  extends CommonTypes.BaseSchema,
+  extends BaseSchema,
     BasicDetailsRequest,
     ParentDetailsRequest, AdmissionDetailsRequest {
   enrollmentNumber: string;
   status: StudentStatus;
-  address: CommonTypes.AddressResponse;
-  documents: CommonTypes.DocumentRequest;
+  address: AddressResponse;
+  documents: DocumentRequest;
   admission: AdmissionDetailsResponse;
 }
 
@@ -112,4 +111,4 @@ export interface AddRemarkRequest {
 }
 export interface RemarkResponse
   extends AddRemarkRequest,
-    CommonTypes.BaseSchema {}
+    BaseSchema {}

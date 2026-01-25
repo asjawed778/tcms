@@ -107,7 +107,7 @@ const EmployeeDetails: React.FC<EmployeeDetailsProps> = ({
       )
   );
   const handleUpdateDetails = (employeeId: string) => {
-    navigate(`/dashboard/employee/${employeeId}/update`);
+    navigate(`/employee/${employeeId}/update`);
   };
   return (
     <Box>

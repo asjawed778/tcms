@@ -79,16 +79,5 @@ router
         EmployeeController.deleteDraftEmployee
     )
 
-    // old routes
-
-
-    .post(
-        "/unassigned/:sessionId",
-        roleAuth({ module: Enum.ModuleName.Employee, operation: Enum.Operation.READ }),
-        EmployeeValidation.getUnassignedFaculty,
-        catchError,
-        EmployeeController.getUnassignedFaculty
-    )
-
 
 export default router;

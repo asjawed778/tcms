@@ -11,7 +11,7 @@ import {
 } from "@mui/material";
 
 const StyledButton = styled(MuiButton)(({ theme }) => ({
-  fontSize: "14px",
+  fontSize: "15px",
   padding: theme.spacing("10px", "16px"),
   borderRadius: "8px",
   height: "40px",

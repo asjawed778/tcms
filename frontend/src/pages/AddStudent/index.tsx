@@ -6,8 +6,7 @@ import {
   Step,
   StepLabel,
   Box,
-  CardContent,
-  CircularProgress,
+  Container,
 } from "@mui/material";
 import * as yup from "yup";
 import toast from "react-hot-toast";
@@ -35,6 +34,9 @@ import {
   personalDetailsSchema,
   previousSchoolSchema,
 } from "@/validation/student";
+import { ArrowBack, ArrowForward, Close } from "@mui/icons-material";
+import PageHeader from "@/components/common/PageHeader";
+import Loader from "@/components/common/Loader";
 
 const steps = [
   {
@@ -65,7 +67,9 @@ const AddStudent = () => {
   const [searchParams] = useSearchParams();
   const urlStep = searchParams.get("step") || stepSlugs[0];
   const initialStepIndex = stepSlugs.indexOf(urlStep);
-  const [activeStep, setActiveStep] = useState(initialStepIndex >= 0 ?initialStepIndex : 0);
+  const [activeStep, setActiveStep] = useState(
+    initialStepIndex >= 0 ? initialStepIndex : 0
+  );
   const [studentId, setStudentId] = useState<string>("");
   const [completedSteps, setCompletedSteps] = useState<number[]>([]);
   const navigate = useNavigate();
@@ -105,11 +109,11 @@ const AddStudent = () => {
     if (!studentId && editStudentId) return;
     const stepName = stepSlugs[activeStep];
     if (!editStudentId && !studentId) {
-      navigate(`/dashboard/student/add?step=${stepName}`, { replace: true });
+      navigate(`/student/add?step=${stepName}`, { replace: true });
       return;
     }
     if (studentId) {
-      navigate(`/dashboard/student/${studentId}/update?step=${stepName}`, {
+      navigate(`/student/${studentId}/update?step=${stepName}`, {
         replace: true,
       });
     }
@@ -261,80 +265,83 @@ const AddStudent = () => {
   };
 
   if (fetchingStudent) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <CircularProgress />
-      </Box>
-    );
+    return <Loader height="100vh" />;
   }
   return (
-    <Box p={3}>
-      <Stepper activeStep={activeStep} alternativeLabel>
-        {steps.map((step, index) => (
-          <Step key={index} onClick={() => handleStepClick(index)}>
-            <StepLabel>{step.label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+    <Box mt="52px">
+      <PageHeader
+        backTo="/dashboard/student"
+      />
+      <Container maxWidth="lg" sx={{ py: 2 }}>
+        <Stepper activeStep={activeStep} alternativeLabel sx={{ mb: 1 }}>
+          {steps.map((step, index) => (
+            <Step key={index} onClick={() => handleStepClick(index)}>
+              <StepLabel>{step.label}</StepLabel>
+            </Step>
+          ))}
+        </Stepper>
 
-      <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onStepSubmit)} noValidate>
-          <Box>
+        <FormProvider {...methods}>
+          <form
+            onSubmit={methods.handleSubmit(onStepSubmit)}
+            noValidate
+            style={{ backgroundColor: "#FFF", borderRadius: "8px" }}
+          >
             <Box
               sx={{
-                width: "100%",
-                bgcolor: "#fff",
-                borderRadius: "8px",
-                mt: 1,
+                p: 2,
+                minHeight: "70vh",
               }}
             >
-              <CardContent>
-                <Box>
-                  <StepComponent />
-                </Box>
-              </CardContent>
+              <StepComponent />
             </Box>
-
             <Box
-              mt={2}
-              display="flex"
-              justifyContent="space-between"
-              gap={2}
-              flexWrap="wrap"
+              sx={{
+                display: "flex",
+                justifyContent: activeStep > 0 ? "space-between" : "flex-end",
+                alignItems: "center",
+                flexWrap: "wrap",
+                gap: 2,
+                p: 2,
+              }}
             >
               {activeStep > 0 && (
                 <CustomButton
+                label="Back"
                   variant="contained"
-                  onClick={() => setActiveStep((s) => s - 1)}
-                >
-                  Back
-                </CustomButton>
+                  startIcon={<ArrowBack />}
+                  onClick={() => setActiveStep((prev) => prev - 1)}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 4px 12px ${theme.palette.primary.main}40`,
+                  }}
+                />
               )}
-              <Box flexGrow={1} />
-              <CustomButton
-                label="Exit"
-                variant="outlined"
-                onClick={handleExitClick}
-              />
-              <CustomButton
-                type="submit"
-                variant="contained"
-                color="primary"
-                loading={isLoading}
-              >
-                {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
-              </CustomButton>
+              <Box sx={{ display: "flex", gap: 2 }}>
+                <CustomButton
+                  label="Exit"
+                  variant="outlined"
+                  startIcon={<Close fontSize="small" />}
+                  onClick={handleExitClick}
+                />
+                <CustomButton
+                  type="submit"
+                  variant="contained"
+                  color="primary"
+                  endIcon={<ArrowForward />}
+                  loading={isLoading}
+                  sx={{
+                    boxShadow: (theme) =>
+                      `0px 4px 12px ${theme.palette.primary.main}40`,
+                  }}
+                >
+                  {activeStep === steps.length - 1 ? "Finish" : "Save & Next"}
+                </CustomButton>
+              </Box>
             </Box>
-          </Box>
-        </form>
-      </FormProvider>
+          </form>
+        </FormProvider>
+      </Container>
     </Box>
   );
 };
