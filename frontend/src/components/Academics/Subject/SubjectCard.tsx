@@ -61,13 +61,13 @@ const SubjectCard: React.FC<SubjectCardProps> = ({
             >
               <Edit fontSize="small" />
             </IconButton>
-            <IconButton
+            {/* <IconButton
               size="small"
               color="error"
               onClick={() => onDelete(subject)}
             >
               <Delete fontSize="small" />
-            </IconButton>
+            </IconButton> */}
           </Box>
         )}
         <Box className="card-content" sx={{ display: "flex", width: "100%" }}>

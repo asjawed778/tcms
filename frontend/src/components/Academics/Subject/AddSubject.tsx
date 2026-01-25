@@ -16,7 +16,7 @@ import { AddCircle, MenuBook } from "@mui/icons-material";
 import ImageUploader from "@/components/ui/ImageUploader";
 import { subjectSchema } from "@/validation/academics";
 import { customToast } from "@/components/common/customToast";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
 
 interface AddSubjectProps {
   onClose?: () => void;
@@ -45,6 +45,7 @@ const AddSubject: React.FC<AddSubjectProps> = ({
       })) || []
     );
   }, [classData]);
+
   const [addSubject, { isLoading }] = useAddBulkSubjectMutation();
   const [updateSubject, { isLoading: isUpdating }] = useUpdateSubjectMutation();
   const isEditMode = Boolean(subject);
@@ -53,10 +54,10 @@ const AddSubject: React.FC<AddSubjectProps> = ({
     resolver: yupResolver(subjectSchema) as Resolver<SubjectRequest>,
     defaultValues: {
       classId: classId || "",
-      name: subject?.name || "",
-      subjectType: subject?.subjectType,
-      syllabus: subject?.syllabus,
-      books: subject?.books || [
+      name: "",
+      subjectType: "",
+      syllabus: "",
+      books: [
         {
           coverPhoto: "",
           title: "",
@@ -78,7 +79,27 @@ const AddSubject: React.FC<AddSubjectProps> = ({
     control,
     name: "books",
   });
-
+  useEffect(() => {
+    if (!subject) return;
+    reset({
+      classId: subject.classId,
+      name: subject.name,
+      subjectType: subject.subjectType,
+      syllabus: subject.syllabus,
+      books:
+        subject.books?.length > 0
+          ? subject.books
+          : [
+              {
+                coverPhoto: "",
+                title: "",
+                author: "",
+                publication: "",
+                ISBN: "",
+              },
+            ],
+    });
+  }, [subject, reset]);
   const onSubmit = async (data: SubjectRequest) => {
     try {
       const payload = cleanData({

@@ -85,54 +85,37 @@ export const academicsApi = createApi({
         method: "DELETE",
       })
     }),
+
     // Subject.............................................................
-    getAllSubject: builder.query<ApiResponse<SubjectResponseList>, { sessionId: string; classId?: string; search?: string; page?: number; limit?: number; }>({
-      query: ({ sessionId, classId, page = 1, limit = 10, search = "" }) => ({
-        url: `/admin/academics/subject/all`,
-        params: {
-          sessionId,
-          page,
-          limit,
-          ...(classId && { classId }),
-          ...(search && { search }),
-        },
-        method: "GET",
-      })
-    }),
-    getSubjects: builder.query({
+    getSubjects: builder.query<ApiResponse<SubjectResponse[]>, {classId: string}>({
       query: ({ classId }) => ({
         url: `/admin/academics/class/${classId}/subjects`,
         method: "GET",
-      })
-    }),
-    addSubject: builder.mutation<SubjectResponse, { payload: SubjectRequest, classId: string }>({
-      query: ({ payload }) => ({
-        url: `/admin/academics/subject`,
-        method: "POST",
-        body: payload,
       }),
-      invalidatesTags: ["CLASS_LIST"],
+      providesTags: ["SUBJECT_LIST"],
     }),
-    addBulkSubject: builder.mutation<ApiResponse<SubjectResponse[]>, {payload: {subjects: SubjectRequest[]}, classId: string;}>({
+    addBulkSubject: builder.mutation<ApiResponse<SubjectResponse[]>, { payload: { subjects: SubjectRequest[] }, classId: string; }>({
       query: ({ payload, classId }) => ({
         url: `/admin/academics/class/${classId}/upsert-subjects`,
         method: "POST",
         body: payload,
       }),
-      invalidatesTags: ["CLASS_LIST"],
+      invalidatesTags: ["CLASS_LIST", "SUBJECT_LIST"],
     }),
-    updateSubject: builder.mutation<SubjectResponse, { subjectId: string; payload: SubjectRequest, classId: string }>({
+    updateSubject: builder.mutation<ApiResponse<SubjectResponse>, { subjectId: string; payload: SubjectRequest, classId: string }>({
       query: ({ subjectId, payload }) => ({
         url: `/admin/academics/subject/${subjectId}`,
         method: "PUT",
         body: payload,
-      })
+      }),
+      invalidatesTags: ["SUBJECT_LIST"],
     }),
     deleteSubject: builder.mutation({
       query: ({ subjectId }) => ({
         url: `/admin/academics/subject/${subjectId}`,
         method: "DELETE",
-      })
+      }),
+      invalidatesTags: ["SUBJECT_LIST"],
     }),
     // Time Table ......................................................
     createTimeTable: builder.mutation({
@@ -154,7 +137,7 @@ export const academicsApi = createApi({
       },
     }),
     getAvailableFaculty: builder.mutation({
-      query: ({sessionId, payload}) => ({
+      query: ({ sessionId, payload }) => ({
         url: `/admin/academics/available-faculty/${sessionId}`,
         method: "POST",
         body: payload
@@ -195,9 +178,7 @@ export const {
   useUpdateSectionMutation,
   useDeleteSectionMutation,
   useAddBulkSubjectMutation,
-  useAddSubjectMutation,
   useDeleteSubjectMutation,
-  useGetAllSubjectQuery,
   useGetSubjectsQuery,
   useUpdateSubjectMutation,
 } = academicsApi;

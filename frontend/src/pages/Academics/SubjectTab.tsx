@@ -12,14 +12,24 @@ import { useAppSelector } from "@/store/store";
 import { ModuleName, Operation, SubModuleName } from "@/utils/enum";
 import {
   Add,
+  CheckCircle,
   Delete,
   Edit,
+  Error,
   ViewList,
   ViewModule,
   Visibility,
+  Warning,
 } from "@mui/icons-material";
-import { Box, Grid, IconButton, Tooltip, Typography } from "@mui/material";
-import { useEffect, useMemo, useState } from "react";
+import {
+  Box,
+  Chip,
+  Grid,
+  IconButton,
+  Tooltip,
+  Typography,
+} from "@mui/material";
+import { useEffect, useState } from "react";
 import AddSubject from "@/components/Academics/Subject/AddSubject";
 import SubjectCard from "@/components/Academics/Subject/SubjectCard";
 import SubjectDetailsModal from "@/components/Academics/Subject/SubjectDetailsModal";
@@ -27,17 +37,18 @@ import SubjectCardSkeleton from "@/components/Skeletons/SubjectCardSkeleton";
 import NoDataCard from "@/components/common/NoDataCard";
 import AlertModal from "@/components/common/AlertModal";
 import ModalWrapper from "@/components/ui/ModalWrapper";
+import { getStatusColors, getSubjectTypeColor } from "@/utils/academics";
+const getSubjectStatus = (
+  isBooksMissing: boolean,
+  isSyllabusMissing: boolean,
+) => {
+  if (isBooksMissing || isSyllabusMissing) return "INCOMPLETE";
+  return "COMPLETE";
+};
 
-const subjectColumns = [
-  { key: "sno.", label: "S.No." },
-  { key: "subjectId", label: "Subject Id" },
-  { key: "name", label: "Subject Name" },
-  { key: "subjectType", label: "Subject Type" },
-  { key: "totalBooks", label: "Total Books" },
-];
 const SubjectTab = () => {
   const styles = getStyles();
-  const [classId, setClassId] = useState();
+  const [classId, setClassId] = useState("");
   const [openAddSubject, setOpenAddSubject] = useState(false);
   const [openUpdateSubject, setOpenUpdateSubject] = useState(false);
   const [openDeleteSubject, setOpenDeleteSubject] = useState(false);
@@ -56,6 +67,7 @@ const SubjectTab = () => {
       skip: !selectedSession?._id,
     },
   );
+
   const {
     data: classSubjects,
     refetch,
@@ -74,20 +86,121 @@ const SubjectTab = () => {
       label: cls.name,
       value: cls._id,
     })) || [];
-  const subjects = useMemo(() => {
-    if (!classSubjects?.data) return;
-    return classSubjects.data.map((item: any) => ({
-      subjectId: item.subjectId,
-      name: item.name,
-      subjectType: item.subjectType,
-      totalBooks: item.books.length ?? 0,
-    }));
-  }, [classSubjects]);
   useEffect(() => {
     if (!classId && classOptions.length > 0) {
       setClassId(classOptions[0].value);
     }
   }, [classOptions, classId]);
+
+  const subjectColumns = () => [
+    { key: "subjectId", label: "Subject Id" },
+    { key: "name", label: "Subject Name" },
+    {
+      key: "subjectType",
+      label: "Type",
+      render: (row: any) => {
+        const { color, bgcolor } = getSubjectTypeColor(row.subjectType || "");
+        return (
+          <Chip
+            label={row.subjectType?.toUpperCase()}
+            sx={{
+              color,
+              bgcolor,
+              fontWeight: 600,
+            }}
+          />
+        );
+      },
+    },
+    {
+      key: "textBooks",
+      label: "Text Books",
+      render: (row: any) => {
+        const count = row?.books?.length ?? 0;
+        const isMissing = count === 0;
+        return (
+          <Box
+            sx={textBooksStyles(isMissing)}
+            onClick={
+              isMissing
+                ? () => {
+                    setOpenUpdateSubject(true);
+                    setSelectedRow(row);
+                  }
+                : undefined
+            }
+          >
+            <Typography
+              sx={{
+                fontWeight: 500,
+                color: isMissing ? "#9CA3AF" : "#111827",
+              }}
+            >
+              {count} {count === 1 ? "Book" : "Books"}
+            </Typography>
+            {isMissing && (
+              <Box display="flex" alignItems="center" gap={0.5}>
+                <Error fontSize="small" color="error" />
+                <Typography sx={styles.missingTitle}>MISSING</Typography>
+              </Box>
+            )}
+          </Box>
+        );
+      },
+    },
+    {
+      key: "syllabus",
+      label: "Syllabus",
+      render: (row: any) => {
+        const isMissing = !row?.syllabus;
+        return isMissing ? (
+          <Box
+            display="flex"
+            alignItems="center"
+            gap={0.5}
+            sx={{ cursor: isMissing ? "pointer" : "default" }}
+            onClick={
+              isMissing
+                ? () => {
+                    setOpenUpdateSubject(true);
+                    setSelectedRow(row);
+                  }
+                : undefined
+            }
+          >
+            <Warning fontSize="small" color="error" />
+            <Typography sx={styles.missingTitle}>MISSING</Typography>
+          </Box>
+        ) : (
+          <Box display="flex" alignItems="center" gap={0.5}>
+            <CheckCircle fontSize="small" color="success" />
+            <Typography sx={styles.addedTitle}>ADDED</Typography>
+          </Box>
+        );
+      },
+    },
+    {
+      key: "status",
+      label: "Status",
+      render: (row: any) => {
+        const isBooksMissing = row.books.length === 0;
+        const isSyllabusMissing = !row.syllabus;
+        const status = getSubjectStatus(isBooksMissing, isSyllabusMissing);
+        const { color, bgcolor } = getStatusColors(status);
+        return (
+          <Chip
+            label={status}
+            size="small"
+            sx={{
+              color,
+              bgcolor,
+              fontWeight: 600,
+            }}
+          />
+        );
+      },
+    },
+  ];
 
   const actionsList = () => {
     const ACTIONS = [
@@ -113,17 +226,17 @@ const SubjectTab = () => {
           operation: Operation.UPDATE,
         },
       },
-      {
-        action: "delete",
-        label: "Delete",
-        icon: <Delete />,
-        color: "error.main",
-        permission: {
-          module: ModuleName.ACADEMICS,
-          subModule: SubModuleName.SUBJECTS,
-          operation: Operation.DELETE,
-        },
-      },
+      // {
+      //   action: "delete",
+      //   label: "Delete",
+      //   icon: <Delete />,
+      //   color: "error.main",
+      //   permission: {
+      //     module: ModuleName.ACADEMICS,
+      //     subModule: SubModuleName.SUBJECTS,
+      //     operation: Operation.DELETE,
+      //   },
+      // },
     ];
     return ACTIONS.filter(
       (action) =>
@@ -243,15 +356,15 @@ const SubjectTab = () => {
               Something went wrong. Please try again.
             </Typography>
           </Box>
-        ) : subjects?.length === 0 && tableView ? (
+        ) : classSubjects?.data?.length === 0 && tableView ? (
           <Box sx={styles.noDataCard}>
             <NoDataCard />
           </Box>
         ) : !tableView ? (
           <Box mt={2}>
             <TableWrapper
-              columns={subjectColumns}
-              rows={subjects || []}
+              columns={subjectColumns()}
+              rows={classSubjects?.data || []}
               onActionClick={handleActionClick}
               actions={actionsList}
               isFetching={subjectFetching}
@@ -261,7 +374,7 @@ const SubjectTab = () => {
           </Box>
         ) : (
           <Grid container spacing={2} mt={2}>
-            {subjects?.map((subject: any) => (
+            {classSubjects?.data?.map((subject: any) => (
               <Grid size={{ xs: 12, sm: 6, md: 4 }} key={subject._id}>
                 <SubjectCard
                   subject={subject}
@@ -280,7 +393,7 @@ const SubjectTab = () => {
           title="Add Subject"
           width="900px"
         >
-          <AddSubject onClose={handleModalClose} refetch={refetch} />
+          <AddSubject onClose={handleModalClose} />
         </ModalWrapper>
       )}
       {openUpdateSubject && (
@@ -292,8 +405,8 @@ const SubjectTab = () => {
         >
           <AddSubject
             subject={selectedRow}
-            refetch={refetch}
             onClose={handleModalClose}
+            classId={classId}
           />
         </ModalWrapper>
       )}
@@ -352,4 +465,24 @@ const getStyles = () => ({
     alignItems: "center",
     height: "70vh",
   },
+  // row styles............................
+  missingTitle: {
+    fontSize: "12px",
+    fontWeight: 600,
+    color: "#EF4444",
+    letterSpacing: "0.5px",
+  },
+  addedTitle: {
+    fontSize: "12px",
+    fontWeight: 600,
+    color: "#16A34A",
+    letterSpacing: "0.5px",
+  },
+});
+
+const textBooksStyles = (isMissing: boolean) => ({
+  display: "flex",
+  flexDirection: "column",
+  cursor: isMissing ? "pointer" : "default",
+  gap: 0.5,
 });

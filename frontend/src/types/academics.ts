@@ -66,12 +66,6 @@ interface SubjectRequest {
 interface SubjectResponse extends SubjectRequest, BaseSchema {
   subjectId: string;
 }
-interface SubjectResponseList {
-  subjects: SubjectResponse[];
-  currentPage: number;
-  totalPages: number;
-  totalDoc: number;
-}
 
 // Time Table..............................................................
 interface TimeSlot {

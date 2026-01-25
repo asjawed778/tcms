@@ -110,3 +110,23 @@ export const getStatusColors = (status: string) => {
       };
   }
 };
+
+export const getSubjectTypeColor = (type: string) => {  
+  switch (type.toUpperCase()) {
+    case "COMPULSARY":
+      return {
+        color: "#6B7280",      
+        bgcolor: "#F3F4F6", 
+      };
+    case "OPTIONAL":
+      return {
+        color: "#2563EB",        
+        bgcolor: "#EFF6FF", 
+      };
+    default:
+      return {
+        color: "#374151",
+        bgcolor: "#F9FAFB",
+      };
+  }
+};
